@@ -21,7 +21,7 @@ require 'Dobjects/Function'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 915 $', '$Date: 2009-03-14 20:34:45 +0100 (Sat, 14 Mar 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Data
 

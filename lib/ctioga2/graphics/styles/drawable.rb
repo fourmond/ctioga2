@@ -17,7 +17,7 @@ require 'ctioga2/log'
 # This module contains all the classes used by ctioga
 module CTioga2
 
-  Version::register_svn_info('$Revision: 927 $', '$Date: 2009-03-24 23:41:36 +0100 (Tue, 24 Mar 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Graphics
 

@@ -20,7 +20,7 @@ require 'ctioga2/data/backends/backend'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 913 $', '$Date: 2009-03-13 17:45:34 +0100 (Fri, 13 Mar 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Data
 

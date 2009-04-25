@@ -21,7 +21,7 @@ require 'ctioga2/metabuilder/type'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 909 $', '$Date: 2009-03-11 00:43:20 +0100 (Wed, 11 Mar 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Data
 

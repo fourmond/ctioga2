@@ -16,7 +16,7 @@ require 'ctioga2/log'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 943 $', '$Date: 2009-04-11 23:39:36 +0200 (Sat, 11 Apr 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Graphics
 

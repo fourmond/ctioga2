@@ -17,7 +17,7 @@ require 'ctioga2/commands/parsers/command-line'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 951 $', '$Date: 2009-04-18 22:30:41 +0200 (Sat, 18 Apr 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Commands
 

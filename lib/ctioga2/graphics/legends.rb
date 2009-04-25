@@ -18,7 +18,7 @@ require 'ctioga2/graphics/legends/provider'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 946 $', '$Date: 2009-04-13 22:24:56 +0200 (Mon, 13 Apr 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Graphics
 

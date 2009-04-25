@@ -127,7 +127,7 @@ require 'ctioga2/graphics/generator'
 # This module contains all the classes used by ctioga
 module CTioga2
 
-  Version::register_svn_info('$Revision: 960 $', '$Date: 2009-04-21 00:45:52 +0200 (Tue, 21 Apr 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   # This class is the core of ctioga. It parses the command-line arguments,
   # reads all necessary files and plots graphs. Most of its functionality

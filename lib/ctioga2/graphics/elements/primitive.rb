@@ -21,7 +21,7 @@ require 'shellwords'
 # This module contains all the classes used by ctioga
 module CTioga2
 
-  Version::register_svn_info('$Revision: 948 $', '$Date: 2009-04-17 00:41:44 +0200 (Fri, 17 Apr 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Graphics
 

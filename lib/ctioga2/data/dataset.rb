@@ -16,7 +16,7 @@ require 'ctioga2/data/datacolumn'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 921 $', '$Date: 2009-03-22 01:41:11 +0100 (Sun, 22 Mar 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
 
   # TODO: now, port the backend infrastructure...

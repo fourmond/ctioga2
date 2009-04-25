@@ -20,7 +20,7 @@ require 'ctioga2/commands/parsers/command-line'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 949 $', '$Date: 2009-04-17 22:15:43 +0200 (Fri, 17 Apr 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   # This module contains the real core of ctioga2: a set of classes
   # that implement the concept of commands. Each command translates

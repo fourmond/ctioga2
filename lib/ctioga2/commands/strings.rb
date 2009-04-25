@@ -16,7 +16,7 @@ require 'stringio'              # For debugging purposes
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 904 $', '$Date: 2009-03-08 00:55:59 +0100 (Sun, 08 Mar 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Commands
 

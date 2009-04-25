@@ -19,7 +19,7 @@ require 'ctioga2/graphics/coordinates'
 # This module contains all the classes used by ctioga
 module CTioga2
 
-  Version::register_svn_info('$Revision: 954 $', '$Date: 2009-04-18 23:39:29 +0200 (Sat, 18 Apr 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Graphics
 

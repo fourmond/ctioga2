@@ -20,7 +20,7 @@ require 'ctioga2/utils'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 938 $', '$Date: 2009-04-05 02:14:04 +0200 (Sun, 05 Apr 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module MetaBuilder
     module Types

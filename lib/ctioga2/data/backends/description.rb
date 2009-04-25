@@ -22,7 +22,7 @@ require 'ctioga2/commands/groups'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 933 $', '$Date: 2009-03-30 22:31:30 +0200 (Mon, 30 Mar 2009) $')
+  Version::register_svn_info('$Revision$', '$Date$')
   
 
   module Data
