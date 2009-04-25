@@ -34,7 +34,7 @@ module CTioga2
     # arguments and have the Date and Revision svn:keyword:. Use this
     # way:
     #
-    #  Version::register_svn_info('$Revision: 953 $', '$Date: 2009-04-18 23:25:53 +0200 (Sat, 18 Apr 2009) $')
+    #  Version::register_svn_info('$Revision$', '$Date$')
     #
     # To set the correct properties, the following command-line can be
     # used:
@@ -69,7 +69,7 @@ module CTioga2
     }
 
     # The position of the URL, used for getting the version
-    SVN_URL = '$HeadURL: svn+ssh://rubyforge.org/var/svn/sciyag/trunk/ctioga2/lib/ctioga2/utils.rb $'
+    SVN_URL = '$HeadURL$'
     
     # The version of ctigoa2
     CTIOGA_VERSION = if SVN_URL =~ /releases\/ctioga2-([^\/]+)/
@@ -78,7 +78,7 @@ module CTioga2
                        "SVN version"
                      end
 
-    register_svn_info('$Revision: 953 $', '$Date: 2009-04-18 23:25:53 +0200 (Sat, 18 Apr 2009) $')
+    register_svn_info('$Revision$', '$Date$')
 
   end
 
