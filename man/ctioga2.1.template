@@ -1,0 +1,121 @@
+.\" -*- mode: nroff; -*-
+.\" This is the template for the manual page of ctioga2
+.\"
+.\" Copyright 2009 by Vincent Fourmond
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"  
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details (in the COPYING file).
+.\"
+.\" write-header
+
+.\" We want to use the .URL command
+.\" .mso www.tmac
+.\" Do we ??
+
+.SH NAME
+ctioga2 \- a command-line front-end for the Tioga plotting library
+
+.SH SYNOPSIS
+.B ctioga2
+.I arguments
+\&.\|.\|.
+
+.SH DESCRIPTION
+
+.B ctioga2
+is a command-line front-end to the wonderful Tioga plotting
+library. It aims at plotting quickly both data files and mathematical
+functions, with however the possibility of a high control over the
+details.
+
+The main feature that was introduced compared to the old
+.B ctioga
+is that it is now possible to use command files for
+.BR ctioga2 :
+every single command-line option corresponds to a command, whose name
+is written. Just give the command the same arguments as to the
+command-line option. To read a command file, feed it to the 
+.B -f 
+command-line option.
+
+.SH EXAMPLES
+
+Here are a few examples, both from command-line and using the
+corresponding files.
+
+.TP 8 
+.BI ctioga2 \ File.dat
+Produces a file \fIPlot.pdf\fR showing the second column of File.dat
+as a function of the first.
+
+.P 
+The corresponding command file would be:
+
+  #!/usr/bin/env ctioga2 -f 
+  plot(File.dat)
+
+
+
+
+.SH OPTIONS
+
+
+.\" write-commands
+
+.SH AUTHOR
+
+.B ctioga2
+was written by Vincent Fourmond.
+.B Tioga
+was written by Bill Paxton.
+
+.SH BUGS
+
+.B ctioga2
+is most certainly not bug-free. You can use the facility at
+.B rubyforge.org
+to report any bug you notice:
+.IR http://rubyforge.org/tracker/?func=add&group_id=1477&atid=5773 .
+You can also use the same facility for feature requests.
+
+.SH "SEE ALSO"
+
+.BR xpdf (1),
+.BR pdflatex (1),
+.BR open (1),
+.BR gnuplot (1),
+.BR ctioga "(1) (the original ctioga)"
+
+The original tarball includes an 
+.I examples/
+directory where you will find some data files, some commented examples
+of configuration files and most importantly a tutorial along with a
+.I tutorial.sh
+shell script demonstrating the commands used in the tutorial.
+
+It also includes a
+.I tests/
+directory containing test shell scripts. Runnning these shell scripts
+should give you a decent idea of 
+.BR ctioga2 's
+possibilities while assuring that it did install properly.
+
+Useful documentation, including an illustrated version of the
+tutorial and instructions on bug reporting, can be found on 
+.BR ctioga2 's
+website, at 
+.I http://sciyag.rubyforge.org/ctioga .
+
+More information about 
+.B Tioga
+and its rdoc documentation 
+can be found at
+.IR http://www.kitp.ucsb.edu/~paxton/tioga.html .
+
