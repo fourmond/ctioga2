@@ -1,0 +1,7 @@
+# Run this file using ctioga2 -f polymorphic.ct2
+
+title('A nice title, for sure')
+math()
+plot('sin(x)')
+xlabel(The X label)
+ylabel(The Y label)

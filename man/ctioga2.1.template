@@ -82,8 +82,15 @@ was written by Bill Paxton.
 is most certainly not bug-free. You can use the facility at
 .B rubyforge.org
 to report any bug you notice:
-.IR http://rubyforge.org/tracker/?func=add&group_id=1477&atid=5773 .
-You can also use the same facility for feature requests.
+.IR http://rubyforge.org/tracker/?group_id=8218 .
+You can also use the same facility for feature requests and to provide
+use with patches.
+
+Alternatively, you can use the forums at
+.I http://rubyforge.org/forum/?group_id=8218
+or the 
+.I ctioga2-users@rubyforge.org
+mailing list to report any kind of problems or suggestions.
 
 .SH "SEE ALSO"
 
@@ -95,10 +102,10 @@ You can also use the same facility for feature requests.
 
 The original tarball includes an 
 .I examples/
-directory where you will find some data files, some commented examples
-of configuration files and most importantly a tutorial along with a
-.I tutorial.sh
-shell script demonstrating the commands used in the tutorial.
+with various examples demonstrating different features of 
+.B ctioga2\fR, 
+and in particular the different ways to use it: command-line or
+command-file.
 
 It also includes a
 .I tests/
@@ -107,15 +114,14 @@ should give you a decent idea of
 .BR ctioga2 's
 possibilities while assuring that it did install properly.
 
-Useful documentation, including an illustrated version of the
-tutorial and instructions on bug reporting, can be found on 
+Useful information, documentation and most up-to-date news can be
+found at
 .BR ctioga2 's
 website, at 
-.I http://sciyag.rubyforge.org/ctioga .
+.I http://ctioga2.rubyforge.org/ .
 
 More information about 
 .B Tioga
-and its rdoc documentation 
-can be found at
+and its rdoc documentation can be found at
 .IR http://www.kitp.ucsb.edu/~paxton/tioga.html .
 
