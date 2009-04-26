@@ -177,7 +177,7 @@ module CTioga2
 
       # General scope commands.
       DocumentationGenerationGroup = 
-        CmdGroup.new("Documentation generation",
+        CmdGroup.new('doc', "Documentation generation",
                      "Automatic documentation generation.", 
                      1000, true)
       

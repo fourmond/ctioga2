@@ -115,7 +115,7 @@ module CTioga2
         # The CmdGroup for stylistic information about
         # curves.
         CurveStyleGroup = 
-          CmdGroup.new("Curve styles", 
+          CmdGroup.new('curve-style', "Curve styles", 
                        "Set stylistic details about curves", 1)
 
 

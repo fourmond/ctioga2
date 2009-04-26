@@ -27,7 +27,8 @@ module CTioga2
 
     # Now, various commands pertaining to various drawables
 
-    PlotCoordinatesGroup = CmdGroup.new("Plot coordinates",
+    PlotCoordinatesGroup = CmdGroup.new('coordinates',
+                                        "Plot coordinates",
                                         "Plot coordinates", 2)
     PlotMarginCommand = 
       Cmd.new("margin",nil,"--margin", 

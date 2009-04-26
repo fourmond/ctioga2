@@ -297,7 +297,7 @@ module CTioga2
     end
 
 
-    PlotGroup = CmdGroup.new("Plots","Plots",  0)
+    PlotGroup = CmdGroup.new('plots', "Plots","Plots",  0)
 
     PlotCommand = 
       Cmd.new("plot",nil,"--plot", 
@@ -314,7 +314,8 @@ and plot them.
 EOH
     
     PlotSetupGroup =  
-      CmdGroup.new("Plot setup", "Plot setup", 50)
+      CmdGroup.new('plot-setup', 
+                   "Plot setup", "Plot setup", 50)
 
     PageSizeCommand = 
       Cmd.new("page-size",'-r',"--page-size", 

@@ -29,22 +29,29 @@ module CTioga2
       # The name of the group
       attr_accessor :name
 
+      # A short, unique, codelike name for the group.
+      attr_accessor :id
+
       # A (longer) description of the group
       attr_accessor :description
 
-      # The priority of the group. It influences the positioning
-      # of its command-line options in the --help display. Lower
+      # The priority of the group. It influences the positioning of
+      # its command-line options in the --help display. Lower
       # priorities come first.
       attr_accessor :priority
 
       # Whether the group is blacklisted or not, ie whether the group's
       # help text will be displayed at all. 
       attr_accessor :blacklisted
+
+      # The context of definition (file, line...)
+      attr_accessor :context
       
-      def initialize(name, desc = nil, priority = 0, blacklist = false,
+      def initialize(id, name, desc = nil, priority = 0, blacklist = false,
                      register = true)
         @commands = []
         @name = name
+        @id = id
         @description = desc || name
         @priority = priority
         @blacklisted = blacklist
@@ -52,6 +59,9 @@ module CTioga2
         if register 
           Interpreter.register_group(self)
         end
+
+        # The context in which the group was defined
+        @context = caller[1].gsub(/.*\/ctioga2\//, 'lib/ctioga2/')
       end
       
     end

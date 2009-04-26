@@ -24,7 +24,7 @@ module CTioga2
 
     # Now, various commands pertaining to legends
 
-    LegendGroup = CmdGroup.new("Legends","Legends", 1)
+    LegendGroup = CmdGroup.new('legends', "Legends","Legends", 1)
     NextLegendCommand = 
       Cmd.new("legend",'-l',"--legend", 
               [ CmdArg.new(:string) ]) do |plotmaker, legend|

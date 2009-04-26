@@ -152,7 +152,8 @@ module CTioga2
         # TODO: finish this !!!
         def create_backend_commands
           group = CmdGroup.
-            new("The '#{@name}' backend: #{@long_name}",
+            new("backend-#{@name}", 
+                "The '#{@name}' backend: #{@long_name}",
                 "The commands in this group drive the "+
                 "behaviour of the #{@long_name} backend.\n" + 
                 @description,

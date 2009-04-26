@@ -76,9 +76,9 @@ module CTioga2
     end
 
     DataStackGroup =  
-      CmdGroup.new("Data stack manipulation",
-                                 "Commands for manipulation of the data stack", 
-                                 100)
+      CmdGroup.new('stack', "Data stack manipulation",
+                   "Commands for manipulation of the data stack", 
+                   100)
     
     LoadDataCommand = 
       Cmd.new("load", '-L', 

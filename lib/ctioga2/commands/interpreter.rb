@@ -38,6 +38,14 @@ module CTioga2
     class UnknownCommand < Exception
     end
 
+    # An exception raised upon invalid names.
+    class InvalidName < Exception
+    end
+
+    # A CommandGroup#id or Command#name should match this regular
+    # expression.
+    NameValidationRE = /^[a-z0-9-]+$/
+
     # The core class interpreting all the commands and executing them.
     # It holds a hash class variable containing all the Command
     # objects defined so far.
@@ -47,22 +55,34 @@ module CTioga2
       @@commands = {}
 
       # All command groups defined so far.
-      @@groups = []
+      @@groups = {}
 
       # Registers a given command. This is called automatically from
       # Command.new, so you should not have to do it yourself.
       def self.register_command(command)
-        if(self.command(command.name))
-          raise DoubleDefinition, "Command #{command} already defined"
+        if self.command(command.name)
+          raise DoubleDefinition, "Command '#{command.name}' already defined"
         else
-          @@commands[command.name] = command
+          if command.name =~ NameValidationRE
+            @@commands[command.name] = command
+          else
+            raise InvalidName, "Name '#{command.name}' is invalid"
+          end
         end
       end
 
       # Registers a given group. This is called automatically from
       # CommandGroup.new, so you should not have to do it yourself.
       def self.register_group(group)
-        @@groups << group
+        if self.group(group.id)
+          raise DoubleDefinition, "Group '#{group.id}' already defined"
+        else
+          if group.id =~ NameValidationRE
+            @@groups[group.id] = group
+          else
+            raise InvalidName, "Name '#{group.id}' is invalid"
+          end
+        end
       end
 
       # Deletes a command whose name is given
@@ -73,6 +93,11 @@ module CTioga2
       # Returns the command given by its name _cmd_, or nil if none was found.
       def self.command(cmd)
         return @@commands[cmd]
+      end
+
+      # Returns the groups given by its _id_, or nil if none was found.
+      def self.group(id)
+        return @@groups[id]
       end
 
       # A Variables object holding the ... variables ! (I'm sure you
@@ -183,7 +208,8 @@ module CTioga2
 
       # A group used during ctioga's early development
       DevelGroup = 
-        CommandGroup.new("Commands used for ctioga development",
+        CommandGroup.new('devel', 
+                         "Commands used for ctioga development",
                          "Commands used for ctioga development",
                          -10, true)
       
@@ -263,13 +289,13 @@ module CTioga2
     end
   end
   
-  # An alias for Cmd
+  # An alias for Commands::Command
   Cmd = Commands::Command
 
-  # An alias for CmdArg
+  # An alias for Commands::CommandArgument
   CmdArg = Commands::CommandArgument
 
-  # An alias for CmdGroupx
+  # An alias for Commands::CommandGroup
   CmdGroup = Commands::CommandGroup
 end
 

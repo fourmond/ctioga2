@@ -77,8 +77,9 @@ module CTioga2
 
         PrimitiveCommands = {}
 
-        PrimitiveGroup = CmdGroup.new("Graphics primitives",
-                                      "Graphics primitives", 3)
+        PrimitiveGroup = CmdGroup.new('tioga-primitives',
+                                      "Graphics primitives",
+                                      "Tioga graphics primitives", 3)
 
         # Creates a new primitive with the given parameters, and makes
         # it immediately available as a command.

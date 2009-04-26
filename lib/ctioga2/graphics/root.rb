@@ -181,7 +181,8 @@ module CTioga2
       # The group containing all commands linked to subplots and other
       # insets, frame margin selections...
       SubplotsGroup =  
-        CmdGroup.new("Subplots and assimilated",
+        CmdGroup.new('subplots',
+                     "Subplots and assimilated",
                      "Subplots and assimilated", 31)
       
       SetFrameMarginsCommand = 

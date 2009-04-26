@@ -160,7 +160,8 @@ module CTioga2
 
       end
 
-      AxisGroup = CmdGroup.new("Axes and labels", "Axes and labels", 40)
+      AxisGroup = CmdGroup.new('axes-labels',
+                               "Axes and labels", "Axes and labels", 40)
       
       AxisTypeCommands = []
       [:left, :right, :top, :bottom].each do |loc|

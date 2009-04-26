@@ -21,7 +21,8 @@ module CTioga2
  
     # General scope commands.
     GeneralGroup = 
-      CmdGroup.new("General commands", "General scope commands", 1000)
+      CmdGroup.new('general', "General commands", 
+                   "General scope commands", 1000)
     
 
     
