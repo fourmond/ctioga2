@@ -30,7 +30,7 @@ module CTioga2
     CommandLineHelpCommand = 
       Cmd.new("command-line-help", 'h', 
               "--help", [ ]) do |plotmaker|
-      plotmaker.interpreter.help.print_commandline_options
+      plotmaker.interpreter.doc.display_command_line_help
       exit 
     end
     

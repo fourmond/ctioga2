@@ -13,10 +13,10 @@
 
 require 'ctioga2/utils'
 require 'ctioga2/commands/commands'
-require 'ctioga2/commands/help'
 require 'ctioga2/commands/variables'
 require 'ctioga2/commands/strings'
 require 'ctioga2/commands/parsers/command-line'
+require 'ctioga2/commands/doc/doc'
 
 module CTioga2
 
@@ -100,6 +100,16 @@ module CTioga2
         return @@groups[id]
       end
 
+      # Returns the commands hash
+      def self.commands
+        return @@commands
+      end
+
+      # Returns the groups hash
+      def self.groups
+        return @@groups
+      end
+
       # A Variables object holding the ... variables ! (I'm sure you
       # guessed it !)
       attr_accessor :variables
@@ -112,8 +122,8 @@ module CTioga2
       # (surprising, isn't it ??)
       attr_reader :command_line_parser
 
-      # The Help object used to display help
-      attr_reader :help
+      # The Documentation::Doc object that can interact with documentation
+      attr_reader :doc
 
       # The Parsers::FileParser object used to... parse files ?
       attr_reader :file_parser
@@ -133,7 +143,7 @@ module CTioga2
           Parsers::CommandLineParser.new(@@commands.values, 
                                          CTioga2::PlotMaker::PlotCommand)
 
-        @help = Help.new(@@commands.values)
+        @doc = Documentation::Doc.new()
         @variables = Variables.new
 
         @file_parser = Parsers::FileParser.new

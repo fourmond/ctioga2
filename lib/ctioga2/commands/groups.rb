@@ -44,7 +44,7 @@ module CTioga2
       # help text will be displayed at all. 
       attr_accessor :blacklisted
 
-      # The context of definition (file, line...)
+      # The context of definition [file, line]
       attr_accessor :context
       
       def initialize(id, name, desc = nil, priority = 0, blacklist = false,
@@ -61,7 +61,8 @@ module CTioga2
         end
 
         # The context in which the group was defined
-        @context = caller[1].gsub(/.*\/ctioga2\//, 'lib/ctioga2/')
+        caller[1].gsub(/.*\/ctioga2\//, 'lib/ctioga2/') =~ /(.*):(\d+)/
+        @context = [$1, $2.to_i]
       end
       
     end
