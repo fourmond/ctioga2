@@ -39,6 +39,8 @@ module CTioga2
         # display.
         #
         # TODO: word splitting.
+        #
+        # TODO: why not try color, too ;-) ???
         def print_commandline_options(cmds, groups)
           for group in groups
             puts unless group == groups[0]

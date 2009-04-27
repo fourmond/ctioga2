@@ -107,8 +107,9 @@ require 'Tioga/FigureMaker'
 require 'ctioga2/commands/interpreter'
 # Various global scope commands:
 require 'ctioga2/commands/general-commands'
-# Documentation generation
-require 'ctioga2/commands/man'
+# Introspection...
+require 'ctioga2/commands/doc/introspection'
+
 
 # Data handling
 require 'ctioga2/data/dataset'
