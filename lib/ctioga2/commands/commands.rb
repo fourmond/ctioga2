@@ -83,13 +83,12 @@ module CTioga2
       # The context of definition [file, line]
       attr_accessor :context
 
-
       # Creates a Command, with all attributes set up. The code can be
       # set using #set_code.
       #
       # Single and double dashes are stripped from the beginning of the
       # short and long options respectively.
-      def initialize(n, short, long, args, opts = {}, 
+      def initialize(n, short, long, args = [], opts = {}, 
                      d_short = nil, d_long = nil, group = nil,
                      register = true, &code)
         @name = n
@@ -103,13 +102,14 @@ module CTioga2
         @code = code
         self.describe(d_short, d_long, group)
 
+        caller[1].gsub(/.*\/ctioga2\//, 'lib/ctioga2/') =~ /(.*):(\d+)/
+        @context = [$1, $2.to_i]
+
         # Registers automatically the command
         if register
           Commands::Interpreter.register_command(self)
         end
 
-        caller[1].gsub(/.*\/ctioga2\//, 'lib/ctioga2/') =~ /(.*):(\d+)/
-        @context = [$1, $2.to_i]
       end
 
       # Sets the code to the block given.

@@ -42,6 +42,10 @@ module CTioga2
     class InvalidName < Exception
     end
 
+    # An exception raised when a CommandType is not known
+    class InvalidType < Exception
+    end
+
     # A CommandGroup#id or Command#name should match this regular
     # expression.
     NameValidationRE = /^[a-z0-9-]+$/
@@ -56,6 +60,11 @@ module CTioga2
 
       # All command groups defined so far.
       @@groups = {}
+
+      # All types defined so fat
+      @@types = {}
+
+
 
       # Registers a given command. This is called automatically from
       # Command.new, so you should not have to do it yourself.
@@ -83,6 +92,26 @@ module CTioga2
             raise InvalidName, "Name '#{group.id}' is invalid"
           end
         end
+      end
+
+      # Registers a given type. This is called automatically from
+      # CommandType.new, so you should not have to do it yourself.
+      def self.register_type(type)
+        if self.type(type.name)
+          raise DoubleDefinition, "Type '#{type.name}' already defined"
+        else
+          if type.name =~ NameValidationRE
+            @@types[type.name] = type
+          else
+            raise InvalidName, "Name '#{type.name}' is invalid"
+          end
+        end
+      end
+
+
+      # Returns the named CommandType
+      def self.type(name)
+        return @@types[name]
       end
 
       # Deletes a command whose name is given
@@ -205,97 +234,6 @@ module CTioga2
         command.run_command(@plotmaker_target, converted_args,
                             converted_options)
       end
-
-      ################################################################
-      # The following functions are part of the internal cuisine of
-      # Interpreter. Don't use them directly unless you know what you
-      # are doing.
-      protected 
-
-      # Nothing very much for now...
-      
-
-
-      # A group used during ctioga's early development
-      DevelGroup = 
-        CommandGroup.new('devel', 
-                         "Commands used for ctioga development",
-                         "Commands used for ctioga development",
-                         -10, true)
-      
-      
-      # A small command used for development
-      PrintCommand = 
-        Command.new("print", '-p', 
-                              "--print", 
-                              [
-                               CommandArgument.new(:integer),
-                               CommandArgument.new(:float),
-                              ],
-                              {
-                                'integer' => CommandArgument.new(:integer),
-                                'string' => CommandArgument.new(:string),
-                              }
-                              ) do |plotmaker, a1, a2, options|
-        i = 1
-        for a  in [a1, a2]
-          puts "Printing: (arg #{i}) #{a.inspect} -- #{a.class}"
-          i = i+1
-        end
-        p options
-      end
-      
-      PrintCommand.describe("Test command", nil, DevelGroup)
-
-      # A test of the string Parser
-      ParseStringCommand = 
-        Command.new("parse", '-P', 
-                              "--parse", 
-                              [
-                               CommandArgument.new(:string),
-                              ]) do |plotmaker, str|
-        puts "String: #{str}"
-        io = StringIO.new(str)
-        str = InterpreterString.parse_until_unquoted(io, '', false)
-        p str
-        puts "Expands to: '#{str.expand_to_string(plotmaker.interpreter)}'"
-      end
-      
-      ParseStringCommand.describe("Parse and expand a string",nil, DevelGroup)
-
-      # Command definition
-      DefineVariableCommand = 
-        Command.new("define-recursive", '-D', 
-                              "--define-recursive", 
-                              [
-                               CommandArgument.new(:string),
-                               CommandArgument.new(:string),
-                              ]) do |plotmaker, name, value|
-        io = StringIO.new(value)
-        str = InterpreterString.parse_until_unquoted(io, '', false)
-        plotmaker.interpreter.variables.
-          define_variable(name, str)
-      end
-      
-      DefineVariableCommand.describe("Define a command",nil, 
-                                     DevelGroup)
-
-      # Command definition
-      DumpCommandsCommand = 
-        Command.new("dump-commands", nil, 
-                    "--dump-commands", 
-                    []) do |plotmaker|
-        for cmd in plotmaker.interpreter.command_names.sort
-          cmd = plotmaker.interpreter.get_command(cmd)
-          puts "Command #{cmd.name}, #{cmd.arguments.size} arguments, group: #{(cmd.group && cmd.group.name) || 'none'}"
-          puts " -> short: #{cmd.short_option} -- long: #{cmd.long_option}"
-
-        end
-      end
-      
-      DumpCommandsCommand.describe("List all known commands",nil, 
-                                   DevelGroup)
-
     end
   end
   
@@ -307,5 +245,8 @@ module CTioga2
 
   # An alias for Commands::CommandGroup
   CmdGroup = Commands::CommandGroup
+
+  # An alias for Commands::CommandType
+  CmdType = Commands::CommandType
 end
 

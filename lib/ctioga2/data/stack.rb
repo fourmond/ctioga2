@@ -81,11 +81,8 @@ module CTioga2
                    100)
     
     LoadDataCommand = 
-      Cmd.new("load", '-L', 
-                            "--load", 
-                            [
-                             CmdArg.new(:string),
-                            ]) do |plotmaker, set|
+      Cmd.new("load", '-L', "--load", 
+              [ CmdArg.new('dataset'), ]) do |plotmaker, set|
       plotmaker.data_stack.get_datasets(set)
     end
     
@@ -95,15 +92,12 @@ Use the current backend to load the given dataset onto the data stack.
 EOH
 
     PrintLastCommand = 
-      Cmd.new("print-last", nil, 
-                            "--print-last", 
-                            [
-                            ]) do |plotmaker|
+      Cmd.new("print-last", nil, "--print-last") do |plotmaker|
       plotmaker.data_stack.print_dataset(-1, STDOUT)
     end
     
     PrintLastCommand.describe("Prints the dataset last pushed on the stack",
-                             <<EOH, DataStackGroup)
+                              <<EOH, DataStackGroup)
 Prints the dataset last pushed on the stack.
 EOH
 

@@ -27,7 +27,7 @@ module CTioga2
     LegendGroup = CmdGroup.new('legends', "Legends","Legends", 1)
     NextLegendCommand = 
       Cmd.new("legend",'-l',"--legend", 
-              [ CmdArg.new(:string) ]) do |plotmaker, legend|
+              [ CmdArg.new('text') ]) do |plotmaker, legend|
       plotmaker.curve_generator.legend_provider.current_legend = legend
     end
 

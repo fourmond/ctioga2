@@ -1,4 +1,4 @@
-# commands.rb: implementation of command-driven approach
+# arguments.rb: arguments to commands
 # copyright (c) 2009 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 # GNU General Public License for more details (in the COPYING file).
 
 require 'ctioga2/utils'
-require 'ctioga2/metabuilder/types'
+require 'ctioga2/commands/type'
 
 module CTioga2
 
@@ -33,16 +33,10 @@ module CTioga2
       # A small description of the argument
       attr_accessor :description
 
-      # _type_ is the type of the argument in a descriptive fashion,
-      # as could be fed to CTioga2::MetaBuilder::Type.get_type, or
-      # directly a MetaBuilder::Type object.
+      # _type_ is a named CommandType
       def initialize(type, name = nil, desc = nil)
-        if type.is_a? MetaBuilder::Type
-          @type = type
-        else
-          @type = CTioga2::MetaBuilder::Type.get_type(type)
-        end
-        @name = name || @type.type_name
+        @type = CommandType.get_type(type)
+        @name = name
         @description = desc
       end
       

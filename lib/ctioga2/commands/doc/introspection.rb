@@ -105,7 +105,7 @@ EOH
 
       EditCommandCmd = 
         Cmd.new('edit-command', nil, '--edit-command',
-                [ CmdArg.new(:string)]) do |plotmaker, cmd|
+                [ CmdArg.new('text')]) do |plotmaker, cmd|
         Introspection.new.edit_command(cmd)
       end
 
@@ -117,7 +117,7 @@ EOH
 
       EditGroupCmd = 
         Cmd.new('edit-group', nil, '--edit-group',
-                [ CmdArg.new(:string)]) do |plotmaker, cmd|
+                [ CmdArg.new('text')]) do |plotmaker, cmd|
         Introspection.new.edit_group(cmd)
       end
 

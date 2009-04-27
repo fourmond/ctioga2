@@ -41,39 +41,63 @@ module CTioga2
     end
 
 
-    # Some various predefined constants that can be used for Types
-    # to simplify my work.
+    ColorType = CmdType.new('color', {
+                              :type => :tioga_color,
+                              :namespace => Tioga::ColorConstants
+                            }, <<EOD)
+A Tioga color.
+EOD
 
-    # A MetaBuilder::Type specification for colors.
-    ColorTypeSpec = {
-      :type => :tioga_color,
-      :namespace => Tioga::ColorConstants
-    }
+    ColorOrFalseType = 
+      CmdType.new('color-or-false', {
+                    :type => :tioga_color,
+                    :namespace => Tioga::ColorConstants,
+                    :shortcuts => {'none' => false }
+                  }, <<EOD)
+A Tioga color, or false to say that nothing should be drawn.
+EOD
 
-    # A MetaBuilder::Type specification for colors or false
-    ColorOrFalseTypeSpec = {
-      :type => :tioga_color,
-      :namespace => Tioga::ColorConstants,
-      :shortcuts => {'none' => false }
-    }
+    LineStyleType = 
+      CmdType.new('line-style', {
+                    :type => :tioga_line_style,
+                    :namespace => LineStyles
+                  }, <<EOD)
+A line style.
+EOD
 
-    # A MetaBuilder::Type specification for line styles
-    LineStyleSpec = {
-      :type => :tioga_line_style,
-      :namespace => LineStyles
-    }
+    MarkerType = 
+      CmdType.new('marker', {
+                    :type => :tioga_marker,
+                    :namespace => Tioga::MarkerConstants,
+                    :shortcuts => {
+                      'None' => 'None',
+                      'no' => 'None',
+                      'none' => 'None',
+                      'off' => 'None', 
+                    },}, <<EOD)
+A Tioga Marker.
+EOD
 
-    # A MetaBuilder::Type specification for markers
-    MarkerSpec = {
-      :type => :tioga_marker,
-      :namespace => Tioga::MarkerConstants,
-      :shortcuts => {
-        'None' => 'None',
-        'no' => 'None',
-        'none' => 'None',
-        'off' => 'None', 
-      },
-    }
+    PointType = 
+      CmdType.new('point', :point, <<EOD)
+A given point on a figure.
+EOD
+
+    JustificationType = 
+      CmdType.new('justification', :tioga_justification, <<EOD)
+Horizontal aligment for text.
+EOD
+
+    AlignmentType = 
+      CmdType.new('alignment', :tioga_align, <<EOD)
+Vertical aligment for text.
+EOD
+
+    PDFFont = 
+      CmdType.new('pdf-font', :integer, <<EOD)
+A number between 1 and 14 that designates one of the 14 standard 
+PDF fonts.
+EOD
 
   end
 end

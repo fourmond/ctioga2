@@ -32,7 +32,7 @@ module CTioga2
                                         "Plot coordinates", 2)
     PlotMarginCommand = 
       Cmd.new("margin",nil,"--margin", 
-              [ CmdArg.new(:float) ]) do |plotmaker, margin|
+              [ CmdArg.new('float') ]) do |plotmaker, margin|
       plotmaker.root_object.current_plot.style.plot_margin = margin
     end
 
@@ -48,7 +48,7 @@ EOH
     [:x, :y].each do |x|
       cmd = 
         Cmd.new("#{x}range",nil,"--#{x}range", 
-                [ CmdArg.new(:partial_float_range) ]) do |plotmaker, range|
+                [ CmdArg.new('partial-float-range') ]) do |plotmaker, range|
         plotmaker.root_object.current_plot.
           user_boundaries.set_from_range(range, x)
       end

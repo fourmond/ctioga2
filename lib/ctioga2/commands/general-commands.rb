@@ -11,6 +11,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (in the COPYING file).
 
+require 'ctioga2/utils'
+require 'ctioga2/commands/general-types'
 require 'ctioga2/commands/parsers/file'
 
 module CTioga2
@@ -52,7 +54,7 @@ EOH
     # Includes a file
     RunCommandFile = 
       Cmd.new("include", '-f', "--file", 
-              [ CmdArg.new(:string), ]) do |plotmaker, file|
+              [ CmdArg.new('file'), ]) do |plotmaker, file|
       plotmaker.interpreter.run_command_file(file)
     end
     
@@ -62,7 +64,7 @@ EOH
 
     # Evaluate a series of commands.
     EvalCommand =  Cmd.new("eval", '-e', "--eval", 
-                           [ CmdArg.new(:string), ]) do |plotmaker, string|
+                           [ CmdArg.new('text'), ]) do |plotmaker, string|
       plotmaker.interpreter.run_commands(string)
     end
     

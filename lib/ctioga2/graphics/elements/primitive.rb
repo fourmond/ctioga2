@@ -121,13 +121,13 @@ module CTioga2
 
         # Now, a list of primitives, along with their code.
 
-        primitive("text", "text", [ :point, :string ],
+        primitive("text", "text", [ 'point', 'text' ],
                   {
-                    'color' => ColorTypeSpec,
-                    'scale' => :float,
-                    'angle' => :float,
-                    'justification' => :tioga_justification,
-                    'alignment' => :tioga_align,
+                    'color' => 'color',
+                    'scale' => 'float',
+                    'angle' => 'float',
+                    'justification' => 'justification',
+                    'alignment' => 'alignment',
                   }
                   ) do |t, point, string, options|
           # TODO: add a way to specify fonts ???
@@ -139,18 +139,18 @@ module CTioga2
 
         # TODO: add rendering mode !!
         MarkerOptions = {
-          'color' => ColorTypeSpec,
-          'stroke_color' => ColorTypeSpec,
-          'fill_color' => ColorTypeSpec,
-          'scale' => :float,
-          'horizontal_scale' => :float,
-          'vertical_scale' => :float,
-          'angle' => :float,
-          'justification' => :tioga_justification,
-          'alignment' => :tioga_align,
+          'color' => 'color',
+          'stroke_color' => 'color',
+          'fill_color' => 'color',
+          'scale' => 'float',
+          'horizontal_scale' => 'float',
+          'vertical_scale' => 'float',
+          'angle' => 'float',
+          'justification' => 'justification',
+          'alignment' => 'alignment',
         }
 
-        primitive("marker", "marker", [ :point, MarkerSpec ],
+        primitive("marker", "marker", [ 'point', 'marker' ],
                   MarkerOptions) do |t, point, marker, options|
           # TODO: add a way to specify fonts ???
           options ||= {}
@@ -159,8 +159,8 @@ module CTioga2
           t.show_marker(options)
         end
 
-        primitive("string-marker", "marker", [ :point, :string ],
-                  {'font' => :integer }.update(MarkerOptions)
+        primitive("string-marker", "marker", [ 'point', 'text' ],
+                  {'font' => 'pdf-font' }.update(MarkerOptions)
                   ) do |t, point, string, options|
           # TODO: add a way to specify fonts ???
           options ||= {}
@@ -169,17 +169,17 @@ module CTioga2
           t.show_marker(options)
         end
 
-        primitive("arrow", "arrow", [ :point, :point ],
+        primitive("arrow", "arrow", [ 'point', 'point' ],
                   {
-                    'color' => ColorTypeSpec,
-                    'head_scale' => :float,
-                    'head_marker' => MarkerSpec,
-                    'head_color' => ColorTypeSpec,
-                    'tail_scale' => :float,
-                    'tail_marker' => MarkerSpec,
-                    'tail_color' => ColorTypeSpec,
-                    'line_width' => :float,
-                    'line_style' => LineStyleSpec,
+                    'color' => 'color',
+                    'head_scale' => 'float',
+                    'head_marker' => 'marker',
+                    'head_color' => 'color',
+                    'tail_scale' => 'float',
+                    'tail_marker' => 'marker',
+                    'tail_color' => 'color',
+                    'line_width' => 'float',
+                    'line_style' => 'line-style',
                   }
                   ) do |t, tail,head, options|
           # TODO: add a way to specify fonts ???
@@ -188,12 +188,12 @@ module CTioga2
           options['tail'] = tail.to_figure_xy(t)
           t.show_arrow(options)
         end
-
-        primitive("line", "line", [ :point, :point ],
+ 
+        primitive("line", "line", [ 'point', 'point' ],
                   {
-                    'color' => ColorTypeSpec,
-                    'line_width' => :float,
-                    'line_style' => LineStyleSpec,
+                    'color' => 'color',
+                    'line_width' => 'float',
+                    'line_style' => 'line-style',
                   }
                   ) do |t, tail,head, options|
           # TODO: add a way to specify fonts ???
@@ -214,11 +214,17 @@ module CTioga2
           args = @arguments + [@options]
           primitive.funcall.call(t, *args)
         end
+        
+        DrawingSpecType = 
+          CmdType.new('drawing-spec', :string, <<EOD)
+A ctioga 1 --draw specification.
+EOD
+
 
 
         # An emulation of the old ctioga behavior
         CmdDraw = Cmd.new('draw', nil, '--draw',
-                          [CmdArg.new(:string)]) do |plotmaker, spec|
+                          [CmdArg.new('drawing-spec')]) do |plotmaker, spec|
           spec =~ /^([^:]+):(.*)/
           name = $1
           args = Shellwords.shellwords($2)
@@ -239,6 +245,7 @@ module CTioga2
             plotmaker.error "Unkown graphics primitive: #{name}"
           end
         end
+
         CmdDraw.describe("Draws graphics primitives",
                          <<EOH, PrimitiveGroup)
 Tries to emulate the old --draw behavior of ctioga. Don't use it for new things.
