@@ -55,7 +55,7 @@ EOH
 
     AutoLegendCommand = 
       Cmd.new("auto-legend",nil,"--auto-legend", 
-              [ CmdArg.new(:boolean) ]) do |plotmaker, value|
+              [ CmdArg.new('boolean') ]) do |plotmaker, value|
       plotmaker.curve_generator.legend_provider.auto_legend = value
     end
 

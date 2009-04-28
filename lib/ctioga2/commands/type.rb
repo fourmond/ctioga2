@@ -79,6 +79,18 @@ module CTioga2
       def boolean?
         return @type.boolean?
       end
+
+      # Does the actual conversion from string to the real type
+      def string_to_type(str)
+        return @type.string_to_type(str)
+      end
+
+      # Returns the long option for the option parser.
+      #
+      # TODO: maybe this should be rethought a bit ?
+      def option_parser_long_option(name, param = nil)
+        return @type.option_parser_long_option(name, param)
+      end      
       
     end
 

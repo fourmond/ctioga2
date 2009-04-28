@@ -82,11 +82,23 @@ module CTioga2
     #   for a constant. If one of the given name is found, its value is
     #   returned.
     # * :shortctus: a hash specifiying strings shortcuts for given values.
+    #   Elements of this hash that are regular expressions are taken
     class Type
 
       # A hash that makes the :type value of the _type_ argument correspond
       # to a Type child
       @@types = { }
+
+      # The initial type specification that was given to the Type
+      attr_accessor :type
+
+      # A hash shortcut -> value. Can be _nil_
+      attr_accessor :shortcuts
+
+      # A hash Regexp -> value. All elements will be looked for
+      # matches for every single string conversion, so don't dump too
+      # many of them here.
+      attr_accessor :re_shortcuts
 
       # A default constructor. It should be safe to use it directly for
       # children, unless something more specific is needed. Any descendent
@@ -97,6 +109,15 @@ module CTioga2
           type = {:type => type}
         end
         @type = type
+        if @type[:shortcuts]
+          @shortcuts = @type[:shortcuts]
+          @re_shortcuts = {}
+          for k,v in @shortcuts
+            if k.is_a? Regexp
+              @re_shortcuts[k] = v
+            end
+          end
+        end
       end
 
       # This class function actually registers the current type
@@ -157,8 +178,15 @@ module CTioga2
       # rather to redefine #string_to_type
       def string_to_type(string)
         # First, shortcuts:
-        if @type.key?(:shortcuts) and @type[:shortcuts].key? string
-          return stt_run_hook(@type[:shortcuts][string])
+        if @shortcuts and @shortcuts.key? string
+          return stt_run_hook(@shortcuts[string])
+        end
+        if @re_shortcuts
+          for k, v in @re_shortcuts
+            if string =~ k
+              return stt_run_hook(v)
+            end
+          end
         end
         # Then, constants lookup.
         if @type.key?(:namespace)

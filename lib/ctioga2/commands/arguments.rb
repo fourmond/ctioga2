@@ -46,7 +46,7 @@ module CTioga2
         if @name
           return @name
         else
-          @type.type_name
+          return @type.name
         end
       end
 

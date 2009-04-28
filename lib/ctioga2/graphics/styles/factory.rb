@@ -89,10 +89,44 @@ module CTioga2
 
         end
 
+        # Switch some parameter back to automatic
+        AutoRE = /auto/i
 
-        # Creates a new parameter for the style factory
+        # Sets some parameter to _false_.
+        DisableRE = /no(ne)?|off/i
+
+
+
+        # Creates a new parameter for the style factory.
         def self.define_parameter(target, name, type, sets, description, 
                                   short_option = nil)
+          # We define two new types:
+          # - first, the color-or-auto type:
+          base_type = Commands::CommandType.get_type(type)
+
+          if ! Commands::Interpreter.type("#{base_type.name}-or-auto")
+            mb_type = base_type.type.dup
+            mb_type.re_shortcuts = (mb_type.re_shortcuts ? 
+                                        mb_type.re_shortcuts.dup : {}) 
+            
+            mb_type.re_shortcuts[AutoRE] = 'auto'
+            mb_type.re_shortcuts[DisableRE] = false
+
+            # Now, register a type for the type or automatic.
+            CmdType.new("#{base_type.name}-or-auto", mb_type,
+                        "Same thing as type #{base_type.name}, or 'auto'")
+
+          end
+
+          if sets and ! Commands::Interpreter.type("#{base_type.name}-set")
+            # Now, register a type for the type or automatic.
+            CmdType.new("#{base_type.name}-set",{
+                          :type => :set,
+                          :subtype => base_type.type,
+                          :shortcuts => sets
+                        } ,
+                        "Sets of #{base_type.name}")
+          end
           param = 
             CurveStyleFactoryParameter.new(name, type, sets, 
                                            description, short_option)
@@ -131,8 +165,7 @@ module CTioga2
                       param.short_option,
                       "--#{param.name}", 
                       [
-                       CmdArg.new('text') # TODO: change that to a real
-                       # type !!
+                       CmdArg.new("#{param.type.name}-or-auto") 
                       ], {},
                       "Sets the #{param.description} for subsequent curves",
                       "Sets the #{param.description} for subsequent curves, until cancelled with 'auto' as argument.", CurveStyleGroup) do |plotmaker, value|
@@ -146,7 +179,7 @@ module CTioga2
                         nil,
                         "--#{param.name}-set", 
                         [
-                         CmdArg.new('text')
+                         CmdArg.new("#{param.type.name}-set")
                         ], {},
                         "Chooses a set for the #{param.description} of subsequent curves",
                         "Chooses a set for the #{param.description} of subsequent curves", 
@@ -215,11 +248,6 @@ module CTioga2
           return CurveStyle.from_hash(base)
         end
 
-        # Switch some parameter back to automatic
-        AutoRE = /auto/i
-
-        # Sets some parameter to _false_.
-        DisableRE = /no(ne)?|off/i
 
 
         # Sets the override for the given parameter. This corresponds

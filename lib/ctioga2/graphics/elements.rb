@@ -60,7 +60,7 @@ EOH
 
       cmd = 
         Cmd.new("#{x}offset",nil,"--#{x}offset", 
-                [ CmdArg.new(:float) ]) do |plotmaker, val|
+                [ CmdArg.new('float') ]) do |plotmaker, val|
         plotmaker.root_object.current_plot.
           style.transforms.send("#{x}_offset=", val)
       end
@@ -72,7 +72,7 @@ EOH
 
       cmd = 
         Cmd.new("#{x}scale",nil,"--#{x}scale", 
-                [ CmdArg.new(:float) ]) do |plotmaker, val|
+                [ CmdArg.new('float') ]) do |plotmaker, val|
         plotmaker.root_object.current_plot.
           style.transforms.send("#{x}_scale=", val)
       end
@@ -84,7 +84,7 @@ EOH
 
       cmd = 
         Cmd.new("#{x}log",nil,"--#{x}log", 
-                [ CmdArg.new(:boolean) ]) do |plotmaker, val|
+                [ CmdArg.new('boolean') ]) do |plotmaker, val|
         plotmaker.root_object.current_plot.
           style.send("set_log_scale", x, val)
       end

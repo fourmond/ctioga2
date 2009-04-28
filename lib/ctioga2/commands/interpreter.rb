@@ -114,6 +114,11 @@ module CTioga2
         return @@types[name]
       end
 
+      # Returns all registered CommandType objects
+      def self.types
+        return @@types
+      end
+
       # Deletes a command whose name is given
       def self.delete_command(cmd)
         @@commands.delete(cmd)

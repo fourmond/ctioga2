@@ -212,7 +212,7 @@ EOH
       LabelStyleArguments = {
         'angle' => CmdArg.new('float'),
         'shift' => CmdArg.new('float'),
-        'scale' => CmdArg.new(:float),
+        'scale' => CmdArg.new('float'),
         'justification' => CmdArg.new('justification'),
         'color' => CmdArg.new('color'),
         'align' => CmdArg.new('alignment'),

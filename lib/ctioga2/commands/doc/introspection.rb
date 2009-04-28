@@ -51,6 +51,17 @@ module CTioga2
           end
         end
 
+        # List known types
+        def list_types
+          puts "Known types:"
+          types = Interpreter::types
+          names = types.keys.sort
+          for n in names
+            f,l = types[n].context
+            puts "\t#{n}\t(#{f}: #{l})"
+          end
+        end
+
         # Lauches an editor to edit the given command:
         def edit_command(cmd)
           cmd = Interpreter::command(cmd)
@@ -64,6 +75,14 @@ module CTioga2
           group = Interpreter::group(group)
           if group
             edit_file(*group.context)
+          end
+        end
+
+        # Lauches an editor to edit the given command:
+        def edit_type(type)
+          type = Interpreter::type(type)
+          if type
+            edit_file(*type.context)
           end
         end
 
@@ -100,7 +119,17 @@ EOH
 
       ListGroupsCmd.describe("List known groups",
                              <<EOH, IntrospectionGroup)
-List all commands known to ctioga2
+List all command groups known to ctioga2
+EOH
+
+      ListTypesCmd = 
+        Cmd.new('list-types', nil, '--list-types',[]) do 
+        Introspection.new.list_types
+      end
+
+      ListTypesCmd.describe("List known types",
+                             <<EOH, IntrospectionGroup)
+List all types known to ctioga2
 EOH
 
       EditCommandCmd = 
@@ -121,9 +150,21 @@ EOH
         Introspection.new.edit_group(cmd)
       end
 
-      EditGroupCmd.describe("Edit the command",
+      EditGroupCmd.describe("Edit the group",
                             <<EOH, IntrospectionGroup)
 Edit the given group in an editor. It will only work from the 
+top directory of a ctioga2 source tree.
+EOH
+
+      EditTypeCmd = 
+        Cmd.new('edit-type', nil, '--edit-type',
+                [ CmdArg.new('text')]) do |plotmaker, cmd|
+        Introspection.new.edit_type(cmd)
+      end
+
+      EditTypeCmd.describe("Edit the type",
+                            <<EOH, IntrospectionGroup)
+Edit the given type in an editor. It will only work from the 
 top directory of a ctioga2 source tree.
 EOH
 
