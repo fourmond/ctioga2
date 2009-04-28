@@ -35,6 +35,10 @@ module CTioga2
         # by Interpreter::commands.
         attr_accessor :groups
 
+        # The hash containing all the types, as returned
+        # by Interpreter::commands.
+        attr_accessor :types
+
         # Wether or not to ignore blacklisted commands
         attr_accessor :ignore_blacklisted
 
@@ -48,6 +52,7 @@ module CTioga2
         def initialize
           @commands = Interpreter::commands
           @groups = Interpreter::groups
+          @types = Interpreter::types
 
           @ignore_blacklisted = ! (ENV.key?("CT2_DEV") && 
                                    ! ENV["CT2_DEV"].empty?)

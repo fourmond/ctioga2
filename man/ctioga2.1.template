@@ -69,6 +69,15 @@ The corresponding command file would be:
 
 .\" write-commands
 
+.SH TYPES
+
+Most of the commands accept one or more arguments, which have
+different types. Here are the meanings of those types.
+
+.\" write-types
+
+
+
 .SH AUTHOR
 
 .B ctioga2

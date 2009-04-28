@@ -74,6 +74,8 @@ module CTioga2
               else
                 warn "Unkown group: #{id}"
               end
+            when /^#{RoffCommentRE}\s*write-types\s*$/
+              write_types(out)
             else
               if passed_header
                 out.puts line
@@ -172,6 +174,20 @@ module CTioga2
           out.puts ".B Corresponding command:\n.I #{cmd.name}(#{arguments})"
         end
 
+        # Writes documentation about all the types known to ctioga.
+        def write_types(out)
+          first = true
+          for n, t in @doc.types.sort
+            write_type(out,t, first ? "8" : "")
+            first = false
+          end
+        end
+        
+        def write_type(out, type, indent = "")
+          out.puts ".TP #{indent}"
+          out.puts ".I #{type.name}"
+          out.puts "#{type.description}"
+        end
 
         # Returns the header string
         def header_string(version, file)
