@@ -11,6 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (in the COPYING file).
 
+require 'ctioga2/graphics/types'
 require 'ctioga2/graphics/legends/items'
 require 'ctioga2/graphics/legends/area'
 require 'ctioga2/graphics/legends/storage'
@@ -39,8 +40,7 @@ EOH
 
     LegendInsideCommand = 
       Cmd.new("legend-inside", nil, "--legend-inside",
-              [ CmdArg.new({:type => :aligned_point, 
-                             :default => :frame})]) do |plotmaker, point|
+              [ CmdArg.new('aligned-point')]) do |plotmaker, point|
       l = Legends::LegendArea.new(:inside)
       l.legend_position = point
       plotmaker.root_object.current_plot.legend_area = l

@@ -142,6 +142,9 @@ module CTioga2
       # Returns a Type child instance suitable for conversion
       # of the given type specification
       def self.get_type(type)
+        if type.is_a? Type
+          return type
+        end
         return get_param_type(type).new(type)
       end
 

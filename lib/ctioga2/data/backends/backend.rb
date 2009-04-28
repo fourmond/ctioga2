@@ -106,25 +106,25 @@ This is the base class for backends. It should never be used directly.
 EOD
 
         # A hook to set a baseline:
-        param_reader :base_line=, :base_line, "baseline", "Base line",
-        {:type => :string, }, "Sets a baseline for subsequent data sets"
+        #         param_reader :base_line=, :base_line, "baseline", "Base line",
+        #         {:type => :string, }, "Sets a baseline for subsequent data sets"
 
 
-        # TODO...
-        def base_line=(str)
-          if str =~ /^no$/ or str.empty?
-            @base_line = ""
-          else
-            @base_line = expand_sets(str)[0]
-            # Fill the cache.
-            ary = query_xy_data(@base_line)
-            @base_line_cache = if ary.is_a?(Array)
-                                 ary[0]
-                               else
-                                 ary
-                               end
-          end
-        end
+#         # TODO...
+#         def base_line=(str)
+#           if str =~ /^no$/ or str.empty?
+#             @base_line = ""
+#           else
+#             @base_line = expand_sets(str)[0]
+#             # Fill the cache.
+#             ary = query_xy_data(@base_line)
+#             @base_line_cache = if ary.is_a?(Array)
+#                                  ary[0]
+#                                else
+#                                  ary
+#                                end
+#           end
+#         end
 
         # Returns true if the backend can provide data for the given set.
         def has_set?(set)

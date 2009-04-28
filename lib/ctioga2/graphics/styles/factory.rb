@@ -35,7 +35,7 @@ module CTioga2
           # The code-like name of the parameter
           attr_accessor :name
 
-          # The MetaBuilder::Type of the parameter
+          # The Commands::CommandType of the parameter
           attr_accessor :type
           
           # The pre-defined sets available to use with that
@@ -58,16 +58,18 @@ module CTioga2
           def initialize(name, type, sets, description, 
                          short_option = nil)
             @name = name
-            @type = MetaBuilder::Type.get_type(type)
+            @type = Commands::CommandType.get_type(type)
             @sets = sets
             @description = description
             @short_option = short_option
 
+            # TODO: it is not very satisfying to mix CommandTypes and
+            # MetaBuilder::Type on the same level.
             if @sets
               @sets_type = 
                 MetaBuilder::Type.get_type({
                                              :type => :set,
-                                             :subtype => type,
+                                             :subtype => @type.type,
                                              :shortcuts => @sets
                                            })
             end
@@ -129,7 +131,8 @@ module CTioga2
                       param.short_option,
                       "--#{param.name}", 
                       [
-                       CmdArg.new(:string)
+                       CmdArg.new('text') # TODO: change that to a real
+                       # type !!
                       ], {},
                       "Sets the #{param.description} for subsequent curves",
                       "Sets the #{param.description} for subsequent curves, until cancelled with 'auto' as argument.", CurveStyleGroup) do |plotmaker, value|
@@ -143,7 +146,7 @@ module CTioga2
                         nil,
                         "--#{param.name}-set", 
                         [
-                         CmdArg.new(:string)
+                         CmdArg.new('text')
                         ], {},
                         "Chooses a set for the #{param.description} of subsequent curves",
                         "Chooses a set for the #{param.description} of subsequent curves", 
@@ -166,7 +169,7 @@ module CTioga2
           end
 
           # Here, we add the support for a /legend= option
-          args['legend'] = CmdArg.new(:string)
+          args['legend'] = CmdArg.new('text')
           @name_to_target['legend'] = 'legend'
 
           return args
@@ -256,22 +259,22 @@ module CTioga2
         end
 
         # Now, the parameters:
-        define_parameter 'line_color', 'color', ColorTypeSpec,
+        define_parameter 'line_color', 'color', 'color',
         Sets::ColorSets, "color", "-c"
 
-        define_parameter 'line_width', 'line-width', :float,
+        define_parameter 'line_width', 'line-width', 'float',
         Sets::LineWidthSets, "line width", nil
 
-        define_parameter 'line_style', 'line-style', LineStyleSpec,
+        define_parameter 'line_style', 'line-style', 'line-style',
         Sets::LineStyleSets, "line style", nil
 
-        define_parameter 'marker_marker', 'marker', MarkerSpec,
+        define_parameter 'marker_marker', 'marker', 'marker',
         Sets::MarkerSets, "marker", '-m'
 
-        define_parameter 'marker_color', 'marker-color', ColorTypeSpec,
+        define_parameter 'marker_color', 'marker-color', 'color',
         Sets::ColorSets, "marker color", nil
 
-        define_parameter 'marker_scale', 'marker-scale', :float,
+        define_parameter 'marker_scale', 'marker-scale', 'float',
         Sets::LineWidthSets, "marker scale", nil
 
 

@@ -99,5 +99,24 @@ A number between 1 and 14 that designates one of the 14 standard
 PDF fonts.
 EOD
 
+    AlignedPointType = 
+      CmdType.new('aligned-point', {:type => :aligned_point, 
+                    :default => :frame}, <<EOD)
+A point together with alignment specifications.
+EOD
+
+    FrameMarginsType = 
+      CmdType.new('frame-margins', :frame_margins, <<EOD)
+Margins around a plot.
+EOD
+
+    # Now, axes stuff:
+
+    AxisDecorationType = 
+      CmdType.new('axis-decoration', :tioga_axis_type, <<EOD)
+Kinds of decoration on a axis line, such as nothing, lines, ticks, 
+tick labels...
+EOD
+
   end
 end

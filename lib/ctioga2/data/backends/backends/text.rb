@@ -59,22 +59,21 @@ by gnuplot and the like.
 EOD
 
         # Inherit the baseline handling, can be useful !
-        inherit_parameters :base_line
+        # inherit_parameters :base_line
         
-        param_accessor :skip, 'skip', "Skip lines", {:type => :integer}, 
+        param_accessor :skip, 'skip', "Skip lines", 'integer', 
         "Number of lines to be skipped at the beginning of the file"
 
         param_accessor :default_column_spec, 'col', 
-        "Default column specification", {:type => :string}, 
+        "Default column specification", 'text', 
         "Which columns to use when the @1:2 syntax is not used"
 
-        param_accessor :split, 'split', "Split into subsets", 
-        {:type => :boolean}, 
+        param_accessor :split, 'split', "Split into subsets", 'boolean', 
         "If true, splits files into subsets on blank/non number lines"
 
 
         param_accessor :separator, 'separator', "Data columns separator", 
-        {:type => :string_or_regexp}, 
+        'regexp', 
         "The columns separator. Defaults to /\s+/"
 
 

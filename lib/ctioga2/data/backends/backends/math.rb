@@ -39,15 +39,15 @@ EOD
         # TODO: make provisions for 3-D datasets. Ideas: x(t):y(t):z(t)
         # for parametric plots ? (possibly x(t):y1(t):y2(t):...:yn(t)) ?
 
-        param_accessor :samples, 'samples', "Samples",
-        {:type => :integer}, "The number of points"
-        param_accessor :x_range, 'xrange',  "X Range", 
-        {:type => :float_range}, "X range (a:b)"
-        param_accessor :t_range, 'trange',  "T Range", 
-        {:type => :float_range}, "T range (a:b) (parametric plot)"
+        param_accessor :samples, 'samples', "Samples", 'integer', 
+        "The number of points"
+        param_accessor :x_range, 'xrange',  "X Range", 'float-range', 
+        "X range (a:b)"
+        param_accessor :t_range, 'trange',  "T Range", 'float-range', 
+        "T range (a:b) (parametric plot)"
 
-        param_accessor :log, 'log',  "Logarithmic scale", 
-        {:type => :boolean}, "Space samples logarithmically"
+        param_accessor :log, 'log',  "Logarithmic scale", 'boolean', 
+        "Space samples logarithmically"
         
         def initialize
           super()

@@ -60,7 +60,7 @@ module CTioga2
         # The (text) description of the parameter
         attr_accessor :description
         
-        # The actual MetaBuilder::Type
+        # The actual Commands::CommandType of the parameter
         attr_accessor :type
 
         # Creates a new Parameter with the given symbols. Remember that
@@ -76,7 +76,7 @@ module CTioga2
           @reader_symbol = reader_symbol
           @description = description
           @long_name = long_name
-          @type = MetaBuilder::Type::get_type(type)
+          @type = Commands::CommandType::get_type(type)
         end
 
 

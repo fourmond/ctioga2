@@ -71,6 +71,14 @@ module CTioga2
 
         Interpreter::register_type(self)
       end
+
+      # Now, a series of redirection from/to the underlying
+      # MetaBuilder::Type object.
+
+      # Whether this is a boolean type or not.
+      def boolean?
+        return @type.boolean?
+      end
       
     end
 

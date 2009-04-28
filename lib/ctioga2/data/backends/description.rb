@@ -147,7 +147,7 @@ module CTioga2
         #   of the Backend.
         #
         # In addition, this function creates a group to store Backend
-        # information.
+        # commands.
         #
         # TODO: finish this !!!
         def create_backend_commands
@@ -174,9 +174,10 @@ module CTioga2
           end
 
           # TODO: add option parsing
-          Cmd.
-            new("#{@name}", nil, "--#{@name}", [], { # TODO!
-                }, "Selects the '#{@name}' backend", nil, group) do |plotmaker|
+          Cmd.new("#{@name}", nil, "--#{@name}", [], 
+                  { # TODO!
+                  }, "Selects the '#{@name}' backend", 
+                  nil, group) do |plotmaker|
             plotmaker.data_stack.backend_factory.set_current_backend(@name)
           end
         end

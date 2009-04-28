@@ -187,9 +187,9 @@ module CTioga2
       
       SetFrameMarginsCommand = 
         Cmd.new("frame-margins",nil,"--frame-margins", 
-                            [
-                             CmdArg.new({:type => :frame_margins}),
-                            ]) do |plotmaker, margins|
+                [
+                 CmdArg.new('frame-margins'),
+                ]) do |plotmaker, margins|
         
         plotmaker.root_object.current_plot.subframe = margins
       end

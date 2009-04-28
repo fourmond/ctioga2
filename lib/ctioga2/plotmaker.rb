@@ -302,7 +302,7 @@ module CTioga2
 
     PlotCommand = 
       Cmd.new("plot",nil,"--plot", 
-              [ CmdArg.new(:string) ], 
+              [ CmdArg.new('dataset') ], 
               Graphics::Styles::CurveStyleFactory::PlotCommandOptions
               ) do |plotmaker, set, options|
       plotmaker.add_curves(set, options)
@@ -320,8 +320,8 @@ EOH
 
     PageSizeCommand = 
       Cmd.new("page-size",'-r',"--page-size", 
-              [ CmdArg.new(:string) ],
-              { 'count-legend' => CmdArg.new(:boolean)}
+              [ CmdArg.new('text') ], # TODO: change that !
+              { 'count-legend' => CmdArg.new('boolean')}
               ) do |plotmaker, size, options|
       plotmaker.root_object.set_page_size(size)
       if options.key? 'count-legend'
@@ -338,7 +338,7 @@ EOH
 
     NameCommand = 
       Cmd.new("name",'-n',"--name", 
-              [ CmdArg.new(:string, 'figure name') ]) do |plotmaker, name|
+              [ CmdArg.new('text', 'figure name') ]) do |plotmaker, name|
       plotmaker.figure_name = name
     end
 
@@ -351,7 +351,7 @@ EOH
 
     OutputNowCommand = 
       Cmd.new("output-now",'-o',"--output", 
-              [ CmdArg.new(:string, 'figure name') ]) do |plotmaker, name|
+              [ CmdArg.new('text', 'figure name') ]) do |plotmaker, name|
       plotmaker.draw_figure(name)
     end
 
@@ -375,7 +375,7 @@ EOH
 
     OutputDirCommand = 
       Cmd.new("output-directory",'-O',"--output-directory", 
-              [ CmdArg.new(:string) ]) do |plotmaker, dir|
+              [ CmdArg.new('text') ]) do |plotmaker, dir|
       plotmaker.output_directory = dir
     end
 
@@ -388,7 +388,7 @@ EOH
 
     ViewerCommand = 
       Cmd.new("viewer",nil,"--viewer", 
-              [ CmdArg.new(:string) ]) do |plotmaker, viewer|
+              [ CmdArg.new('text') ]) do |plotmaker, viewer|
       plotmaker.viewer_command = viewer
     end
 

@@ -44,9 +44,24 @@ EOD
 A floating-point number.
 EOD
 
+    IntegerType = CmdType.new('integer', :integer, <<EOD)
+An integer.
+EOD
+
     PartialFloatRangeType = CmdType.new('partial-float-range', 
                                         :partial_float_range, <<EOD)
 A beginning:end range, where either of the endpoints can be ommitted.
+EOD
+
+    FloatRangeType = CmdType.new('float-range', 
+                                 :float_range, <<EOD)
+A beginning:end range.
+EOD
+
+    StringOrRegexp = CmdType.new('regexp', 
+                                 :string_or_regexp, <<EOD)
+A plain string or a regular expression (the latter being enclosed 
+within /.../).
 EOD
     
   end

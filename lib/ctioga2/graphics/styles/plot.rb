@@ -168,7 +168,7 @@ module CTioga2
         AxisTypeCommands << 
           Cmd.new("#{loc}",nil,"--#{loc}", 
                   [
-                   CmdArg.new(:tioga_axis_type),
+                   CmdArg.new('axis-decoration'),
                   ]) do |plotmaker, type|
           AxisStyle.axes_object(plotmaker)[loc].type = type
           # TODO: implement options !
@@ -183,11 +183,11 @@ EOH
       BackgroundLinesCommands = 
         Cmd.new('background-lines', nil, '--background-lines',
                 [
-                 CmdArg.new(:string),
-                 CmdArg.new(ColorOrFalseTypeSpec)
+                 CmdArg.new('text'), # TODO: change that
+                 CmdArg.new('color-or-false')
                 ],{
-                  'style' => CmdArg.new(LineStyleSpec),
-                  'width' => CmdArg.new(:float)
+                  'style' => CmdArg.new('line-style'),
+                  'width' => CmdArg.new('float')
                 }) do |plotmaker, which, color, options|
         ax = AxisStyle.axes_object(plotmaker)[which.to_sym]
         if color
@@ -210,17 +210,17 @@ EOH
 
       # A constant to be used for style of the labels:
       LabelStyleArguments = {
-        'angle' => CmdArg.new(:float),
-        'shift' => CmdArg.new(:float),
+        'angle' => CmdArg.new('float'),
+        'shift' => CmdArg.new('float'),
         'scale' => CmdArg.new(:float),
-        'justification' => CmdArg.new(:tioga_justification),
-        'color' => CmdArg.new(ColorTypeSpec),
-        'align' => CmdArg.new(:tioga_align),
+        'justification' => CmdArg.new('justification'),
+        'color' => CmdArg.new('color'),
+        'align' => CmdArg.new('alignment'),
       }
 
 
       XAxisLabelCommand = 
-        Cmd.new('xlabel', '-x', '--xlabel', [ CmdArg.new(:string) ],
+        Cmd.new('xlabel', '-x', '--xlabel', [ CmdArg.new('text') ],
                 LabelStyleArguments) do |plotmaker, label, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style('xaxis', options, label)
@@ -232,7 +232,7 @@ Sets the X label of the current plot.
 EOH
 
       YAxisLabelCommand = 
-        Cmd.new('ylabel', '-y', '--ylabel', [ CmdArg.new(:string) ],
+        Cmd.new('ylabel', '-y', '--ylabel', [ CmdArg.new('text') ],
                 LabelStyleArguments) do |plotmaker, label, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style('yaxis', options, label)
@@ -244,7 +244,7 @@ Sets the Y label of the current plot.
 EOH
 
       TitleLabelCommand = 
-        Cmd.new('title', '-t', '--title', [ CmdArg.new(:string) ],
+        Cmd.new('title', '-t', '--title', [ CmdArg.new('text') ],
                 LabelStyleArguments) do |plotmaker, label, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style('title', options, label)
@@ -257,7 +257,7 @@ EOH
 
       LabelStyleCommand = 
         Cmd.new('label-style', nil, '--label-style',
-                [ CmdArg.new(:string) ], 
+                [ CmdArg.new('text') ], 
                 LabelStyleArguments) do |plotmaker, which, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style(which, options)
