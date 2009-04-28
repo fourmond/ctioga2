@@ -109,6 +109,7 @@ require 'ctioga2/commands/interpreter'
 require 'ctioga2/commands/general-commands'
 # Introspection...
 require 'ctioga2/commands/doc/introspection'
+require 'ctioga2/commands/doc/documentation-commands'
 
 
 # Data handling

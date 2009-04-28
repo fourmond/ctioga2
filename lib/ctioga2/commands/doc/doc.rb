@@ -14,7 +14,6 @@
 require 'ctioga2/utils'
 require 'ctioga2/commands/commands'
 require 'ctioga2/commands/doc/help'
-# require 'ctioga2/commands/doc/man'
 
 module CTioga2
 
@@ -103,8 +102,6 @@ module CTioga2
 
       end
     end
-
   end
-
 end
 
