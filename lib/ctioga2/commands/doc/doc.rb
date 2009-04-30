@@ -13,7 +13,7 @@
 
 require 'ctioga2/utils'
 require 'ctioga2/commands/commands'
-require 'ctioga2/commands/doc/help'
+require 'ctioga2/commands/doc/markup'
 
 module CTioga2
 
@@ -25,6 +25,12 @@ module CTioga2
     module Documentation
 
       # The base class for all documentation.
+      #
+      # TODO: create a class that would parse a description from a
+      # group/command/type and understand some 'markup': lists, links
+      # to other commands/groups/types, and maybe bold or things of
+      # this kind. Then the various outputs should have a means to
+      # parse this.
       class Doc
         
         # The hash containing all the commands, as returned
