@@ -22,7 +22,7 @@ module CTioga2
   # TODO: now, port the backend infrastructure...
 
   # This module holds all the code that deals with manipulation and
-  # aquisition of data of any sort.
+  # acquisition of data of any sort.
   module Data
 
     # This is the central class of the data manipulation in ctioga.
