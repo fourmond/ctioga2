@@ -88,6 +88,50 @@ module CTioga2
 
         protected
 
+        ItemizeLabel = '\fB*\fR'
+        ItemizeLabelSize = 2 
+        ItemizeIndent = 2
+        ManIndent = 8
+
+        # Takes up an array of MarkupItem objects and returns its
+        # equivalent in roff format.
+        #
+        # TODO: make sure things are escaped the way they should be.
+        #
+        # if _inside_cmds_ is true, additional indentation is added
+        # for the lists, so that is looks neat in the end.
+        #
+        # TODO: try to be more clever about spaces.
+        def markup_to_man(items, inside_cmds = true)
+          str = ""
+          for it in items
+            case it
+            when MarkedUpText::MarkupText
+              str << it.to_s
+            when MarkedUpText::MarkupLink
+              str << "\\fI#{it.to_s}\\fR"
+            when MarkedUpText::MarkupItemize
+              indent = ItemizeIndent
+              if inside_cmds
+                indent += ManIndent
+              end
+              str << "\n.RS #{indent}"
+              str << "\n.IP \"#{ItemizeLabel}\" #{ItemizeLabelSize}\n"
+              str << it.items.map {
+                |x| markup_to_man(x)
+              }.join("\n.IP \"#{ItemizeLabel}\" #{ItemizeLabelSize}\n")
+              str << "\n.RE\n\n"
+              # We restore the indentation afterwards.
+              if inside_cmds
+                str << ".IP \"\" #{ManIndent}\n"
+              end
+            when MarkedUpText::MarkupParagraph
+              str << "\n\n"
+            end
+          end
+          return str
+        end
+
         # Writes out all commands to _out_.
         def write_commands(out)
           for group in @groups
@@ -111,19 +155,12 @@ module CTioga2
 
         # Writes the remaining commands of a group
         def write_group_commands(out, group)
-          first = true
           for cmd in @cmds[group].sort {|a,b|
               a.long_option <=> b.long_option
             }
             next if @cmd_exclude[cmd]
             out.puts
-            if first
-              out.puts ".TP 8"    # This isn't correct in the case when
-              # commands have already been written out.
-              first = false
-            else
-              out.puts ".TP"
-            end
+            out.puts ".TP #{ManIndent}"
             write_command(out, cmd)
           end
           # Now blacklist the group
@@ -153,7 +190,8 @@ module CTioga2
 
         # Returns the description for the command
         def write_command_description(out, cmd)
-          out.puts cmd.long_description.gsub(/\s+$/,'')
+          mup = MarkedUpText.new(@doc, cmd.long_description)
+          out.puts markup_to_man(mup.elements)
         end
 
         # Displays the optional arguments for the given command

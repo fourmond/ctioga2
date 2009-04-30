@@ -43,6 +43,9 @@ module CTioga2
         end
 
         # A markup item representing plain text.
+        #
+        # TODO: in to_s a simple word-wrapping algorithm could be
+        # used.
         class MarkupText < MarkupItem
           # The text
           attr_accessor :text
@@ -152,6 +155,11 @@ module CTioga2
         # * a blank line marks a paragraph break.
         def self.parse_string_to_array(target, doc, string)
           # First, we split the string into paragraphs:
+          # 
+          # TODO: if I ever want to include a "verbatim" environment,
+          # which could be good for examples, the best way to place it
+          # would probably be here, although after itemize parsing
+          # might still be a good option.
           paragraphs = string.split(/^\s*\n/)
           first = true
           for par in paragraphs
@@ -162,12 +170,15 @@ module CTioga2
               first = false
             end
             
-            subelements = par.split(/^\s+\*/)
+            subelements = par.split(/^\s\*\s*/)
             els = []
             for el in subelements
               # Now, we have paragraphs, in which we only need to go
               # looking for markup elements.
               sub_els = []
+              # TODO: here, to insert new kinds of markup (italics,
+              # bold), the only thing to do is to extend the regular
+              # expression using |.
               while el =~ /\{(group|type|command):\s*([^}]+?)\s*\}/
                 sub_els << MarkupText.new(doc, $`)
                 sub_els << MarkupLink.new(doc, $2, $1) 

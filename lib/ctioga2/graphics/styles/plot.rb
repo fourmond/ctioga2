@@ -266,10 +266,10 @@ EOH
       LabelStyleCommand.describe("Sets the style of the given label", 
                                  <<"EOH", AxisGroup)
 Sets the style of the given label. The label can be:
-  * left, right, top or bottom for the tick labels
-  * xaxis or yaxis for the corresponding axis labels
-  * left_ticks or left_label for ticks or label of the left side (and so on)
-  * title for the plot's title
+ * left, right, top or bottom for the tick labels
+ * xaxis or yaxis for the corresponding axis labels
+ * left_ticks or left_label for ticks or label of the left side (and so on)
+ * title for the plot's title
 EOH
 
     end
