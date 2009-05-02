@@ -94,15 +94,21 @@ module CTioga2
         ManIndent = 8
 
         # Takes up an array of MarkupItem objects and returns its
-        # equivalent in roff format.
+        # equivalent in roff format. Alternativelely, it can take a
+        # String and feed it to MarkedUpText.
         #
         # TODO: make sure things are escaped the way they should be.
         #
         # if _inside_cmds_ is true, additional indentation is added
         # for the lists, so that is looks neat in the end.
         #
-        # TODO: try to be more clever about spaces.
+        # TODO: try to be more clever about spaces in the target
+        # file. (does not matter too much for the output of man)
         def markup_to_man(items, inside_cmds = true)
+          if items.is_a? String 
+            mup = MarkedUpText.new(@doc, items)
+            return markup_to_man(mup.elements, inside_cmds)
+          end
           str = ""
           for it in items
             case it
@@ -127,6 +133,8 @@ module CTioga2
               end
             when MarkedUpText::MarkupParagraph
               str << "\n\n"
+            else
+              raise "Markup #{it.class} isn't implemented yet for man"
             end
           end
           return str
@@ -143,13 +151,21 @@ module CTioga2
         # Writes out a single _group_ 
         def write_group(out, group)
           write_group_name(out, group)
+          write_group_description(out, group)
           write_group_commands(out, group)
         end
 
-        # Writes out a single _group_ 
+        # Writes the name of a _group_ 
         def write_group_name(out, group)
           out.puts 
           out.puts ".SS #{group.name}"
+          out.puts 
+        end
+
+        # Writes the description of a _group_.
+        def write_group_description(out, group)
+          out.puts 
+          out.puts markup_to_man(group.description, false)
           out.puts 
         end
 

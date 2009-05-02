@@ -15,6 +15,7 @@ require 'ctioga2/utils'
 require 'ctioga2/commands/commands'
 require 'ctioga2/commands/doc/help'
 require 'ctioga2/commands/doc/man'
+require 'ctioga2/commands/doc/html'
 
 module CTioga2
 
@@ -47,6 +48,31 @@ module CTioga2
       WriteManualPage.describe("Writes a manual page based on a template",
                                <<EOH, DocumentationGenerationGroup)
 Writes a manual page based on a template
+EOH
+
+
+      WriteHTMLCommands = 
+        Cmd.new("write-html-commands", nil, "--write-html-commands", 
+                []) do |plotmaker|
+        html = HTML.new(plotmaker.interpreter.doc)
+        html.write_commands()
+      end
+      
+      WriteHTMLCommands.describe("HTML documentation for group and commands",
+                                 <<EOH, DocumentationGenerationGroup)
+Prints the HTML documentation for group and commands to standard output.
+EOH
+
+      WriteHTMLTypes = 
+        Cmd.new("write-html-types", nil, "--write-html-types", 
+                []) do |plotmaker|
+        html = HTML.new(plotmaker.interpreter.doc)
+        html.write_types()
+      end
+      
+      WriteHTMLTypes.describe("HTML documentation for types",
+                              <<EOH, DocumentationGenerationGroup)
+Prints the HTML documentation for all types.
 EOH
     end
   end

@@ -168,6 +168,18 @@ Edit the given type in an editor. It will only work from the
 top directory of a ctioga2 source tree.
 EOH
 
+      VersionRawCmd = 
+        Cmd.new('version-raw', nil, '--version-raw',
+                [ ]) do |plotmaker|
+        print Version::version
+      end
+
+      VersionRawCmd.describe("Raw version",
+                             <<EOH, IntrospectionGroup)
+Prints the raw version number, without any other decoration and 
+newline.
+EOH
+
       
 
     end
