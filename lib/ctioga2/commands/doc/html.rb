@@ -109,7 +109,7 @@ module CTioga2
           str << "#{markup_to_html(cmd.long_description)}\n"
           # Now, various informations
           # Command file synopsis
-          str << "<h5>Synopsis (file)</h5>\n"
+          str << "</p><p class='synopsis'>\n<span class='bold'>Synopsis (file)</span>\n"
 
           str << "<pre class='examples'>"
           str << "<span class='cmd'>#{cmd.name}("
@@ -123,7 +123,7 @@ module CTioga2
           str << "</pre>\n"
 
           # Command-line file synopsis
-          str << "<h5>Synopsis (command-line)</h5>\n"
+          str << "<span class='bold'>Synopsis  (command-line)</span>\n"
           args = cmd.arguments.map { |arg|
             "<a class='argument' href='#{@types_url}#type-#{arg.type.name}'>#{arg.displayed_name.upcase}</a>"
           }.join(' ')
