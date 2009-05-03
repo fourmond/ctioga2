@@ -281,7 +281,7 @@ module CTioga2
       begin
         sets = @data_stack.get_datasets(dataset_spec)
       rescue Exception => exception
-        error "A problem occurred while processing dataset #{sets}. Ignoring it."
+        error "A problem occurred while processing dataset '#{dataset_spec}' using backend #{@data_stack.backend_factory.current.description.name}. Ignoring it."
         return
       end
       for set in sets

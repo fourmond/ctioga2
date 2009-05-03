@@ -164,7 +164,6 @@ module CTioga2
           if legend_margins
             t.context do 
               t.set_subframe(legend_margins)
-
               @legend_area.display_legend(t, top_level_container)
             end
           end
@@ -175,7 +174,8 @@ module CTioga2
 
       # Whether we are drawing a top-level legend
       def draw_top_level_legend?
-        return ! top_level_container.legend_area
+        return (! top_level_container.legend_area) && 
+          ( top_level_container.legend_storage.harvest_contents.size > 0)
       end
           
       # The group containing all commands linked to subplots and other
