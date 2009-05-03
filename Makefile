@@ -12,7 +12,7 @@ doc:
 
 
 man:
-	version=`rch --print-version`; cd man; ctioga2 --write-man "$$version" ctioga2.1.template > ctioga2.1
+	version=`rch --print-version || echo Unkown`; cd man; ctioga2 --write-man "$$version" ctioga2.1.template > ctioga2.1
 
 config-home:
 	$(RUBY) setup.rb config --prefix=$(HOME) --siteruby=$(HOME)/lib/ruby --siterubyver=$(HOME)/lib/ruby
