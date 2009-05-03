@@ -14,8 +14,14 @@ doc:
 man:
 	version=`rch --print-version`; cd man; ctioga2 --write-man "$$version" ctioga2.1.template > ctioga2.1
 
+config-home:
+	$(RUBY) setup.rb config --prefix=$(HOME) --siteruby=$(HOME)/lib/ruby --siterubyver=$(HOME)/lib/ruby
+
+config:
+	$(RUBY) setup.rb config
 
 install:
+	@ [ -r .config ] || (echo "Run make config or make config-home before running make install" ; false)
 	$(RUBY) setup.rb install
 
 # I'm annoyed at having to set the svn:keywords properties on
@@ -29,4 +35,4 @@ clean:
 	find -name '*~' -print0 | xargs -0  rm
 
 
-.PHONY: doc man
+.PHONY: doc man install
