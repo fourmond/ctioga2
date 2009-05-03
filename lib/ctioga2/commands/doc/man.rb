@@ -212,7 +212,7 @@ module CTioga2
 
         # Displays the optional arguments for the given command
         def write_command_options(out, cmd)
-          if cmd.optional_arguments and cmd.optional_arguments.size > 0
+          if cmd.has_options?
             # .map {|x| "/#{x}="} ??? Does not seem to help much
             options = cmd.optional_arguments.keys.sort.join(' ')
             out.puts ".B Optional arguments:\n.I #{options}"
@@ -222,7 +222,7 @@ module CTioga2
         # Displays the corresponding 'file' command
         def write_corresponding_command(out, cmd)
           arguments = cmd.arguments.map {|a| a.displayed_name}.join(',')
-          if cmd.optional_arguments and cmd.optional_arguments.size > 0
+          if cmd.has_options?
             arguments += ",option=..." 
           end
           out.puts ".B Corresponding command:\n.I #{cmd.name}(#{arguments})"

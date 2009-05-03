@@ -64,7 +64,7 @@ module CTioga2
                    strings[2]
                  end
                 ]
-              if cmd.optional_arguments and cmd.optional_arguments.size > 0
+              if cmd.has_options?
                 puts "#{total_leading_spaces}  options: %s" %
                   cmd.optional_arguments.keys.sort.map {|x| "/#{x}"}.join(' ')
               end

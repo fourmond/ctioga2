@@ -116,7 +116,7 @@ module CTioga2
           str << cmd.arguments.map { |arg|
             "<a class='argument' href='#{@types_url}#type-#{arg.type.name}'>#{arg.displayed_name}</a>"
           }.join(',')
-          if cmd.optional_arguments.size > 0
+          if cmd.has_options?
             str << ",option=..."
           end
           str << ")</span>\n"
@@ -127,7 +127,7 @@ module CTioga2
           args = cmd.arguments.map { |arg|
             "<a class='argument' href='#{@types_url}#type-#{arg.type.name}'>#{arg.displayed_name.upcase}</a>"
           }.join(' ')
-          if cmd.optional_arguments.size > 0
+          if cmd.has_options?
             args << " /option=..."
           end
           str << "<pre class='examples'>"
@@ -141,7 +141,7 @@ module CTioga2
           str << "</span>\n"
           str << "</pre>"
           
-          if (cmd.optional_arguments.size > 0)
+          if cmd.has_options?
             str << "<span class='bold'>Available options</span>:\n"
             opts = cmd.optional_arguments.sort.map do |k,arg|
               "<a href='#{@types_url}#type-#{arg.type.name}'><code>#{k}</code></a>\n"
