@@ -78,6 +78,20 @@ module CTioga2
           return obj
         end
 
+        # We define instance_variable_defined? if Ruby does not have
+        # it... Old Ruby 1.8 versions don't - that is the case for
+        # those on MacOS.
+        if not self.respond_to?(:instance_variable_defined?)
+          def instance_variable_defined?(iv)
+            a = instance_variables.index(iv)
+            if a && a >= 0 
+              return true
+            else
+              return false
+            end
+          end
+        end
+
         # Converts to a hash. Does the reverse of #set_from_hash.
         def to_hash(name = "%s")
           retval = {}
