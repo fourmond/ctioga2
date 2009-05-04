@@ -27,7 +27,7 @@ module CTioga2
     # This is the central class for acquisition and handling of
     # Dataset objects, retrieved from from a Backends::BackendFactory.
     #
-    # Provide real stack manipulation functions such as:
+    # TODO: provide real stack manipulation functions such as
     # 
     # * interpolation: pops the last object from the stack and add its
     #   interpolated values on the element before.
@@ -46,7 +46,7 @@ module CTioga2
         @stack = Array.new
 
         # Defaults to the 'text' backend
-        @backend_factory = Data::Backends::BackendFactory.new('math')
+        @backend_factory = Data::Backends::BackendFactory.new('text')
       end
 
       # Performs expansion on the given _set_ with the current
