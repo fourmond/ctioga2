@@ -208,20 +208,10 @@ EOH
 Sets the color of the background lines for the given axis.
 EOH
 
-      # A constant to be used for style of the labels:
-      LabelStyleArguments = {
-        'angle' => CmdArg.new('float'),
-        'shift' => CmdArg.new('float'),
-        'scale' => CmdArg.new('float'),
-        'justification' => CmdArg.new('justification'),
-        'color' => CmdArg.new('color'),
-        'align' => CmdArg.new('alignment'),
-      }
-
 
       XAxisLabelCommand = 
         Cmd.new('xlabel', '-x', '--xlabel', [ CmdArg.new('text') ],
-                LabelStyleArguments) do |plotmaker, label, options|
+                FullTextStyleOptions) do |plotmaker, label, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style('xaxis', options, label)
       end
@@ -233,7 +223,7 @@ EOH
 
       YAxisLabelCommand = 
         Cmd.new('ylabel', '-y', '--ylabel', [ CmdArg.new('text') ],
-                LabelStyleArguments) do |plotmaker, label, options|
+                FullTextStyleOptions) do |plotmaker, label, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style('yaxis', options, label)
       end
@@ -245,7 +235,7 @@ EOH
 
       TitleLabelCommand = 
         Cmd.new('title', '-t', '--title', [ CmdArg.new('text') ],
-                LabelStyleArguments) do |plotmaker, label, options|
+                FullTextStyleOptions) do |plotmaker, label, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style('title', options, label)
       end
@@ -258,7 +248,7 @@ EOH
       LabelStyleCommand = 
         Cmd.new('label-style', nil, '--label-style',
                 [ CmdArg.new('text') ], 
-                LabelStyleArguments) do |plotmaker, which, options|
+                FullTextStyleOptions) do |plotmaker, which, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style(which, options)
       end

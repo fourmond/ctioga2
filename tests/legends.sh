@@ -12,3 +12,8 @@ $ct -t 'Basic legends' -r 10cmx10cm \
 $ct -t 'Counting the legends inside the page size' \
     -r 10cmx10cm /count-legend=true \
     -l '$\sin x$' 'sin(x)' 'cos(x)' /legend='$\cos x$'
+
+$ct -t 'Legend lines' -r 10cmx10cm \
+    -l '$\sin x$' 'sin(x)' --legend-line 'A line by itself' \
+    'cos(x)' /legend='$\cos x$'
+

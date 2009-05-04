@@ -60,7 +60,7 @@ module CTioga2
         # Draw the _text_ at the given location with the given style.
         # If _y_ is _nil_, then _x_or_loc_ is taken to be a location
         # (see FigureMaker#show_text).
-        def draw_text(t, text, x_or_loc, y = nil)
+        def draw_text(t, text, x_or_loc, y = nil, measure = nil)
           dict = self.to_hash
           dict['text'] = text
           if y
@@ -72,9 +72,14 @@ module CTioga2
             end
             dict['loc'] = x_or_loc
           end
+          if measure
+            dict['measure'] = measure
+          end
           t.show_text(dict)
         end
       end
+
+
 
       # The style of a full text object.
       class FullTextStyle < BaseTextStyle
@@ -85,6 +90,17 @@ module CTioga2
         # seldom need that.
         attr_accessor :position
       end
+
+      # A hash that can be used as a base for optional arguments to
+      # things that take texts.
+      FullTextStyleOptions = {
+        'angle' => CmdArg.new('float'),
+        'shift' => CmdArg.new('float'),
+        'scale' => CmdArg.new('float'),
+        'justification' => CmdArg.new('justification'),
+        'color' => CmdArg.new('color'),
+        'align' => CmdArg.new('alignment'),
+      }
 
       # A label.
       class TextLabel < FullTextStyle
@@ -100,9 +116,9 @@ module CTioga2
         end
         
         # Draw the label, if #text is not _nil_ or _false_.
-        def draw(t)
+        def draw(t, measure = nil)
           if @text
-            self.draw_text(t, @text, @loc)
+            self.draw_text(t, @text, @loc, nil, measure)
           end
         end
 

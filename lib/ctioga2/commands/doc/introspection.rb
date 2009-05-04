@@ -27,38 +27,50 @@ module CTioga2
       class Introspection
         
         # Display all known commands, along with their definition place
-        def list_commands
-          puts "Known commands:"
+        def list_commands(raw = false)
+          puts "Known commands:" unless raw
           cmds = Interpreter::commands
           names = cmds.keys.sort
-          max = names.inject(0) {|m,x| [m,x.size].max}
-          max2 = names.inject(0) {|m,x| [m,cmds[x].long_option.size].max}
-          for n in names
-            f,l = cmds[n].context
-            puts "\t%-#{max}s\t--%-#{max2}s\t(#{f}: #{l})" % 
-              [n, cmds[n].long_option ]
+          if raw
+            puts names
+          else
+            max = names.inject(0) {|m,x| [m,x.size].max}
+            max2 = names.inject(0) {|m,x| [m,cmds[x].long_option.size].max}
+            for n in names
+              f,l = cmds[n].context
+              puts "\t%-#{max}s\t--%-#{max2}s\t(#{f}: #{l})" % 
+                [n, cmds[n].long_option ]
+            end
           end
         end
 
         # List known groups
-        def list_groups
-          puts "Known groups:"
+        def list_groups(raw = false)
+          puts "Known groups:" unless raw
           groups = Interpreter::groups
           names = groups.keys.sort
-          for n in names
-            f,l = groups[n].context
-            puts "\t#{n}\t(#{f}: #{l})"
+          if raw
+            puts names
+          else
+            for n in names
+              f,l = groups[n].context
+              puts "\t#{n}\t(#{f}: #{l})"
+            end
           end
         end
 
         # List known types
-        def list_types
-          puts "Known types:"
+        def list_types(raw = false)
+          puts "Known types:" unless raw
           types = Interpreter::types
           names = types.keys.sort
-          for n in names
-            f,l = types[n].context
-            puts "\t#{n}\t(#{f}: #{l})"
+          if raw
+            puts names
+          else
+            for n in names
+              f,l = types[n].context
+              puts "\t#{n}\t(#{f}: #{l})"
+            end
           end
         end
 
@@ -89,9 +101,12 @@ module CTioga2
 
         protected 
 
-        # Launches an editor to edit the given file at the given place
+        # Launches an editor to edit the given file at the given place.
         def edit_file(file, line)
           editor = ENV['EDITOR'] || 'emacs'
+          if ENV['CT2_DEV_HOME']
+            file = "#{ENV['CT2_DEV_HOME']}/#{file}"
+          end
           system("#{editor} +#{line} #{file} &")
         end
 
@@ -101,10 +116,13 @@ module CTioga2
         CmdGroup.new('introspection', "Introspection",
                      "Displays information about the internals of ctioga2",
                      100, true)
-      
+
+      RawOption = {'raw' => CmdArg.new('boolean')}
+
       ListCommandsCmd = 
-        Cmd.new('list-commands', nil, '--list-commands',[]) do 
-        Introspection.new.list_commands
+        Cmd.new('list-commands', nil, '--list-commands',
+                [], RawOption) do |p, opts|
+        Introspection.new.list_commands(opts['raw'])
       end
 
       ListCommandsCmd.describe("List known commands",
@@ -113,8 +131,9 @@ List all commands known to ctioga2
 EOH
 
       ListGroupsCmd = 
-        Cmd.new('list-groups', nil, '--list-groups',[]) do 
-        Introspection.new.list_groups
+        Cmd.new('list-groups', nil, '--list-groups',
+                [], RawOption) do |p, opts|
+        Introspection.new.list_groups(opts['raw'])
       end
 
       ListGroupsCmd.describe("List known groups",
@@ -123,8 +142,9 @@ List all command groups known to ctioga2
 EOH
 
       ListTypesCmd = 
-        Cmd.new('list-types', nil, '--list-types',[]) do 
-        Introspection.new.list_types
+        Cmd.new('list-types', nil, '--list-types',
+                [], RawOption) do |p, opts|
+        Introspection.new.list_types(opts['raw'])
       end
 
       ListTypesCmd.describe("List known types",

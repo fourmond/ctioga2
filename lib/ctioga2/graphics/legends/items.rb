@@ -14,6 +14,8 @@
 require 'ctioga2/utils'
 require 'ctioga2/log'
 
+require 'ctioga2/graphics/styles'
+
 module CTioga2
 
   Version::register_svn_info('$Revision$', '$Date$')
@@ -24,9 +26,6 @@ module CTioga2
 
       # All items that can be displayed in a legend derive from this
       # one.
-      #
-      # TODO: adapt to newer ctioga. In particular, style references
-      # should be sorted out.
       class LegendItem
 
         # This class-wide variable is used to number text
@@ -75,41 +74,41 @@ module CTioga2
 
       # A class representing the style of a single legend line
       # (unrelated to a curve)
-      #
-      # TODO: adapt
       class LegendLine < LegendItem
 
         # The text of the line
         attr_accessor :text
+
+        # The style of the text, a Styles.FullTextStyle object.
+        attr_accessor :style
         
-        def initialize(text = "")
+        def initialize(text = "", style = {})
           super()
           @text = text
+          @style = Styles::FullTextStyle.from_hash(style)
+          @style.justification ||= Tioga::FigureConstants::LEFT_JUSTIFIED
+
         end
 
         # Draw one single text line.
-        #
-        # TODO: add style information.
         def draw(t, legend_style, x, y)
           y = get_baseline_y(t, legend_style, y) 
-          t.show_text('x' => x, 'y' => y, 
-                      'text' => @text,
-                      'justification' => LEFT_JUSTIFIED,
-                      'measure' => legend_name
-                      )
+          @style.draw_text(t, @text, x, y, legend_name)
         end
 
-        # Computes the size of the line. Height should always
-        # be accurate, but width can be 0 sometimes...
+        # Computes the size of the line. Height should always be
+        # accurate, but width can be 0 sometimes...
         def size(t, legend_style)
           height = legend_style.dy.to_figure(t)
+
+          width = 0.0
+
           info = t.get_text_size(legend_name)
-          if info.key? 'width'
-            width = t.convert_output_to_figure_dx(10*info['width'])
-          else
-            width = 0
-          end
           
+          if info.key? 'width'
+            width += t.convert_output_to_figure_dx(10*info['width'])
+          end
+
           return [ width, height ]
         end
         
@@ -118,7 +117,7 @@ module CTioga2
       # The legend of a curve object, or rather, the legend
       # corresponding to a given
       #
-      # TODO: finish to adapt.
+      # TODO: finish to adapt: use FullTextStyle to draw the objects.
       class CurveLegend < LegendItem
 
         include CTioga2::Log

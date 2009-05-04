@@ -25,7 +25,10 @@ module CTioga2
 
     # Now, various commands pertaining to legends
 
-    LegendGroup = CmdGroup.new('legends', "Legends","Legends", 1)
+    LegendGroup = CmdGroup.new('legends', "Legends", <<EOD, 1)
+Commands to specify legends and tweak their look.
+EOD
+
     NextLegendCommand = 
       Cmd.new("legend",'-l',"--legend", 
               [ CmdArg.new('text') ]) do |plotmaker, legend|
@@ -36,6 +39,19 @@ module CTioga2
                                <<EOH, LegendGroup)
 Sets the legend for the next dataset. Overridden by the legend= option
 to the plot command.
+EOH
+
+    LegendLineCommand = 
+      Cmd.new("legend-line",nil,"--legend-line", 
+              [ CmdArg.new('text') ], 
+              Styles::FullTextStyleOptions) do |plotmaker, legend, opts|
+      l = Legends::LegendLine.new(legend, opts)
+      plotmaker.root_object.current_plot.add_legend_item(l)
+    end
+
+    LegendLineCommand.describe("Adds a pure text line to the legend",
+                               <<EOH, LegendGroup)
+Adds a line of text unrelated to any curve to the legend.
 EOH
 
     LegendInsideCommand = 

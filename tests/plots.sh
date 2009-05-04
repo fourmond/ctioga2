@@ -8,7 +8,7 @@
 
 $ct -t 'Basic usage' 'sin(x)' 'cos(x)'
 
-$ct -t 'Basic dataset expansion' 'sin(x+0##5)'
+$ct -t 'Basic dataset expansion' --auto-legend 'sin(x+0##5)'
 
 
 # Compare the two following command-lines:
