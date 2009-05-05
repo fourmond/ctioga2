@@ -167,6 +167,9 @@ module CTioga2
     # after the final figure.
     attr_accessor :viewer_command
 
+    # Additional preamble for LaTeX output
+    attr_accessor :latex_preamble
+
 
     # Setting up of the PlotMaker object
     def initialize
@@ -178,6 +181,9 @@ module CTioga2
 
       # Figure name:
       @figure_name = nil
+
+      # Original preamble
+      @latex_preamble = ""
     end
 
     # ctioga's entry point.
@@ -294,6 +300,7 @@ module CTioga2
     # Creates a new FigureMaker object and returns it
     def create_figure_maker
       t = Tioga::FigureMaker.new
+      t.tex_preamble += @latex_preamble
 
       return t
     end
@@ -314,6 +321,58 @@ module CTioga2
 Use the current backend to load the given datasets onto the data stack
 and plot them.
 EOH
+
+    LaTeXGroup = CmdGroup.new('latex', "LaTeX",<<EOD, 30)
+Commands providing control over the LaTeX output (preamble,
+packages...)
+EOD
+    
+    UsePackageCommand = 
+      Cmd.new("use",nil,"--use", 
+              [ CmdArg.new('text') ],
+              { 'arguments' => CmdArg.new('text')}
+              ) do |plotmaker, package, options|
+      if options['arguments']
+        plotmaker.latex_preamble << 
+          "\\usepackage[#{options['arguments']}]{#{package}}\n"
+      else
+        plotmaker.latex_preamble << "\\usepackage{#{package}}\n"
+      end
+    end
+
+    UsePackageCommand.describe('Includes a LaTeX package',
+                               <<EOD, LaTeXGroup)
+Adds a command to include the LaTeX package into the preamble. The 
+arguments, if given, are given within [square backets].
+EOD
+
+    PreambleCommand = 
+      Cmd.new("preamble",nil,"--preamble", 
+              [ CmdArg.new('text') ]) do |plotmaker, txt|
+      plotmaker.latex_preamble << "#{txt}\n"
+    end
+
+    PreambleCommand.describe('Adds a string to the LaTeX preamble',
+                             <<EOD, LaTeXGroup)
+Adds the given string to the LaTeX preamble of the output.
+EOD
+
+    Utf8Command = 
+      Cmd.new("utf8",nil,"--utf8", []) do |plotmaker|
+      plotmaker.latex_preamble << 
+        "\\usepackage[utf8]{inputenc}\n\\usepackage[T1]{fontenc}"
+    end
+
+    Utf8Command.describe('Uses UTF-8 in strings',
+                         <<EOD, LaTeXGroup)
+Makes ctioga2 use UTF-8 for all text. It is exactly equivalent to
+the command {command: preamble} with argument
+
+  \\usepackage[utf8]{inputenc}\\usepackage[T1]{fontenc}
+
+EOD
+
+
     
     PlotSetupGroup =  
       CmdGroup.new('plot-setup', 
@@ -368,10 +427,10 @@ EOH
       plotmaker.reset_graphics
     end
 
-    OutputAndResetCommand.describe('Writes the current figure and stars anew', 
+    OutputAndResetCommand.describe('Writes the current figure and starts anew', 
                                    <<EOH, PlotSetupGroup)
-Writes the current figure and starts a fresh one. All non-graphical information
-are kept (curves loaded, figure names and so on).
+Writes the current figure and starts a fresh one. All non-graphical 
+information are kept (curves loaded, figure names, preamble, and so on).
 EOH
 
     OutputDirCommand = 
