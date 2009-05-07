@@ -106,12 +106,9 @@ module CTioga2
         # The string that represents a full command
         def command_documentation(cmd)
           str = "<h4 class='command' id='command-#{cmd.name}'>Command: <code>#{cmd.name}</code></h4>\n"
-          str << "#{markup_to_html(cmd.long_description)}\n"
-          # Now, various informations
-          # Command file synopsis
-          str << "</p><p class='synopsis'>\n<span class='bold'>Synopsis (file)</span>\n"
+          str << "<p class='synopsis'>\n<span class='bold'>Synopsis (file)</span>\n"
 
-          str << "<pre class='examples'>"
+          str << "</p>\n<pre class='examples-cmdfile'>"
           str << "<span class='cmd'>#{cmd.name}("
           str << cmd.arguments.map { |arg|
             "<a class='argument' href='#{@types_url}#type-#{arg.type.name}'>#{arg.displayed_name}</a>"
@@ -123,14 +120,14 @@ module CTioga2
           str << "</pre>\n"
 
           # Command-line file synopsis
-          str << "<span class='bold'>Synopsis  (command-line)</span>\n"
+          str << "<p class='synopsis'>\n<span class='bold'>Synopsis  (command-line)</span>\n"
           args = cmd.arguments.map { |arg|
             "<a class='argument' href='#{@types_url}#type-#{arg.type.name}'>#{arg.displayed_name.upcase}</a>"
           }.join(' ')
           if cmd.has_options?
             args << " /option=..."
           end
-          str << "<pre class='examples'>"
+          str << "</p>\n<pre class='examples-cmdline'>"
           if cmd.short_option
             str << "<span class='cmdline'>-#{cmd.short_option} "
             str << args
@@ -142,12 +139,17 @@ module CTioga2
           str << "</pre>"
           
           if cmd.has_options?
-            str << "<span class='bold'>Available options</span>:\n"
+            str << "<p class='synopsis'><span class='bold'>Available options</span>:\n"
             opts = cmd.optional_arguments.sort.map do |k,arg|
               "<a href='#{@types_url}#type-#{arg.type.name}'><code>#{k}</code></a>\n"
             end
             str << opts.join(' ')
+            str << "</p>"
           end
+          str << "<p>"
+          # Now, the description:
+          str << "#{markup_to_html(cmd.long_description)}\n"
+          str << "</p>\n"
           return str
         end
 
@@ -179,11 +181,11 @@ module CTioga2
               end
               str << "<a href='#{link}'>#{it.to_s}</a>"
             when MarkedUpText::MarkupItemize
-              str << "<ul>\n"
+              str << "</p>\n<ul>\n"
               for x in it.items
                 str << "<li>#{markup_to_html(x)}</li>\n"
               end
-              str << "</ul>\n"
+              str << "</ul>\n<p>\n"
             when MarkedUpText::MarkupParagraph
               str << "</p>\n<p>"
             else

@@ -94,21 +94,15 @@ module CTioga2
         # TODO: provide coordinate conversion facilities...
 
         protected 
+
         # Creates the appropriate subfigure and draws all its elements
         # within.
         def real_do(t)
-
-          # TODO: legends !!
           t.subfigure(@subframe.to_frame_margins(t)) do 
             for el in @elements
               el.do(t)
             end
           end
-        end
-
-        # TODO: draw the legends !!
-        def display_legends(t)
-          raise 'TODO !!'
         end
 
       end
