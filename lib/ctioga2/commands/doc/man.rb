@@ -131,8 +131,10 @@ module CTioga2
               if inside_cmds
                 str << ".IP \"\" #{ManIndent}\n"
               end
+            when MarkedUpText::MarkupVerbatim
+              str << it.text.gsub(/^/, '  ')
             when MarkedUpText::MarkupParagraph
-              str << "\n\n"
+              str << "#{markup_to_man(it.elements)}\n\n"
             else
               raise "Markup #{it.class} isn't implemented yet for man"
             end

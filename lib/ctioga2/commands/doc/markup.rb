@@ -63,6 +63,26 @@ module CTioga2
           end
         end
 
+        # A markup item representing verbatim text, with the given
+        # class
+        class MarkupVerbatim < MarkupItem
+          # The text
+          attr_accessor :text
+
+          # The verbatim text class
+          attr_accessor :cls
+          
+          def initialize(doc, text, cls)
+            super(doc)
+            @text = text
+            @cls = cls
+          end
+
+          def to_s
+            return text
+          end
+        end
+
         # A link to a type/group/command
         class MarkupLink < MarkupItem
           # The object target of the link
@@ -109,10 +129,17 @@ module CTioga2
           end
         end
 
-        # A simple item that begins a new paragraph.
-        class MarkupParagraph
+        # An item that contains a paragraph
+        class MarkupParagraph < MarkupItem
+          attr_accessor :elements
+          
+          def initialize(doc, elements)
+            super(doc)
+            @elements = elements
+          end
+
           def to_s
-            return "\n\n"
+            return @elements.map {|x| x.to_s }.join('')
           end
         end
 
@@ -131,9 +158,6 @@ module CTioga2
           end
         end
 
-        def parse_from_string(string)
-          self.class.parse_string_to_array(@elements, @doc, string)
-        end
 
         def dump
           puts "Number of elements: #{@elements.size}"
@@ -142,55 +166,97 @@ module CTioga2
           end
         end
 
-        # Parses the given _string_ and append the resulting
-        # MarkupItem elements to the _target_ array.
+
+        # Parses the given _string_ and append the results to the
+        # MarkedUpText's elements.
         #
         # Markup elements:
-        # 
+        #
+        # * a line beginning with '> ' is an example for command-line
+        # * a line beginning with '# ' is an example for use within a
+        #   command file.
         # * a line beginning with ' *' is an element of an
         #   itemize. The itemize finishes when a new paragraph is
         #   starting.
         # * a {group: ...} or {type: ...} or {command: ...} is a link
         #   to the element.
         # * a blank line marks a paragraph break.
-        def self.parse_string_to_array(target, doc, string)
-          # First, we split the string into paragraphs:
-          # 
-          # TODO: if I ever want to include a "verbatim" environment,
-          # which could be good for examples, the best way to place it
-          # would probably be here, although after itemize parsing
-          # might still be a good option.
-          paragraphs = string.split(/^\s*\n/)
-          first = true
-          for par in paragraphs
-            # Then, we split into itemize elements:
-            if !first 
-              target << MarkupParagraph.new
-            else
-              first = false
-            end
-            
-            subelements = par.split(/^\s\*\s*/)
-            els = []
-            for el in subelements
-              # Now, we have paragraphs, in which we only need to go
-              # looking for markup elements.
-              sub_els = []
-              # TODO: here, to insert new kinds of markup (italics,
-              # bold), the only thing to do is to extend the regular
-              # expression using |.
-              while el =~ /\{(group|type|command):\s*([^}]+?)\s*\}/
-                sub_els << MarkupText.new(doc, $`)
-                sub_els << MarkupLink.new(doc, $2, $1) 
-                el = $'
+        def parse_from_string(string)
+          @last_type = nil
+          @last_string = ""
+
+          lines = string.split(/\s*\n/)
+          for l in lines
+            case l
+            when /^[#>]\s(.*)/  # a verbatim line
+              type = (l[0] == '#' ? :cmdfile : :cmdline)
+              if @last_type == type
+                @last_string << "#{$1}\n"
+              else
+                flush_element
+                @last_type = type
+                @last_string = "#{$1}\n"
               end
-              sub_els << MarkupText.new(doc, el)
-              els << sub_els
+            when /^\s\*\s*(.*)/
+              flush_element
+              @last_type = :item
+              @last_string = "#{$1}\n"
+            when /^\s*$/          # Blank line:
+              flush_element
+              @last_type = nil
+              @last_string = ""
+            else
+              case @last_type
+              when :item, :paragraph # simply go on
+                @last_string << "#{l}\n"
+              else
+                flush_element
+                @last_type = :paragraph
+                @last_string = "#{l}\n"
+              end
             end
-            target.concat(els[0])
-            if els.size > 1
-              target << MarkupItemize.new(doc, els[1..-1])
+          end
+          flush_element
+        end
+
+        protected 
+
+        # Parses the markup found within a paragraph (ie: links and
+        # other text attributes, but not verbatim, list or other
+        # markings) and returns an array containing the MarkupItem
+        # elements.
+        def parse_paragraph_markup(doc, string)
+          els = []
+          while string =~ /\{(group|type|command):\s*([^}]+?)\s*\}/
+            els << MarkupText.new(doc, $`)
+            els << MarkupLink.new(doc, $2, $1) 
+            string = $'
+          end
+          els << MarkupText.new(doc, string)
+          return els
+        end
+
+        # Adds the element accumulated so far to the @elements array.
+        def flush_element
+          case @last_type
+          when :cmdline, :cmdfile
+            @elements << MarkupVerbatim.new(@doc, @last_string, 
+                                            "examples-#{@last_type}")
+          when :paragraph
+            @elements << 
+              MarkupParagraph.new(@doc, 
+                                  parse_paragraph_markup(doc, @last_string))
+          when :item
+            if @elements.last.is_a?(MarkupItemize)
+              @elements.last.items << 
+                parse_paragraph_markup(doc, @last_string)
+            else
+              @elements << 
+                MarkupItemize.new(@doc, 
+                                  [ parse_paragraph_markup(doc, @last_string)])
             end
+          else                  # In principle, nil
+            return
           end
         end
 

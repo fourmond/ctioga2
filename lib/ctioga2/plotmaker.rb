@@ -406,7 +406,8 @@ EOH
     NameCommand.describe('Sets the name of the figure', 
                          <<EOH, PlotSetupGroup)
 Sets the name of the figure, which is also the base name for the output file.
-This has nothing to do with the title of the plot.
+This has nothing to do with the title of the plot, which can be set using
+the command {command: title}.
 EOH
 
     OutputNowCommand = 
@@ -417,8 +418,8 @@ EOH
 
     OutputNowCommand.describe('Outputs the current state of the figure', 
                               <<EOH, PlotSetupGroup)
-Writes a figure with the given name (see #name) and keeps the current
-#state. This can be used to create an animation.
+Writes a figure with the given name (see {command: name}) and keeps the 
+current state. This can be used to create an animation.
 EOH
 
     OutputAndResetCommand = 

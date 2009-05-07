@@ -56,9 +56,7 @@ module CTioga2
           for g in groups
             out.puts 
             out.puts "<h3 class='group' id='group-#{g.id}'>#{g.name}</h3>"
-            out.puts "<p>"
             out.puts markup_to_html(g.description)
-            out.puts "</p>"
 
             commands = cmds[g].sort {|a,b|
               a.name <=> b.name
@@ -146,10 +144,8 @@ module CTioga2
             str << opts.join(' ')
             str << "</p>"
           end
-          str << "<p>"
           # Now, the description:
-          str << "#{markup_to_html(cmd.long_description)}\n"
-          str << "</p>\n"
+          str << markup_to_html(cmd.long_description)
           return str
         end
 
@@ -181,13 +177,15 @@ module CTioga2
               end
               str << "<a href='#{link}'>#{it.to_s}</a>"
             when MarkedUpText::MarkupItemize
-              str << "</p>\n<ul>\n"
+              str << "<ul>\n"
               for x in it.items
                 str << "<li>#{markup_to_html(x)}</li>\n"
               end
-              str << "</ul>\n<p>\n"
+              str << "</ul>\n"
             when MarkedUpText::MarkupParagraph
-              str << "</p>\n<p>"
+              str << "<p>\n#{markup_to_html(it.elements)}\n</p>\n"
+            when MarkedUpText::MarkupVerbatim
+              str << "<pre class='#{it.cls}'>#{it.text}</pre>\n"
             else
               raise "Markup #{it.class} isn't implemented yet for HTML"
             end

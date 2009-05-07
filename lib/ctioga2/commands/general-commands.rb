@@ -60,6 +60,7 @@ EOH
     
     RunCommandFile.describe("Runs given command file", <<EOH, GeneralGroup)
 Reads the file and runs commands found in them, using the ctioga language.
+> ctioga2 -f my_file.ct2
 EOH
 
     # Evaluate a series of commands.
@@ -69,7 +70,7 @@ EOH
     end
     
     EvalCommand.describe("Runs the given commands", <<EOH, GeneralGroup)
-Runs the given strings as commands
+Runs the given strings as commands, as if given from a command file.
 EOH
 
     # Increases verbosity
