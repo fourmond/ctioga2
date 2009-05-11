@@ -192,11 +192,11 @@ module CTioga2
     def run(command_line)
       @command_line = command_line.dup
       if ENV.key? 'CTIOGA2_PRE'
-        command_line.unshift(Shellwords.shellwords(ENV['CTIOGA2_PRE']))
+        command_line.unshift(*Shellwords.shellwords(ENV['CTIOGA2_PRE']))
       end
 
       if ENV.key? 'CTIOGA2_POST'
-        command_line.push(Shellwords.shellwords(ENV['CTIOGA2_POST']))
+        command_line.push(*Shellwords.shellwords(ENV['CTIOGA2_POST']))
       end
 
       @interpreter.run_command_line(command_line)
