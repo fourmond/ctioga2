@@ -76,7 +76,18 @@ different types. Here are the meanings of those types.
 
 .\" write-types
 
+.SH ENVIRONMENT VARIABLES
 
+If the environment variables
+.B CTIOGA2_PRE
+or
+.B CTIOGA2_POST
+are set, they are split into words according to shell rules (see the
+Shellwords.shellwords ruby function for more information) and
+prepended or appended to the command-line arguments. They don't leave
+any trace in the actual command-line (so, for instance,
+.B --echo
+won't be aware of them).
 
 .SH AUTHOR
 

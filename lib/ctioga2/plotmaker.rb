@@ -99,6 +99,8 @@
 require 'ctioga2/utils'
 require 'ctioga2/log'
 
+require 'shellwords'
+
 # Maybe, maybe, maybe... We need tioga ?
 require 'Tioga/FigureMaker'
 
@@ -189,6 +191,14 @@ module CTioga2
     # ctioga's entry point.
     def run(command_line)
       @command_line = command_line.dup
+      if ENV.key? 'CTIOGA2_PRE'
+        command_line.unshift(Shellwords.shellwords(ENV['CTIOGA2_PRE']))
+      end
+
+      if ENV.key? 'CTIOGA2_POST'
+        command_line.push(Shellwords.shellwords(ENV['CTIOGA2_POST']))
+      end
+
       @interpreter.run_command_line(command_line)
 
       # Now, draw the main figure
