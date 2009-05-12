@@ -72,6 +72,19 @@ module CTioga2
           io.puts vals.join("\t")
         end
       end
+
+      # Pops the last _n_ datasets off the stack
+      def concatenate_datasets(n = 2)
+        ds = @stack.pop
+        raise "Nothing on the stack" unless ds
+        (n-1).times do
+          ds2 = @stack.pop
+          raise "Not enough datasets on the stack" unless ds2
+          ds << ds2
+        end
+        @stack.push(ds)
+      end
+
       
     end
 
@@ -99,6 +112,18 @@ EOH
     PrintLastCommand.describe("Prints the dataset last pushed on the stack",
                               <<EOH, DataStackGroup)
 Prints the dataset last pushed on the stack.
+EOH
+
+    ConcatLastCommand = 
+      Cmd.new("concat-stack", nil, "--concat-stack", 
+              []) do |plotmaker|
+      plotmaker.data_stack.concatenate_datasets
+    end
+    
+    ConcatLastCommand.describe("Concatenates the last datasets on the stack",
+                               <<EOH, DataStackGroup)
+Pops the last two datasets from the stack, concatenates them (older last) and push
+them back onto the stack.
 EOH
 
 

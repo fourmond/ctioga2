@@ -22,6 +22,10 @@ module CTioga2
   module Data
 
     # This class holds one column, possibly with error bars.
+    #
+    # TODO: a way to concatenate two DataColumns
+    #
+    # TODO: a way to easily access the by "lines"
     class DataColumn
       
       # A Dvector holding ``real'' values
@@ -59,6 +63,9 @@ module CTioga2
         for v in all_vectors
           # This is slow !
           # Code should be written in C on the dvector side.
+          #
+          # Or we could use Function.sort, though this is not very
+          # elegant nor efficient. (but memory-efficient, though).
           w = Dobjects::Dvector.new(w.size) do |i|
             v[idx_vector[i]]
           end
@@ -93,6 +100,28 @@ module CTioga2
       # Returns the number of elements.
       def size
         return @values.size
+      end
+
+      # Creates dummy errors (ie, min_values = max_values = values) if
+      # the datacolumn does not currently have.
+      def ensure_has_errors
+        if ! has_errors?
+          @min_values = @values.dup
+          @max_values = @values.dup
+        end
+      end
+
+      # Concatenates with another DataColumn, making sure the errors
+      # and such are not lost.
+      def <<(column)
+        # If there are error bars, wew make sure we concatenate all of them
+        if has_errors? || column.has_errors?
+          self.ensure_has_errors
+          column.ensure_has_errors
+          @min_values.concat(column.min_values)
+          @max_values.concat(column.max_values)
+        end
+        @values.concat(column.values)
       end
 
       ColumnSpecsRE = /|min|max/i

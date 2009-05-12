@@ -149,6 +149,17 @@ module CTioga2
       def size
         return 1 + @ys.size
       end
+
+      # Concatenates another Dataset to this one
+      def <<(dataset)
+        if dataset.size != self.size
+          raise "Can't concatenate datasets that don't have the same number of columns: #{self.size} vs #{dataset.size}"
+        end
+        @x << dataset.x
+        @ys.size.times do |i|
+          @ys[i] << dataset.ys[i]
+        end
+      end
         
 
       # TODO: a dup !
