@@ -115,15 +115,17 @@ Prints the dataset last pushed on the stack.
 EOH
 
     ConcatLastCommand = 
-      Cmd.new("concat-stack", nil, "--concat-stack", 
-              []) do |plotmaker|
-      plotmaker.data_stack.concatenate_datasets
+      Cmd.new("join-stack", nil, "--join-stack", 
+              [], {'number' => CmdArg.new('integer')}) do |plotmaker, opts|
+      nb = opts['number'] || 2
+      plotmaker.data_stack.concatenate_datasets(nb)
     end
     
     ConcatLastCommand.describe("Concatenates the last datasets on the stack",
                                <<EOH, DataStackGroup)
-Pops the last two datasets from the stack, concatenates them (older last) and push
-them back onto the stack.
+Pops the last two (or number, if it is specified) datasets from the
+stack, concatenates them (older last) and push them back onto the
+stack.
 EOH
 
 

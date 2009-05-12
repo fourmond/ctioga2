@@ -159,26 +159,31 @@ module CTioga2
                 @description,
                 DefaultBackendGroupPriority)
 
+          backend_options = {}
+
           # Again, each is needed for scoping problems.
           @param_list.each do |param|
             arg = CmdArg.new(param.type, param.name)
-            a = Cmd.
-              new("set-#{@name}-#{param.name}",
-                  nil, "--#{@name}-#{param.name}",
-                  [arg], {},
-                  "Set the #{param.long_name} parameter of backend '#{@name}'", 
+            a = Cmd.new("set-#{@name}-#{param.name}",
+                      nil, "--#{@name}-#{param.name}",
+                      [arg], {},
+                      "Set the #{param.long_name} parameter of backend '#{@name}'", 
                   param.description, group) do |plotmaker, value|
               plotmaker.data_stack.backend_factory.
                 set_backend_parameter_value(@name, param.name, value)
             end
+            backend_options[param.name] = arg.dup
           end
 
           # TODO: add option parsing
           Cmd.new("#{@name}", nil, "--#{@name}", [], 
-                  { # TODO!
-                  }, "Selects the '#{@name}' backend", 
-                  nil, group) do |plotmaker|
+                  backend_options, "Selects the '#{@name}' backend", 
+                  nil, group) do |plotmaker, options|
             plotmaker.data_stack.backend_factory.set_current_backend(@name)
+            for k,v in options
+              plotmaker.data_stack.backend_factory.
+                set_backend_parameter_value(@name, k, v)
+            end
           end
         end
 
