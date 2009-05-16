@@ -112,7 +112,10 @@ module CTioga2
             "<a class='argument' href='#{@types_url}#type-#{arg.type.name}'>#{arg.displayed_name}</a>"
           }.join(',')
           if cmd.has_options?
-            str << ",option=..."
+            if(cmd.arguments.size > 0)
+              str << ", "
+            end
+            str << "option=..."
           end
           str << ")</span>\n"
           str << "</pre>\n"
