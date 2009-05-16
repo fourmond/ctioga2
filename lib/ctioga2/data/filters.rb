@@ -54,8 +54,8 @@ EOH
       
       SortFilter.describe("Systematically sort all datasets",
                           <<EOH, FiltersGroup)
-Install the {cmd: sort-last} command as a dataset hook (see {cmd:
-dataset-hook}: all subsequent datasets will be sorted according to
+Install the {command: sort-last} command as a dataset hook (see {command:
+dataset-hook}): all subsequent datasets will be sorted according to
 their X values.
 EOH
 

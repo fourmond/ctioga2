@@ -207,7 +207,7 @@ EOH
     
     ClearDatasetHookCommand.describe("Clears the dataset hook",
                                      <<EOH, DataStackGroup)
-Clears the dataset hook. See {cmd: dataset-hook} for more information.
+Clears the dataset hook. See {command: dataset-hook} for more information.
 EOH
 
     AddDatasetHookCommand = 
@@ -218,7 +218,7 @@ EOH
     
     AddDatasetHookCommand.describe("Adds commands to the dataset hook",
                                    <<EOH, DataStackGroup)
-Adds the given commands to the dataset hook. See {cmd: dataset-hook} 
+Adds the given commands to the dataset hook. See {command: dataset-hook} 
 for more information about the dataset hook.
 EOH
 
