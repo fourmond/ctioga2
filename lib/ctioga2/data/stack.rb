@@ -16,6 +16,9 @@ require 'ctioga2/data/datacolumn'
 require 'ctioga2/data/backends/backends'
 require 'ctioga2/data/backends/factory'
 
+
+require 'ctioga2/data/filters'
+
 # This module contains all the classes used by ctioga
 module CTioga2
 
@@ -35,11 +38,25 @@ module CTioga2
     # * other stack-based operations.
     class DataStack
 
+      include Log
+
       # The array containing all the Dataset used so far.
       attr_accessor :stack
 
       # The BackendFactory used for retrieving data from named sets.
       attr_accessor :backend_factory
+
+      # A hook executed every time a dataset is pushed unto the stack
+      # using #add_dataset.
+      #
+      # TODO: this string is parsed for each call to
+      # #add_dataset. Perhaps it would be good to provide a way to
+      # record a Command call, without parsing it from scratch ???
+      # 
+      # Although, with variables, that could be interesting to reparse
+      # everytime, since any change in the variables would be taken
+      # into account.
+      attr_accessor :dataset_hook
 
       # Creates a new DataStack object.
       def initialize
@@ -56,10 +73,38 @@ module CTioga2
         backend = @backend_factory.current
         retval = []
         for s in backend.expand_sets(set)
-          retval << backend.dataset(s)
+          ds = backend.dataset(s)
+          add_dataset(ds)
+          retval << ds
         end
-        @stack += retval
         return retval
+      end
+
+      # Adds a Dataset object onto the stack, running hooks if
+      # necessary.
+      #
+      # Makes use of Plotmaker.plotmaker
+      def add_dataset(dataset)
+        @stack << dataset
+        if @dataset_hook
+          # TODO: error handling
+          begin
+            PlotMaker.plotmaker.interpreter.run_commands(@dataset_hook)
+          rescue Exception => e
+            error "There was a problem running the dataset hook '#{@dataset_hook}', disabling it"
+            @dataset_hook = nil
+            info "The error was: '#{e.to_s}'"
+          end
+        end
+      end
+
+      # Appends a set of commands to the dataset hook
+      def add_to_dataset_hook(commands)
+        if @dataset_hook
+          @dataset_hook << "\n#{commands}"
+        else
+          @dataset_hook = nil
+        end
       end
 
       # Writes the contents of the the given element to the given _io_
@@ -85,6 +130,11 @@ module CTioga2
         @stack.push(ds)
       end
 
+      # Returns the last Dataset pushed onto the stack.
+      def last
+        return @stack.last
+      end
+
       
     end
 
@@ -105,17 +155,24 @@ Use the current backend to load the given dataset onto the data stack.
 EOH
 
     PrintLastCommand = 
-      Cmd.new("print-last", nil, "--print-last") do |plotmaker|
-      plotmaker.data_stack.print_dataset(-1, STDOUT)
+      Cmd.new("print-dataset", nil, "--print-dataset",
+              [], {'index' => CmdArg.new('integer')}) do |plotmaker,opts|
+      if opts['index']
+        nb = opts['index']
+      else
+        nb = -1
+      end
+      plotmaker.data_stack.print_dataset(nb, STDOUT)
     end
     
     PrintLastCommand.describe("Prints the dataset last pushed on the stack",
                               <<EOH, DataStackGroup)
-Prints the dataset last pushed on the stack.
+Prints to standard output data contained in the last dataset pushed
+onto the stack, or the numbered dataset if the index option is given.
 EOH
 
     ConcatLastCommand = 
-      Cmd.new("join-stack", nil, "--join-stack", 
+      Cmd.new("join-datasets", nil, "--join-datasets", 
               [], {'number' => CmdArg.new('integer')}) do |plotmaker, opts|
       nb = opts['number'] || 2
       plotmaker.data_stack.concatenate_datasets(nb)
@@ -128,7 +185,42 @@ stack, concatenates them (older last) and push them back onto the
 stack.
 EOH
 
+    SetDatasetHookCommand = 
+      Cmd.new("dataset-hook", nil, "--dataset-hook", 
+              [CmdArg.new('commands')], {}) do |plotmaker, commands, opts|
+      plotmaker.data_stack.dataset_hook = commands
+    end
+    
+    SetDatasetHookCommand.describe("Sets the dataset hook",
+                                   <<EOH, DataStackGroup)
+The dataset hook is a series of commands such as those in the command
+files that are run every time after a dataset is added onto the data
+stack. Its main use is to provide automatic filtering of data, but any
+arbitrary command can be used, so enjoy !
+EOH
 
+    ClearDatasetHookCommand = 
+      Cmd.new("dataset-hook-clear", nil, "--dataset-hook-clear", 
+              [], {}) do |plotmaker, opts|
+      plotmaker.data_stack.dataset_hook = nil
+    end
+    
+    ClearDatasetHookCommand.describe("Clears the dataset hook",
+                                     <<EOH, DataStackGroup)
+Clears the dataset hook. See {cmd: dataset-hook} for more information.
+EOH
+
+    AddDatasetHookCommand = 
+      Cmd.new("dataset-hook-add", nil, "--dataset-hook-add", 
+              [CmdArg.new('commands')], {}) do |plotmaker, commands, opts|
+      plotmaker.data_stack.add_to_dataset_hook(commands)
+    end
+    
+    AddDatasetHookCommand.describe("Adds commands to the dataset hook",
+                                   <<EOH, DataStackGroup)
+Adds the given commands to the dataset hook. See {cmd: dataset-hook} 
+for more information about the dataset hook.
+EOH
 
   end
 

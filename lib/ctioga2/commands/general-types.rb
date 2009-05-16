@@ -34,6 +34,12 @@ EOD
 One expandable dataset.
 EOD
 
+    # Commands
+    CommandsType = CmdType.new('commands', :string, <<EOD)
+ctioga2 commands, such as the ones that could be found in
+command files.
+EOD
+
     BooleanType = CmdType.new('boolean', :boolean, <<EOD)
 Yes or no.
 EOD

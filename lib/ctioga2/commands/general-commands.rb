@@ -65,7 +65,7 @@ EOH
 
     # Evaluate a series of commands.
     EvalCommand =  Cmd.new("eval", '-e', "--eval", 
-                           [ CmdArg.new('text'), ]) do |plotmaker, string|
+                           [ CmdArg.new('commands'), ]) do |plotmaker, string|
       plotmaker.interpreter.run_commands(string)
     end
     

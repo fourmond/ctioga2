@@ -155,7 +155,6 @@ module CTioga2
     # suitable elements to be added to the Graphics::RootObject
     attr_accessor :curve_generator
 
-
     # Below are simple plot attributes. Maybe they should be in their
     # own namespace.
 
@@ -172,6 +171,16 @@ module CTioga2
     # Additional preamble for LaTeX output
     attr_accessor :latex_preamble
 
+    # The first instance of PlotMaker created
+    @@first_plotmaker_instance = nil
+
+    # Returns the first created instance of PlotMaker. This sounds
+    # less object-oriented, yes, but that can come in useful some
+    # times.
+    def self.plotmaker
+      return @@first_plotmaker_instance
+    end
+
 
     # Setting up of the PlotMaker object
     def initialize
@@ -186,6 +195,9 @@ module CTioga2
 
       # Original preamble
       @latex_preamble = ""
+
+      # Make sure it is registered
+      @@first_plotmaker_instance ||= self
     end
 
     # ctioga's entry point.
