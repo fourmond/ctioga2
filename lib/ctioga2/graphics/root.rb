@@ -177,6 +177,20 @@ module CTioga2
         return (! top_level_container.legend_area) && 
           ( top_level_container.legend_storage.harvest_contents.size > 0)
       end
+
+      # Returns the legend_area in charge of the current container.
+      def current_legend_area
+        area = nil
+        for el in @container_stack
+          if el.respond_to?(:legend_area) and el.legend_area
+            area = el.legend_area
+          end
+        end
+        if ! area
+          area = @legend_area
+        end
+        return area
+      end
           
       # The group containing all commands linked to subplots and other
       # insets, frame margin selections...

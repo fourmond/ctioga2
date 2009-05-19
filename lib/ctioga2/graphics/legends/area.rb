@@ -89,7 +89,7 @@ module CTioga2
               # TODO: transform the 0.0 for x into a negative
               # user-specifiable stuff.
               item.draw(t, @legend_style, x , y)
-              y -= @legend_style.dy.to_figure(t)
+              y -= @legend_style.dy.to_figure(t,:y)
             end
           end
         end
@@ -105,7 +105,9 @@ module CTioga2
             if w > width
               width = w
             end
-            height += h
+            # Hmmm... this is plain wrong... 
+            # height += h
+            height += @legend_style.dy.to_figure(t,:y)
           end
           return [ width, height ]
         end

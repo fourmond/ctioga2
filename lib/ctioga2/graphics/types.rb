@@ -118,5 +118,14 @@ Kinds of decoration on a axis line, such as nothing, lines, ticks,
 tick labels...
 EOD
 
+    # Dimensions
+
+    DimensionType = 
+      CmdType.new('dimension', { :type => :dimension, 
+                    :default => :dy }, <<EOD)
+Dimension, in absolute units, or in units of text height (default),
+figure, frame or page coordinates.
+EOD
+
   end
 end

@@ -81,5 +81,24 @@ When this option is in effect (off by default), all datasets get a legend,
 their 'dataset name', unless another legend is manually specified.
 EOH
 
+    LegendStyleOptions = {
+      'dy' => CmdArg.new('dimension')
+    }
+      
+
+    LegendStyleCommand = 
+      Cmd.new("legend-style",nil,"--legend-style", 
+              [], LegendStyleOptions) do |plotmaker, options|
+      plotmaker.root_object.current_legend_area.
+        legend_style.set_from_hash(options)
+    end
+
+    LegendStyleCommand.describe("Set the style of the legends",
+                                <<EOH, LegendGroup)
+Sets the various aspects of the style of the legends throught 
+its options:
+* dy: the spacing between consecutive lines
+EOH
+
   end
 end

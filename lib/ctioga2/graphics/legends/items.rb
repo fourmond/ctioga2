@@ -65,8 +65,7 @@ module CTioga2
         # Returns the _y_ value for the baseline of the text in terms
         # of figure coordinates.
         def get_baseline_y(t, legend_style, y)
-          return y - 0.5 * ( Types::Dimension.new(:dy,1.0,:y).to_figure(t)  +
-                             legend_style.dy.to_figure(t))
+          return y - Types::Dimension.new(:dy,1.0,:y).to_figure(t) 
         end
 
 

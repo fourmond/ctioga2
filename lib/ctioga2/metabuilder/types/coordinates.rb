@@ -25,6 +25,20 @@ module CTioga2
   module MetaBuilder
     module Types
 
+      # Handles a dimension, either relative or absolute
+      class DimensionType < Type
+        
+        type_name :dimension, 'dimension'
+        
+        def string_to_type_internal(str)
+          default = @type[:default] || :dy
+          orient = @type[:orient] || :x
+          return Graphics::Types::Dimension::from_text(str, orient, default)
+        end
+      end
+
+
+
       # A class that produces a Graphics::Types::MarginsBox. It takes
       # one optional argument : a :default (:frame, :figure or :page),
       # see Graphics::Types::Dimensions::from_text for more information.
