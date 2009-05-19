@@ -127,5 +127,13 @@ Dimension, in absolute units, or in units of text height (default),
 figure, frame or page coordinates.
 EOD
 
+    # Boxes
+
+    BoxType = 
+      CmdType.new('box', :box, <<EOD)
+The specification for a box, such as an inset. Specifications vary for
+now... TODO: to be written later on.
+EOD
+
   end
 end

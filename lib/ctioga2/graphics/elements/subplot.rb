@@ -69,19 +69,25 @@ module CTioga2
         # Plots all the objects inside the plot.
         def real_do(t)
           # First thing, we setup the boundaries
+          puts "Plotting object"
 
           @real_boundaries = get_boundaries
+          puts " -> bounds"
           
           # We wrap the call within a subplot
           t.subplot(@subframe.to_frame_margins(t)) do
+            puts " -> begin subplot"
             
             # Manually creating the plot:
             t.set_bounds(@real_boundaries.to_a)
             t.context do
               t.clip_to_frame
               @style.draw_all_background_lines(t)
+              i = 0
               for element in @elements 
+                puts " -> element #{i}"
                 element.do(t)
+                i += 1
               end
             end
             @style.draw_all_axes(t)

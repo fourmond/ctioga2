@@ -87,6 +87,63 @@ module CTioga2
         end
 
       end
+
+      # A box defined by an AlignedPoint and two dimensions
+      class PointBasedBox < Box
+
+        # The aligned point of the box:
+        attr_accessor :point
+
+        # The width
+        attr_accessor :width
+        
+        # The height
+        attr_accessor :height
+
+        # Creates a new PointBasedBox at the given _point_, with the
+        # given _width_ and _height_.
+        def initialize(point, width, height)
+          @point = point
+          @width = width
+          @height = height
+        end
+
+        # A well formed point-based box must match the following
+        # regular expression.
+        PointBasedBoxRE = /^\s*(.*):([^,]+)(?:,\s*(.*))?$/
+
+        # Returns a new PointBasedBox object based on the text
+        # specification, which reads:
+        #
+        #   aligned_point:w(,h)
+        #
+        # The default holds for point and dimensions
+        def self.from_text(text, default = :frame)
+          if text =~ PointBasedBoxRE
+            po,w,h = $1,$2,$3
+            point = AlignedPoint.from_text(po, default)
+            width = Dimension.from_text(w, :x, default)
+            if h
+              height = Dimension.from_text(h, :y, default)
+            else
+              height = width.dup
+            end
+            return PointBasedBox.new(point, width, height)
+          else
+            raise "#{text} is not a point-based box."
+          end
+        end
+
+        # Returns the frame coordinates of the box.
+        def to_frame_coordinates(t)
+          dx = @width.to_figure(t, :x)
+          dy = @height.to_figure(t, :y)
+          a = @point.to_frame_coordinates(t, dx, dy)
+          return @point.to_frame_coordinates(t, dx, dy)
+        end
+        
+      end
+
     end
   end
 end

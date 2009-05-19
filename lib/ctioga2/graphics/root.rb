@@ -76,10 +76,9 @@ module CTioga2
       # Enters into a new Elements::Container, _new_object_.
       def enter_subobject(new_object)
         if @current_container
-          @current_container.add_elem(new_object)
-        else
-          @current_container = new_object
+          @current_container.add_element(new_object)
         end
+        @current_container = new_object
         @container_stack << @current_container
       end
 
@@ -133,8 +132,16 @@ module CTioga2
       # is null, create it as a Elements::Container: this will make it
       # *easy* to create complex graphs (no need to disable axes and
       # other kinds of stuff on the main plot).
+      #
+      # For the sake of convenience, returns the newly created
+      # Elements::Subplot
       def subplot()
-        raise YetUnimplemented
+        if ! @current_container
+          enter_subobject(Elements::Container.new(nil, self))
+        end
+        subplot = Elements::Subplot.new(@current_container, self, nil)
+        enter_subobject(subplot)
+        return subplot
       end
 
       # Returns true if not a single drawable object has been pushed
@@ -209,12 +216,40 @@ module CTioga2
       end
 
       SetFrameMarginsCommand.describe('Sets the margins of the current plot',
-                                        <<EOH, SubplotsGroup)
+                                      <<EOH, SubplotsGroup)
 Sets the margins for the current plot. Margins are the same things as the
 position (such as specified for and inset). Using this within an inset or
 more complex plots might produce unexpected results. The main use of this 
 function is to control the padding around simple plots.
 EOH
+
+      InsetCommand =         
+        Cmd.new("inset",nil,"--inset", 
+                [
+                 CmdArg.new('box'),
+                ]) do |plotmaker, box|
+        subplot = plotmaker.root_object.subplot
+        subplot.subframe = box
+      end
+      
+      InsetCommand.describe('Begins a new inset',
+                            <<EOD, SubplotsGroup)
+Starts a new inset at the specified box. If no graphical commands have
+been issued before this one, it starts a top-level box in a blank 
+background. TODO: this surely could be clarified a little tiny bit.
+EOD
+
+      EndCommand =         
+        Cmd.new("end",nil,"--end", 
+                []) do |plotmaker|
+        plotmaker.root_object.leave_subobject
+      end
+      
+      EndCommand.describe('Leaves the current subobject',
+                          <<EOD, SubplotsGroup)
+Leaves the current subobject.
+EOD
+
 
 
 

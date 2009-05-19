@@ -106,7 +106,7 @@ module CTioga2
         def self.from_text(text, default = :figure)
           vals = text.split(/\s*,\s*/)
           if vals.size != 2
-            raise "Should really have two values :#{text}"
+            raise "Should really have two values: #{text}"
           end
           coord = Point.new
           coord.x = BaseCoordinate.from_text(vals[0], :x, default)
@@ -131,13 +131,12 @@ module CTioga2
           @valign = valign
         end
 
-        # Returns a frame_margin corresponding to the point, the
+        # Returns frame coordinates corresponding to the point, the
         # alignment and the given size in figure coordinates
-        def to_frame_margins(t, width, height)
+        def to_frame_coordinates(t, width, height)
           dx = t.convert_figure_to_frame_dx(width).abs
           dy = t.convert_figure_to_frame_dy(height).abs
           x,y = self.to_frame_xy(t)
-          p [x,y,dx,dy]
 
           case @valign
           when :top
@@ -166,6 +165,15 @@ module CTioga2
           else 
             raise "Unknown horizontal alignment: #{@halign}"
           end
+          return [xl, yt, xr, yb]
+        end
+
+        # Returns a frame_margin corresponding to the point, the
+        # alignment and the given size in figure coordinates.
+        #
+        # See #to_frame_coordinates
+        def to_frame_margins(t, width, height)
+          xl, yt, xr, yb = to_frame_coordinates(t, width, height)
           return [xl,1 - xr, 1 - yt, yb]
         end
 

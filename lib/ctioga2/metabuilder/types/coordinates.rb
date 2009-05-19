@@ -90,6 +90,24 @@ module CTioga2
         end
       end
 
+
+      # A generic class that interfaces known types of boxes. Much fun
+      # in perspective.
+      class BoxType < Type
+        
+        type_name :box, 'box'
+        
+        def string_to_type_internal(str)
+          default = @type[:default] || :frame
+          case str
+          when Graphics::Types::PointBasedBox::PointBasedBoxRE
+            return Graphics::Types::PointBasedBox::from_text(str, default)
+          else
+            raise "Unknown box specification: '#{str}'"
+          end
+        end
+      end
+
     end
   end
 end
