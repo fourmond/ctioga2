@@ -40,6 +40,10 @@ module CTioga2
         # Various stylistic aspects of the plot, as a
         # Styles::PlotStyle object.
         attr_accessor :style
+
+        # Whether or not the parent object should take the boundaries
+        # into account or not for its own internal boundaries.
+        attr_accessor :count_boundaries
         
         def initialize(parent, root, style)
           super(parent, root)
@@ -51,6 +55,9 @@ module CTioga2
                                             "2.8dy", "2.8dy")
 
           @style = style || Styles::PlotStyle.new
+
+          # By default, boundaries do not count for the parent
+          @count_boundaries = false
         end
 
         # Returns the boundaries of the SubPlot.
@@ -69,14 +76,11 @@ module CTioga2
         # Plots all the objects inside the plot.
         def real_do(t)
           # First thing, we setup the boundaries
-          puts "Plotting object"
 
           @real_boundaries = get_boundaries
-          puts " -> bounds"
-          
+
           # We wrap the call within a subplot
           t.subplot(@subframe.to_frame_margins(t)) do
-            puts " -> begin subplot"
             
             # Manually creating the plot:
             t.set_bounds(@real_boundaries.to_a)
@@ -85,7 +89,6 @@ module CTioga2
               @style.draw_all_background_lines(t)
               i = 0
               for element in @elements 
-                puts " -> element #{i}"
                 element.do(t)
                 i += 1
               end
@@ -109,7 +112,11 @@ module CTioga2
           elements_bounds = []
           for el in @elements
             if el.respond_to? :get_boundaries
-              elements_bounds << el.get_boundaries
+              if el.respond_to?(:count_boundaries) && ! (el.count_boundaries)
+                # Ignoring
+              else
+                elements_bounds << el.get_boundaries
+              end
             end
           end
           return Types::Boundaries.overall_bounds(elements_bounds)

@@ -48,7 +48,7 @@ module CTioga2
         def inspect(prefix="")
           ret = "#<#{self.class.name}:\n"
           for i in instance_variables
-            next if i == "@container"
+            next if i == "@parent"
             var = instance_variable_get(i)
             ret += "#{prefix}  - #{i} -> "
             if var.is_a? TiogaElement
