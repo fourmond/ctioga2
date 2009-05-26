@@ -82,7 +82,9 @@ their 'dataset name', unless another legend is manually specified.
 EOH
 
     LegendStyleOptions = {
-      'dy' => CmdArg.new('dimension')
+      'dy' => CmdArg.new('dimension'),
+      'scale' => CmdArg.new('float'),
+      'text_scale' => CmdArg.new('float'),
     }
       
 
@@ -98,6 +100,8 @@ EOH
 Sets the various aspects of the style of the legends throught 
 its options:
 * dy: the spacing between consecutive lines
+* scale: the overall scale of the legends
+* text_scale: the scale of the text (and the markers) inside the legends
 EOH
 
   end

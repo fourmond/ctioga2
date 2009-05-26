@@ -82,6 +82,19 @@ Multiplies the #{x.to_s.upcase} coordinates by this factor.
 EOH
       CoordinateRelatedCommands << cmd
 
+      # Alias
+      cmd = 
+        Cmd.new("#{x}fact",nil,"--#{x}fact", 
+                [ CmdArg.new('float') ]) do |plotmaker, val|
+        plotmaker.root_object.current_plot.
+          style.transforms.send("#{x}_scale=", val)
+      end
+      cmd.describe("Alias for #{x}scale",
+                           <<EOH, PlotCoordinatesGroup)
+Alias for {command: #{x}scale}.
+EOH
+      CoordinateRelatedCommands << cmd
+
       cmd = 
         Cmd.new("#{x}log",nil,"--#{x}log", 
                 [ CmdArg.new('boolean') ]) do |plotmaker, val|

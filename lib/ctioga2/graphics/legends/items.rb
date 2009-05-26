@@ -144,9 +144,9 @@ module CTioga2
             }
             debug "Legend margins for '#{@curve_style.legend}' : #{margin_specs.inspect}"
             t.subfigure(margin_specs) do
-              # TODO: check if that's what we want ?
-              # We make the markers slightly smaller than the text ?
-              t.rescale_text(0.8/legend_style.text_scale)
+              # We make the markers slightly smaller than the text
+              # around.
+              t.rescale_text(0.8)
               @curve_style.draw_legend_pictogram(t)
             end
           end

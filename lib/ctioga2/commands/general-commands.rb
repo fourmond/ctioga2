@@ -83,6 +83,23 @@ EOH
 With this on, ctioga2 outputs quite a fair amount of informative messages.
 EOH
 
+    # Write debugging information.
+    #
+    # TODO: this should be the place where a lot of customization of
+    # the debug output could go - including channels or things like
+    # that. To be seen later on...
+    DebugLogging = 
+      Cmd.new("debug", nil,  "--debug", [ ]) do |plotmaker|
+      CTioga2::Log::set_level(Logger::DEBUG)
+    end
+    
+    DebugLogging.describe("Makes ctioga2 write out debugging information", 
+                          <<EOH, GeneralGroup)
+With this on, ctioga2 writes a whole lot of debugging information. You
+probably will not need that unless you intend to file a bug report or
+to tackle a problem yourself.
+EOH
+
     # Includes a file
     EchoCmd = 
       Cmd.new("echo", nil,  "--echo", [ ]) do |plotmaker|

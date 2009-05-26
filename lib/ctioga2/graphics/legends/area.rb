@@ -81,6 +81,9 @@ module CTioga2
         def display_legend(t, container)
           items = container.legend_storage.harvest_contents
           t.context do 
+            t.rescale(@legend_style.scale)
+            t.rescale_text(@legend_style.text_scale)
+
             # We make figure coordinates frame coordinates
             t.set_bounds([0, 1, 1, 0])
             # TODO: customize this !

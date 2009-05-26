@@ -53,12 +53,19 @@ module CTioga2
           # We build the function on a duplicate of the values ?
           @function = Function.new(@dataset.x.values.dup, 
                                    @dataset.y.values.dup)
+
+          # We remove NaN, as they are not very liked by Tioga...
+          #
+          # TODO: maybe there should be a way to *split* on NaN rather
+          # than to ignore them ?
+          @function.strip_nan
+
           @curve_style = style
         end
 
         # Returns the Types::Boundaries of this curve.
         def get_boundaries
-          return Types::Boundaries.bounds(@dataset.x, @dataset.y)
+          return Types::Boundaries.bounds(@function.x, @function.y)
         end
 
         # Creates a path for the given curve. This should be defined
