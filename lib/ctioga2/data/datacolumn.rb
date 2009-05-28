@@ -78,7 +78,7 @@ module CTioga2
         return (@min_values && @max_values)
       end
 
-      # Column names.
+      # Column names. _base_ is used as a base for the names.
       def column_names(base)
         if has_errors?
           return [base, "#{base}min", "#{base}max"]
@@ -122,6 +122,32 @@ module CTioga2
           @max_values.concat(column.max_values)
         end
         @values.concat(column.values)
+      end
+
+      # Only keeps every _n_ points in the DataColumn
+      def trim!(nb)
+        nb = nb.to_i
+        if nb < 2
+          return
+        end
+
+        new_vects = []
+        for v in all_vectors
+          if v
+            new_values = Dobjects::Dvector.new
+            i = 0
+            for val in v
+              if (i % nb) == 0
+                new_values << val
+              end
+              i+=1
+            end
+            new_vects << new_values
+          else
+            new_vects << nil
+          end
+        end
+        set_vectors(new_vects)
       end
 
       ColumnSpecsRE = /|min|max/i
@@ -195,6 +221,12 @@ module CTioga2
       # All the vectors held by the DataColumn
       def all_vectors
         return [@values, @min_values, @max_values]
+      end
+
+      # Sets the vectors to the given list, as might have been
+      # returned by #all_vectors
+      def set_vectors(vectors)
+        @values, @min_values, @max_values = *vectors
       end
 
     end

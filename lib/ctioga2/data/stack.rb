@@ -103,7 +103,7 @@ module CTioga2
         if @dataset_hook
           @dataset_hook << "\n#{commands}"
         else
-          @dataset_hook = nil
+          @dataset_hook = commands
         end
       end
 
@@ -155,7 +155,7 @@ Use the current backend to load the given dataset onto the data stack.
 EOH
 
     PrintLastCommand = 
-      Cmd.new("print-dataset", nil, "--print-dataset",
+      Cmd.new("print-dataset", '-P', "--print-dataset",
               [], {'index' => CmdArg.new('integer')}) do |plotmaker,opts|
       if opts['index']
         nb = opts['index']

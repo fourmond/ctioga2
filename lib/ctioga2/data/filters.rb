@@ -44,6 +44,8 @@ dataset pushed unto the data stack: they can be viewed as filters.",
                              <<EOH, FiltersGroup)
 Sorts the last dataset pushed unto the stack according to X values. Can be
 used as a filter.
+
+See also {command: sort}.
 EOH
 
       SortFilter = 
@@ -52,11 +54,41 @@ EOH
         plotmaker.data_stack.add_to_dataset_hook('sort-last()')
       end
       
-      SortFilter.describe("Systematically sort all datasets",
+      SortFilter.describe("Systematically sort subsequent datasets",
                           <<EOH, FiltersGroup)
 Install the {command: sort-last} command as a dataset hook (see {command:
 dataset-hook}): all subsequent datasets will be sorted according to
 their X values.
+EOH
+
+      TrimOperation = 
+        Cmd.new("trim-last", nil, "--trim-last", 
+                [CmdArg.new('integer')], {}) do |plotmaker, number, opts|
+        plotmaker.data_stack.last.trim!(number)
+      end
+      
+      TrimOperation.describe("Only keeps every n points in the last dataset",
+                             <<EOH, FiltersGroup)
+Only keeps one every ? data point on the last dataset pushed unto the
+data stack. Useful when data have too many points to avoid creating
+heavy PDF files that take ages to display with no additional benefits.
+
+This operation is very crude and does not average data.
+
+See also {command: trim}.
+EOH
+
+      TrimFilter = 
+        Cmd.new("trim", nil, "--trim", 
+                [CmdArg.new('integer')], {}) do |plotmaker, number, opts|
+        plotmaker.data_stack.add_to_dataset_hook("trim-last(#{number})")
+      end
+      
+      TrimFilter.describe("Systematically trim subsequent datasets",
+                          <<EOH, FiltersGroup)
+Install the {command: trim-last} command as a dataset hook (see {command:
+dataset-hook}): all subsequent datasets will be trimmed to keep only
+every n point.
 EOH
 
     end

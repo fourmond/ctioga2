@@ -160,6 +160,14 @@ module CTioga2
           @ys[i] << dataset.ys[i]
         end
       end
+
+
+      # Trims all data columns. See DataColumn#trim!
+      def trim!(nb)
+        for col in all_columns
+          col.trim!(nb)
+        end
+      end
         
 
       # TODO: a dup !
