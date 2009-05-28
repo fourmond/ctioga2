@@ -253,6 +253,7 @@ EOD
         #
         # TODO: get the implementation back again.
         def get_cached_entry(name, exclude = [], supp_info = {}, &code)
+          raise YetUnimplemented
           state = save_state
           for k in exclude
             state.delete(k)

@@ -49,6 +49,11 @@ module CTioga2
       exit 1                    # Fatal error.
     end
 
+    # Format an exception for displaying
+    def format_exception(e)
+      return "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+    end
+
     def self.init_logger(stream = STDERR)
       Logger::Formatter::Format.replace("[%4$s] %6$s\n")
       @@logger = Logger.new(stream)
