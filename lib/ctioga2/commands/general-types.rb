@@ -69,6 +69,22 @@ EOD
 A plain string or a regular expression (the latter being enclosed 
 within /.../).
 EOD
+
+
+    # This one gets here since it messes up with syntax highlighting
+
+    # A stored dataset.
+    StoredDatasetType = CmdType.new('stored-dataset', 
+                                    :string, <<EOD)
+A dataset that has already been loaded. It is either:
+* A number, in which case it specifies the index inside the stack. 0
+is the first on that was pushed onto the stack (the oldest dataset),
+1 the second, -1 the last one, -2 the one before the last and so
+on. (it works just like Ruby's arrays).
+* The name of a named dataset.
+EOD
+
+
     
   end
 end

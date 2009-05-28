@@ -46,6 +46,9 @@ module CTioga2
       # The BackendFactory used for retrieving data from named sets.
       attr_accessor :backend_factory
 
+      # Named datasets
+      attr_accessor :named_datasets
+
       # A hook executed every time a dataset is pushed unto the stack
       # using #add_dataset.
       #
@@ -61,6 +64,8 @@ module CTioga2
       # Creates a new DataStack object.
       def initialize
         @stack = Array.new
+
+        @named_datasets = Hash.new
 
         # Defaults to the 'text' backend
         @backend_factory = Data::Backends::BackendFactory.new('text')
@@ -78,6 +83,21 @@ module CTioga2
           retval << ds
         end
         return retval
+      end
+
+      # Returns the stored dataset, either using its index in the
+      # stack, or its name in the dataset.
+      def stored_dataset(spec)
+        if spec.is_a? Numeric or spec =~ /^\s*-?\d+\s*$/
+          spec = spec.to_i
+          return @stack[spec]
+        else
+          if @named_datasets.key? spec
+            return @named_datasets[spec]
+          else
+            raise "Unkown named dataset from the stack: '#{spec}'"
+          end
+        end
       end
 
       # Adds a Dataset object onto the stack, running hooks if
@@ -109,8 +129,8 @@ module CTioga2
 
       # Writes the contents of the the given element to the given _io_
       # stream.
-      def print_dataset(number, io)
-        set = @stack[number]
+      def print_dataset(which, io)
+        set = stored_dataset(which)
         io.puts "# #{set.name}"
         io.puts "# #{set.column_names.join("\t")}"
         set.each_values do |i, *vals|
@@ -145,30 +165,37 @@ module CTioga2
     
     LoadDataCommand = 
       Cmd.new("load", '-L', "--load", 
-              [ CmdArg.new('dataset'), ]) do |plotmaker, set|
+              [ CmdArg.new('dataset'), ], 
+              { 'name' => CmdArg.new('text')}) do |plotmaker, set, opts|
       plotmaker.data_stack.get_datasets(set)
+      if opts['name']
+        plotmaker.data_stack.named_datasets[opts['name']] = 
+          plotmaker.data_stack.last
+      end
     end
     
     LoadDataCommand.describe("Load given sets onto the data stack",
                              <<EOH, DataStackGroup)
-Use the current backend to load the given dataset onto the data stack.
+Use the current backend to load the given dataset(s) onto the data stack.
+
+If the name option is given, the last dataset loaded this way (if
+dataset expansion occurs) gets named. This name can be used to further
+use the dataset without remembering its number. See the type {type:
+stored-dataset} for more information.
 EOH
 
-    PrintLastCommand = 
+
+    PrintLastCommand =
       Cmd.new("print-dataset", '-P', "--print-dataset",
-              [], {'index' => CmdArg.new('integer')}) do |plotmaker,opts|
-      if opts['index']
-        nb = opts['index']
-      else
-        nb = -1
-      end
-      plotmaker.data_stack.print_dataset(nb, STDOUT)
+              [], {'which' => CmdArg.new('stored-dataset')}) do |plotmaker,opts|
+      which = opts['which'] || -1
+      plotmaker.data_stack.print_dataset(which, STDOUT)
     end
     
     PrintLastCommand.describe("Prints the dataset last pushed on the stack",
                               <<EOH, DataStackGroup)
 Prints to standard output data contained in the last dataset pushed
-onto the stack, or the numbered dataset if the index option is given.
+onto the stack, or the given stored dataset if the which option is given.
 EOH
 
     ConcatLastCommand = 
