@@ -84,8 +84,13 @@ module CTioga2
             
             # Manually creating the plot:
             t.set_bounds(@real_boundaries.to_a)
+
+            # Drawing the background elements:
             t.context do
               t.clip_to_frame
+
+              @style.background.draw_background(t)
+
               @style.draw_all_background_lines(t)
               i = 0
               for element in @elements 

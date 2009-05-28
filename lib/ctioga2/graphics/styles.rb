@@ -21,6 +21,7 @@ require 'ctioga2/graphics/styles/curve'
 require 'ctioga2/graphics/styles/sets'
 
 require 'ctioga2/graphics/styles/axes'
+require 'ctioga2/graphics/styles/background'
 require 'ctioga2/graphics/styles/plot'
 
 require 'ctioga2/graphics/styles/legend'

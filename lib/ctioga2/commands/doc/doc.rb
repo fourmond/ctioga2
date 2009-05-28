@@ -81,7 +81,7 @@ module CTioga2
             end
           end
           if @ignore_blacklisted
-            groups.delete_if {|g| g.blacklisted }
+            groups.delete_if {|g| g && g.blacklisted }
           end
           return [cmds, groups]
         end

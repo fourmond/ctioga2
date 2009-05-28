@@ -46,6 +46,8 @@ module CTioga2
 
       # This class represents all the stylistic information to draw a
       # Marker.
+      #
+      # TODO: many things are still missing here...
       class MarkerStyle < BasicStyle
 
         # The color

@@ -55,6 +55,9 @@ module CTioga2
         # Coordinate tranforms
         attr_accessor :transforms
 
+        # Style of the background of the plot
+        attr_accessor :background
+
         def initialize
           # Default style for the plots.
           @axes = {}
@@ -77,6 +80,8 @@ module CTioga2
           @plot_margin = nil
 
           @transforms = CoordinateTransforms.new
+
+          @background = BackgroundStyle.new
         end
 
         # Whether to use log scale for the given axis.
