@@ -164,10 +164,10 @@ module CTioga2
           # Again, each is needed for scoping problems.
           @param_list.each do |param|
             arg = CmdArg.new(param.type, param.name)
-            a = Cmd.new("set-#{@name}-#{param.name}",
-                      nil, "--#{@name}-#{param.name}",
-                      [arg], {},
-                      "Set the #{param.long_name} parameter of backend '#{@name}'", 
+            a = Cmd.new("#{@name}-#{param.name}",
+                        nil, "--#{@name}-#{param.name}",
+                        [arg], {},
+                        "Set the #{param.long_name} parameter of backend '#{@name}'", 
                   param.description, group) do |plotmaker, value|
               plotmaker.data_stack.backend_factory.
                 set_backend_parameter_value(@name, param.name, value)

@@ -105,26 +105,17 @@ module CTioga2
 This is the base class for backends. It should never be used directly.
 EOD
 
+
+        # TODO: the baseline should not be implemented.
+        # It is much more efficient to ;
+        # * implement a dataset subtraction command;
+        # * use the add-dataset hook to automatically subtract a given
+        #   (named ?) buffer.
+
         # A hook to set a baseline:
         #         param_reader :base_line=, :base_line, "baseline", "Base line",
         #         {:type => :string, }, "Sets a baseline for subsequent data sets"
 
-
-#         # TODO...
-#         def base_line=(str)
-#           if str =~ /^no$/ or str.empty?
-#             @base_line = ""
-#           else
-#             @base_line = expand_sets(str)[0]
-#             # Fill the cache.
-#             ary = query_xy_data(@base_line)
-#             @base_line_cache = if ary.is_a?(Array)
-#                                  ary[0]
-#                                else
-#                                  ary
-#                                end
-#           end
-#         end
 
         # Returns true if the backend can provide data for the given set.
         def has_set?(set)

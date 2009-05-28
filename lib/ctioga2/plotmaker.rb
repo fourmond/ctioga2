@@ -446,7 +446,7 @@ current state. This can be used to create an animation.
 EOH
 
     OutputAndResetCommand = 
-      Cmd.new("output-and-reset",nil,"--reset", 
+      Cmd.new("output-and-reset",nil,"--output-and-reset", 
               [ ]) do |plotmaker|
       plotmaker.reset_graphics
     end

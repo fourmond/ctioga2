@@ -161,7 +161,7 @@ module CTioga2
         def self.create_commands
           parameters.each do |target, param|
             override_cmd = 
-              Cmd.new("set-#{param.name}",
+              Cmd.new("#{param.name}",
                       param.short_option,
                       "--#{param.name}", 
                       [
@@ -175,7 +175,7 @@ module CTioga2
 
             if param.sets
               set_cmd = 
-                Cmd.new("select-#{param.name}-set",
+                Cmd.new("#{param.name}-set",
                         nil,
                         "--#{param.name}-set", 
                         [
