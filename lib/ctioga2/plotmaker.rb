@@ -173,6 +173,11 @@ module CTioga2
     # What happens to generated PDF files (a PostProcess object)
     attr_accessor :postprocess
 
+    # Whether or not to include the command-line used to produce the
+    # file in the target PDF file.
+    attr_accessor :mark
+    
+
     # The first instance of PlotMaker created
     @@first_plotmaker_instance = nil
 
@@ -202,6 +207,9 @@ module CTioga2
 
       # Make sure it is registered
       @@first_plotmaker_instance ||= self
+
+      # We mark by default, as it comes dead useful.
+      @mark = true
     end
 
     # ctioga's entry point.
@@ -320,6 +328,19 @@ module CTioga2
       t = Tioga::FigureMaker.new
       t.tex_preamble += @latex_preamble
 
+      # The title field of the information is the command-line if marking
+      # is on.
+      if @mark
+        title = "/Title (#{Utils::pdftex_quote_string(quoted_command_line)})\n"
+      else
+        title = ""
+      end
+      
+      # We now use \pdfinfo to provide information about the version
+      # of ctioga2 used to produce the PDF, and the command-line if
+      # applicable.
+      t.tex_preamble += 
+        "\n\\pdfinfo {\n#{title}/Creator(#{Utils::pdftex_quote_string("ctioga2 #{Version::version}")})\n}\n"
       return t
     end
 
@@ -543,6 +564,24 @@ Postscript points. By default, 2 pixels are rendered for 1 final to
 produce a nicely antialiased image. Use the 'oversampling' option to
 change that, in case the output looks too pixelized. This option only
 affects conversion time.
+EOH
+
+    MarkCommand = 
+      Cmd.new("mark",nil,"--mark", 
+              [CmdArg.new('boolean') ]) do |plotmaker,val|
+      plotmaker.mark = val
+    end
+    
+    MarkCommand.describe('Fills the title of the produced PDF with the command-line', 
+                         <<EOH, PlotSetupGroup)
+When this feature is on (which is the default, as it comes in very
+useful), the 'title' field of the PDF informations is set to the
+command-line that resulted in the PDF file. Disable it if you don't
+want any information to leak.
+
+Please note that this will not log the values of the CTIOGA2_PRE and
+CTIOGA2_POST variables, so you might still get a different output if
+you make heavy use of those.
 EOH
 
   end

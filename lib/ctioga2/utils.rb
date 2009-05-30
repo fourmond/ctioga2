@@ -98,6 +98,23 @@ module CTioga2
         return str
       end
     end
+
+    # Quotes a string so it can be included directly within a
+    # \pdfinfo statement (for instance).
+    def self.pdftex_quote_string(str)
+      return str.gsub(/([%#])|([()])|([{}~_^])|\\/) do 
+        if $1
+          "\\#{$1}"
+        elsif $2                  # Quoting (), as they can be quite nasty !!
+          "\\string\\#{$2}"
+        elsif $3
+          "\\string#{$3}"
+        else                      # Quoting \
+          "\\string\\\\"
+        end
+      end
+    end
+
   end
 
 end
