@@ -51,7 +51,7 @@ module CTioga2
 
     # Format an exception for displaying
     def format_exception(e)
-      return "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+      return "#{e.class}: #{e.message}\n\t#{e.backtrace.join("\n\t")}"
     end
 
     def self.init_logger(stream = STDERR)

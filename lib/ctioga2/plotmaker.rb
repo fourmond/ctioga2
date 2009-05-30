@@ -214,19 +214,26 @@ module CTioga2
 
     # ctioga's entry point.
     def run(command_line)
-      @command_line = command_line.dup
-      if ENV.key? 'CTIOGA2_PRE'
-        command_line.unshift(*Shellwords.shellwords(ENV['CTIOGA2_PRE']))
+
+      # The main catch-all around the plot:
+      begin
+        @command_line = command_line.dup
+        if ENV.key? 'CTIOGA2_PRE'
+          command_line.unshift(*Shellwords.shellwords(ENV['CTIOGA2_PRE']))
+        end
+        
+        if ENV.key? 'CTIOGA2_POST'
+          command_line.push(*Shellwords.shellwords(ENV['CTIOGA2_POST']))
+        end
+        
+        @interpreter.run_command_line(command_line)
+        
+        # Now, draw the main figure
+        file = draw_figure(@figure_name || "Plot", true)
+      rescue Exception => e
+        debug format_exception(e)
+        fatal "#{e.message}"
       end
-
-      if ENV.key? 'CTIOGA2_POST'
-        command_line.push(*Shellwords.shellwords(ENV['CTIOGA2_POST']))
-      end
-
-      @interpreter.run_command_line(command_line)
-
-      # Now, draw the main figure
-      file = draw_figure(@figure_name || "Plot", true)
     end
 
     # Flushes the current root object and starts a new one:
