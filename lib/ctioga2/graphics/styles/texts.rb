@@ -124,6 +124,11 @@ module CTioga2
 
       end
 
+      # Same thing as FullTextStyleOptions, but also permits to
+      # override the #text part of the whole stuff..
+      FullTextLabelOptions = FullTextStyleOptions.dup
+      FullTextLabelOptions['text'] = CmdArg.new('text')
+
     end
   end
 end

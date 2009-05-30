@@ -114,9 +114,16 @@ module CTioga2
           end
         end
 
-        # Get the PlotStyle#axes of the current plot of _plotmaker_.
-        def self.axes_object(plotmaker)
-          return PlotStyle.current_plot_style(plotmaker).axes
+        # Returns the AxisStyle object corresponding to the named axis
+        # in the 
+        def self.current_axis_style(plotmaker, spec)
+          spec = spec.to_sym
+          axis = PlotStyle.current_plot_style(plotmaker).axes[spec]
+          if axis
+            return axis
+          else
+            raise "Unknown axis for the current plot: #{spec}"
+          end
         end
 
         protected

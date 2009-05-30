@@ -103,34 +103,52 @@ module CTioga2
           end
         end
 
+        # Returns the AxisStyle corresponding to the named
+        # axis. _name_ can be:
+        # * one of the named elements of axes (ie, by default: top,
+        #   left, right, bottom). All names are stripped from spaces
+        #   around, and downcased (see #clean_axis_name).
+        # * x(axis)?/y(axis)?, which returns the default object for the
+        #   given location
+        def get_axis_style(name)
+          if name =~ /^\s*([xy])(?:axis)?\s*$/i
+            return @axes[self.send("#{$1.downcase}axis_location")]
+          else
+            style = @axes[clean_axis_name(name)]
+            if ! style
+              raise "Unkown named axis: '#{name}'"
+            else
+              return style
+            end
+          end 
+        end
+
         # Returns a BaseTextStyle or similar for the given
         # location. The location is of the form:
-        # * 'left', 'right', 'top', 'bottom': tick labels
-        # * 'xaxis', 'yaxis': the label for the side corresponding to the
-        #   locations
-        # * side_(tick|label) : clear enough
-        # * 'title' the title of the graph.
-        def label_style(location)
-          if location =~ /^\s*(left|right|top|bottom)(?:_(ticks|label))?\s*$/
-            loc = $1.to_sym
-            if $2 == '_label'
-              return @axes[loc].axis_label
-            else
-              return @axes[loc].tick_label_style
-            end
-          elsif location =~ /^\s*([xy]axis)\s*$/
-            return @axes[self.send("#{$1}_location")].axis_label
-          elsif location =~ /^\s*title\s*$/
+        #   axis_name(_(ticks?|label))
+        # or
+        #   title
+        #
+        # If neither label nor ticks is specified in the first form,
+        # ticks are implied.
+        def get_label_style(location)
+          if location =~ /^\s*title\s*$/
             return @title
+          end
+          location =~ /^\s*(.*?)(?:_(ticks?|label))?\s*$/i
+          which = $2
+          axis = get_axis_style($1)
+          if which =~ /label/
+            return axis.axis_label
           else
-            raise "Unknown label location: #{location}"
+            return axis.tick_label_style
           end
         end
 
         # Sets the style of the given label. Sets the text as well, if
         # applicable.
         def set_label_style(which, hash, text = nil)
-          style = label_style(which)
+          style = get_label_style(which)
           hash = hash.merge({'text' => text}) if text
           style.set_from_hash(hash)
         end
@@ -163,10 +181,21 @@ module CTioga2
           return plotmaker.root_object.current_plot.style
         end
 
+        protected
+
+        # Takes a string and returns a Symbol suitable for use with
+        # the #axes hash (lower case without spaces).
+        def clean_axis_name(name)
+          name =~ /^\s*(.*?)\s*$/
+          return $1.downcase.to_sym
+        end
+
       end
 
       AxisGroup = CmdGroup.new('axes-labels',
                                "Axes and labels", "Axes and labels", 40)
+
+
       
       AxisTypeCommands = []
       [:left, :right, :top, :bottom].each do |loc|
@@ -188,13 +217,13 @@ EOH
       BackgroundLinesCommands = 
         Cmd.new('background-lines', nil, '--background-lines',
                 [
-                 CmdArg.new('text'), # TODO: change that
+                 CmdArg.new('axis'), 
                  CmdArg.new('color-or-false')
                 ],{
                   'style' => CmdArg.new('line-style'),
                   'width' => CmdArg.new('float')
                 }) do |plotmaker, which, color, options|
-        ax = AxisStyle.axes_object(plotmaker)[which.to_sym]
+        ax = AxisStyle.axes_object(plotmaker)[which]
         if color
           style = {'color' => color}
           style.merge!(options)
@@ -208,8 +237,9 @@ EOH
         end
       end
       
-      BackgroundLinesCommands.describe("Sets the color of the background lines", 
-                                       <<"EOH", AxisGroup)
+      BackgroundLinesCommands.
+        describe("Sets the color of the background lines", 
+                 <<"EOH", AxisGroup)
 Sets the color of the background lines for the given axis.
 EOH
 
@@ -252,19 +282,20 @@ EOH
 
       LabelStyleCommand = 
         Cmd.new('label-style', nil, '--label-style',
-                [ CmdArg.new('text') ], 
-                FullTextStyleOptions) do |plotmaker, which, options|
+                [ CmdArg.new('label') ], # Here: change the label too... 
+                FullTextLabelOptions) do |plotmaker, which, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style(which, options)
       end
       
       LabelStyleCommand.describe("Sets the style of the given label", 
                                  <<"EOH", AxisGroup)
-Sets the style of the given label. The label can be:
- * left, right, top or bottom for the tick labels
- * xaxis or yaxis for the corresponding axis labels
- * left_ticks or left_label for ticks or label of the left side (and so on)
- * title for the plot's title
+Sets the style of the given label (see the type {type: label} for more
+information).
+
+The option text permits to also set the text of the label (does not
+work for ticks). Due to a limitation in tioga, the color option does
+not work for ticks either.
 EOH
 
     end

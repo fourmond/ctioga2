@@ -71,7 +71,7 @@ within /.../).
 EOD
 
 
-    # This one gets here since it messes up with syntax highlighting
+    # This ones get here since they mess up with syntax highlighting
 
     # A stored dataset.
     StoredDatasetType = CmdType.new('stored-dataset', 
@@ -84,6 +84,23 @@ on. (it works just like Ruby's arrays).
 * The name of a named dataset.
 EOD
 
+    # Something meant to be fed to PlotStyle#get_axis_style
+    AxisType = CmdType.new('axis', :string, <<EOD)
+The name of an axis. It can be:
+* left, top, bottom or right;
+* x, xaxis, y, yaxis, which return one of the above depending 
+  on the preferences of the current plot;
+* one of the named axes.
+EOD
+
+    # Something meant to be fed to PlotStyle#get_label_style
+    LabelType = CmdType.new('label', :string, <<EOD)
+The name of an label. It can be:
+* title to mean the current plot's title.
+* axis_tick or axis_ticks or simply axis, where axis is a a valid
+  {type: axis}.  It means the ticks of the given axis.
+* axis_label, same as above but targets the label of the given axis.
+EOD
 
     
   end
