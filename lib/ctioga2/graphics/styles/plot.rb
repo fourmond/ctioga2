@@ -219,6 +219,22 @@ Sets the type of the #{loc} axis.
 EOH
       end
 
+      AxisStyleCommand = 
+          Cmd.new("axis-style",nil,"--axis-style", 
+                  [
+                   CmdArg.new('axis'),
+                  ], FullAxisStyle) do |plotmaker, which, opts|
+        style = AxisStyle.current_axis_style(plotmaker, which)
+        style.set_from_hash(opts)
+      end
+      AxisStyleCommand.
+        describe("Sets the style of the given axis", 
+                 <<"EOH", AxisGroup)
+This command can be used to set various aspects of the style of the 
+given axis, through its various options:
+ * decoration
+EOH
+
       BackgroundLinesCommands = 
         Cmd.new('background-lines', nil, '--background-lines',
                 [

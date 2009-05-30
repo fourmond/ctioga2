@@ -77,29 +77,29 @@ EOD
     StoredDatasetType = CmdType.new('stored-dataset', 
                                     :string, <<EOD)
 A dataset that has already been loaded. It is either:
-* A number, in which case it specifies the index inside the stack. 0
-is the first on that was pushed onto the stack (the oldest dataset),
-1 the second, -1 the last one, -2 the one before the last and so
-on. (it works just like Ruby's arrays).
-* The name of a named dataset.
+ * A number, in which case it specifies the index inside the stack. 0
+   is the first on that was pushed onto the stack (the oldest
+   dataset), 1 the second, -1 the last one, -2 the one before the last
+   and so on. (it works just like Ruby's arrays).
+ * The name of a named dataset.
 EOD
 
     # Something meant to be fed to PlotStyle#get_axis_style
     AxisType = CmdType.new('axis', :string, <<EOD)
 The name of an axis. It can be:
-* left, top, bottom or right;
-* x, xaxis, y, yaxis, which return one of the above depending 
-  on the preferences of the current plot;
-* one of the named axes.
+ * left, top, bottom or right;
+ * x, xaxis, y, yaxis, which return one of the above depending 
+   on the preferences of the current plot;
+ * one of the named axes.
 EOD
 
     # Something meant to be fed to PlotStyle#get_label_style
     LabelType = CmdType.new('label', :string, <<EOD)
 The name of an label. It can be:
-* title to mean the current plot's title.
-* axis_tick or axis_ticks or simply axis, where axis is a a valid
-  {type: axis}.  It means the ticks of the given axis.
-* axis_label, same as above but targets the label of the given axis.
+ * title to mean the current plot's title.
+ * axis_tick or axis_ticks or simply axis, where axis is a a valid
+   {type: axis}.  It means the ticks of the given axis.
+ * axis_label, same as above but targets the label of the given axis.
 EOD
 
     

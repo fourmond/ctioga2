@@ -99,9 +99,9 @@ EOH
                                 <<EOH, LegendGroup)
 Sets the various aspects of the style of the legends throught 
 its options:
-* dy: the spacing between consecutive lines
-* scale: the overall scale of the legends
-* text_scale: the scale of the text (and the markers) inside the legends
+ * dy: the spacing between consecutive lines
+ * scale: the overall scale of the legends
+ * text_scale: the scale of the text (and the markers) inside the legends
 EOH
 
   end
