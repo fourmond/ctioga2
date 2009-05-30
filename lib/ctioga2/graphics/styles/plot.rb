@@ -206,11 +206,11 @@ module CTioga2
           Cmd.new("#{loc}",nil,"--#{loc}", 
                   [
                    CmdArg.new('axis-decoration'),
-                  ]) do |plotmaker, dec|
+                  ], PartialAxisStyle) do |plotmaker, dec, opts|
           style = AxisStyle.current_axis_style(plotmaker, loc)
           style.decoration = dec
 
-          # TODO: implement options !
+          style.set_from_hash(opts)
         end
         AxisTypeCommands.last.
           describe("Sets the type of the #{loc} axis", 

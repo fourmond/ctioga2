@@ -15,6 +15,7 @@ require 'ctioga2/graphics/types/dimensions'
 require 'ctioga2/graphics/types/point'
 require 'ctioga2/graphics/types/boundaries'
 require 'ctioga2/graphics/types/boxes'
+require 'ctioga2/graphics/types/bijection'
 
 # In addition to the former, here are some useful constants
 # This module contains all the classes used by ctioga
@@ -133,6 +134,23 @@ EOD
       CmdType.new('box', :box, <<EOD)
 The specification for a box, such as an inset. Specifications vary for
 now... TODO: to be written later on.
+EOD
+
+    # Coordinate transformations
+    BijectionType = 
+      CmdType.new('bijection', :bijection, <<EOD)
+A pair of functions of x specifying a bidirectional coordinate
+transformation , separated by a double colon (::), in the order
+from::to.
+
+Each of the functions must be valid Ruby code - it is not exactly
+mathematical functions, in particular Ruby does not like floats which
+are missing digits on either side of the dot : for instance, .3 and
+1. are not valid. Sorry.
+
+In most of the usual cases, the coordinate transform is an involution,
+that is from and to is the same function (this is the case for
+a/x). In this case, you can omit the second function.
 EOD
 
   end

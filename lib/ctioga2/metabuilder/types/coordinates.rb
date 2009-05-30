@@ -108,6 +108,17 @@ module CTioga2
         end
       end
 
+      # A general bidirectional coordinate transformation.
+      class BijectionType < Type
+        
+        type_name :bijection, 'bijection'
+        
+        def string_to_type_internal(str)
+          return Graphics::Types::Bijection.from_text(str)
+        end
+
+      end
+
     end
   end
 end

@@ -56,6 +56,10 @@ module CTioga2
         # Whether the axis should be log scale or not
         attr_accessor :log
 
+        # Transform: a Types::Bijection object specifying a coordinate
+        # transformation for the axis.
+        attr_accessor :transform
+
 
         # Creates a new AxisStyle object at the given location with
         # the given style.
@@ -78,7 +82,7 @@ module CTioga2
         # * non-linear axes (or linear, for that matter, but with
         #   a transformation)
         def draw_axis(t)
-          spec = get_axis_specification
+          spec = get_axis_specification(t)
           # Add tick label style:
           spec.merge!(@tick_label_style.to_hash)
           t.show_axis(spec)
@@ -90,7 +94,7 @@ module CTioga2
         def draw_background_lines(t)
           if @background_lines
             # First, getting major ticks location from tioga
-            info = t.axis_information(get_axis_specification)
+            info = t.axis_information(get_axis_specification(t))
 
             if info['vertical']
               x0 = t.bounds_left
@@ -101,7 +105,8 @@ module CTioga2
             end
             t.context do
               @background_lines.set_stroke_style(t)
-              for val in info['major']
+              values = info['major_ticks'] || info['major']
+              for val in values
                 if info['vertical']
                   t.stroke_line(x0, val, x1, val)
                 else
@@ -126,16 +131,63 @@ module CTioga2
         #
         # For the log axis scale to work, tioga revision 543 is
         # absolutely necessary. It won't fail, though, without it.
-        def get_axis_specification
+        def get_axis_specification(t)
+          if @transform
+            retval = compute_coordinate_transforms(t)
+          else
+            retval = {}
+          end
           if @offset 
             raise YetUnimplemented, "This has not been implemented yet"
           else
-            return {'location' => LocationToTiogaLocation[@location],
-              'type' => @decoration, 'log' => @log}
+            retval.
+              update({'location' => 
+                       LocationToTiogaLocation[@location],
+                       'type' => @decoration, 'log' => @log})
+            return retval
           end
         end
+
+        # Setup coordinate transformations
+        def compute_coordinate_transforms(t)
+          return unless @transform
+          # We'll proceed by steps...
+          i = t.axis_information({'location' => 
+                                   LocationToTiogaLocation[@location]})
+          t.context do 
+            if i['vertical']
+              top,b = @transform.convert_to([t.bounds_top, t.bounds_bottom])
+              l,r = t.bounds_left, t.bounds_right
+            else
+              top,b = t.bounds_top, t.bounds_bottom
+              l,r = @transform.convert_to([t.bounds_left, t.bounds_right])
+            end
+            t.set_bounds([l,r,top,b])
+            i = t.axis_information({'location' => 
+                                     LocationToTiogaLocation[@location]})
+            # Now, we have the location of everything we need.
+          end
+          # In the following, the || are because of a fix in Tioga
+          # r545
+          return { 'labels' => i['labels'], 
+            'major_ticks' => @transform.
+            convert_from(i['major_ticks'] || i['major']),
+            'minor_ticks' => @transform.
+            convert_from(i['minor_ticks'] || i['minor'] )
+          }
+        end
+
+
        
       end
+
+      PartialAxisStyle = {
+        'transform' => CmdArg.new('bijection')
+      }
+
+      FullAxisStyle = PartialAxisStyle.dup
+      FullAxisStyle['decoration'] = CmdArg.new('axis-decoration')
+                       
 
     end
   end
