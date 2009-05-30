@@ -126,6 +126,9 @@ require 'ctioga2/graphics/styles'
 require 'ctioga2/graphics/generator'
 
 
+# Miscellaneous
+require 'ctioga2/postprocess'
+
 
 
 # This module contains all the classes used by ctioga
@@ -164,12 +167,11 @@ module CTioga2
     # The output directory
     attr_accessor :output_directory
 
-    # The viewer command. If not _nil_, automatically spawn a viewer
-    # after the final figure.
-    attr_accessor :viewer_command
-
     # Additional preamble for LaTeX output
     attr_accessor :latex_preamble
+
+    # What happens to generated PDF files (a PostProcess object)
+    attr_accessor :postprocess
 
     # The first instance of PlotMaker created
     @@first_plotmaker_instance = nil
@@ -195,6 +197,8 @@ module CTioga2
 
       # Original preamble
       @latex_preamble = ""
+
+      @postprocess = PostProcess.new
 
       # Make sure it is registered
       @@first_plotmaker_instance ||= self
@@ -239,12 +243,8 @@ module CTioga2
     # It returns the path of the PDF file produced.
     #
     # TODO:
-    # * handling of subdirectories
-    # * other outputs (EPS, SVG, PNG)
     # * cleanup or not ?
-    # * spawning of xpdf or any other viewer, for that matter.
-    #   (could be forked, too, for that)
-    def draw_figure(figname = "Plot", view = false)
+    def draw_figure(figname = "Plot", last = false)
       return if @root_object.empty?
       info "Producing figure '#{figname}'"
 
@@ -271,14 +271,9 @@ module CTioga2
 
       file = t.save_dir ? File::join(t.save_dir, figname + ".pdf") : 
         figname + ".pdf"
-      if view && @viewer_command
-        if @viewer_command =~ /%s/
-          cmd = @viewer_command % file
-        else
-          cmd = "#{@viewer_command} #{file}"
-        end
-        spawn(cmd)
-      end
+
+      # Feed it
+      @postprocess.process_file(file, last)
       return file
     end
 
@@ -470,10 +465,14 @@ directory.
 EOH
 
 
+    # These commands belong rather to the PostProcess file, but, well,
+    # they don't do much harm here anyway...
+    
+
     ViewerCommand = 
       Cmd.new("viewer",nil,"--viewer", 
               [ CmdArg.new('text') ]) do |plotmaker, viewer|
-      plotmaker.viewer_command = viewer
+      plotmaker.postprocess.viewer = viewer
     end
 
     ViewerCommand.describe('Uses the given viewer to view the produced PDF files', 
@@ -483,7 +482,7 @@ EOH
     
     XpdfViewerCommand = 
       Cmd.new("xpdf",'-X',"--xpdf", [ ]) do |plotmaker|
-      plotmaker.viewer_command = "xpdf -z page"
+      plotmaker.postprocess.viewer = "xpdf -z page"
     end
 
     XpdfViewerCommand.describe('Uses xpdf to view the produced PDF files', 
@@ -493,12 +492,57 @@ EOH
 
     OpenViewerCommand = 
       Cmd.new("open",nil,"--open", [ ]) do |plotmaker|
-      plotmaker.viewer_command = "open"
+      plotmaker.postprocess.viewer = "open"
     end
     
     OpenViewerCommand.describe('Uses open to view the produced PDF files', 
                                <<EOH, PlotSetupGroup)
 Uses open (available on MacOS) to view the PDF files produced by ctioga2.
+EOH
+
+    SVGCommand = 
+      Cmd.new("svg",nil,"--svg", 
+              [CmdArg.new('boolean') ]) do |plotmaker,val|
+      plotmaker.postprocess.svg = val
+    end
+    
+    SVGCommand.describe('Converts produced PDF to SVG using pdf2svg', 
+                        <<EOH, PlotSetupGroup)
+When this feature is on, all produced PDF files are converted to SVG
+using the neat pdf2svg program.
+EOH
+
+    PNGCommand = 
+      Cmd.new("png",nil,"--png", 
+              [CmdArg.new('text', 'resolution') ],
+              {
+                'oversampling' => CmdArg.new('float'),
+                'scale' => CmdArg.new('float'),
+              }) do |plotmaker,res, opts|
+      if res =~ /^\s*(\d+)\s*x\s*(\d+)\s*$/
+        size = [$1.to_i, $2.to_i]
+        plotmaker.postprocess.png_res = size
+        if opts['oversampling']
+          plotmaker.postprocess.png_oversampling = opts['oversampling']
+        end
+        scale = opts['scale'] || 1
+        plotmaker.postprocess.png_scale = scale
+        page_size = size.map { |n| (n/(1.0 *scale)).to_s + "bp" }.join('x')
+        plotmaker.root_object.set_page_size(page_size)
+      else
+        raise "Invalid resolution for PNG output: #{res}"
+      end
+    end
+    
+    PNGCommand.describe('Converts produced PDF to PNG using convert', 
+                        <<EOH, PlotSetupGroup)
+Turns all produced PDF files into PNG images of the given resolution
+using convert. This also has for effect to set the {command:
+page-size} to the resolution divided by the 'scale' option in
+Postscript points. By default, 2 pixels are rendered for 1 final to
+produce a nicely antialiased image. Use the 'oversampling' option to
+change that, in case the output looks too pixelized. This option only
+affects conversion time.
 EOH
 
   end
