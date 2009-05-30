@@ -23,10 +23,8 @@ module CTioga2
 
     module Styles
 
-      # The style of an axis or an egde of the plot. ctioga2 does not
-      # make any difference.
-      #
-      # TODO: add axis lines !
+      # The style of an axis or an egde of the plot. Unlike tioga,
+      # ctioga2 does not make any difference.
       class AxisStyle < BasicStyle
         
         # The type of the edge/axis. Any of the Tioga constants:
@@ -34,7 +32,7 @@ module CTioga2
         # AXIS_WITH_TICKS_ONLY,
         # AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS, and
         # AXIS_WITH_TICKS_AND_NUMERIC_LABELS.
-        attr_accessor :type
+        attr_accessor :decoration
         
         # The position of the axis. Can be one of :left, :right, :top,
         # :bottom, :at_y_origin or :at_x_origin.
@@ -61,9 +59,9 @@ module CTioga2
 
         # Creates a new AxisStyle object at the given location with
         # the given style.
-        def initialize(location = nil, type = nil, label = nil)
+        def initialize(location = nil, decoration = nil, label = nil)
           @location = location
-          @type = type
+          @decoration = decoration
 
           @tick_label_style = BaseTextStyle.new
           @axis_label = TextLabel.new(label)
@@ -115,15 +113,10 @@ module CTioga2
         end
 
         # Returns the AxisStyle object corresponding to the named axis
-        # in the 
+        # in the current plot.
         def self.current_axis_style(plotmaker, spec)
-          spec = spec.to_sym
-          axis = PlotStyle.current_plot_style(plotmaker).axes[spec]
-          if axis
-            return axis
-          else
-            raise "Unknown axis for the current plot: #{spec}"
-          end
+          return PlotStyle.current_plot_style(plotmaker).
+            get_axis_style(spec)
         end
 
         protected
@@ -138,7 +131,7 @@ module CTioga2
             raise YetUnimplemented, "This has not been implemented yet"
           else
             return {'location' => LocationToTiogaLocation[@location],
-              'type' => @type, 'log' => @log}
+              'type' => @decoration, 'log' => @log}
           end
         end
        

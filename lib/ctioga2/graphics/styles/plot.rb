@@ -186,6 +186,9 @@ module CTioga2
         # Takes a string and returns a Symbol suitable for use with
         # the #axes hash (lower case without spaces).
         def clean_axis_name(name)
+          if name.is_a?(::Symbol) # Argh ! Tioga redefined Symbol !
+            return name
+          end
           name =~ /^\s*(.*?)\s*$/
           return $1.downcase.to_sym
         end
@@ -203,8 +206,10 @@ module CTioga2
           Cmd.new("#{loc}",nil,"--#{loc}", 
                   [
                    CmdArg.new('axis-decoration'),
-                  ]) do |plotmaker, type|
-          AxisStyle.axes_object(plotmaker)[loc].type = type
+                  ]) do |plotmaker, dec|
+          style = AxisStyle.current_axis_style(plotmaker, loc)
+          style.decoration = dec
+
           # TODO: implement options !
         end
         AxisTypeCommands.last.
@@ -223,17 +228,17 @@ EOH
                   'style' => CmdArg.new('line-style'),
                   'width' => CmdArg.new('float')
                 }) do |plotmaker, which, color, options|
-        ax = AxisStyle.axes_object(plotmaker)[which]
+        axis = AxisStyle.current_axis_style(plotmaker, which)
         if color
           style = {'color' => color}
           style.merge!(options)
-          if ax.background_lines
-            ax.background_lines.set_from_hash(style)
+          if axis.background_lines
+            axis.background_lines.set_from_hash(style)
           else
-            ax.background_lines = StrokeStyle.from_hash(style)
+            axis.background_lines = StrokeStyle.from_hash(style)
           end
         else
-          ax.background_lines = false
+          axis.background_lines = false
         end
       end
       

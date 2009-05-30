@@ -230,6 +230,8 @@ module CTioga2
         
         # Now, draw the main figure
         file = draw_figure(@figure_name || "Plot", true)
+      rescue SystemExit => e
+        # We special-case the exit exception ;-)...
       rescue Exception => e
         debug format_exception(e)
         fatal "#{e.message}"
