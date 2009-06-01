@@ -92,9 +92,9 @@ module CTioga2
           for t in types
             out.puts
             out.puts "<h4 id='type-#{t.name}' class='type'>#{t.name}</h4>\n"
-            out.puts "<p>\n"
             out.puts markup_to_html(t.description)
-            out.puts "</p>\n"
+            out.puts            # There is no need to wrap the markup
+            # in a paragraph.
           end
         end
         

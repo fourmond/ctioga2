@@ -16,6 +16,7 @@ require 'ctioga2/commands/commands'
 require 'ctioga2/commands/doc/help'
 require 'ctioga2/commands/doc/man'
 require 'ctioga2/commands/doc/html'
+require 'ctioga2/commands/doc/markup'
 
 module CTioga2
 
@@ -74,6 +75,33 @@ EOH
                               <<EOH, DocumentationGenerationGroup)
 Prints the HTML documentation for all types.
 EOH
+
+      DumpCommandMarkup = 
+        Cmd.new("dump-command-markup", nil, "--dump-command-markup", 
+                []) do |plotmaker|
+        markup = Markup.new(plotmaker.interpreter.doc)
+        markup.write_commands()
+      end
+      
+      DumpCommandMarkup.describe("Dump markup for commands and groups",
+                                 <<EOH, DocumentationGenerationGroup)
+Dumps the parsed markup for commands and groups. Used for debugging
+purposes.
+EOH
+
+      DumpTypesMarkup = 
+        Cmd.new("dump-types-markup", nil, "--dump-types-markup", 
+                []) do |plotmaker|
+        markup = Markup.new(plotmaker.interpreter.doc)
+        markup.write_types()
+      end
+      
+      DumpTypesMarkup.describe("Dump markup for types and groups",
+                               <<EOH, DocumentationGenerationGroup)
+Dumps the parsed markup for types and groups. Used for debugging
+purposes.
+EOH
+
     end
   end
 end

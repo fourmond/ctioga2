@@ -40,6 +40,11 @@ module CTioga2
 
           def to_s
           end
+
+          def dump_string
+            return ""
+          end
+
         end
 
         # A markup item representing plain text.
@@ -61,6 +66,11 @@ module CTioga2
           def to_s
             return text
           end
+
+          def dump_string
+            return "text: #{@text}"
+          end
+
         end
 
         # A markup item representing verbatim text, with the given
@@ -81,6 +91,11 @@ module CTioga2
           def to_s
             return text
           end
+
+          def dump_string
+            return "#{@cls}: #{@text}"
+          end
+
         end
 
         # A link to a type/group/command
@@ -101,6 +116,10 @@ module CTioga2
             else
               return "unknown"
             end
+          end
+
+          def dump_string
+            return "link: #{@target}"
           end
         end
 
@@ -127,6 +146,13 @@ module CTioga2
             end
             return str
           end
+          
+          def dump_string
+            return @items.map {|x|
+              "* #{x.map do |y| y.dump_string; end}\n"
+            }.join('')
+          end
+
         end
 
         # An item that contains a paragraph
@@ -141,6 +167,13 @@ module CTioga2
           def to_s
             return @elements.map {|x| x.to_s }.join('')
           end
+
+          def dump_string
+            return "par: " + @elements.map {|x|
+              "  #{x.dump_string}\n"
+            }.join('')
+          end
+
         end
 
         # The reference Doc object
@@ -185,8 +218,9 @@ module CTioga2
           @last_type = nil
           @last_string = ""
 
-          lines = string.split(/\s*\n/)
+          lines = string.split(/[ \t]*\n/)
           for l in lines
+            l.chomp!
             case l
             when /^[#>]\s(.*)/  # a verbatim line
               type = (l[0] == '#' ? :cmdfile : :cmdline)
@@ -260,6 +294,53 @@ module CTioga2
           end
         end
 
+
+      end
+      
+      # A class dumping markup information to standard output
+      class Markup
+        # The Doc object the Markup class should dump
+        attr_accessor :doc
+
+        def initialize(doc)
+          @doc = doc
+        end
+        
+        # Dumps the markup of all commands
+        def write_commands(out = STDOUT)
+          cmds, groups = @doc.documented_commands
+
+          for g in groups
+            out.puts "Group markup: #{g.name}"
+            out.puts dump_markup(g.description)
+
+            commands = cmds[g].sort {|a,b|
+              a.name <=> b.name
+            }
+            
+            for cmd in commands
+              out.puts "Command: #{cmd.name}"
+              out.puts dump_markup(cmd.long_description)
+            end
+          end
+        end
+
+        # Dumps the markup of all types
+        def write_types(out = STDOUT)
+          types = @doc.types.sort.map { |d| d[1]}
+          for t in types
+            out.puts "Type: #{t.name}"
+            out.puts dump_markup(t.description)
+          end
+        end
+
+        def dump_markup(items)
+          if items.is_a? String 
+            mup = MarkedUpText.new(@doc, items)
+            return dump_markup(mup.elements)
+          end
+          return items.map { |x| "-> #{x.dump_string}\n"}
+        end
 
       end
     end
