@@ -46,12 +46,14 @@ module CTioga2
         def write_commands(out = STDOUT)
           cmds, groups = @doc.documented_commands
 
+          out.puts "<div class='quick-jump'>"
           out.puts "Quick jump to a specific group of commands:\n"
           out.puts "<ul>\n"
           for g in groups
             out.puts "<li><a href='#group-#{g.id}'>#{g.name}</a></li>\n"
           end
           out.puts "</ul>\n"
+          out.puts "</div>"
           
           for g in groups
             out.puts 
@@ -82,12 +84,14 @@ module CTioga2
           types = @doc.types.sort.map { |d| d[1]}
 
 
+          out.puts "<div class='quick-jump'>"
           out.puts "Quick jump to a specific type:\n"
           out.puts "<ul>\n"
           for t in types
             out.puts "<li><a href='#type-#{t.name}'>#{t.name}</a></li>\n"
           end
           out.puts "</ul>\n"
+          out.puts "</div>"
  
           for t in types
             out.puts
