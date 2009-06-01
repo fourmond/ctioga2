@@ -269,7 +269,7 @@ EOH
         Cmd.new('xlabel', '-x', '--xlabel', [ CmdArg.new('text') ],
                 FullTextStyleOptions) do |plotmaker, label, options|
         PlotStyle.current_plot_style(plotmaker).
-          set_label_style('xaxis', options, label)
+          set_label_style('x_label', options, label)
       end
 
       XAxisLabelCommand.describe("Sets the X label of the plot", 
@@ -281,7 +281,7 @@ EOH
         Cmd.new('ylabel', '-y', '--ylabel', [ CmdArg.new('text') ],
                 FullTextStyleOptions) do |plotmaker, label, options|
         PlotStyle.current_plot_style(plotmaker).
-          set_label_style('yaxis', options, label)
+          set_label_style('y_label', options, label)
       end
 
       YAxisLabelCommand.describe("Sets the Y label of the plot", 
