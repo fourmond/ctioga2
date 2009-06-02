@@ -129,6 +129,93 @@ module CTioga2
       FullTextLabelOptions = FullTextStyleOptions.dup
       FullTextLabelOptions['text'] = CmdArg.new('text')
 
+
+
+      # The style for a string marker. Hmmm, this is somewhat
+      # redundant with TiogaPrimitiveCall::MarkerOptions and I don't
+      # like that.
+      class MarkerStringStyle < BasicStyle
+        
+        MarkerOptions = {
+          'color' => 'color',
+          'stroke_color' => 'color',
+          'fill_color' => 'color',
+          'scale' => 'float',
+          'horizontal_scale' => 'float',
+          'vertical_scale' => 'float',
+          'angle' => 'float',
+          'justification' => 'justification',
+          'alignment' => 'alignment',
+        }
+
+
+        # The angle of the text
+        attr_accessor :angle
+
+        # The scale of the text
+        attr_accessor :scale
+
+        # The horizontal scale of the text
+        attr_accessor :horizontal_scale
+
+        # The vertical scale of the text
+        attr_accessor :vertical_scale
+
+        # The vertical alignment 
+        attr_accessor :alignement
+
+        # The horizontal alignment
+        attr_accessor :justification
+
+        # Colors
+        attr_accessor :color
+        attr_accessor :stroke_color
+        attr_accessor :fill_color
+
+        # A number between 1 to 14 -- a PDF font
+        attr_accessor :font
+
+        # The rendering mode.
+        attr_accessor :mode
+        
+        def initialize
+          # It make sense to use both by default, as it would be
+          # confusing to provide both fill_ and stroke_color that
+          # don't have effects by default...
+          @mode = Tioga::FigureConstants::FILL_AND_STROKE
+        end
+
+
+        # Draws the string marker at the given location
+        def draw_string_marker(t, text, x, y)
+          dict = self.to_hash
+          dict['text'] = text
+          dict['at'] = [x, y]
+          # TODO !
+          dict['mode'] = 
+          t.show_marker(dict)
+        end
+
+        # Returns the true vertical scale of the marker
+        def real_vertical_scale
+          return (@vertical_scale || 1.0) * (@scale || 1.0)
+        end
+      end
+      
+      StringMarkerOptions = {
+        'color' => CmdArg.new('color'),
+        'stroke_color' => CmdArg.new('color'),
+        'fill_color' => CmdArg.new('color'),
+        'scale' => CmdArg.new('float'),
+        'horizontal_scale' => CmdArg.new('float'),
+        'vertical_scale' => CmdArg.new('float'),
+        'angle' => CmdArg.new('float'),
+        'justification' => CmdArg.new('justification'),
+        'alignment' => CmdArg.new('alignment'),
+        'font' => CmdArg.new('pdf-font')
+      }
+
+
     end
   end
 end

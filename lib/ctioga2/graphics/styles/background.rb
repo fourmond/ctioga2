@@ -30,11 +30,21 @@ module CTioga2
 
         # The background color for a uniform fill. 
         attr_accessor :background_color
+
+        # The text of the watermark, or _nil_ if there should be no
+        # watermark.
+        attr_accessor :watermark_text
+
+        # A MarkerStringStyle object representing the style of the
+        # watermark.
+        attr_accessor :watermark_style
         
         # Creates a new AxisStyle object at the given location with
         # the given style.
         def initialize(location = nil, type = nil, label = nil)
           @background_color = nil
+          @watermark_style = MarkerStringStyle.new
+          @watermark_style.color = [0.5,0.5,0.5]
         end
 
         # Draws the background of the current plot. Fills up the
@@ -47,8 +57,29 @@ module CTioga2
               t.fill_color = @background_color
               t.fill_frame
             end
+            draw_watermark(t)
           end
         end
+
+        def draw_watermark(t)
+          if @watermark_text
+            x = t.convert_frame_to_figure_x(0.5)
+            y = t.convert_frame_to_figure_y(0.5)
+            
+            delta_y = t.default_text_height_dy * @watermark_style.
+              real_vertical_scale
+            
+            # We split lines on \\, just like in standard LaTeX
+            lines = @watermark_text.split(/\s*\\\\\s*/)
+            i = + (lines.size-1)/2.0
+            for text in lines 
+              @watermark_style.
+                draw_string_marker(t, text, x, y + delta_y * i)
+              i -= 1
+            end
+          end
+        end
+        
         
       end
 
@@ -70,6 +101,21 @@ EOD
       BackgroundColorCmd.describe("Background color for the plot", 
                                   <<"EOH", BackgroundGroup)
 Sets the background color for the current (and subsequent?) plot.
+EOH
+
+      WatermarkCmd = 
+        Cmd.new('watermark', nil, '--watermark', 
+                [ CmdArg.new('text') ], 
+                StringMarkerOptions) do |plotmaker, text, opts|
+        bg = PlotStyle.current_plot_style(plotmaker).
+          background
+        bg.watermark_text = text
+        bg.watermark_style.set_from_hash(opts)
+      end
+
+      WatermarkCmd.describe("Sets a watermark for the current plot", 
+                            <<"EOH", BackgroundGroup)
+Watermark...
 EOH
     end
   end
