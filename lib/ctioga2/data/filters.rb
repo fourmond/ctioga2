@@ -37,7 +37,7 @@ dataset pushed unto the data stack: they can be viewed as filters.",
       SortOperation = 
         Cmd.new("sort-last", nil, "--sort-last", 
                 [], {}) do |plotmaker, opts|
-        plotmaker.data_stack.last.sort
+        plotmaker.data_stack.last.sort!
       end
       
       SortOperation.describe("Sorts the last dataset according to X values",

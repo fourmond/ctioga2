@@ -116,7 +116,7 @@ module CTioga2
         idx_vector = Dobjects::Dvector.new(@x.values.size) do |i|
           i
         end
-        f = Dobjects::Function.new(@data.x.dup, idx_vector)
+        f = Dobjects::Function.new(@x.values.dup, idx_vector)
         f.sort
         # Now, idx_vector contains the indices that make X values
         # sorted.

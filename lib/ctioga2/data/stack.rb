@@ -113,7 +113,7 @@ module CTioga2
           rescue Exception => e
             error "There was a problem running the dataset hook '#{@dataset_hook}', disabling it"
             @dataset_hook = nil
-            info "The error was: '#{e.to_s}'"
+            info "-> '#{format_exception e}'"
           end
         end
       end

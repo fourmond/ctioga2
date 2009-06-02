@@ -66,7 +66,8 @@ module CTioga2
           #
           # Or we could use Function.sort, though this is not very
           # elegant nor efficient. (but memory-efficient, though).
-          w = Dobjects::Dvector.new(w.size) do |i|
+          next unless v
+          w = Dobjects::Dvector.new(v.size) do |i|
             v[idx_vector[i]]
           end
           v.replace(w)
