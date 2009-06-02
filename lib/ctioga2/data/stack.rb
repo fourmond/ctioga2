@@ -13,8 +13,11 @@
 
 require 'ctioga2/utils'
 require 'ctioga2/data/datacolumn'
+require 'ctioga2/data/dataset'
 require 'ctioga2/data/backends/backends'
 require 'ctioga2/data/backends/factory'
+
+require 'ctioga2/data/point'
 
 
 require 'ctioga2/data/filters'
