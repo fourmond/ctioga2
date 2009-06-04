@@ -76,6 +76,18 @@ EOH
 Prints the HTML documentation for all types.
 EOH
 
+      WriteHTMLCommandLineOptions = 
+        Cmd.new("write-html-commandline", nil, "--write-html-commandline", 
+                []) do |plotmaker|
+        html = HTML.new(plotmaker.interpreter.doc)
+        html.write_command_line_options()
+      end
+      
+      WriteHTMLCommandLineOptions.describe("HTML documentation for types",
+                                           <<EOH, DocumentationGenerationGroup)
+Prints a table summary of command-line options.
+EOH
+
       DumpCommandMarkup = 
         Cmd.new("dump-command-markup", nil, "--dump-command-markup", 
                 []) do |plotmaker|

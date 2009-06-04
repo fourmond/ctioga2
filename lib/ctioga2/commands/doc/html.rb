@@ -76,8 +76,30 @@ module CTioga2
               out.puts command_documentation(cmd)
             end
           end
+        end
+
+        # Write a HTML table documenting all command-line options.
+        def write_command_line_options(out = STDOUT)
+          cmds, groups = @doc.documented_commands
+
+          out.puts "<table>"
+          for g in groups
+            out.puts "<tr><th colspan='3'>#{g.name}</th></tr>"
+            commands = cmds[g].sort {|a,b|
+              a.long_option <=> b.long_option
+            }
+            for cmd in commands
+              opts = cmd.option_strings
+              link = "<a href='#{@commands_url}#command-#{cmd.name}'>"
+              out.puts "<tr><td><code>#{link}#{opts[0]}</a></code></td>"
+              out.puts "<td><code>#{link}#{opts[1]}</a></code></td>"
+              out.puts "<td>#{opts[2]}</td></tr>"
+            end
+          end
+          out.puts "</table>"
 
         end
+
 
         # Ouputs HTML code to document all types
         def write_types(out = STDOUT)
