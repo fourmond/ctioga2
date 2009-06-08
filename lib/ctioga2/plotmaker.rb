@@ -319,13 +319,19 @@ module CTioga2
     # using #add_curve
     def add_curves(dataset_spec, options = {})
       begin
-        sets = @data_stack.get_datasets(dataset_spec)
+        sets = @data_stack.get_datasets(dataset_spec, options)
       rescue Exception => exception
         error "A problem occurred while processing dataset '#{dataset_spec}' using backend #{@data_stack.backend_factory.current.description.name}. Ignoring it."
         debug format_exception(exception)
         return
       end
       for set in sets
+        # We first trim elements from options that are not inside
+        # Graphics::Styles::CurveStyleFactory::PlotCommandOptions
+        options.delete_if { |k,v|
+          ! Graphics::Styles::
+          CurveStyleFactory::PlotCommandOptions.key?(k)
+        }
         add_curve(set, options)
       end
     end
@@ -356,11 +362,18 @@ module CTioga2
 
     PlotGroup = CmdGroup.new('plots', "Plots","Plots",  0)
 
+    PlotOptions = 
+      Graphics::Styles::CurveStyleFactory::PlotCommandOptions.dup
+    
+
+    PlotOptions.merge!(Data::LoadDatasetOptions) do |key, oldval, newval| 
+      raise "Duplicated option between PlotCommandOptions and LoadDatasetOptions"
+    end
+
     PlotCommand = 
       Cmd.new("plot",nil,"--plot", 
               [ CmdArg.new('dataset') ], 
-              Graphics::Styles::CurveStyleFactory::PlotCommandOptions
-              ) do |plotmaker, set, options|
+              PlotOptions ) do |plotmaker, set, options|
       plotmaker.add_curves(set, options)
     end
     
@@ -540,6 +553,18 @@ EOH
                         <<EOH, PlotSetupGroup)
 When this feature is on, all produced PDF files are converted to SVG
 using the neat pdf2svg program.
+EOH
+
+    EPSCommand = 
+      Cmd.new("eps",nil,"--eps", 
+              [CmdArg.new('boolean') ]) do |plotmaker,val|
+      plotmaker.postprocess.eps = val
+    end
+    
+    EPSCommand.describe('Converts produced PDF to EPS using pdftops', 
+                        <<EOH, PlotSetupGroup)
+When this feature is on, all produced PDF files are converted to EPS
+using the pdftops program (from the xpdf tools suite).
 EOH
 
     PNGCommand = 

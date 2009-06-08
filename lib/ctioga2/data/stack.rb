@@ -77,13 +77,27 @@ module CTioga2
       # Performs expansion on the given _set_ with the current
       # backend, retrieves corresponding Dataset objects, pushes them
       # onto the stack and returns them.
-      def get_datasets(set)
+      #
+      # _options_ is a Hash that can contain the options available to the
+      # 'load' command:
+      # 
+      # * 'name' to name each element added to the stack. A %d will be
+      #   replaced by the number of the dataset within the ones just
+      #   added.
+      #
+      # Additional members of the Hash are simply ignored.
+      def get_datasets(set, options = {})
         backend = @backend_factory.current
         retval = []
+        i = 0
         for s in backend.expand_sets(set)
           ds = backend.dataset(s)
-          add_dataset(ds)
+          add_dataset(ds, options['ignore_hooks'])
           retval << ds
+          if options['name']
+            @named_datasets[options['name'] % [i]] = ds
+          end
+          i += 1
         end
         return retval
       end
@@ -107,9 +121,9 @@ module CTioga2
       # necessary.
       #
       # Makes use of Plotmaker.plotmaker
-      def add_dataset(dataset)
+      def add_dataset(dataset, ignore_hooks = false)
         @stack << dataset
-        if @dataset_hook
+        if @dataset_hook && (! ignore_hooks)
           # TODO: error handling
           begin
             PlotMaker.plotmaker.interpreter.run_commands(@dataset_hook)
@@ -165,16 +179,17 @@ module CTioga2
       CmdGroup.new('stack', "Data stack manipulation",
                    "Commands for manipulation of the data stack", 
                    100)
+
+    LoadDatasetOptions = { 
+      'name' => CmdArg.new('text'),
+      'ignore_hooks' => CmdArg.new('boolean')
+    }
     
     LoadDataCommand = 
       Cmd.new("load", '-L', "--load", 
               [ CmdArg.new('dataset'), ], 
-              { 'name' => CmdArg.new('text')}) do |plotmaker, set, opts|
-      plotmaker.data_stack.get_datasets(set)
-      if opts['name']
-        plotmaker.data_stack.named_datasets[opts['name']] = 
-          plotmaker.data_stack.last
-      end
+              LoadDatasetOptions) do |plotmaker, set, opts|
+      plotmaker.data_stack.get_datasets(set, opts)
     end
     
     LoadDataCommand.describe("Load given sets onto the data stack",
@@ -182,9 +197,12 @@ module CTioga2
 Use the current backend to load the given dataset(s) onto the data stack.
 
 If the name option is given, the last dataset loaded this way (if
-dataset expansion occurs) gets named. This name can be used to further
-use the dataset without remembering its number. See the type {type:
-stored-dataset} for more information.
+dataset expansion occurs) gets named, or, if it contains a %d (or
+similar construct), each dataset gets named with %d replace with the
+number of the dataset within the expansion (starting at 0). This name
+can be used to further use the dataset without remembering its
+number. See the type {type: stored-dataset} for more information.
+
 EOH
 
 

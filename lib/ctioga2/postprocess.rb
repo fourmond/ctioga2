@@ -42,6 +42,9 @@ module CTioga2
     # Are we converting to SVG using pdf2svg ? 
     attr_accessor :svg
 
+    # Are we converting to EPS using pdftops ? 
+    attr_accessor :eps
+
     # PNG resolution
     attr_accessor :png_res
 
@@ -75,6 +78,12 @@ module CTioga2
         target = file.sub(/(\.pdf)?$/,'.svg')
         info "Converting #{file} to SVG"
         spawn("pdf2svg #{file} #{target}")
+      end
+
+      if @eps
+        target = file.sub(/(\.pdf)?$/,'.eps')
+        info "Converting #{file} to EPS"
+        spawn("pdftops -eps -paper match #{file} #{target}")
       end
 
       # Converts to PNG if applicable
