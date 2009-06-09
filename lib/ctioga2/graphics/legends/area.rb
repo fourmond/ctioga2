@@ -110,7 +110,8 @@ module CTioga2
             end
             # Hmmm... this is plain wrong... 
             # height += h
-            height += @legend_style.dy.to_figure(t,:y)
+            height += @legend_style.dy.to_figure(t,:y) * 
+              @legend_style.scale * @legend_style.text_scale
           end
           return [ width, height ]
         end
