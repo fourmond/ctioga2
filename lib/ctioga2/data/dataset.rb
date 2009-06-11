@@ -168,7 +168,53 @@ module CTioga2
           col.trim!(nb)
         end
       end
-        
+
+      
+      # Modifies the dataset to only keep the data for which the block
+      # returns true. The block should take the following arguments,
+      # in order:
+      #
+      # _x_, _xmin_, _xmax_, _y_, _ymin_, _ymax_, _y1_, _y1min_, _y1max_,
+      #  _z_, _zmin_, _zmax_, _y2_, _y2min_, _y2max_, _y3_, _y3min_, _y3max_
+      #
+      def select!(&block)
+        target = []
+        @x.size.times do |i|
+          args = @x.values_at(i, true)
+          args.concat(@ys[0].values_at(i, true) * 2)
+          if @ys[1]
+            args.concat(@ys[1].values_at(i, true) * 2)
+            for yvect in @ys[2..-1]
+              args.concat(yvect.values_at(i, true))
+            end
+          end
+          if block.call(*args)
+            target << i
+          end
+        end
+        for col in all_columns
+          col.reindex(target)
+        end
+      end
+
+      # Same as #select!, but you give it a text formula instead of a
+      # block. It internall calls #select!, by the way ;-)...
+      def select_formula!(formula)
+        names = @x.column_names('x', true)
+        names.concat(@x.column_names('y', true))
+        names.concat(@x.column_names('y1', true))
+        if @ys[1]
+          names.concat(@x.column_names('z', true))
+          names.concat(@x.column_names('y2', true))
+          i = 3
+          for yvect in @ys[2..-1]
+            names.concat(@x.column_names("y#{i}", true))
+            i += 1
+          end
+        end
+        block = eval("proc do |#{names.join(',')}|\n#{formula}\nend")
+        select!(&block)
+      end
 
       # TODO: a dup !
 

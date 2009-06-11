@@ -91,6 +91,36 @@ dataset-hook}): all subsequent datasets will be trimmed to keep only
 every n point.
 EOH
 
+
+      CherryPickOperation = 
+        Cmd.new("cherry-pick-last", nil, "--cherry-pick-last", 
+                [CmdArg.new('text')], {}) do |plotmaker, formula|
+        plotmaker.data_stack.last.select_formula!(formula)
+      end
+      
+      CherryPickOperation.describe("Removes data from the last dataset for which the formula is false",
+                                   <<EOH, FiltersGroup)
+
+Removes the data from the last dataset in the data stack for which the
+formula returns false.
+
+See also the {command: cherry-pick} command to 
+EOH
+
+      CherryPickFilter = 
+        Cmd.new("cherry-pick", nil, "--cherry-pick", 
+                [CmdArg.new('text')], {}) do |plotmaker, formula|
+        plotmaker.data_stack.add_to_dataset_hook("cherry-pick-last(#{formula})")
+      end
+      
+      CherryPickFilter.describe("Systematicallly remove data for which the formula is false",
+                                <<EOH, FiltersGroup)
+Install the {command: cherry-pick-last} command as a dataset hook (see
+{command: dataset-hook}): all points for which the formula returns
+false for subsequent datasets will be removed.
+EOH
+
+
     end
   end
 end

@@ -65,9 +65,10 @@ module CTioga2
           # Code should be written in C on the dvector side.
           #
           # Or we could use Function.sort, though this is not very
-          # elegant nor efficient. (but memory-efficient, though).
+          # elegant nor efficient. (but it would be memory-efficient,
+          # though).
           next unless v
-          w = Dobjects::Dvector.new(v.size) do |i|
+          w = Dobjects::Dvector.new(idx_vector.size) do |i|
             v[idx_vector[i]]
           end
           v.replace(w)
@@ -79,9 +80,10 @@ module CTioga2
         return (@min_values && @max_values)
       end
 
-      # Column names. _base_ is used as a base for the names.
-      def column_names(base)
-        if has_errors?
+      # Column names. _base_ is used as a base for the names. If
+      # _expand_ is on, always return all the names.
+      def column_names(base, expand = false)
+        if expand || has_errors?
           return [base, "#{base}min", "#{base}max"]
         else
           return [base]
@@ -89,12 +91,17 @@ module CTioga2
       end
 
       # Values, [value, min, max], at the given index. If #min and
-      # #max are nil only [value] is returned
-      def values_at(i)
+      # #max are nil only [value] is returned -- unless _expand_ is
+      # set, in which case we make up a default value for min and max.
+      def values_at(i, expand = false)
         if has_errors?
           return [@values[i], @min_values[i], @max_values[i]]
         else
-          return [@values[i]]
+          if expand
+            return [@values[i], @values[i], @values[i]]
+          else
+            return [@values[i]]
+          end
         end
       end
 
@@ -104,7 +111,7 @@ module CTioga2
       end
 
       # Creates dummy errors (ie, min_values = max_values = values) if
-      # the datacolumn does not currently have.
+      # the datacolumn does not currently have one.
       def ensure_has_errors
         if ! has_errors?
           @min_values = @values.dup
