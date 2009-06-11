@@ -307,8 +307,8 @@ module CTioga2
     # style as arguments to new.
     def add_curve(dataset, options = {})
       plot = @root_object.current_plot
-      curve = @curve_generator.curve_from_dataset(plot, 
-                                                  dataset, options)
+      curve = @curve_generator.
+        curve_from_dataset(plot, dataset, options)
       plot.add_element(curve)
       info "Adding curve '#{dataset.name}' to the current plot"
     end
@@ -380,7 +380,30 @@ module CTioga2
     PlotCommand.describe("Plots the given datasets",
                          <<EOH, PlotGroup)
 Use the current backend to load the given datasets onto the data stack
-and plot them.
+and plot them. It is a combination of the {command: load} and the
+{command: plot-last} commands; you might want to see their
+documentation.
+EOH
+
+    PlotLastOptions = 
+      Graphics::Styles::CurveStyleFactory::PlotCommandOptions.dup
+
+    PlotLastOptions['which'] = CmdArg.new('stored-dataset')
+    
+    PlotLastCommand = 
+      Cmd.new("plot-last",'-p',"--plot-last", 
+              [], PlotLastOptions) do |plotmaker, options|
+      ds = plotmaker.data_stack.specified_dataset(options)
+      options.delete('which')   # To avoid problems with extra options.
+      plotmaker.add_curve(ds, options)
+    end
+    
+    PlotLastCommand.describe("Plots the last dataset pushed onto the stack",
+                             <<EOH, PlotGroup)
+Plots the last dataset pushed onto the data stack (or the one
+specified with the 'which' option), with the current style. All
+aspects of the curve style (colors, markers, line styles...) can be
+overridden through the use of options.
 EOH
 
     LaTeXGroup = CmdGroup.new('latex', "LaTeX",<<EOD, 30)

@@ -123,6 +123,18 @@ module CTioga2
         end
       end
 
+      # Gets a dataset from the given _options_ hash. If a 'which' key
+      # is present, it is used as an argument for #stored_dataset;
+      # else, -1 is used.
+      def specified_dataset(options)
+        spec = if options && options['which']
+                 options['which']
+               else
+                 -1
+               end
+        return stored_dataset(spec)
+      end
+
       # Adds a Dataset object onto the stack, running hooks if
       # necessary.
       #
@@ -150,13 +162,12 @@ module CTioga2
         end
       end
 
-      # Writes the contents of the the given element to the given _io_
-      # stream.
-      def print_dataset(which, io)
-        set = stored_dataset(which)
-        io.puts "# #{set.name}"
-        io.puts "# #{set.column_names.join("\t")}"
-        set.each_values do |i, *vals|
+      # Writes the contents of the the given _dataset_ (a DataSet
+      # object) to the given _io_ stream.
+      def print_dataset(dataset, io)
+        io.puts "# #{dataset.name}"
+        io.puts "# #{dataset.column_names.join("\t")}"
+        dataset.each_values do |i, *vals|
           io.puts vals.join("\t")
         end
       end
@@ -216,8 +227,8 @@ EOH
     PrintLastCommand =
       Cmd.new("print-dataset", '-P', "--print-dataset",
               [], {'which' => CmdArg.new('stored-dataset')}) do |plotmaker,opts|
-      which = opts['which'] || -1
-      plotmaker.data_stack.print_dataset(which, STDOUT)
+      ds = plotmaker.data_stack.specified_dataset(opts)
+      plotmaker.data_stack.print_dataset(ds, STDOUT)
     end
     
     PrintLastCommand.describe("Prints the dataset last pushed on the stack",
