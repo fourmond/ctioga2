@@ -93,6 +93,12 @@ module CTioga2
         for s in backend.expand_sets(set)
           ds = backend.dataset(s)
           add_dataset(ds, options['ignore_hooks'])
+
+          # Selection
+          if options['where']
+            ds.select_formula!(options['where'])
+          end
+
           retval << ds
           if options['name']
             @named_datasets[options['name'] % [i]] = ds
@@ -182,6 +188,7 @@ module CTioga2
 
     LoadDatasetOptions = { 
       'name' => CmdArg.new('text'),
+      'where' => CmdArg.new('text'),
       'ignore_hooks' => CmdArg.new('boolean')
     }
     

@@ -104,7 +104,11 @@ EOH
 Removes the data from the last dataset in the data stack for which the
 formula returns false.
 
-See also the {command: cherry-pick} command to 
+See also the {command: cherry-pick} command to apply the selection to
+all datasets.
+
+You might find it much easier to use the /where option of the
+{command: plot} or {command: load} commands.
 EOH
 
       CherryPickFilter = 
