@@ -208,6 +208,7 @@ module CTioga2
         # * a line beginning with '> ' is an example for command-line
         # * a line beginning with '# ' is an example for use within a
         #   command file.
+        # * a line beginning with '@ ' is a generic verbatim text.
         # * a line beginning with ' *' is an element of an
         #   itemize. The itemize finishes when a new paragraph is
         #   starting.
@@ -222,8 +223,15 @@ module CTioga2
           for l in lines
             l.chomp!
             case l
-            when /^[#>]\s(.*)/  # a verbatim line
-              type = (l[0] == '#' ? :cmdfile : :cmdline)
+            when /^[#>@]\s(.*)/  # a verbatim line
+              case l[0,1]
+              when '#'
+                type = :cmdfile
+              when '>'
+                type = :cmdline
+              else
+                type = :example
+              end
               if @last_type == type
                 @last_string << "#{$1}\n"
               else
@@ -276,6 +284,8 @@ module CTioga2
           when :cmdline, :cmdfile
             @elements << MarkupVerbatim.new(@doc, @last_string, 
                                             "examples-#{@last_type}")
+          when :example
+            @elements << MarkupVerbatim.new(@doc, @last_string, "examples")
           when :paragraph
             @elements << 
               MarkupParagraph.new(@doc, 

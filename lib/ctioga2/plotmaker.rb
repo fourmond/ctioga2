@@ -450,9 +450,9 @@ EOD
     Utf8Command.describe('Uses UTF-8 in strings',
                          <<EOD, LaTeXGroup)
 Makes ctioga2 use UTF-8 for all text. It is exactly equivalent to
-the command {command: preamble} with argument
+the command {command: preamble} with the argument:
 
-  \\usepackage[utf8]{inputenc}\\usepackage[T1]{fontenc}
+@ \\usepackage[utf8]{inputenc}\\usepackage[T1]{fontenc}
 
 EOD
 
