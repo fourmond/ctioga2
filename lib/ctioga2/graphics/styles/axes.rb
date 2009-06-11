@@ -60,6 +60,9 @@ module CTioga2
         # transformation for the axis.
         attr_accessor :transform
 
+        # The color of the stroke for the lines of the axis
+        attr_accessor :stroke_color
+
 
         # Creates a new AxisStyle object at the given location with
         # the given style.
@@ -67,7 +70,7 @@ module CTioga2
           @location = location
           @decoration = decoration
 
-          @tick_label_style = BaseTextStyle.new
+          @tick_label_style = FullTextStyle.new
           @axis_label = TextLabel.new(label)
           @log = false
         end
@@ -85,6 +88,9 @@ module CTioga2
           spec = get_axis_specification(t)
           # Add tick label style:
           spec.merge!(@tick_label_style.to_hash)
+          if @stroke_color
+            spec['stroke_color'] = @stroke_color
+          end
           t.show_axis(spec)
           @axis_label.loc = LocationToTiogaLocation[@location]
           @axis_label.draw(t)
@@ -182,7 +188,8 @@ module CTioga2
       end
 
       PartialAxisStyle = {
-        'transform' => CmdArg.new('bijection')
+        'transform' => CmdArg.new('bijection'),
+        'stroke_color' => CmdArg.new('color')
       }
 
       FullAxisStyle = PartialAxisStyle.dup

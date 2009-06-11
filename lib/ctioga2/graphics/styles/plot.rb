@@ -315,8 +315,13 @@ Sets the style of the given label (see the type {type: label} for more
 information).
 
 The option text permits to also set the text of the label (does not
-work for ticks). Due to a limitation in tioga, the color option does
-not work for ticks either.
+work for ticks). 
+
+For tick labels, setting the color option also sets the color for the
+lines of the corresponding axis. If you don't want that, you can 
+override the color using the /stroke_color option of 
+{command: axis-style}. This will only work with Tioga version 1.11 or 
+greater.
 EOH
 
     end
