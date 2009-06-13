@@ -94,51 +94,50 @@ module CTioga2
           "cm" => (72.0/2.54),
           "mm" => (72.0/25.4),
         }
+        
+        # A regular expression that matches all dimensions.
+        DimensionRegexp = /^\s*([+-]?\s*[\d.eE+-]+)\s*([a-zA-Z]+)?\s*$/
 
 
         # Creates a Dimension object from a _text_ specification. The
-        # text should be in the forms:
+        # text should be in the forms
         # 
-        # * value unit, where unit is one of bp, pt, in, mm, cm and dy
-        #   (the latter being one unit of height)
-        # * spec: value, where spec is one of p(page), f(figure) or
-        #   F (frame). spec: can be omitted, it will default to
-        #   _default_
+        #  value unit
+        #  
+        # where unit is one of bp, pt, in, mm, cm, dy (the latter
+        # being one unit of height) f|figure, F|Frame|frame,
+        # p|page. It can be ommitted, in which case it defaults to the
+        # _default_ parameter.
         def self.from_text(text, orientation, default = :figure)
           # Absolute or :dy dimension
-          if text =~ /^\s*([+-]?[\d.]+)\s*([a-z]+)\s*$/
+          if text =~ DimensionRegexp
             value = Float($1)
             unit = $2
-            if unit == 'dy'
-              return Dimension.new(:dy, value, orientation)
+            if ! unit
+              unit = default
+            elsif DimensionConversion.key?(unit.downcase)
+              value *= DimensionConversion[unit.downcase]
+              unit = :bp
             else
-              if DimensionConversion.key? unit
-                return Dimension.new(:bp, value * DimensionConversion[unit], 
-                                     orientation)
+              case unit
+              when /^dy$/i
+                unit = :dy
+              when /^F|(?i:frame)/
+                unit = :frame
+              when /^f|(?i:figure)/
+                unit = :figure
+              when /^p|(?i:page)/
+                unit = :page
               else
                 raise "Unkown dimension unit: #{unit}"
               end
             end
-          elsif text =~ /^\s*(?:([Ffp]):)?\s*(.*)\s*$/
-            spec = $1
-            value = Float($2)
-            if spec
-              case spec
-              when 'F'
-                spec = :frame
-              when 'f'
-                spec = :figure
-              when 'p'
-                spec = :page
-              end
-            else
-              spec = default
-            end
-            return Dimension.new(spec, value, orientation)
+            return Dimension.new(type, value, orientation)
           else
             raise "Unkown Dimension specification: '#{text}'"
           end
         end
+        
       end
 
     end

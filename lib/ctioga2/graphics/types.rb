@@ -124,8 +124,19 @@ EOD
     DimensionType = 
       CmdType.new('dimension', { :type => :dimension, 
                     :default => :dy }, <<EOD)
-Dimension, in absolute units, or in units of text height (default),
-figure, frame or page coordinates.
+
+A dimension, in absolute units, or in units of text height, figure,
+frame or page coordinates. It is in the form 
+
+@ value unit
+
+Where value is a number and unit can be one of pt,bp,in,cm (absolute
+units, same meaning as in TeX), dy (1.0 dy is the height of a text
+line), figure (for figure coordinates, i.e. the coordinates of the
+plot), frame (1.0 frame is the full size of the current subplot) and
+page (1.0 page is the whole height/width of the output file).
+
+figure can be abbreviated as f, frame as F and page as p.
 EOD
 
     # Boxes
@@ -133,7 +144,9 @@ EOD
     BoxType = 
       CmdType.new('box', :box, <<EOD)
 The specification for a box, such as an inset. Specifications vary for
-now... TODO: to be written later on.
+now... 
+
+TODO: to be written later on.
 EOD
 
     # Coordinate transformations
