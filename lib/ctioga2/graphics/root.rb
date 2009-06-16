@@ -17,6 +17,8 @@ require 'ctioga2/log'
 require 'ctioga2/graphics/elements'
 require 'ctioga2/graphics/legends'
 
+require 'ctioga2/graphics/subplot-commands'
+
 module CTioga2
 
   Version::register_svn_info('$Revision$', '$Date$')
@@ -199,77 +201,6 @@ module CTioga2
         return area
       end
           
-      # The group containing all commands linked to subplots and other
-      # insets, frame margin selections...
-      SubplotsGroup =  
-        CmdGroup.new('subplots',
-                     "Subplots and assimilated",
-                     "Subplots and assimilated", 31)
-      
-      SetFrameMarginsCommand = 
-        Cmd.new("frame-margins",nil,"--frame-margins", 
-                [
-                 CmdArg.new('frame-margins'),
-                ]) do |plotmaker, margins|
-        
-        plotmaker.root_object.current_plot.subframe = margins
-      end
-
-      SetFrameMarginsCommand.describe('Sets the margins of the current plot',
-                                      <<EOH, SubplotsGroup)
-Sets the margins for the current plot. Margins are the same things as the
-position (such as specified for and inset). Using this within an inset or
-more complex plots might produce unexpected results. The main use of this 
-function is to control the padding around simple plots.
-EOH
-
-      InsetCommand =         
-        Cmd.new("inset",nil,"--inset", 
-                [
-                 CmdArg.new('box'),
-                ]) do |plotmaker, box|
-        subplot = plotmaker.root_object.subplot
-        subplot.subframe = box
-      end
-      
-      InsetCommand.describe('Begins a new inset',
-                            <<EOD, SubplotsGroup)
-Starts a new inset at the specified box. If no graphical commands have
-been issued before this one, it starts a top-level box in a blank 
-background. 
-
-TODO: this surely could be clarified a little tiny bit.
-EOD
-
-      NextInsetCommand =         
-        Cmd.new("next-inset",nil,"--next-inset", 
-                [
-                 CmdArg.new('box'),
-                ]) do |plotmaker, box|
-        plotmaker.root_object.leave_subobject
-        subplot = plotmaker.root_object.subplot
-        subplot.subframe = box
-      end
-      
-      NextInsetCommand.describe('Ends the previous inset and begins a new one',
-                                <<EOD, SubplotsGroup)
-Has the same effet as {command: end} followed by {command: inset}.
-EOD
-
-      EndCommand =         
-        Cmd.new("end",nil,"--end", 
-                []) do |plotmaker|
-        plotmaker.root_object.leave_subobject
-      end
-      
-      EndCommand.describe('Leaves the current subobject',
-                          <<EOD, SubplotsGroup)
-Leaves the current subobject.
-EOD
-
-
-
-
     end
     
   end

@@ -122,17 +122,17 @@ module CTioga2
               case unit
               when /^dy$/i
                 unit = :dy
-              when /^F|(?i:frame)/
+              when /^F|(?i:frame)$/
                 unit = :frame
-              when /^f|(?i:figure)/
+              when /^f|(?i:figure)$/
                 unit = :figure
-              when /^p|(?i:page)/
+              when /^p|(?i:page)$/
                 unit = :page
               else
                 raise "Unkown dimension unit: #{unit}"
               end
             end
-            return Dimension.new(type, value, orientation)
+            return Dimension.new(unit, value, orientation)
           else
             raise "Unkown Dimension specification: '#{text}'"
           end

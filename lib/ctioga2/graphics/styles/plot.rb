@@ -58,6 +58,9 @@ module CTioga2
         # Style of the background of the plot
         attr_accessor :background
 
+        # Scale of the plot. The plot is wrapped in a t.rescale call.
+        attr_accessor :scale
+
         def initialize
           # Default style for the plots.
           @axes = {}
@@ -167,6 +170,15 @@ module CTioga2
         def draw_all_background_lines(t)
           for which, axis in @axes
             axis.draw_background_lines(t)
+          end
+        end
+
+        # Sets up the FigureMaker object for the plot. To be called
+        # just after the outermost context call for the concerned
+        # plot.
+        def setup_figure_maker(t)
+          if @scale
+            t.rescale(@scale)
           end
         end
 

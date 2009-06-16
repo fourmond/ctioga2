@@ -81,6 +81,9 @@ module CTioga2
 
           # We wrap the call within a subplot
           t.subplot(@subframe.to_frame_margins(t)) do
+
+            # Setup various aspects of the figure maker object.
+            @style.setup_figure_maker(t)
             
             # Manually creating the plot:
             t.set_bounds(@real_boundaries.to_a)
