@@ -49,6 +49,9 @@ module CTioga2
       exit 1                    # Fatal error.
     end
 
+    # These are module functions:
+    module_function :error, :debug, :warn, :info, :fatal
+
     # Format an exception for displaying
     def format_exception(e)
       return "#{e.class}: #{e.message}\n\t#{e.backtrace.join("\n\t")}"

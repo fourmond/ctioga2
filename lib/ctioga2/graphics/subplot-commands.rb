@@ -12,6 +12,7 @@
 # GNU General Public License for more details (in the COPYING file).
 
 require 'ctioga2/utils'
+require 'ctioga2/log'
 
 module CTioga2
 
@@ -101,7 +102,7 @@ EOD
         Styles::PlotStyle.current_plot_style(plotmaker).text_scale = scale
         Styles::PlotStyle.current_plot_style(plotmaker).lines_scale = scale
       else
-        error "Unkown target for plot-scale: #{what}"
+        CTioga2::Log::error "Unkown 'what' option for plot-scale: #{what}"
       end
     end
     
