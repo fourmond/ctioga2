@@ -58,8 +58,13 @@ module CTioga2
         # Style of the background of the plot
         attr_accessor :background
 
-        # Scale of the plot. The plot is wrapped in a t.rescale call.
-        attr_accessor :scale
+        # Scale of the lines of the plot. The plot is wrapped in a
+        # t.rescale_lines call.
+        attr_accessor :lines_scale
+
+        # Scale of the text of the plot. The plot is wrapped in a
+        # t.rescale_text call.
+        attr_accessor :text_scale
 
         def initialize
           # Default style for the plots.
@@ -177,8 +182,11 @@ module CTioga2
         # just after the outermost context call for the concerned
         # plot.
         def setup_figure_maker(t)
-          if @scale
-            t.rescale(@scale)
+          if @lines_scale
+            t.rescale_lines(@lines_scale)
+          end
+          if @text_scale
+            t.rescale_text(@text_scale)
           end
         end
 

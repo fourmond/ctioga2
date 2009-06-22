@@ -89,16 +89,29 @@ EOD
 
     RescaleCommand =         
       Cmd.new("plot-scale",nil,"--plot-scale", 
-              [CmdArg.new('float')]) do |plotmaker, scale|
-      Styles::PlotStyle.current_plot_style(plotmaker).scale = scale
+              [CmdArg.new('float')], 
+              {'what' => CmdArg.new('text')}) do |plotmaker, scale, options|
+      what = options['what'] || 'text'
+      case what
+      when /text/i
+        Styles::PlotStyle.current_plot_style(plotmaker).text_scale = scale
+      when /lines/i
+        Styles::PlotStyle.current_plot_style(plotmaker).lines_scale = scale
+      when /both/i
+        Styles::PlotStyle.current_plot_style(plotmaker).text_scale = scale
+        Styles::PlotStyle.current_plot_style(plotmaker).lines_scale = scale
+      else
+        error "Unkown target for plot-scale: #{what}"
+      end
     end
     
     RescaleCommand.describe('Rescales the current (sub)plot',
                             <<EOD, SubplotsGroup)
-Applies a scaling factor to the whole current subplot. Scales applies to:
- * text
- * line widths
- * marker size
+Applies a scaling factor to the whole current subplot. Depending on
+the 'what' option (default text), the scale applies to:
+ * text ('text' or 'both')
+ * marker size ('text' or 'both')
+ * line widths ('lines' or 'both')
 Scaling also applies to all elements of the plot that were added
 before the call to plot-scale.
 EOD
