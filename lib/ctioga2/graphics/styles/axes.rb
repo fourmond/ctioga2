@@ -130,6 +130,27 @@ module CTioga2
             get_axis_style(spec)
         end
 
+        # Returns the extension of the axis (including tick labels and
+        # labels if applicable) perpendicular to itself, in units of
+        # text height (at scale = current text scale when drawing axes)
+        #
+        # TODO: handle offset axes when that is implemented.
+        def extension(t)
+          if @axis_label.label
+            le = (@axis_label.shift + 1) * @axis_label.scale
+          else
+            le = 0
+          end
+          case @decoration
+          when AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS,
+            AXIS_WITH_TICKS_AND_NUMERIC_LABELS
+            te = (@tick_label_style.shift + 1) * @tick_label_style.scale
+          else
+            te = 0
+          end
+          return Dvector[le,te].max
+        end
+
         protected
         
         # Returns an argument suitable for use for
