@@ -79,8 +79,10 @@ module CTioga2
 
           @real_boundaries = get_boundaries
 
+          frames = @subframe || @style.estimate_margins(t)
+
           # We wrap the call within a subplot
-          t.subplot(@subframe.to_frame_margins(t)) do
+          t.subplot(frames.to_frame_margins(t)) do
 
             # Setup various aspects of the figure maker object.
             @style.setup_figure_maker(t)

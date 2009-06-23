@@ -85,6 +85,15 @@ module CTioga2
                         to_figure(t, orientation))
         end
 
+        # Replace this Dimension by _dimension_ if the latter is
+        # bigger. Conserves the current orientation.
+        def replace_if_bigger(t, dimension)
+          if self.to_figure(t) < dimension.to_figure(t, @orientation)
+            @type = dimension.type
+            @value = dimension.value
+          end
+        end
+
         # Dimension conversion constants taken straight from the
         # TeXbook
         DimensionConversion = {

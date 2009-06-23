@@ -26,6 +26,7 @@ module CTioga2
       # The style of an axis or an egde of the plot. Unlike tioga,
       # ctioga2 does not make any difference.
       class AxisStyle < BasicStyle
+        include Tioga::FigureConstants
         
         # The type of the edge/axis. Any of the Tioga constants:
         # AXIS_HIDDEN, AXIS_LINE_ONLY, AXIS_WITH_MAJOR_TICKS_ONLY,
@@ -132,26 +133,63 @@ module CTioga2
 
         # Returns the extension of the axis (including tick labels and
         # labels if applicable) perpendicular to itself, in units of
-        # text height (at scale = current text scale when drawing axes)
+        # text height (at scale = current text scale when drawing
+        # axes).
+        #
+        # _style_ is a PlotStyle object containing the style
+        # information for the target plot.
         #
         # TODO: handle offset axes when that is implemented.
-        def extension(t)
-          if @axis_label.label
-            le = (@axis_label.shift + 1) * @axis_label.scale
+        def extension(t, style = nil)
+          label_shift, label_scale, ticks_shift, ticks_scale = 
+            *get_label_parameters(t)
+          p [label_shift, label_scale, ticks_shift, ticks_scale]
+          if @axis_label.text
+            le = label_shift * label_scale
           else
             le = 0
           end
+          p @decoration
           case @decoration
           when AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS,
             AXIS_WITH_TICKS_AND_NUMERIC_LABELS
-            te = (@tick_label_style.shift + 1) * @tick_label_style.scale
+            te = ticks_shift * ticks_scale
           else
             te = 0
           end
-          return Dvector[le,te].max
+          p [le, te]
+          p Dobjects::Dvector[le,te].max
+          return Dobjects::Dvector[le,te].max * 
+            (style ? style.text_scale || 1 : 1)
         end
 
         protected
+
+        # Returns: _label_shift_, _label_scale_, _ticks_shift_,
+        # _ticks_scale_ for the axis.
+        #
+        # TODO: try something clever with the angles ?
+        def get_label_parameters(t)
+          i = t.axis_information({'location' => 
+                               LocationToTiogaLocation[@location]})
+          retval = []
+          # First axis labels:
+          p [ @axis_label.shift, @axis_label.scale]
+          retval << ( @axis_label.shift || 
+                      (i['vertical'] ? t.ylabel_shift : t.xlabel_shift ))
+          retval << ( @axis_label.scale || 
+                      (i['vertical'] ? t.ylabel_scale : t.xlabel_scale ))
+          retval << (@tick_label_style.shift || i['shift'])
+          retval << (@tick_label_style.scale || i['scale'])
+
+          # I can't really understand for now why we need such special
+          # cases, but they surely are needed !
+          if i['vertical']
+            retval[0] += 1
+          end
+          retval[2] += 1
+          return retval
+        end
         
         # Returns an argument suitable for use for
         # FigureMaker#show_axis or FigureMaker#axis_information.

@@ -86,6 +86,13 @@ module CTioga2
                   1 - @right.to_frame(t), @bottom.to_frame(t)]
         end
 
+        # Returns the dimensions composing the MarginsBox, in the
+        # order _left_, _right_, _top_, _bottom_, suitable for feeding
+        # to MarginsBox.new.
+        def margins
+          return [@left, @right, @top, @bottom]
+        end
+
       end
 
       # A box defined by an AlignedPoint and two dimensions

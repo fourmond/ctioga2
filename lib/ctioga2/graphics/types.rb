@@ -107,8 +107,12 @@ A point together with alignment specifications.
 EOD
 
     FrameMarginsType = 
-      CmdType.new('frame-margins', :frame_margins, <<EOD)
+      CmdType.new('frame-margins', {:type => 
+                    :frame_margins, :shortcuts => 
+                    { /^\s*auto\s*$/i => nil}}, <<EOD)
 Margins around a plot.
+
+TODO !!
 EOD
 
     # Now, axes stuff:

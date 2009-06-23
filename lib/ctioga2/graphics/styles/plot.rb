@@ -66,6 +66,10 @@ module CTioga2
         # t.rescale_text call.
         attr_accessor :text_scale
 
+        # A padding around the box when automatic spacing is in auto
+        # mode. A Dimension.
+        attr_accessor :padding
+
         def initialize
           # Default style for the plots.
           @axes = {}
@@ -90,6 +94,9 @@ module CTioga2
           @transforms = CoordinateTransforms.new
 
           @background = BackgroundStyle.new
+
+          # A padding of 4bp ? Why ?? Why not ?
+          @padding = Types::Dimension.new(:bp, 4)
         end
 
         # Whether to use log scale for the given axis.
@@ -154,10 +161,10 @@ module CTioga2
         end
 
         # Sets the style of the given label. Sets the text as well, if
-        # applicable.
+        # _text_ is not _nil_
         def set_label_style(which, hash, text = nil)
           style = get_label_style(which)
-          hash = hash.merge({'text' => text}) if text
+          hash = hash.merge({'text' => text}) unless text.nil?
           style.set_from_hash(hash)
         end
 
@@ -199,6 +206,26 @@ module CTioga2
         # Returns the PlotStyle object of the current plot
         def self.current_plot_style(plotmaker)
           return plotmaker.root_object.current_plot.style
+        end
+
+        # Estimate the margins of the plot whose style this object
+        # controls. These margins are used when the plot margins are
+        # in automatic mode.
+        #
+        # Returns a Types::MarginsBox
+        def estimate_margins(t)
+          margins = [:left, :right, :top, :bottom].map do |side|
+            Types::Dimension.new(:dy, @axes[side].extension(t,self))
+          end
+
+          # TODO: add the plot title !
+          box = Types::MarginsBox.new(*margins)
+          if @padding
+            for dim in box.margins
+              dim.replace_if_bigger(t, @padding)
+            end
+          end
+          return box
         end
 
         protected
@@ -297,6 +324,18 @@ EOH
 Sets the X label of the current plot.
 EOH
 
+      NoXAxisLabelCommand = 
+        Cmd.new('no-xlabel', nil, '--no-xlabel', []) do |plotmaker|
+        PlotStyle.current_plot_style(plotmaker).
+          set_label_style('x_label', {}, false)
+      end
+
+      NoXAxisLabelCommand.describe("Disables X label for the plot", 
+                                   <<"EOH", AxisGroup)
+Disables the X label for the current plot.
+EOH
+
+
       YAxisLabelCommand = 
         Cmd.new('ylabel', '-y', '--ylabel', [ CmdArg.new('text') ],
                 FullTextStyleOptions) do |plotmaker, label, options|
@@ -307,6 +346,17 @@ EOH
       YAxisLabelCommand.describe("Sets the Y label of the plot", 
                                  <<"EOH", AxisGroup)
 Sets the Y label of the current plot.
+EOH
+
+      NoYAxisLabelCommand = 
+        Cmd.new('no-ylabel', nil, '--no-ylabel', []) do |plotmaker|
+        PlotStyle.current_plot_style(plotmaker).
+          set_label_style('y_label', {}, false)
+      end
+
+      NoYAxisLabelCommand.describe("Disables Y label for the plot", 
+                                   <<"EOH", AxisGroup)
+Disables the Y label for the current plot.
 EOH
 
       TitleLabelCommand = 
