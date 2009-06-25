@@ -110,9 +110,18 @@ EOD
       CmdType.new('frame-margins', {:type => 
                     :frame_margins, :shortcuts => 
                     { /^\s*auto\s*$/i => nil}}, <<EOD)
-Margins around a plot.
+Margins around a plot, ie the distance from the side of the plot to
+the corresponding side of the container (most likely the whole
+PDF). It can take three forms:
 
-TODO !!
+* dimension (applies to all sides)
+* left_right, top_bottom
+* left, right, top, bottom
+
+Each of the elements is a valid {type: dimension}.
+
+It can also be auto, in which case the position of the margins is
+computed automatically to accomodate the various labels/ticks.
 EOD
 
     # Now, axes stuff:

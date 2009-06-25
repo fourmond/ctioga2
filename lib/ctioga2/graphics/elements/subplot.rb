@@ -54,6 +54,8 @@ module CTioga2
           @subframe = Types::MarginsBox.new("2.8dy", "2.8dy", 
                                             "2.8dy", "2.8dy")
 
+          @subframe = nil       # Automatic by default.
+
           @style = style || Styles::PlotStyle.new
 
           # By default, boundaries do not count for the parent
