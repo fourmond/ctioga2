@@ -154,7 +154,7 @@ module CTioga2
               extra = 0.5       # To account for baseline ?
             when :top, :left
               extra = 1
-            else
+            else                # We take the safe side !
               extra = 1
             end
             return (dict['shift'] + extra) * dict['scale']

@@ -165,6 +165,9 @@ module CTioga2
         def set_label_style(which, hash, text = nil)
           style = get_label_style(which)
           hash = hash.merge({'text' => text}) unless text.nil?
+          if hash.key?('text') and ! style.is_a?(TextLabel)
+            CTioga2::Log::warn("Text property of label #{which} was set, but this has no meaning: tick labels can't be set this way. Did you mean to use \"#{which}_label\"" + " instead ?")
+          end
           style.set_from_hash(hash)
         end
 

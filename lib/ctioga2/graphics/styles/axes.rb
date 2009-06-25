@@ -153,8 +153,6 @@ module CTioga2
           else
             te = 0
           end
-          p [le, te]
-          p Dobjects::Dvector[le,te].max
           return Dobjects::Dvector[le,te].max * 
             (style ? style.text_scale || 1 : 1)
         end
@@ -173,20 +171,9 @@ module CTioga2
           i = t.axis_information({'location' => 
                                    LocationToTiogaLocation[@location]})
           retval = []
-          # First axis labels:
-#           p [ @axis_label.shift, @axis_label.scale]
-#           retval << ( @axis_label.shift || 
-#                       (i['vertical'] ? t.ylabel_shift : t.xlabel_shift ))
-#           retval << ( @axis_label.scale || 
-#                       (i['vertical'] ? t.ylabel_scale : t.xlabel_scale ))
           retval << (@tick_label_style.shift || i['shift'])
           retval << (@tick_label_style.scale || i['scale'])
 
-          # I can't really understand for now why we need such special
-          # cases, but they surely are needed !
-#           if i['vertical']
-#             retval[0] += 1
-#           end
           retval[0] += 1
           return retval
         end
