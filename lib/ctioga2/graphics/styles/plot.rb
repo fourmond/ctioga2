@@ -175,7 +175,7 @@ module CTioga2
             axis.draw_axis(t)
           end
           # We draw the title last
-          title.draw(t)
+          title.draw(t, 'title')
         end
 
         # Draws all axes background lines for the plot.
@@ -215,7 +215,15 @@ module CTioga2
         # Returns a Types::MarginsBox
         def estimate_margins(t)
           margins = [:left, :right, :top, :bottom].map do |side|
-            Types::Dimension.new(:dy, @axes[side].extension(t,self))
+            ext = @axes[side].extension(t,self)
+            if side == @title.loc
+              ext2 = @title.label_extension(t, 'title', side) * 
+                (@text_scale || 1)
+              if ext < ext2
+                ext = ext2
+              end
+            end
+            Types::Dimension.new(:dy, ext)
           end
 
           # TODO: add the plot title !

@@ -94,7 +94,8 @@ module CTioga2
           end
           t.show_axis(spec)
           @axis_label.loc = LocationToTiogaLocation[@location]
-          @axis_label.draw(t)
+          default = vertical? ? 'ylabel' : 'xlabel'
+          @axis_label.draw(t, default)
         end
 
         # Draw the axis background lines:
@@ -141,15 +142,10 @@ module CTioga2
         #
         # TODO: handle offset axes when that is implemented.
         def extension(t, style = nil)
-          label_shift, label_scale, ticks_shift, ticks_scale = 
-            *get_label_parameters(t)
-          p [label_shift, label_scale, ticks_shift, ticks_scale]
-          if @axis_label.text
-            le = label_shift * label_scale
-          else
-            le = 0
-          end
-          p @decoration
+          ticks_shift, ticks_scale = *get_ticks_parameters(t)
+          default =  vertical? ? 'ylabel' : 'xlabel'
+          le = @axis_label.label_extension(t, default, @location)
+
           case @decoration
           when AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS,
             AXIS_WITH_TICKS_AND_NUMERIC_LABELS
@@ -165,29 +161,33 @@ module CTioga2
 
         protected
 
-        # Returns: _label_shift_, _label_scale_, _ticks_shift_,
-        # _ticks_scale_ for the axis.
+        # Whether the axis is vertical or not
+        def vertical?
+          return LocationVertical[@location]
+        end
+
+        # Returns: _ticks_shift_, _ticks_scale_ for the axis.
         #
         # TODO: try something clever with the angles ?
-        def get_label_parameters(t)
+        def get_ticks_parameters(t)
           i = t.axis_information({'location' => 
-                               LocationToTiogaLocation[@location]})
+                                   LocationToTiogaLocation[@location]})
           retval = []
           # First axis labels:
-          p [ @axis_label.shift, @axis_label.scale]
-          retval << ( @axis_label.shift || 
-                      (i['vertical'] ? t.ylabel_shift : t.xlabel_shift ))
-          retval << ( @axis_label.scale || 
-                      (i['vertical'] ? t.ylabel_scale : t.xlabel_scale ))
+#           p [ @axis_label.shift, @axis_label.scale]
+#           retval << ( @axis_label.shift || 
+#                       (i['vertical'] ? t.ylabel_shift : t.xlabel_shift ))
+#           retval << ( @axis_label.scale || 
+#                       (i['vertical'] ? t.ylabel_scale : t.xlabel_scale ))
           retval << (@tick_label_style.shift || i['shift'])
           retval << (@tick_label_style.scale || i['scale'])
 
           # I can't really understand for now why we need such special
           # cases, but they surely are needed !
-          if i['vertical']
-            retval[0] += 1
-          end
-          retval[2] += 1
+#           if i['vertical']
+#             retval[0] += 1
+#           end
+          retval[0] += 1
           return retval
         end
         

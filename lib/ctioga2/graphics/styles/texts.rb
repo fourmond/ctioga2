@@ -34,6 +34,16 @@ module CTioga2
         :at_y_origin => Tioga::FigureConstants::AT_Y_ORIGIN
       }
 
+      # Horizontal or vertical
+      LocationVertical = {
+        :left => true,
+        :right => true,
+        :bottom => false,
+        :top => false,
+        :at_x_origin => true,
+        :at_y_origin => false
+      }
+
 
       # The style of a text object. This class is suitable for
       # inclusion as a Hash to FigureMaker#show_axis, for the tick
@@ -61,6 +71,14 @@ module CTioga2
         # If _y_ is _nil_, then _x_or_loc_ is taken to be a location
         # (see FigureMaker#show_text).
         def draw_text(t, text, x_or_loc, y = nil, measure = nil)
+          dict = prepare_show_text_dict(text, x_or_loc, y, measure)
+          t.show_text(dict)
+        end
+
+        protected
+        
+        # Prepares the dictionnary for use with show_text
+        def prepare_show_text_dict(text, x_or_loc, y = nil, measure = nil)
           dict = self.to_hash
           dict['text'] = text
           if y
@@ -75,7 +93,7 @@ module CTioga2
           if measure
             dict['measure'] = measure
           end
-          t.show_text(dict)
+          return dict
         end
       end
 
@@ -116,10 +134,47 @@ module CTioga2
         end
         
         # Draw the label, if #text is not _nil_ or _false_.
-        def draw(t, measure = nil)
+        # Attributes such as scale, shift and angle are taken from the
+        # corresponding _default_ if _default_ isn't nil.
+        def draw(t, default = nil, measure = nil)
           if @text
-            self.draw_text(t, @text, @loc, nil, measure)
+            dict = prepare_label_dict(t, default, measure) 
+            t.show_text(dict)
           end
+        end
+
+        # Gets the extension of the label, in units of text height.
+        # Default values for the various parameters are taken from the
+        # _default_ parameter if they are not specified.
+        def label_extension(t, default = nil, side = nil)
+          if @text
+            dict = prepare_label_dict(t, default, nil) 
+            case side
+            when :bottom, :right
+              extra = 0.5       # To account for baseline ?
+            when :top, :left
+              extra = 1
+            else
+              extra = 1
+            end
+            return (dict['shift'] + extra) * dict['scale']
+          else
+            return 0
+          end
+        end
+
+        protected 
+        
+        def prepare_label_dict(t, default = nil, measure = nil)
+          dict = prepare_show_text_dict(@text, @loc, nil, measure)
+          if default
+            for attribute in %w(scale angle shift)
+              if ! dict.key?(attribute)
+                dict[attribute] = t.send("#{default}_#{attribute}")
+              end
+            end
+          end
+          return dict
         end
 
       end
