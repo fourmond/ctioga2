@@ -46,7 +46,12 @@ module CTioga2
                               :type => :tioga_color,
                               :namespace => Tioga::ColorConstants
                             }, <<EOD)
-A Tioga color.
+A color. It can take three forms:
+ * the name of a named color; see 
+http://tioga.rubyforge.org/doc/classes/Tioga/ColorConstants.html
+for the list of colors.
+ * an HTML color: for instance, #f00 or #ff0000 is red;
+ * a list of three numbers between 0 and 1: 1,0,0 is red too.
 EOD
 
     ColorOrFalseType = 
@@ -55,7 +60,7 @@ EOD
                     :namespace => Tioga::ColorConstants,
                     :shortcuts => {'none' => false }
                   }, <<EOD)
-A Tioga color, or false to say that nothing should be drawn.
+A {type: color}, or false to say that nothing should be drawn.
 EOD
 
     LineStyleType = 
@@ -114,9 +119,9 @@ Margins around a plot, ie the distance from the side of the plot to
 the corresponding side of the container (most likely the whole
 PDF). It can take three forms:
 
-* dimension (applies to all sides)
-* left_right, top_bottom
-* left, right, top, bottom
+ * dimension (applies to all sides)
+ * left_right, top_bottom
+ * left, right, top, bottom
 
 Each of the elements is a valid {type: dimension}.
 

@@ -33,9 +33,13 @@ module CTioga2
         type_name :tioga_color, 'color'
         
         def string_to_type_internal(str)
-          if str =~ /#([0-9a-fA-F]{6})/
+          if str =~ /^\s*#([0-9a-fA-F]{6})\s*$/
               value =  $1.scan(/../).map {
               |i| i.to_i(16)/255.0 
+            }
+          elsif str =~ /^\s*#([0-9a-fA-F]{3})\s*$/
+              value =  $1.scan(/../).map {
+              |i| i.to_i(16)/15.0 
             }
           else 
             value = str.split(/\s*,\s*/).map do |s|
