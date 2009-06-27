@@ -176,6 +176,10 @@ module CTioga2
     # Whether or not to include the command-line used to produce the
     # file in the target PDF file.
     attr_accessor :mark
+
+    # Whether intermediate files are cleaned up automatically
+    # afterwards or not...
+    attr_accessor :cleanup
     
 
     # The first instance of PlotMaker created
@@ -210,6 +214,9 @@ module CTioga2
 
       # We mark by default, as it comes dead useful.
       @mark = true
+
+      # Remove intermediate files by default.
+      @cleanup = true
     end
 
     # ctioga's entry point.
@@ -342,6 +349,7 @@ module CTioga2
     def create_figure_maker
       t = Tioga::FigureMaker.new
       t.tex_preamble += @latex_preamble
+      t.autocleanup = @cleanup
 
       # The title field of the information is the command-line if marking
       # is on.
@@ -458,9 +466,15 @@ EOD
 
 
     
-    PlotSetupGroup =  
-      CmdGroup.new('plot-setup', 
-                   "Plot setup", "Plot setup", 50)
+    OutputSetupGroup =  
+      CmdGroup.new('output-setup', 
+                   "Output setup", <<EOD, 50)
+Commands in this group deal with various aspects of the production of
+output files:
+ * output file location
+ * post-processing (including automatic display)
+ * cleanup...
+EOD
 
     PageSizeCommand = 
       Cmd.new("page-size",'-r',"--page-size", 
@@ -475,10 +489,26 @@ EOD
     end
 
     PageSizeCommand.describe('Sets the page size', 
-                             <<EOH, PlotSetupGroup)
+                             <<EOH, OutputSetupGroup)
 Sets the size of the output PDF file, in real units. Takes arguments in the 
 form of 12cm x 3in (spaces can be omitted).
 EOH
+
+    CleanupCommand = 
+      Cmd.new("clean",nil,"--clean", 
+              [ CmdArg.new('boolean') ]) do |plotmaker, cleanup|
+      plotmaker.cleanup = cleanup
+    end
+
+
+    CleanupCommand.describe('Remove intermediate files', 
+                            <<EOH, OutputSetupGroup)
+When this is on (the default), ctioga2 automatically cleans up
+intermediate files produced by Tioga. When LaTeX fails, it can be
+useful to have a closer look at them, so disable it to be able to look
+into them.
+EOH
+
 
     NameCommand = 
       Cmd.new("name",'-n',"--name", 
@@ -488,7 +518,7 @@ EOH
 
 
     NameCommand.describe('Sets the name of the figure', 
-                         <<EOH, PlotSetupGroup)
+                         <<EOH, OutputSetupGroup)
 Sets the name of the figure, which is also the base name for the output file.
 This has nothing to do with the title of the plot, which can be set using
 the command {command: title}.
@@ -501,7 +531,7 @@ EOH
     end
 
     OutputNowCommand.describe('Outputs the current state of the figure', 
-                              <<EOH, PlotSetupGroup)
+                              <<EOH, OutputSetupGroup)
 Writes a figure with the given name (see {command: name}) and keeps the 
 current state. This can be used to create an animation.
 EOH
@@ -513,7 +543,7 @@ EOH
     end
 
     OutputAndResetCommand.describe('Writes the current figure and starts anew', 
-                                   <<EOH, PlotSetupGroup)
+                                   <<EOH, OutputSetupGroup)
 Writes the current figure and starts a fresh one. All non-graphical 
 information are kept (curves loaded, figure names, preamble, and so on).
 EOH
@@ -525,7 +555,7 @@ EOH
     end
 
     OutputDirCommand.describe('Sets the output directory for produced files', 
-                              <<EOH, PlotSetupGroup)
+                              <<EOH, OutputSetupGroup)
 Sets the directory to which files will be plot. It defaults to the current
 directory.
 EOH
@@ -542,7 +572,7 @@ EOH
     end
 
     ViewerCommand.describe('Uses the given viewer to view the produced PDF files', 
-                           <<EOH, PlotSetupGroup)
+                           <<EOH, OutputSetupGroup)
 Sets the command for viewing the PDF file after ctioga2 has been run.
 EOH
     
@@ -552,7 +582,7 @@ EOH
     end
 
     XpdfViewerCommand.describe('Uses xpdf to view the produced PDF files', 
-                              <<EOH, PlotSetupGroup)
+                              <<EOH, OutputSetupGroup)
 Uses xpdf to view the PDF files produced by ctioga2.
 EOH
 
@@ -562,7 +592,7 @@ EOH
     end
     
     OpenViewerCommand.describe('Uses open to view the produced PDF files', 
-                               <<EOH, PlotSetupGroup)
+                               <<EOH, OutputSetupGroup)
 Uses open (available on MacOS) to view the PDF files produced by ctioga2.
 EOH
 
@@ -573,7 +603,7 @@ EOH
     end
     
     SVGCommand.describe('Converts produced PDF to SVG using pdf2svg', 
-                        <<EOH, PlotSetupGroup)
+                        <<EOH, OutputSetupGroup)
 When this feature is on, all produced PDF files are converted to SVG
 using the neat pdf2svg program.
 EOH
@@ -585,7 +615,7 @@ EOH
     end
     
     EPSCommand.describe('Converts produced PDF to EPS using pdftops', 
-                        <<EOH, PlotSetupGroup)
+                        <<EOH, OutputSetupGroup)
 When this feature is on, all produced PDF files are converted to EPS
 using the pdftops program (from the xpdf tools suite).
 EOH
@@ -613,7 +643,7 @@ EOH
     end
     
     PNGCommand.describe('Converts produced PDF to PNG using convert', 
-                        <<EOH, PlotSetupGroup)
+                        <<EOH, OutputSetupGroup)
 Turns all produced PDF files into PNG images of the given resolution
 using convert. This also has for effect to set the {command:
 page-size} to the resolution divided by the 'scale' option in
@@ -630,7 +660,7 @@ EOH
     end
     
     MarkCommand.describe('Fills the title of the produced PDF with the command-line', 
-                         <<EOH, PlotSetupGroup)
+                         <<EOH, OutputSetupGroup)
 When this feature is on (which is the default, as it comes in very
 useful), the 'title' field of the PDF informations is set to the
 command-line that resulted in the PDF file. Disable it if you don't
