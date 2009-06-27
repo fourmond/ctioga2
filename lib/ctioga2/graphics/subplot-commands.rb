@@ -44,6 +44,22 @@ more complex plots might produce unexpected results. The main use of this
 function is to control the padding around simple plots.
 EOH
 
+    PaddingCommand = 
+      Cmd.new("padding",nil,"--padding", 
+              [
+               CmdArg.new('dimension'),
+              ]) do |plotmaker, dim|
+      
+      Styles::PlotStyle.current_plot_style(plotmaker).padding = dim
+    end
+
+    PaddingCommand.describe('Sets the padding for the current plot',
+                            <<EOH, SubplotsGroup)
+When the {command: frame-margins} is set to automatic, ctioga2 leaves
+that much space around the plot on the sides where there are no labels.
+EOH
+
+
     InsetCommand =         
       Cmd.new("inset",nil,"--inset", 
               [
