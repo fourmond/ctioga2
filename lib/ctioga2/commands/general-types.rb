@@ -70,6 +70,16 @@ A plain string or a regular expression (the latter being enclosed
 within /.../).
 EOD
 
+    # Data-point. Unlike other types, this one needs to be processed
+    # afterwards, actually, since an access to a plotmaker object is
+    # necessary.
+    DataPointType = CmdType.new('data-point', :string, <<EOD)
+A point from a Dataset.
+
+TODO: document ;-)...
+EOD
+
+
 
     # This ones get here since they mess up with syntax highlighting
 

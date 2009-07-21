@@ -182,7 +182,6 @@ module CTioga2
                     'line_style' => 'line-style',
                   }
                   ) do |t, tail,head, options|
-          # TODO: add a way to specify fonts ???
           options ||= {}
           options['head'] = head.to_figure_xy(t)
           options['tail'] = tail.to_figure_xy(t)
@@ -196,7 +195,6 @@ module CTioga2
                     'line_style' => 'line-style',
                   }
                   ) do |t, tail,head, options|
-          # TODO: add a way to specify fonts ???
           options ||= {}
           for a in ['head', 'tail'] 
             options["#{a}_marker"] = "None"
