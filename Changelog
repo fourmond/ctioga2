@@ -1,6 +1,11 @@
+ctioga2 (0.1)
+
+  * Setting any set now resets its index
+
+ -- Vincent Fourmond <vincent.fourmond@9online.fr>  Thu Sep 17 22:09:55 CEST 2009
+
 ctioga2 (0.0)
 
   * New version of ctioga, rewritten from scratch, with a whole new structure.
 
  -- Vincent Fourmond <vincent.fourmond@9online.fr>  Sat Apr 18 13:16:34 CEST 2009
-

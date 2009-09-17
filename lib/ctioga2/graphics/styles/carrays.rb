@@ -29,7 +29,14 @@ module CTioga2
       class CircularArray
         
         # The set through which we go
-        attr_accessor :set
+        attr_reader :set
+
+        # Defines the set of elements we'll be circling through and
+        # resets the index.
+        def set=(s)
+          @set = s
+          @value = 0
+        end
         
         def initialize(set)
           @set = set
