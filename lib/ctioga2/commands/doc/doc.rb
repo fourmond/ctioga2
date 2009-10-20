@@ -45,6 +45,10 @@ module CTioga2
         # by Interpreter::commands.
         attr_accessor :types
 
+        # The hash containing all the backends, as returned by
+        # Data::Backends::Backend::list_backends
+        attr_accessor :backends
+
         # Wether or not to ignore blacklisted commands
         attr_accessor :ignore_blacklisted
 
@@ -59,6 +63,7 @@ module CTioga2
           @commands = Interpreter::commands
           @groups = Interpreter::groups
           @types = Interpreter::types
+          @backends = Data::Backends::Backend::list_backends
 
           @ignore_blacklisted = ! (ENV.key?("CT2_DEV") && 
                                    ! ENV["CT2_DEV"].empty?)

@@ -76,6 +76,19 @@ EOH
 Prints the HTML documentation for all types.
 EOH
 
+      WriteHTMLBackends = 
+        Cmd.new("write-html-backends", nil, "--write-html-backends", 
+                []) do |plotmaker|
+        html = HTML.new(plotmaker.interpreter.doc)
+        html.write_backends()
+      end
+      
+      WriteHTMLBackends.describe("HTML documentation for backends",
+                                 <<EOH, DocumentationGenerationGroup)
+Writes the documentation for all backends, in one monolithic HTML page
+for now (but this would be a good idea to change).
+EOH
+
       WriteHTMLCommandLineOptions = 
         Cmd.new("write-html-commandline", nil, "--write-html-commandline", 
                 []) do |plotmaker|

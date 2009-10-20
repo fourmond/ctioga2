@@ -45,6 +45,7 @@ module CTioga2
         #
         # NO... We should *input* a manual page, and spit out
         # replacement texts.
+        #
         def write_manual_page(version, input, out = STDOUT)
           passed_header = false
           if input.is_a? String
@@ -67,6 +68,7 @@ module CTioga2
               passed_header = true
             when /^#{RoffCommentRE}\s*write-commands\s*$/
               write_commands(out)
+              # TODO: add a write-backends command....
             when /^#{RoffCommentRE}\s*write-group:\s*(.*)\s*$/
               id = $1
               if @groups[id]

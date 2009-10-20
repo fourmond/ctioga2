@@ -104,7 +104,7 @@ module CTioga2
           attr_accessor :target
           
           # _target_ is the name of the target, which can be of _type_
-          # 'group', 'command' and 'type'.
+          # 'group', 'command', 'backend' and 'type'.
           def initialize(doc, target, type)
             super(doc)
             @target = doc.send("#{type}s")[target]
@@ -269,7 +269,7 @@ module CTioga2
         # elements.
         def parse_paragraph_markup(doc, string)
           els = []
-          while string =~ /\{(group|type|command):\s*([^}]+?)\s*\}/
+          while string =~ /\{(group|type|command|backend):\s*([^}]+?)\s*\}/
             els << MarkupText.new(doc, $`)
             els << MarkupLink.new(doc, $2, $1) 
             string = $'

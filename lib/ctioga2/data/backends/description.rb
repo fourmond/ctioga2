@@ -155,10 +155,10 @@ module CTioga2
             new("backend-#{@name}", 
                 "The '#{@name}' backend: #{@long_name}",
                 "The commands in this group drive the "+
-                "behaviour of the #{@long_name} backend.\n" + 
-                @description,
+                "behaviour of the {backend: #{@name}} backend;\n" + 
+                "see its documentation for more information",
                 DefaultBackendGroupPriority)
-
+          
           backend_options = {}
 
           # Again, each is needed for scoping problems.

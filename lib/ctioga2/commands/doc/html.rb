@@ -29,8 +29,15 @@ module CTioga2
         # The Doc object the HTML class should document
         attr_accessor :doc
 
-        # The base URL for file where types are documented.
+        # The base URL for the file where the types are documented.
         attr_accessor :types_url
+
+        # The base URL for the file where the backends are documented.
+        #
+        # TODO: maybe this should be turned into a directory, and each
+        # file would document a backend on its own ? That would make
+        # sense, but that would be rather difficult, I have to admit.
+        attr_accessor :backends_url
 
         # The base URL for file where commands and groups are
         # documented.
@@ -40,6 +47,7 @@ module CTioga2
           @doc = doc
           @types_url = "types.html"
           @commands_url = "commands.html"
+          @backends_url = "backends.html"
         end
 
         # Ouputs HTML code to document all groups and commands 
@@ -125,6 +133,30 @@ module CTioga2
         end
         
 
+        # Ouputs HTML code to all backends
+        def write_backends(out = STDOUT)
+          backends = @doc.backends.sort.map { |d| d[1]}
+
+
+          out.puts "<div class='quick-jump'>"
+          out.puts "Quick jump to a specific backend:\n"
+          out.puts "<ul>\n"
+          for b in backends
+            out.puts "<li><a href='#backend-#{b.name}'>#{b.name}</a></li>\n"
+          end
+          out.puts "</ul>\n"
+          out.puts "</div>"
+ 
+          for b in backends
+            out.puts
+            out.puts "<h4 id='backend-#{b.name}' class='backend'><code>#{b.name}</code>: #{b.long_name}</h4>\n"
+            out.puts markup_to_html(b.description)
+            out.puts            # There is no need to wrap the markup
+            # in a paragraph.
+          end
+        end
+        
+
         protected
 
         # The string that represents a full command
@@ -201,6 +233,8 @@ module CTioga2
                 link = "#{@commands_url}#group-#{it.target.id}"
               when CommandType
                 link = "#{@types_url}#type-#{it.target.name}"
+              when Data::Backends::BackendDescription
+                link = "#{@backends_url}#backend-#{it.target.name}"
               else
                 raise "The link target should be either a group, a command or a type, but is a #{it.target.class}"
               end
