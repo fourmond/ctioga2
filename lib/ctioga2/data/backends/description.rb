@@ -175,9 +175,8 @@ module CTioga2
             backend_options[param.name] = arg.dup
           end
 
-          # TODO: add option parsing
           Cmd.new("#{@name}", nil, "--#{@name}", [], 
-                  backend_options, "Selects the '#{@name}' backend", 
+                  backend_options, "Selects the '{backend: #{@name}}' backend", 
                   nil, group) do |plotmaker, options|
             plotmaker.data_stack.backend_factory.set_current_backend(@name)
             for k,v in options

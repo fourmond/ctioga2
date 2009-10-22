@@ -149,10 +149,14 @@ module CTioga2
  
           for b in backends
             out.puts
-            out.puts "<h4 id='backend-#{b.name}' class='backend'><code>#{b.name}</code>: #{b.long_name}</h4>\n"
+            out.puts "<h3 id='backend-#{b.name}' class='backend'><code>#{b.name}</code>: #{b.long_name}</h3>\n"
             out.puts markup_to_html(b.description)
-            out.puts            # There is no need to wrap the markup
-            # in a paragraph.
+            out.puts
+            for param in b.param_list
+              out.puts "<h4 id='backend-#{b.name}-#{param.name}'>Parameter: #{param.name}</h4>"
+              out.puts "<p><code>/#{param.name}=<a href='#{@types_url}#type-#{param.type.name}'>#{param.type.name}</a></p>"
+              out.puts markup_to_html(param.description)
+            end
           end
         end
         
