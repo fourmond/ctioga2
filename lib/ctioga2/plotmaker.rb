@@ -358,6 +358,15 @@ module CTioga2
       else
         title = ""
       end
+
+      # We use Vincent's algorithm for major ticks when available ;-)...
+      begin
+        t.vincent_or_bill = true
+        info "Using Vincent's algorithm for major ticks"
+      rescue
+        info "Using Bill's algorithm for major ticks"
+      end
+
       
       # We now use \pdfinfo to provide information about the version
       # of ctioga2 used to produce the PDF, and the command-line if
