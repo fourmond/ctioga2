@@ -198,7 +198,7 @@ module CTioga2
       end
 
       # Same as #select!, but you give it a text formula instead of a
-      # block. It internall calls #select!, by the way ;-)...
+      # block. It internally calls #select!, by the way ;-)...
       def select_formula!(formula)
         names = @x.column_names('x', true)
         names.concat(@x.column_names('y', true))
@@ -218,11 +218,54 @@ module CTioga2
 
       # TODO: a dup !
 
+      # Average all the non-X values of successive data points that
+      # have the same X values. It is a naive version that also
+      # averages the error columns.
+      def average_duplicates!
+        last_x = nil
+        last_x_first_idx = 0
+        xv = @x.values
+        i = 0
+        vectors = all_vectors
+        while i < xv.size
+          x = xv[i]
+          if ((last_x == x) && (i != (xv.size - 1)))
+            # Do nothing
+          else
+            if last_x_first_idx < (i - 1)  || 
+                ((last_x == x) && (i == (xv.size - 1)))
+              if i == (xv.size - 1)
+                e = i
+              else
+                e = i-1
+              end                 # The end of the slice.
+              
+              for v in vectors
+                subv = v[last_x_first_idx..e]
+                ave = subv.sum/subv.size
+                v.slice!(last_x_first_idx+1, e - last_x_first_idx)
+                v[last_x_first_idx] = ave
+              end
+              i -= e - last_x_first_idx
+            end
+            last_x = x
+            last_x_first_idx = i
+          end
+          i += 1
+        end
+        
+      end
+
       protected
 
       # Returns all DataColumn objects held by this Dataset
       def all_columns
         return [@x, *@ys]
+      end
+
+      # Returns all Dvectors of the columns one by one.
+      def all_vectors
+        return all_columns.map {|x| x.vectors}.flatten(1)
       end
       
     end

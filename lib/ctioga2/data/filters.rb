@@ -124,6 +124,23 @@ Install the {command: cherry-pick-last} command as a dataset hook (see
 false for subsequent datasets will be removed.
 EOH
 
+      AverageDupOperation = 
+        Cmd.new("avg-dup-last", nil, "--avg-dup-last", 
+                [], {}) do |plotmaker|
+        plotmaker.data_stack.last.average_duplicates!
+      end
+      
+      AverageDupOperation.describe("Average successive elements with identical X values",
+                                   <<EOH, FiltersGroup)
+Averages successive points with identical X values. This algorithm is
+naive with respect to the min/max values and averages them just as
+well, whereas one might expect something more clever.
+
+To average over identical X values when they are not successive in the
+dataset, you might want to hand it over to {command: sort-last} first.
+
+EOH
+
 
     end
   end

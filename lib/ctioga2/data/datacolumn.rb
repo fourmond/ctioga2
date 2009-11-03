@@ -105,6 +105,16 @@ module CTioga2
         end
       end
 
+      # Vectors: all values if there are error bars, or only the
+      # #value one if there isn't and _expand_ isn't true.
+      def vectors
+        if has_errors?
+          return [@values, @min_values, @max_values]
+        else
+          return [@values]
+        end
+      end
+
       # Returns the number of elements.
       def size
         return @values.size
