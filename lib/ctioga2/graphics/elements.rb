@@ -19,6 +19,8 @@ require 'ctioga2/graphics/elements/subplot'
 require 'ctioga2/graphics/elements/curve2d'
 require 'ctioga2/graphics/elements/primitive'
 
+require 'ctioga2/graphics/elements/tangent'
+
 module CTioga2
 
   Version::register_svn_info('$Revision$', '$Date$')

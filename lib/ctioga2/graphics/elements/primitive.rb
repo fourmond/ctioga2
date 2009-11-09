@@ -54,6 +54,7 @@ module CTioga2
             @optional_arguments = opts
             @funcall = code
           end
+
         end
 
         # A TiogaPrimitive object describing the current primitive
@@ -64,6 +65,9 @@ module CTioga2
 
         # A hash containing the values of the optional arguments
         attr_accessor :options
+
+        # The last curve's style... 
+        attr_accessor :last_curve_style
 
 
         # Creates a new TiogaPrimitiveCall object.
@@ -103,6 +107,7 @@ module CTioga2
             call = Elements::
               TiogaPrimitiveCall.new(primitive,
                                      rest, options)
+            call.last_curve_style = plotmaker.curve_style_stack.last
             plotmaker.root_object.current_plot.
               add_element(call)
           end
@@ -130,14 +135,14 @@ module CTioga2
                     'alignment' => 'alignment',
                   }
                   ) do |t, point, string, options|
-          # TODO: add a way to specify fonts ???
+          # @todo add a way to specify fonts ???
           options ||= {}
           options['text'] = string
           options['at'] = point.to_figure_xy(t)
           t.show_text(options)
         end
 
-        # TODO: add rendering mode !!
+        # @todo add rendering mode !!
         MarkerOptions = {
           'color' => 'color',
           'stroke_color' => 'color',
@@ -169,19 +174,21 @@ module CTioga2
           t.show_marker(options)
         end
 
-        primitive("arrow", "arrow", [ 'point', 'point' ],
-                  {
-                    'color' => 'color',
-                    'head_scale' => 'float',
-                    'head_marker' => 'marker',
-                    'head_color' => 'color',
-                    'tail_scale' => 'float',
-                    'tail_marker' => 'marker',
-                    'tail_color' => 'color',
-                    'line_width' => 'float',
-                    'line_style' => 'line-style',
-                  }
-                  ) do |t, tail,head, options|
+        # options for arrows (and therefore tangents)
+        ArrowOptions = {
+          'color' => 'color',
+          'head_scale' => 'float',
+          'head_marker' => 'marker',
+          'head_color' => 'color',
+          'tail_scale' => 'float',
+          'tail_marker' => 'marker',
+          'tail_color' => 'color',
+          'line_width' => 'float',
+          'line_style' => 'line-style',
+        }
+
+        primitive("arrow", "arrow", [ 'point', 'point' ], 
+                  ArrowOptions) do |t, tail,head, options|
           options ||= {}
           options['head'] = head.to_figure_xy(t)
           options['tail'] = tail.to_figure_xy(t)
@@ -210,6 +217,9 @@ module CTioga2
         # Draws the primitive
         def real_do(t)
           args = @arguments + [@options]
+          ## @todo this is a really ugly hack for passing
+          ## last_curve_style around
+          $last_curve_style = @last_curve_style
           primitive.funcall.call(t, *args)
         end
         
@@ -217,7 +227,6 @@ module CTioga2
           CmdType.new('drawing-spec', :string, <<EOD)
 A ctioga 1 --draw specification.
 EOD
-
 
 
         # An emulation of the old ctioga behavior

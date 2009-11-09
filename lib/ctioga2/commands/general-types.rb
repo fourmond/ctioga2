@@ -73,7 +73,7 @@ EOD
     # Data-point. Unlike other types, this one needs to be processed
     # afterwards, actually, since an access to a plotmaker object is
     # necessary.
-    DataPointType = CmdType.new('data-point', :string, <<EOD)
+    DataPointType = CmdType.new('data-point', :data_point, <<EOD)
 A point from a Dataset.
 
 TODO: document ;-)...

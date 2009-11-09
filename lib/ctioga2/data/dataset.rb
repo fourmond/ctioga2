@@ -239,7 +239,11 @@ module CTioga2
               else
                 e = i-1
               end                 # The end of the slice.
-              
+
+              ## \todo In real, to do this properly, one would
+              # have to write a proper function in DataColumn that
+              # does averaging over certain indices possibly more
+              # cleverly than the current way to do.
               for v in vectors
                 subv = v[last_x_first_idx..e]
                 ave = subv.sum/subv.size

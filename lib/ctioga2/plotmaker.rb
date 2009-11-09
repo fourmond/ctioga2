@@ -180,6 +180,9 @@ module CTioga2
     # Whether intermediate files are cleaned up automatically
     # afterwards or not...
     attr_accessor :cleanup
+
+    # The stack of CurveStyle objects that were used so far.
+    attr_accessor :curve_style_stack
     
 
     # The first instance of PlotMaker created
@@ -217,6 +220,9 @@ module CTioga2
 
       # Remove intermediate files by default.
       @cleanup = true
+
+      # Make curve style stack empty
+      @curve_style_stack = []
     end
 
     # ctioga's entry point.
@@ -317,6 +323,7 @@ module CTioga2
       curve = @curve_generator.
         curve_from_dataset(plot, dataset, options)
       plot.add_element(curve)
+      @curve_style_stack << curve.curve_style
       info "Adding curve '#{dataset.name}' to the current plot"
     end
 
