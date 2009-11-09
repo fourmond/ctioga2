@@ -40,7 +40,7 @@ module CTioga2
           primitive("tangent", "tangent", [ 'data-point'],
                     TangentOptions) do |t, point,options|
           options ||= {}
-          nb = options['nbavg'] || 3
+          nb = options['nbavg'] || 7
           x = point.x_val(nb)
           y = point.y_val(nb)
           slope = point.slope(nb)
@@ -72,7 +72,8 @@ module CTioga2
           else
             # We don't bother too much about the head/tail
             options['head'] = [x, y]
-            options['tail'] = [x-1, y - slope]
+            dx = point.dx(nb) * 10
+            options['tail'] = [x-dx, y - dx*slope]
             options['line_width'] = 0
             options['tail_marker'] = "None"
           end

@@ -129,6 +129,17 @@ module CTioga2
           return (sxy * navg - sx*sy)/(sxx * navg - sx*sx)
         end
       end
+
+      ## Returns the average value of the difference between two
+      # consecutive X values
+      def dx(navg = 3)
+        xvect = @dataset.x.values
+        di = (navg-1)/2
+        navg = 2*di + 1
+
+        idx = usable_index(di, xvect.size)
+        return (xvect[idx+di]-xvect[idx-di])/navg
+      end
       
 
       protected
