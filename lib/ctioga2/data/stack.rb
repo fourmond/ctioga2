@@ -226,9 +226,17 @@ EOH
 
     PrintLastCommand =
       Cmd.new("print-dataset", '-P', "--print-dataset",
-              [], {'which' => CmdArg.new('stored-dataset')}) do |plotmaker,opts|
+              [], {
+                'which' => CmdArg.new('stored-dataset'),
+                'save' => CmdArg.new('file'),
+              }) do |plotmaker,opts|
       ds = plotmaker.data_stack.specified_dataset(opts)
-      plotmaker.data_stack.print_dataset(ds, STDOUT)
+      if opts['save']
+        out = open(opts['save'], 'w')
+      else
+        out = STDOUT
+      end
+      plotmaker.data_stack.print_dataset(ds, out)
     end
     
     PrintLastCommand.describe("Prints the dataset last pushed on the stack",
