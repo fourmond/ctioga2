@@ -2,8 +2,9 @@ ctioga2 (0.1)
 
   * Setting any set now resets its index
   * Implemented a mechanism for tangents !
+  * Added a filter for averaging one successive identical values of X
 
- -- Vincent Fourmond <vincent.fourmond@9online.fr>  Mon Nov  9 20:25:18 CET 2009
+ -- Vincent Fourmond <vincent.fourmond@9online.fr>  Sun Nov 22 19:47:24 CET 2009
 
 ctioga2 (0.0)
 

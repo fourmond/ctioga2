@@ -141,6 +141,20 @@ dataset, you might want to hand it over to {command: sort-last} first.
 
 EOH
 
+      AverageDupFilter = 
+        Cmd.new("avg-dup", nil, "--avg-dup", 
+                [], {}) do |plotmaker, formula|
+        plotmaker.data_stack.add_to_dataset_hook("avg-dup-last()")
+      end
+      
+      AverageDupFilter.describe("Systematicallly average successive elements with identical X values",
+                                <<EOH, FiltersGroup)
+Install the {command: avg-dup-last} command as a dataset hook (see
+{command: dataset-hook}): all datasets acquired after this is on will
+be averaged if they have identical successive values of X.
+EOH
+
+
 
     end
   end
