@@ -50,6 +50,10 @@ EOD
         param_accessor :range, 'range', 
         "Plotting X range", 'float-range', 
         "The plotting X range, such as 0:2"
+
+        param_accessor :samples, 'samples', 
+        "The number of samples", 'text', 
+        "The number of samples"
         
         # This is called by the architecture to get the data. It splits
         # the set name into filename@cols, reads the file if necessary and
@@ -82,6 +86,10 @@ EOD
           gnuplot = IO.popen("gnuplot", "r+")
           output = ""
           gnuplot.puts "set term table"
+          if @samples
+            overrides ||= ""
+            overrides += ";set samples #{@samples}"
+          end
           for line in f
             next if line =~ /set\s+term/
             if overrides and line =~ /plot\s+/
