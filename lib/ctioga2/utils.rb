@@ -71,7 +71,7 @@ module CTioga2
     # The position of the URL, used for getting the version
     SVN_URL = '$HeadURL$'
     
-    # The version of ctigoa2
+    # The version of ctioga2
     CTIOGA_VERSION = if SVN_URL =~ /releases\/ctioga2-([^\/]+)/
                        $1
                      else
