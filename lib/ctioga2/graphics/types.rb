@@ -17,6 +17,8 @@ require 'ctioga2/graphics/types/boundaries'
 require 'ctioga2/graphics/types/boxes'
 require 'ctioga2/graphics/types/bijection'
 
+require 'ctioga2/graphics/types/grid'
+
 # In addition to the former, here are some useful constants
 # This module contains all the classes used by ctioga
 module CTioga2

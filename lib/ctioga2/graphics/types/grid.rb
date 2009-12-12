@@ -14,6 +14,8 @@
 require 'ctioga2/utils'
 require 'ctioga2/log'
 
+require 'ctioga2/graphics/types/dimensions'
+require 'ctioga2/graphics/types/boxes'
 
 module CTioga2
 
@@ -21,31 +23,130 @@ module CTioga2
 
   module Graphics
 
-    # This class provides a grid-like layout through the use of a grid
-    # setup command and a grid box specification.
-    #
-    # This
-    class GridLayout
+    module Types
 
-      # The margins (left, right, top, bottom) around the whole grid
-      attr_accessor :outer_margins
+      # The position of a single element in a GridLayout
+      class GridBox < Box
 
-      # The X offset to go from the right-hand side of one element to
-      # the left-hand-side of the next
-      attr_accessor :delta_x
+        GridBoxRE = /^\s*grid:(\d+)\s*,\s*(\d+)\s*$/
 
-      # The Y offset to go from the bottom of one element to
-      # the top of the next.
-      attr_accessor :delta_y
+        def self.from_text(txt)
+          if txt =~ GridBoxRE
+            return GridBox.new(GridLayout.current_grid, $1.to_i, $2.to_i)
+          else
+            raise "#{txt} is not a grid box."
+          end
+        end
+        
+        def initialize(grid, x, y)
+          @x = x.to_i
+          @grid = grid
+          @y = y.to_i
+        end
 
-      # The nup: an array nb horizontal, nb vertical
-      attr_accessor :nup
+        def to_frame_coordinates(t)
+          a = @grid.frame_coordinates(t, @x, @y)
+          return a
+        end
+      end
 
-      def initialize
+      # This class provides a grid-like layout through the use of a grid
+      # setup command and a grid box specification.
+      class GridLayout
+
+        # The margins (left, right, top, bottom) around the whole grid
+        attr_accessor :outer_margins
+
+        # The X offset to go from the right-hand side of one element to
+        # the left-hand-side of the next
+        attr_accessor :delta_x
+
+        # The Y offset to go from the bottom of one element to
+        # the top of the next.
+        attr_accessor :delta_y
+
+        # The nup: an array nb horizontal, nb vertical
+        attr_accessor :nup
+
+        # Horizontal scales
+        attr_accessor :hscales
+
+        # Vertical scales
+        attr_accessor :vscales
+
+        def initialize(nup = "2x2")
+          if nup.respond_to?(:split)
+            @nup = nup.split(/\s*x\s*/).map { |s| s.to_i }
+          else
+            @nup = nup.dup
+          end
+
+          # Initialize with the given
+          @outer_margins = {
+            'left' =>  Dimension.new(:dy, 2.5, :x),
+            'right' => Dimension.new(:bp, 6, :x),
+            'bottom' =>  Dimension.new(:dy, 2.5, :y),
+            'top' => Dimension.new(:dy, 2.5, :y)
+          }
+          @delta_x = Dimension.new(:dy, 2.5, :x)
+          @delta_y = Dimension.new(:dy, 2.5, :y)
+
+          @hscales = [1] * @nup[0]
+          @vscales = [1] * @nup[1]
+        end
+
+        # The grid currently in use.
+        @current_grid = nil
+        
+        def self.current_grid=(grid)
+          @current_grid = grid
+        end
+
+        def self.current_grid
+          return @current_grid
+        end
+
+        # Compute the frame coordinates fo the x,y element of the
+        # grid. They are numbered from the top,left element.
+        def frame_coordinates(t, x, y)
+          compute_lengths(t)
+          xo = if x > 0
+                 @hscales[0..(x-1)].inject(0,:+) * @wbase
+               else
+                 0
+               end
+          xl = @outer_margins['left'].to_frame(t, :x) + xo + 
+            x * @delta_x.to_frame(t, :x)
+          yo = if y > 0
+                 @vscales[0..(y-1)].inject(0,:+) * @hbase
+               else
+                 0
+               end
+          yt = 1 - (@outer_margins['top'].to_frame(t, :y) + yo +
+                    y * @delta_y.to_frame(t, :y))
+          return [xl, yt, 
+                  xl + @wbase * @hscales[x], 
+                  yt - @hbase * @vscales[y]]
+        end
+
+        protected 
+
+        # Compute the necessary variables in frame coordinates
+        def compute_lengths(t)
+          return if (@wbase && @hbase)
+          @wbase = (1 - 
+            (@outer_margins['left'].to_frame(t, :x) + 
+             @outer_margins['right'].to_frame(t, :x) + 
+             @delta_x.to_frame(t, :x) * (@nup[0]-1)))/@hscales.inject(0,:+)
+          @hbase = (1 - 
+            (@outer_margins['top'].to_frame(t, :y) + 
+             @outer_margins['bottom'].to_frame(t, :y) + 
+             @delta_y.to_frame(t, :y) * (@nup[1]-1)))/@vscales.inject(0,:+)
+        end
+
       end
 
     end
-
   end
-end
 
+end

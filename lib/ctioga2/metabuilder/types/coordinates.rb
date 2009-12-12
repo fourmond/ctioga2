@@ -100,6 +100,8 @@ module CTioga2
         def string_to_type_internal(str)
           default = @type[:default] || :frame
           case str
+          when Graphics::Types::GridBox::GridBoxRE
+            return Graphics::Types::GridBox::from_text(str)
           when Graphics::Types::PointBasedBox::PointBasedBoxRE
             return Graphics::Types::PointBasedBox::from_text(str, default)
           else

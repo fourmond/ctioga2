@@ -133,6 +133,33 @@ Scaling also applies to all elements of the plot that were added
 before the call to plot-scale.
 EOD
 
+    # Options for the SetupGrid command:
+    SetupGridOptions = {}
+    for n in %w(left right top bottom dx xy)
+      SetupGridOptions[n] = CmdArg.new('dimension')
+    end
+
+    SetupGridCommand = 
+      Cmd.new('setup-grid', nil, '--setup-grid', 
+              [ CmdArg.new('text') ], SetupGridOptions
+              ) do |plotmaker, nup, options|
+      grd = Types::GridLayout.new(nup)
+      for f in %w(left right top bottom)
+        if options.key? f
+          grd.outer_margins[f] = options[f]
+        end
+      end
+      grd.delta_x = options['dx'] if options['dx']
+      grd.delta_y = options['dy'] if options['dy']
+      Types::GridLayout.current_grid = grd
+    end
+    
+    SetupGridCommand.describe("Setup grid for insets", 
+                              <<"EOH", SubplotsGroup)
+Sets up a grid of the given layout (such as 2x1). After this command,
+arguments such as grid:0,1 can be used as the {type: box} argument of
+{cmd: inset} and {cmd: next-inset} commands.
+EOH
 
 
   end
