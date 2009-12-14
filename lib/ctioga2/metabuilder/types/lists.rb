@@ -149,7 +149,7 @@ module CTioga2
         def initialize(type)
           super
           @separator = /\s*\|\s*/
-          @sepatarot_out = '|'
+          @separator_out = '|'
         end
 
         def type_name
@@ -157,6 +157,11 @@ module CTioga2
         end
 
         def string_to_type_internal(str)
+          multiply = nil
+          if str =~ /(.*)\*\s*(\d+)\s*$/
+            multiply = $2.to_i
+            str = $1
+          end
           if str =~ /^\s*gradient:(.+)--(.+),(\d+)\s*$/
             s,e,nb = $1, $2, $3.to_i
             s,e = @subtype.string_to_type(s),@subtype.string_to_type(e)
@@ -175,10 +180,15 @@ module CTioga2
               end
               array << a
             end
-            return array
           else
-            return super
+            array = super
           end
+          if multiply
+            # Seems that I've finally managed to understand what zip
+            # is useful for !
+            array = array.zip(*([array]*(multiply-1))).flatten(1)
+          end
+          return array
         end
 
       end
