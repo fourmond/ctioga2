@@ -343,7 +343,7 @@ EOH
 
       NoXAxisLabelCommand.describe("Disables X label for the plot", 
                                    <<"EOH", AxisGroup)
-Disables the X label for the current plot.
+Removes the X label for the current plot.
 EOH
 
 
@@ -367,7 +367,7 @@ EOH
 
       NoYAxisLabelCommand.describe("Disables Y label for the plot", 
                                    <<"EOH", AxisGroup)
-Disables the Y label for the current plot.
+Removes the Y label for the current plot.
 EOH
 
       TitleLabelCommand = 
@@ -380,6 +380,17 @@ EOH
       TitleLabelCommand.describe("Sets the title of the plot", 
                                  <<"EOH", AxisGroup)
 Sets the title of the current plot.
+EOH
+
+      NoTitleLabelCommand = 
+        Cmd.new('no-title', nil, '--no-title', []) do |plotmaker|
+        PlotStyle.current_plot_style(plotmaker).
+          set_label_style('title', {}, false)
+      end
+
+      NoTitleLabelCommand.describe("Disables title for the plot", 
+                                   <<"EOH", AxisGroup)
+Removes the title of the current plot.
 EOH
 
       LabelStyleCommand = 

@@ -135,7 +135,7 @@ EOD
 
     # Options for the SetupGrid command:
     SetupGridOptions = {}
-    for n in %w(left right top bottom dx xy)
+    for n in %w(left right top bottom dx dy)
       SetupGridOptions[n] = CmdArg.new('dimension')
     end
 
