@@ -25,7 +25,7 @@ module CTioga2
 
       # A class holding all the styles for a curve.
       #
-      # TODO: maybe for objects different than Curve2D, a subclass of
+      # \todo maybe for objects different than Curve2D, a subclass of
       # CurveStyle could be used ? This way, we could have clearly
       # separated legends and the like ?
       class CurveStyle
@@ -38,6 +38,9 @@ module CTioga2
 
         # The text of the legend, if there is one.
         attr_accessor :legend
+
+        # The style of the error bars when needed, as a ErrorBarStyle.
+        attr_accessor :error_bar
 
         # True if a line should be drawn.
         def has_line?
@@ -60,10 +63,11 @@ module CTioga2
         # * 'marker_...': a MarkerStyle for the drawing of markers
         # * 'legend': the legend of the curve
         #
-        # TODO: make @legend another object derived from BasicStyle ?
+        # \todo make #legend another object derived from BasicStyle ?
         def set_from_hash(hash)
           @line = StrokeStyle.from_hash(hash, 'line_%s')
           @marker = MarkerStyle.from_hash(hash, 'marker_%s')
+          @error_bar = ErrorBarStyle.from_hash(hash, 'error_bar_%s')
           @legend = hash['legend']
         end
 
@@ -79,7 +83,7 @@ module CTioga2
         # Draws a legend pictogram that fills up the whole current
         # frame.
         #
-        # TODO: add more elements to the pictogram in case of more
+        # \todo add more elements to the pictogram in case of more
         # complex things.
         def draw_legend_pictogram(t)
           t.context do

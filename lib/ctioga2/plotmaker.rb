@@ -93,6 +93,7 @@
 #   This scheme would allow for a relatively painless way to draw graphs...
 
 
+
 # TODO: make --xrange automatically select the range for the --math
 # backend unless another range was explicitly specified.
 
@@ -130,8 +131,19 @@ require 'ctioga2/graphics/generator'
 require 'ctioga2/postprocess'
 
 
-
+## \mainpage CTioga2's code documentation.
 # This module contains all the classes used by ctioga
+#
+#
+# This holds the main page for CTioga2 code documentation. Most
+# interesting classes/namespaces are:
+# 
+# * CTioga2::PlotMaker
+# * CTioga2::Graphics
+# * CTioga2::Commands
+# * CTioga2::Data
+#
+# Have fun hacking...
 module CTioga2
 
   Version::register_svn_info('$Revision$', '$Date$')

@@ -135,7 +135,10 @@ module CTioga2
         end
 
         def draw_errorbars(t)
-          
+          return unless @dataset.has_xy_errors?
+          @dataset.each_values(true, true) do |*vals|
+            @curve_style.error_bar.show_error_bar(t, *(vals[1..6]))
+          end
         end
         
         ## Actually draws the curve
@@ -147,6 +150,8 @@ module CTioga2
             ## markers... and use the corresponding #draw_path or
             ## #draw_markers... Ideally, any string could be used, and
             ## warnings should be issued on missing symbols.
+
+            draw_errorbars(t)
             draw_path(t)
             draw_markers(t)
             #             # The fill is always first

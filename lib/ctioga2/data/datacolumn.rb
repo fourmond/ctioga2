@@ -92,13 +92,19 @@ module CTioga2
 
       # Values, [value, min, max], at the given index. If #min and
       # #max are nil only [value] is returned -- unless _expand_ is
-      # set, in which case we make up a default value for min and max.
-      def values_at(i, expand = false)
+      # set, in which case we make up a default value for min and max:
+      # the same as value if _expand_nil_ is false, or _nil_ if it is
+      # true.
+      def values_at(i, expand = false, expand_nil = true)
         if has_errors?
           return [@values[i], @min_values[i], @max_values[i]]
         else
           if expand
-            return [@values[i], @values[i], @values[i]]
+            if expand_nil
+              return [@values[i], nil, nil]
+            else
+              return [@values[i], @values[i], @values[i]]
+            end
           else
             return [@values[i]]
           end
@@ -168,13 +174,15 @@ module CTioga2
         set_vectors(new_vects)
       end
 
-      ColumnSpecsRE = /|min|max/i
+      ColumnSpecsRE = /|min|max|err/i
 
       # This function sets the value of the DataColumn object
       # according to a hash: _spec_ => _vector_.  _spec_ can be any of:
       # * 'value', 'values' or '' : the #values
       # * 'min' : #min
       # * 'max' : #max
+      # * 'err' : absolute error: min is value - error, max is value +
+      #    error
       def from_hash(spec)
         s = spec.dup
         @values = spec['value'] || spec['values'] || 
@@ -191,6 +199,9 @@ module CTioga2
             @min_values = s[key]
           when /^max$/i
             @max_values = s[key]
+          when /^err$/i
+            @min_values = @values - s[key]
+            @max_values = @values + s[key]
           else
             raise "Unkown key: #{key}"
           end

@@ -63,7 +63,7 @@ module CTioga2
             @description = description
             @short_option = short_option
 
-            # TODO: it is not very satisfying to mix CommandTypes and
+            # \todo it is not very satisfying to mix CommandTypes and
             # MetaBuilder::Type on the same level.
             if @sets
               @sets_type = 
@@ -244,7 +244,8 @@ module CTioga2
           end
           base.merge!(@override_parameters)
           base.merge!(hash_name_to_target(one_time))
-          # TODO: here, resolve 'links', such as :->color ?
+          ## \todo here, resolve 'links', such as :=color or :->color
+          ## ?  (user-specifiable on the command-line)
           return CurveStyle.from_hash(base)
         end
 

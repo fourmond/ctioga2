@@ -111,6 +111,11 @@ module CTioga2
         return @ys[1]
       end
 
+      # Returns true if X or Y columns have errors
+      def has_xy_errors?
+        return self.y.has_errors? || self.x.has_errors?
+      end
+
       # Sorts all columns according to X values
       def sort!
         idx_vector = Dobjects::Dvector.new(@x.values.size) do |i|
@@ -134,12 +139,13 @@ module CTioga2
         return retval
       end
 
-      # Iterates over all the values of the Dataset
-      def each_values
+      # Iterates over all the values of the Dataset.  Values of
+      # optional arguments are those of DataColumn::values_at.
+      def each_values(expand = false, expand_nil = true)
         @x.size.times do |i|
-          v = @x.values_at(i)
+          v = @x.values_at(i,expand, expand_nil)
           for y in @ys
-            v += y.values_at(i)
+            v += y.values_at(i,expand, expand_nil)
           end
           yield i, *v
         end

@@ -18,6 +18,8 @@ require 'ctioga2/graphics/styles/texts'
 require 'ctioga2/graphics/styles/carrays'
 require 'ctioga2/graphics/styles/curve'
 
+require 'ctioga2/graphics/styles/errorbar'
+
 require 'ctioga2/graphics/styles/sets'
 
 require 'ctioga2/graphics/styles/axes'
