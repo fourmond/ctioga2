@@ -25,8 +25,8 @@ module CTioga2
 
     module Elements
 
-      # A Curve2D object represents a 2D curve, along with its style and so
-      # on.
+      # A Curve2D object represents a 2D curve, along with its style
+      # and so on.
       class Curve2D  < TiogaElement
 
         include Log
@@ -134,10 +134,19 @@ module CTioga2
           #           t.fill
         end
 
+        def draw_errorbars(t)
+          
+        end
+        
+        ## Actually draws the curve
         def real_do(t)
           debug "Plotting curve #{inspect}"
           t.context do
-            # TODO reinstate the choice of the order of drawing ???
+            ## \todo allow customization of the order of drawing,
+            ## using a simple user-specificable array of path,
+            ## markers... and use the corresponding #draw_path or
+            ## #draw_markers... Ideally, any string could be used, and
+            ## warnings should be issued on missing symbols.
             draw_path(t)
             draw_markers(t)
             #             # The fill is always first

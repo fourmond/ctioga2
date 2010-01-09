@@ -139,6 +139,16 @@ module CTioga2
   # This class is the core of ctioga. It parses the command-line arguments,
   # reads all necessary files and plots graphs. Most of its functionality
   # is delegated into classes.
+  #
+  # \todo An important point would be to provide a facility that holds
+  # all the default values. To each would be assigned a given name,
+  # and programs would only use something like
+  # \code
+  # value = Default::value('stuff')
+  # \endcode
+  # 
+  # Setting up defaults would only be a question of using one single
+  # command (with admittedly many optional arguments)
   class PlotMaker
 
     # Include logging facilities for ctioga2
@@ -272,7 +282,7 @@ module CTioga2
     # Draws the figure currently accumulated in the #root_object.
     # It returns the path of the PDF file produced.
     #
-    # TODO:
+    # \todo
     # * cleanup or not ?
     def draw_figure(figname = "Plot", last = false)
       return if @root_object.empty?
@@ -310,13 +320,13 @@ module CTioga2
     # Add *one* Data::Dataset object using the current style (that can
     # be overridden by stuff given as options) to the #root_object.
     #
-    # TODO: here, keep a state of the current styles:
+    # \todo here, keep a state of the current styles:
     # * which is the color/marker/filling and so on of the curve ?
     # * are we drawing plain 2D curve, a histogram or something
     #   even more fancy ?
     # * this should be a separated class.
     #
-    # TODO: all curve objects should only take a Data::Dataset and a
+    # \todo all curve objects should only take a Data::Dataset and a
     # style as arguments to new.
     def add_curve(dataset, options = {})
       plot = @root_object.current_plot
