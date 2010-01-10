@@ -79,6 +79,14 @@ A point from a Dataset.
 TODO: document ;-)...
 EOD
 
+    # A LaTeX font
+    LaTeXFontType = CmdType.new('latex-font', :latex_font, <<EOD)
+A LaTeX font.
+
+TODO: document !
+EOD
+
+
 
 
     # This ones get here since they mess up with syntax highlighting

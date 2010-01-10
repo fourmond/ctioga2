@@ -270,6 +270,36 @@ module CTioga2
         'font' => CmdArg.new('pdf-font')
       }
 
+      # A LaTeX font. It should be applied to text using the function
+      # #fontify.
+      #
+      # \todo add real font attributes (family, and so on...)
+      class LaTeXFont
+        # The font command (bf, sf...). Naive but effective !
+        attr_accessor :font_command
+
+        def initialize
+          # Nothing to be done
+        end
+
+        def self.from_text(txt)
+          # For now, only the naive way of things:
+          font = self.new
+          font.font_command = txt
+          return font
+        end
+
+        # Returns text wrapping _txt_ with the appropriate functions
+        # to get the appropriate font in LaTeX.
+        def fontify(txt)
+          if @font_command
+            return "{\\#{@font_command} #{txt}}"
+          end
+          return txt
+        end
+        
+      end
+      
 
     end
   end

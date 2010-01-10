@@ -133,10 +133,15 @@ module CTioga2
                     'angle' => 'float',
                     'justification' => 'justification',
                     'alignment' => 'alignment',
+                    'font' => 'latex-font',
                   }
                   ) do |t, point, string, options|
           # @todo add a way to specify fonts ???
           options ||= {}
+          if options['font']
+            string = options['font'].fontify(string)
+            options.delete('font')
+          end
           options['text'] = string
           options['at'] = point.to_figure_xy(t)
           t.show_text(options)

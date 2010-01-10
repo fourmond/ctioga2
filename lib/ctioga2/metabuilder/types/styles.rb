@@ -173,6 +173,15 @@ module CTioga2
         end
       end
 
+      # LaTeX font
+      class LaTeXFontBaseType < Type
+        type_name :latex_font, 'latex font'
+        
+        def string_to_type_internal(str)
+          return Graphics::Styles::LaTeXFont.from_text(str)
+        end
+      end
+
     end
   end
 end
