@@ -48,13 +48,13 @@ module CTioga2
             'line_width' => @width || 1.0,
           }
           has = false
-          if (xmin && xmax)
+          if (xmin && xmax && (xmax - xmin != 0))
             d['dx_plus'] = xmax - x
             d['dx_minus'] = x - xmin
             has = true
           end
 
-          if (ymin && ymax)
+          if (ymin && ymax && (ymax - ymin != 0))
             d['dy_plus'] = ymax - y
             d['dy_minus'] = y - ymin
             has = true

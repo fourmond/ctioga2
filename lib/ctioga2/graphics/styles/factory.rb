@@ -95,6 +95,8 @@ module CTioga2
         # Sets some parameter to _false_.
         DisableRE = /no(ne)?|off/i
 
+        # If that matches, we use the value as a link to other values.
+        LinkRE = /(?:=|->)(\S+)/
 
 
         # Creates a new parameter for the style factory.
@@ -111,6 +113,9 @@ module CTioga2
             
             mb_type.re_shortcuts[AutoRE] = 'auto'
             mb_type.re_shortcuts[DisableRE] = false
+
+            # Add passthrough for expressions such as =color...
+            mb_type.passthrough = LinkRE
 
             # Now, register a type for the type or automatic.
             CmdType.new("#{base_type.name}-or-auto", mb_type,
@@ -244,9 +249,7 @@ module CTioga2
           end
           base.merge!(@override_parameters)
           base.merge!(hash_name_to_target(one_time))
-          ## \todo here, resolve 'links', such as :=color or :->color
-          ## ?  (user-specifiable on the command-line)
-          return CurveStyle.from_hash(base)
+          return CurveStyle.from_hash(resolve_links(base))
         end
 
 
@@ -266,8 +269,18 @@ module CTioga2
             if value =~ AutoRE
               @override_parameters.delete(target)
               return
-            end
-            if value =~ DisableRE
+            elsif value =~ LinkRE
+              t = $1
+              convert = self.class.name_to_target
+              if convert.key?(t)
+                value = "=#{convert[t]}".to_sym
+              else
+                warn "No known key: #{t}, treating as auto"
+                @override_parameters.delete(target)
+                return
+              end
+
+            elsif value =~ DisableRE
               value = false
             else
               value = param.type.string_to_type(value)
@@ -288,6 +301,8 @@ module CTioga2
         end
 
         # Now, the parameters:
+
+        # Lines:
         define_parameter 'line_color', 'color', 'color',
         Sets::ColorSets, "color", "-c"
 
@@ -297,6 +312,7 @@ module CTioga2
         define_parameter 'line_style', 'line-style', 'line-style',
         Sets::LineStyleSets, "line style", nil
 
+        # Markers
         define_parameter 'marker_marker', 'marker', 'marker',
         Sets::MarkerSets, "marker", '-m'
 
@@ -306,6 +322,9 @@ module CTioga2
         define_parameter 'marker_scale', 'marker-scale', 'float',
         Sets::LineWidthSets, "marker scale", nil
 
+        # Error bars:
+        define_parameter 'error_bar_color', 'error-bar-color', 'color',
+        Sets::ColorSets, "error bar color", nil
 
         # And finally, we register all necessary commands...
         create_commands
@@ -344,6 +363,45 @@ module CTioga2
             end
           end
           return retval
+        end
+
+        # Resolve potential links in the form of :=stuff within the
+        # given hash, and returns a new version of the hash.
+        #
+        # \warning the _h_ parameter is completely destroyed in the
+        # process
+        def resolve_links(h)
+          tv = {}
+
+          # First, copy plain values
+          for k,v in h
+            if v.is_a?(Symbol) && v.to_s =~ /^(=|->)/
+              # We keep for later
+            else
+              tv[k] = v
+              h.delete(k)
+            end
+          end
+          
+          # Now, we will iterate over the remaining things; we will
+          # stop with an error if the number of remaining keys does
+          # not decrease after one step
+          while h.size > 0
+            pre_size = h.size
+            for k,v in h
+              v.to_s =~ /^(?:=|->)(\S+)/
+              target = $1
+              if tv.key? target
+                tv[k] = tv[target]
+                h.delete(k)
+              end
+            end
+            if h.size >= pre_size
+              raise "Error: infinite recursion loop while gathering styles"
+            end
+          end
+          
+          return tv
         end
       end
     end

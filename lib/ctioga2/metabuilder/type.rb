@@ -100,6 +100,10 @@ module CTioga2
       # many of them here.
       attr_accessor :re_shortcuts
 
+      # If the given string matches this regular expression, it is
+      # passed through without further modification.
+      attr_accessor :passthrough
+
       # A default constructor. It should be safe to use it directly for
       # children, unless something more specific is needed. Any descendent
       # should *always* register _type_ as @type - or, even better, call
@@ -118,6 +122,10 @@ module CTioga2
             end
           end
         end
+        if @type[:passthrough]
+          @passthrough = @type[:passthrough]
+        end
+
       end
 
       # This class function actually registers the current type
@@ -177,6 +185,10 @@ module CTioga2
       # is recommanded to define a #string_to_type_internal function
       # rather to redefine #string_to_type
       def string_to_type(string)
+        # First, passthrough
+        if @passthrough && @passthrough === string
+          return stt_run_hook(string)
+        end
         # First, shortcuts:
         if @shortcuts and @shortcuts.key? string
           return stt_run_hook(@shortcuts[string])
