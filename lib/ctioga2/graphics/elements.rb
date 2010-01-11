@@ -46,13 +46,16 @@ EOH
 
 
     # Various coordinate-related commands:
+    # 
+    # \todo All these commands should be axis-dependent, and not
+    # plot-dependent.
     CoordinateRelatedCommands = []
     [:x, :y].each do |x|
       cmd = 
         Cmd.new("#{x}range",nil,"--#{x}range", 
                 [ CmdArg.new('partial-float-range') ]) do |plotmaker, range|
         plotmaker.root_object.current_plot.
-          user_boundaries.set_from_range(range, x)
+          set_user_boundaries(x.to_s,range)
       end
       cmd.describe("Sets the #{x.to_s.upcase} range",
                            <<EOH, PlotCoordinatesGroup)

@@ -25,7 +25,108 @@ module CTioga2
     # with Tioga
     module Types
 
+      # A range of coordinates.
+      class SimpleRange
+
+        attr_accessor :first, :last
+
+        # Create a new SimpleRange object that runs from _first_ to
+        # _last_ (_last_ can be less than _first_). A _nil_,
+        # _false_ or NaN in one of those means *unspecified*.
+        #
+        # Alternatively, _first_ can be an object that responds to
+        # #first and #last.
+        def initialize(first, last = nil)
+          if first.respond_to?(:first)
+            @first = first.first
+            @last = first.last
+          else
+            @first = first
+            @last = last
+          end
+        end
+
+        # Minimum value
+        def min
+          @first < @last ? @first : @last
+        end
+
+        # Maximum value
+        def max
+          @first > @last ? @first : @last
+        end
+
+        # Algebraic distance
+        def distance
+          return @last - @first
+        end
+
+        # This function makes sures that the SimpleRange object is big
+        # enough to encompass what it currently does and the _range_
+        # SimpleRange object.
+        #
+        # \todo this does not work correctly in the case of reversed
+        # boundaries. I don't think it can anyway.
+        #
+        # Actually, it even works with normal Range elements !
+        def extend(range)
+          # Left/right
+          if (! @first.is_a? Float) or @first.nan? or
+              (@first > range.first)
+            @first = range.first
+          end
+
+          if (! @last.is_a? Float) or @last.nan? or
+              (@last < range.last)
+            @last = range.last
+          end
+
+          return self
+        end
+
+
+        # Override the Boundaries with the contents of _override_. All
+        # elements which are not _nil_ or NaN from _override_
+        # precisely override those in _self_.
+        def override(override)
+          for el in [ :first, :last]
+            val = override.send(el)
+            if val and (val == val) # Strip NaN on the property that NaN != NaN
+              self.send("#{el}=", val)
+            end
+          end
+        end
+
+        # Apply a fixed margin on the Boundaries.
+        def apply_margin!(margin)
+          d = self.distance
+          @first = @first - margin * d
+          @last = @last + margin * d
+        end
+
+        # Returns a SimpleRange object that is large enough to exactly
+        # contain all _values_
+        def self.bounds(values)
+          return SimpleRange.new(values.min, values.max)
+        end
+
+        # Takes an array of Boundaries and returns a Boundaries object
+        # that precisely encompasses them all. Invalid floats are simply
+        # ignored.
+        def self.overall_range(ranges)
+          retval = SimpleRange.new(nil, nil)
+          for r in ranges
+            retval.extend(b)
+          end
+          return retval
+        end
+      end
+
+
       # An object representing boundaries for a plot.
+      #
+      # \todo Should be converted to using two SimpleRange
+      # objects. Will be more clear anyway.
       class Boundaries
 
         # Boundaries
@@ -63,6 +164,18 @@ module CTioga2
         # Maxiumum y value
         def ymax
           @bottom > @top ? @bottom : @top
+        end
+
+        # Returns a SimpleRange object corresponding to the horizontal
+        # range
+        def horizontal
+          return SimpleRange.new(@left, @right)
+        end
+
+        # Returns a SimpleRange object corresponding to the vertical
+        # range
+        def vertical
+          return SimpleRange.new(@bottom, @top)
         end
 
 
@@ -159,6 +272,12 @@ module CTioga2
             retval.extend(b)
           end
           return retval
+        end
+
+        # Creates a Boundaries object from two SimpleRange objects.
+        def self.from_ranges(horiz, vert)
+          return Boundaries.new(horiz.first, horiz.last,
+                                vert.last, vert.first)
         end
 
       end

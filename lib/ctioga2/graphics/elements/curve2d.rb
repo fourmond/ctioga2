@@ -74,7 +74,7 @@ module CTioga2
         # the current path, not attempt to create a new path or empty
         # what was done before.
         def make_path(t)
-          bnds = parent.real_boundaries
+          bnds = parent.get_curve_boundaries(self)
           #           if @style.interpolate
           #             for f in @function.split_monotonic
           #               new_f = f.bound_values(*bnds.to_a)
@@ -112,6 +112,14 @@ module CTioga2
           t.append_point_to_path(@function.x.last, y0)
           t.append_point_to_path(@function.x.first, y0)
           t.close_path
+        end
+
+        # Returns the AxisSyle objects for the X and Y axes as an array.
+        def get_axes
+          return [ 
+                  parent.style.get_axis_style(@curve_style.xaxis),
+                  parent.style.get_axis_style(@curve_style.yaxis)
+                 ]
         end
 
         # Draws the filled region according to the :fill_type element

@@ -118,24 +118,35 @@ module CTioga2
           end
         end
 
+
         # Returns the AxisStyle corresponding to the named
         # axis. _name_ can be:
-        # * one of the named elements of axes (ie, by default: top,
-        #   left, right, bottom). All names are stripped from spaces
-        #   around, and downcased (see #clean_axis_name).
+        # 
+        # * one of the named axes (ie, by default: top, left, right,
+        #   bottom). All names are stripped from spaces around, and
+        #   downcased (see #clean_axis_name). Can be also user-defined
+        #   axes.
+        #   
         # * x(axis)?/y(axis)?, which returns the default object for the
         #   given location
         def get_axis_style(name)
-          if name =~ /^\s*([xy])(?:axis)?\s*$/i
-            return @axes[self.send("#{$1.downcase}axis_location")]
+          style = @axes[get_axis_key(name)]
+          if ! style
+            raise "Unkown named axis: '#{name}'"
           else
-            style = @axes[clean_axis_name(name)]
-            if ! style
-              raise "Unkown named axis: '#{name}'"
-            else
-              return style
-            end
-          end 
+            return style
+          end
+        end
+
+        # Returns the key corresponding to the named axis. See
+        # #get_axis_style for more information; though ultimately the
+        # latter is using this function.
+        def get_axis_key(name)
+          if name =~ /^\s*([xy])(?:axis)?\s*$/i
+            return self.send("#{$1.downcase}axis_location")
+          else
+            return clean_axis_name(name)
+          end
         end
 
         # Returns a BaseTextStyle or similar for the given

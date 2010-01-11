@@ -30,6 +30,10 @@ module CTioga2
     # * non-linear transformations ?
     # * the possibility to provide locations using this.
     # * conversion of datasets.
+    #
+    # \todo Shouldn't this facility be axis-local ? Non-linear
+    # transformations definitely belong there as well (and that would
+    # be almost trivial to write !).
     class CoordinateTransforms
 
       # A scaling factor for coordinates:

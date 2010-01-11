@@ -80,7 +80,7 @@ module CTioga2
         # current plot boundaries. Also draw the #axis_label, if there
         # is one.
         #
-        # TODO:
+        # \todo
         # * the offset mechanism, to place the axis away from the place
         #   where it should be...
         # * non-linear axes (or linear, for that matter, but with
@@ -140,7 +140,7 @@ module CTioga2
         # _style_ is a PlotStyle object containing the style
         # information for the target plot.
         #
-        # TODO: handle offset axes when that is implemented.
+        # \todo handle offset axes when that is implemented.
         def extension(t, style = nil)
           ticks_shift, ticks_scale = *get_ticks_parameters(t)
           default =  vertical? ? 'ylabel' : 'xlabel'
@@ -166,7 +166,7 @@ module CTioga2
 
         # Returns: _ticks_shift_, _ticks_scale_ for the axis.
         #
-        # TODO: try something clever with the angles ?
+        # \todo try something clever with the angles ?
         def get_ticks_parameters(t)
           i = t.axis_information({'location' => 
                                    LocationToTiogaLocation[@location]})

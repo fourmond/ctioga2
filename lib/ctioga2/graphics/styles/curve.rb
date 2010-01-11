@@ -42,6 +42,12 @@ module CTioga2
         # The style of the error bars when needed, as a ErrorBarStyle.
         attr_accessor :error_bar
 
+        # The named X axis of the curve (a string)
+        attr_accessor :xaxis
+
+        # The named Y axis of the curve (a string)
+        attr_accessor :yaxis
+
         # True if a line should be drawn.
         def has_line?
           return @line && @line.style
@@ -62,12 +68,17 @@ module CTioga2
         # * 'line_...': a StrokeStyle for the drawing the line
         # * 'marker_...': a MarkerStyle for the drawing of markers
         # * 'legend': the legend of the curve
+        # * '[xy]axis': the name of the axis the curve should be
+        #    plotted onto
         #
         # \todo make #legend another object derived from BasicStyle ?
         def set_from_hash(hash)
           @line = StrokeStyle.from_hash(hash, 'line_%s')
           @marker = MarkerStyle.from_hash(hash, 'marker_%s')
           @error_bar = ErrorBarStyle.from_hash(hash, 'error_bar_%s')
+
+          @xaxis = hash['xaxis'] || 'x'
+          @yaxis = hash['yaxis'] || 'y'
           @legend = hash['legend']
         end
 

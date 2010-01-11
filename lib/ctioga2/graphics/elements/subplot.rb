@@ -28,28 +28,21 @@ module CTioga2
       # * a way to set/get its figure boundaries.
       class Subplot < Container
 
-        # A Boundaries object representing the boundaries imposed by
-        # the user.
-        attr_accessor :user_boundaries
-
-        # A Boundaries object representing the boundaries in
-        # effect. Only filled with meaningful values from within the
-        # real_do function.
-        attr_accessor :real_boundaries
-
         # Various stylistic aspects of the plot, as a
         # Styles::PlotStyle object.
         attr_accessor :style
 
-        # Whether or not the parent object should take the boundaries
-        # into account or not for its own internal boundaries.
-        attr_accessor :count_boundaries
-        
+        # User-specified boundaries. It is a hash axis -> SimpleRange,
+        # where the axis is a valid return value of PlotStyle#get_axis_key
+        attr_accessor :user_boundaries
+
+        # Computed boundaries. It also is a hash axis -> SimpleRange,
+        # just as #user_boundaries. Its value is not defined as long
+        # as #real_do hasn't been entered into.
+        attr_accessor :computed_boundaries
+
         def initialize(parent, root, style)
           super(parent, root)
-
-          @user_boundaries = Types::Boundaries.new(nil, nil, nil, nil)
-          @real_boundaries = nil
 
           @subframe = Types::MarginsBox.new("2.8dy", "2.8dy", 
                                             "2.8dy", "2.8dy")
@@ -58,28 +51,66 @@ module CTioga2
 
           @style = style || Styles::PlotStyle.new
 
-          # By default, boundaries do not count for the parent
-          @count_boundaries = false
+          @user_boundaries = {}
         end
 
-        # Returns the boundaries of the SubPlot.
+        # Returns the boundaries that apply for the given _curve_ --
+        # it reads the curve's axes. #compute_boundaries must have
+        # been called beforehand, which means that it will only work
+        # from within #real_do.
+        #
+        # \todo This should not only apply to curves, but to any
+        # object. That also means that there should be a way to
+        # specify axes for them too.
+        def get_curve_boundaries(curve)
+          return get_given_boundaries(style.get_axis_key(curve.curve_style.xaxis), 
+                                      style.get_axis_key(curve.curve_style.yaxis))
+        end
+
+        # Returns the boundaries of the *default* axes. Plotting
+        # functions may safely assume that they are drawn using these
+        # boundaries, unless they asked for being drawn onto different
+        # axes.
         def get_boundaries
-          # raw boundaries
-          bounds = get_elements_boundaries
-          if @style.plot_margin
-            bounds.apply_margin!(@style.plot_margin)
-          end
-          bounds.override_boundaries(@user_boundaries)
-          return bounds
+          return get_given_boundaries(style.xaxis_location, 
+                                      style.yaxis_location)       
+        end 
+
+        # Sets the user boundaries for the given (named) axis:
+        def set_user_boundaries(axis, bounds)
+          key = @style.get_axis_key(axis)
+          @user_boundaries[key] = Types::SimpleRange.new(bounds)
         end
 
         protected
 
+        # Makes up a Boundaries object from two axes keys
+        def get_given_boundaries(horiz, vert)
+          return Types::Boundaries.from_ranges(@computed_boundaries[horiz],
+                                               @computed_boundaries[vert])
+        end
+
+        def compute_boundaries
+          # raw boundaries
+          bounds = get_elements_boundaries
+          if @style.plot_margin
+            for k,b in bounds
+              b.apply_margin!(@style.plot_margin)
+            end
+          end
+          for k,b in @user_boundaries
+            bounds[k].override(b)
+          end
+          return bounds
+        end
+
+
         # Plots all the objects inside the plot.
         def real_do(t)
           # First thing, we setup the boundaries
+          @computed_boundaries = compute_boundaries
 
-          @real_boundaries = get_boundaries
+          real_boundaries = get_boundaries
 
           frames = @subframe || @style.estimate_margins(t)
 
@@ -90,7 +121,7 @@ module CTioga2
             @style.setup_figure_maker(t)
             
             # Manually creating the plot:
-            t.set_bounds(@real_boundaries.to_a)
+            t.set_bounds(real_boundaries.to_a)
 
             # Drawing the background elements:
             t.context do
@@ -101,7 +132,12 @@ module CTioga2
               @style.draw_all_background_lines(t)
               i = 0
               for element in @elements 
-                element.do(t)
+                t.context do 
+                  if element.respond_to?(:curve_style)
+                    t.set_bounds(get_curve_boundaries(element).to_a)
+                  end  
+                  element.do(t)
+                end
                 i += 1
               end
             end
@@ -121,17 +157,29 @@ module CTioga2
         
         # Returns the boundaries of all the elements of this plot.
         def get_elements_boundaries
-          elements_bounds = []
+          boundaries = {}
+          xaxis = @style.xaxis_location
+          yaxis = @style.yaxis_location
+          boundaries[xaxis] = Types::SimpleRange.new(nil,nil)
+          boundaries[yaxis] = Types::SimpleRange.new(nil,nil)
           for el in @elements
             if el.respond_to? :get_boundaries
               if el.respond_to?(:count_boundaries) && ! (el.count_boundaries)
                 # Ignoring
               else
-                elements_bounds << el.get_boundaries
+                ## \todo this should be modified when taking into
+                ## account different axes.
+                bounds = el.get_boundaries
+                if bounds.is_a? Hash
+                  raise "Not done yet"
+                else
+                  boundaries[xaxis].extend(bounds.horizontal)
+                  boundaries[yaxis].extend(bounds.vertical)
+                end
               end
             end
           end
-          return Types::Boundaries.overall_bounds(elements_bounds)
+          return boundaries
         end
 
       end
