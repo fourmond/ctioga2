@@ -98,6 +98,7 @@ module CTioga2
             end
           end
           for k,b in @user_boundaries
+            bounds[k] ||= Types::SimpleRange.new(nil,nil)
             bounds[k].override(b)
           end
           return bounds
@@ -138,7 +139,7 @@ module CTioga2
                 i += 1
               end
             end
-            @style.draw_all_axes(t)
+            @style.draw_all_axes(t, @computed_boundaries)
 
             # Now drawing legends:
             if @legend_area
@@ -155,22 +156,21 @@ module CTioga2
         # Returns the boundaries of all the elements of this plot.
         def get_elements_boundaries
           boundaries = {}
-          xaxis = @style.xaxis_location
-          yaxis = @style.yaxis_location
-          boundaries[xaxis] = Types::SimpleRange.new(nil,nil)
-          boundaries[yaxis] = Types::SimpleRange.new(nil,nil)
           for el in @elements
             if el.respond_to? :get_boundaries
               if el.respond_to?(:count_boundaries) && ! (el.count_boundaries)
                 # Ignoring
               else
-                ## \todo this should be modified when taking into
-                ## account different axes.
                 bounds = el.get_boundaries
+                xaxis, yaxis = *el.location.get_axis_keys(style)
                 if bounds.is_a? Hash
+                  ## \todo see if there will ever be a need for a hash
+                  ## ?
                   raise "Not done yet"
                 else
+                  boundaries[xaxis] ||= Types::SimpleRange.new(nil,nil)
                   boundaries[xaxis].extend(bounds.horizontal)
+                  boundaries[yaxis] ||= Types::SimpleRange.new(nil,nil)
                   boundaries[yaxis].extend(bounds.vertical)
                 end
               end

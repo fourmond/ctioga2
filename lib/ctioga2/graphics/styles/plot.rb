@@ -129,6 +129,9 @@ module CTioga2
         #   
         # * x(axis)?/y(axis)?, which returns the default object for the
         #   given location
+        #
+        # \todo Maybe x2 and y2 could be provided to signify "the side
+        # which isn't the default" ?
         def get_axis_style(name)
           style = @axes[get_axis_key(name)]
           if ! style
@@ -183,10 +186,16 @@ module CTioga2
         end
 
 
-        # Draws all axes for the plot.
-        def draw_all_axes(t)
+        # Draws all axes for the plot. The _bounds_ argument is that
+        # computed by Subplot#compute_boundaries; it is there to
+        # ensure that the axes know whether they have their own
+        # coordinate system or if they just follow what's around.
+        def draw_all_axes(t, bounds)
           for which, axis in @axes
-            axis.draw_axis(t)
+            t.context do
+              axis.set_bounds_for_axis(t, bounds[which])
+              axis.draw_axis(t)
+            end
           end
           # We draw the title last
           title.draw(t, 'title')
@@ -402,6 +411,36 @@ EOH
       NoTitleLabelCommand.describe("Disables title for the plot", 
                                    <<"EOH", AxisGroup)
 Removes the title of the current plot.
+EOH
+
+      X2Command = 
+        Cmd.new('x2', nil, '--x2', []) do |plotmaker|
+        plotmaker.interpreter.
+          run_commands("xaxis(top)\naxis-style(top,decoration=full)")
+      end
+
+      X2Command.describe("Switches to top axis for subsequent curves", 
+                                   <<"EOH", AxisGroup)
+Switches to using the top axis for X axis for the subsequent curves,
+and turns on full decoration for the right axis. Shortcut for:
+
+# xaxis(top)
+# axis-style(top,decoration=full)
+EOH
+
+      Y2Command = 
+        Cmd.new('y2', nil, '--y2', []) do |plotmaker|
+        plotmaker.interpreter.
+          run_commands("yaxis(right)\naxis-style(right,decoration=full)")
+      end
+
+      Y2Command.describe("Switches to right axis for subsequent curves", 
+                                   <<"EOH", AxisGroup)
+Switches to using the right axis for Y axis for the subsequent curves,
+and turns on full decoration for the right axis. Shortcut for:
+
+# yaxis(right)
+# axis-style(right,decoration=full)
 EOH
 
       LabelStyleCommand = 

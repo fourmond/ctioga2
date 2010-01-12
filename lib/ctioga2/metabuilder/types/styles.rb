@@ -74,7 +74,6 @@ module CTioga2
           else
             phase = 0
           end
-          p specs
           return [ specs.map { |s| s.to_f }, phase]
         end
       end

@@ -98,6 +98,26 @@ module CTioga2
           @axis_label.draw(t, default)
         end
 
+        # Sets the current boundaries of the _t_ object to the _range_
+        # SimpleRange object for the direction handled by the
+        # AxisStyle, without touching the rest.
+        def set_bounds_for_axis(t, range = nil)
+          if ! range
+            return
+          end
+          l,r,top,b = t.bounds_left, t.bounds_right, 
+          t.bounds_top, t.bounds_bottom
+
+          if self.vertical?
+            b = range.first
+            top = range.last
+          else
+            l = range.first
+            r = range.last
+          end
+          t.set_bounds([l,r,top,b])
+        end
+
         # Draw the axis background lines:
         def draw_background_lines(t)
           if @background_lines

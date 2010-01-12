@@ -326,6 +326,13 @@ module CTioga2
         define_parameter 'error_bar_color', 'error-bar-color', 'color',
         Sets::ColorSets, "error bar color", nil
 
+        # Location:
+        define_parameter 'location_xaxis', 'xaxis', 'axis',
+        Sets::XAxisSets, "X axis", nil
+
+        define_parameter 'location_yaxis', 'yaxis', 'axis',
+        Sets::YAxisSets, "Y axis", nil
+
         # And finally, we register all necessary commands...
         create_commands
 

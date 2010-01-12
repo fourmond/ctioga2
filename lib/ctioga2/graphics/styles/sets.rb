@@ -48,6 +48,14 @@ module CTioga2
           'default' => [1.0]
         }
 
+        XAxisSets = {
+          'default' => ['x']
+        }
+
+        YAxisSets = {
+          'default' => ['y']
+        }
+
         LineStyleSets = {
           'default' => [ LineStyles::Solid,
                          LineStyles::Dots,
