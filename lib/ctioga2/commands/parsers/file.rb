@@ -96,7 +96,7 @@ module CTioga2
                 # Problem: the space on the right of the = sign is
                 # *significant*. 
                 for o in args
-                  if o =~ /^\s*([\w-]+)\s*=(.*)/
+                  if o =~ /^\s*\/?([\w-]+)\s*=(.*)/
                     if cmd.has_option? $1
                       options[$1] = $2
                     else

@@ -164,11 +164,15 @@ module CTioga2
           end
           
           # We try and go fishing for options, in the form
-          # /option=stuff.
-          while argv.first =~ /^\/([\w-]+)=(.*)/
+          # /option=stuff, or /option stuff...
+          while argv.first =~ /^\/([\w-]+)(?:=(.*))?$/
             if command.has_option? $1
-              options[$1] = $2
               argv.shift
+              if $2
+                options[$1] = $2
+              else
+                options[$1] = argv.shift
+              end
             else
               warn "Argument #{argv.first} looks like an option, but does not match any of the command #{command.name}"
               break

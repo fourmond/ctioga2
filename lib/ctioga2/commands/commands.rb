@@ -219,7 +219,11 @@ module CTioga2
 
       # Whether the Command accepts the named _option_.
       #
-      # TODO: maybe convert everything to lowercase ?????
+      # \todo Several conversions could be used, to facilitate the
+      # writing of options:
+      #
+      # * convert everything to lowercase .
+      # * ignore the difference between _ and - (a bit delicate).
       def has_option?(option)
         return @optional_arguments.key? option
       end
