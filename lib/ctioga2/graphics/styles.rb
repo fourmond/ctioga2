@@ -14,6 +14,7 @@
 require 'ctioga2/graphics/styles/base'
 
 require 'ctioga2/graphics/styles/drawable'
+require 'ctioga2/graphics/styles/location'
 require 'ctioga2/graphics/styles/texts'
 require 'ctioga2/graphics/styles/carrays'
 require 'ctioga2/graphics/styles/curve'

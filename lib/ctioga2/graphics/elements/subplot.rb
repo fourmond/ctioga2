@@ -62,9 +62,8 @@ module CTioga2
         # \todo This should not only apply to curves, but to any
         # object. That also means that there should be a way to
         # specify axes for them too.
-        def get_curve_boundaries(curve)
-          return get_given_boundaries(style.get_axis_key(curve.curve_style.xaxis), 
-                                      style.get_axis_key(curve.curve_style.yaxis))
+        def get_el_boundaries(el)
+          return get_given_boundaries(* el.location.get_axis_keys(style))
         end
 
         # Returns the boundaries of the *default* axes. Plotting
@@ -133,9 +132,7 @@ module CTioga2
               i = 0
               for element in @elements 
                 t.context do 
-                  if element.respond_to?(:curve_style)
-                    t.set_bounds(get_curve_boundaries(element).to_a)
-                  end  
+                  t.set_bounds(get_el_boundaries(element).to_a)
                   element.do(t)
                 end
                 i += 1

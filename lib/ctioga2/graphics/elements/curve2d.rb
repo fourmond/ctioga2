@@ -43,6 +43,10 @@ module CTioga2
         # drawn.
         attr_accessor :curve_style
 
+        undef :location=, :location
+        
+        
+        
         # Creates a new Curve2D object with the given _dataset_ and
         # _style_.
         def initialize(dataset, style = nil)
@@ -63,6 +67,12 @@ module CTioga2
           @curve_style = style
         end
 
+        # Returns the LocationStyle object of the curve. Returns the
+        # one from #curve_style.
+        def location
+          return @curve_style.location
+        end
+
         # Returns the Types::Boundaries of this curve.
         def get_boundaries
           return Types::Boundaries.bounds(@function.x, @function.y)
@@ -74,7 +84,7 @@ module CTioga2
         # the current path, not attempt to create a new path or empty
         # what was done before.
         def make_path(t)
-          bnds = parent.get_curve_boundaries(self)
+          bnds = parent.get_el_boundaries(self)
           #           if @style.interpolate
           #             for f in @function.split_monotonic
           #               new_f = f.bound_values(*bnds.to_a)

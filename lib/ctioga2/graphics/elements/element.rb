@@ -34,6 +34,16 @@ module CTioga2
         # The parent Container.
         attr_accessor :parent
 
+        # Details pertaining to the location of the object, as a
+        # LocationStyle object
+        attr_writer :location
+
+        # Makes sure there is a location when one asks for it.
+        def location
+          @location ||= Styles::LocationStyle.new
+          return @location
+        end
+
         # This function must be called with a FigureMaker object to
         # draw the contents of the TiogaElement onto it. It calls
         # #real_do, which should be redefined by the children. You can
