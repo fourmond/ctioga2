@@ -38,9 +38,10 @@ module CTioga2
         # list of all commands (_cmds_) and the list of _groups_ to
         # display.
         #
-        # TODO: word splitting.
+        # \todo word splitting.
         #
-        # TODO: why not try color, too ;-) ???
+        # \todo why not try color, too ;-) ??? (but probably in a
+        # derived class ?).
         def print_commandline_options(cmds, groups)
           for group in groups
             puts unless group == groups[0]
