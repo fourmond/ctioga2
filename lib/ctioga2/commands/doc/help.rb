@@ -40,6 +40,21 @@ module CTioga2
         # terminal support.
         attr_accessor :to_pager
 
+        # Styles, ie a hash 'object' (option, argument...) => ANSI
+        # color code.
+        attr_accessor :styles
+
+        # Color output ?
+        attr_accessor :color
+
+        # The default value for the #styles attribute.
+        DefaultStyles = {
+          'switch' => "01",
+          'title' => "01;04",
+          'arguments' => '32',
+          'options' => '34'
+        }
+
         # Creates an object to display command-line help. Available
         # values for the options are given by the hash
         # CommandLineHelpOptions. Their meaning is:
@@ -53,33 +68,37 @@ module CTioga2
                       else
                         true
                       end
+
+          @styles = DefaultStyles.dup
+          @color = true
         end
 
         # Prints short help text suitable for a --help option about
         # available commands, by groups (ungrouped last). It takes a
         # list of all commands (_cmds_) and the list of _groups_ to
         # display.
-        #
-        # \todo word splitting.
-        #
-        # \todo why not try color, too ;-) ??? (but probably in a
-        # derived class ?).
-        #
-        # \todo send output automatically to less ?
+        # 
+        # \todo maybe the part about sending to the pager should be
+        # factorized into a neat utility class ?
         def print_commandline_options(cmds, groups)
-          if !@total_width && STDOUT.tty? 
+          @to_tty = false
+          if STDOUT.tty? 
             begin
               require 'curses'
               Curses.init_screen
               @total_width = Curses.cols
               Curses.close_screen
               @to_tty = true
-            rescue 
-              @total_width = nil
+            rescue
             end
           end
           @total_width ||= 80   # 80 by default
-          
+
+          # Disable color output if not a to a terminal
+          if ! @to_tty
+            @color = false
+          end
+
           if @to_tty and @to_pager
             # We pass -R as default value...
             ENV['LESS'] = 'R'
@@ -96,16 +115,12 @@ module CTioga2
             if group && group.blacklisted 
               name << " (blacklisted)"
             end
-            output.puts name
+            output.puts style(name, 'title')
             for cmd in cmds[group].sort {|a,b|
                 a.long_option <=> b.long_option
               }
 
               output.puts format_one_entry(cmd)
-              # if cmd.has_options?
-              #   puts "#{total_leading_spaces}  options: %s" %
-              #     cmd.optional_arguments.keys.sort.map {|x| "/#{x}"}.join(' ')
-              # end
             end
           end
           output.close
@@ -121,6 +136,13 @@ module CTioga2
             [ sh, (sh ? "," : " "), long]
 
           size = @total_width - total_leading_spaces.size
+
+          # Do the coloring: we need to parse option string first
+          if str =~ /(.*--\S+)(.*)/
+            switch = $1
+            args = $2
+            str = "#{style(switch,'switch')}#{style(args,'arguments')}"
+          end
           
           # Now, add the description.
           desc_lines = WordWrapper.wrap(desc, size)
@@ -134,8 +156,8 @@ module CTioga2
             options = cmd.optional_arguments.
               keys.sort.map { |x| "/#{x}"}.join(' ') 
             opts_lines = WordWrapper.wrap(options, size - op_start.size)
-            str += "\n#{total_leading_spaces}#{op_start}" + 
-              opts_lines.join("\n#{total_leading_spaces}#{' ' * op_start.size}")
+            str += "\n#{total_leading_spaces}#{style(op_start,'switch')}" + 
+              style(opts_lines.join("\n#{total_leading_spaces}#{' ' * op_start.size}"), 'options')
           end
           return str
         end
@@ -150,7 +172,31 @@ module CTioga2
         def leading_spaces
           return "    "
         end
-        
+
+        # Colorizes some text with the given ANSI code.
+        #
+        # Word wrapping should be used *before*, as it will not work
+        # after.
+        def colorize(str, code)
+          # We split into lines, as I'm unsure color status is kept
+          # across lines
+          return str.split("\n").map {|s|
+            "\e[#{code}m#{s}\e[0m"
+          }.join("\n")
+        end
+
+        # Changes the style of the object.
+        def style(str, what)
+          if ! @color
+            return str
+          end
+          if @styles[what]
+            return colorize(str, @styles[what])
+          else
+            return str
+          end
+        end
+
       end
 
     end
