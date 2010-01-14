@@ -27,12 +27,15 @@ module CTioga2
                    "General scope commands", 1000)
     
 
+    CommandLineHelpOptions = {
+      'pager' => CmdArg.new('boolean')
+    }
     
     # Display help on the command-line
     CommandLineHelpCommand = 
       Cmd.new("command-line-help", 'h', 
-              "--help", [ ]) do |plotmaker|
-      plotmaker.interpreter.doc.display_command_line_help
+              "--help", [ ], CommandLineHelpOptions) do |plotmaker, options|
+      plotmaker.interpreter.doc.display_command_line_help(options)
       exit 
     end
     

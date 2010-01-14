@@ -27,6 +27,13 @@ module CTioga2
 
       # A Curve2D object represents a 2D curve, along with its style
       # and so on.
+      #
+      # \todo Put back various stylistic aspects that were present in
+      # the old ctioga, such as:
+      #
+      # * transparency
+      # * filled curves
+      # * drawing order
       class Curve2D  < TiogaElement
 
         include Log
@@ -45,8 +52,6 @@ module CTioga2
 
         undef :location=, :location
         
-        
-        
         # Creates a new Curve2D object with the given _dataset_ and
         # _style_.
         def initialize(dataset, style = nil)
@@ -58,9 +63,9 @@ module CTioga2
           @function = Function.new(@dataset.x.values.dup, 
                                    @dataset.y.values.dup)
 
-          # We remove NaN, as they are not very liked by Tioga...
+          ## We remove NaN, as they are not very liked by Tioga...
           #
-          # TODO: maybe there should be a way to *split* on NaN rather
+          # \todo maybe there should be a way to *split* on NaN rather
           # than to ignore them ?
           @function.strip_nan
 

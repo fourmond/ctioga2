@@ -25,12 +25,6 @@ module CTioga2
     module Documentation
 
       # The base class for all documentation.
-      #
-      # TODO: create a class that would parse a description from a
-      # group/command/type and understand some 'markup': lists, links
-      # to other commands/groups/types, and maybe bold or things of
-      # this kind. Then the various outputs should have a means to
-      # parse this.
       class Doc
         
         # The hash containing all the commands, as returned
@@ -52,11 +46,6 @@ module CTioga2
         # Wether or not to ignore blacklisted commands
         attr_accessor :ignore_blacklisted
 
-        # The CommandLineHelp object in charge of displaying
-        # information about command-line
-        attr_accessor :command_line_help
-
-
         # Create a Doc object caring about the current state of
         # registered commands and such.
         def initialize
@@ -67,8 +56,6 @@ module CTioga2
 
           @ignore_blacklisted = ! (ENV.key?("CT2_DEV") && 
                                    ! ENV["CT2_DEV"].empty?)
-
-          @command_line_help = CommandLineHelp.new
         end
 
         # Returns a [ cmds, groups ] hash containing the list of
@@ -92,8 +79,8 @@ module CTioga2
         end
 
         # Display command-line help.
-        def display_command_line_help
-          @command_line_help.
+        def display_command_line_help(options)
+          CommandLineHelp.new(options).
             print_commandline_options(*self.documented_commands)
         end
 

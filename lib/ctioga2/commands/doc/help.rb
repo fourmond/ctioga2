@@ -14,6 +14,7 @@
 require 'ctioga2/utils'
 require 'ctioga2/commands/commands'
 require 'ctioga2/commands/parsers/command-line'
+require 'ctioga2/commands/doc/wordwrap'
 
 module CTioga2
 
@@ -29,8 +30,29 @@ module CTioga2
         # How much space to leave for the options ?
         attr_accessor :options_column_width
 
-        def initialize
+        # How many columns do we have at all ?
+        attr_accessor :total_width
+
+        # Whether output has (moderate) terminal capabilities
+        attr_accessor :to_tty
+
+        # Whether we should send output to pager if output has
+        # terminal support.
+        attr_accessor :to_pager
+
+        # Creates an object to display command-line help. Available
+        # values for the options are given by the hash
+        # CommandLineHelpOptions. Their meaning is:
+        # 
+        # * 'pager': disables or enables the use of a pager when
+        #   sending output to a terminal
+        def initialize(options)
           @options_column_width = 20
+          @to_pager = if options.key? 'pager'
+                        options['pager']
+                      else
+                        true
+                      end
         end
 
         # Prints short help text suitable for a --help option about
@@ -42,39 +64,81 @@ module CTioga2
         #
         # \todo why not try color, too ;-) ??? (but probably in a
         # derived class ?).
+        #
+        # \todo send output automatically to less ?
         def print_commandline_options(cmds, groups)
+          if !@total_width && STDOUT.tty? 
+            begin
+              require 'curses'
+              Curses.init_screen
+              @total_width = Curses.cols
+              Curses.close_screen
+              @to_tty = true
+            rescue 
+              @total_width = nil
+            end
+          end
+          @total_width ||= 80   # 80 by default
+          
+          if @to_tty and @to_pager
+            # We pass -R as default value...
+            ENV['LESS'] = 'R'
+            output = IO::popen("pager", "w")
+            pager = true
+          else
+            output = $stdout
+            pager = false
+          end
+          
           for group in groups
-            puts unless group == groups[0]
+            output.puts unless group == groups[0]
             name = (group && group.name) || "Ungrouped commands"
             if group && group.blacklisted 
               name << " (blacklisted)"
             end
-            puts name
+            output.puts name
             for cmd in cmds[group].sort {|a,b|
                 a.long_option <=> b.long_option
               }
 
-              strings = cmd.option_strings
-              puts "#{leading_spaces}%2s%1s %-#{@options_column_width}s%s" % 
-                [ 
-                 strings[0], (strings[0] ? "," : " "),
-                 strings[1],
-                 if strings[1].size >= @options_column_width
-                   "\n#{total_leading_spaces}#{strings[2]}"
-                 else
-                   strings[2]
-                 end
-                ]
-              if cmd.has_options?
-                puts "#{total_leading_spaces}  options: %s" %
-                  cmd.optional_arguments.keys.sort.map {|x| "/#{x}"}.join(' ')
-              end
+              output.puts format_one_entry(cmd)
+              # if cmd.has_options?
+              #   puts "#{total_leading_spaces}  options: %s" %
+              #     cmd.optional_arguments.keys.sort.map {|x| "/#{x}"}.join(' ')
+              # end
             end
           end
-
+          output.close
         end
 
         protected
+
+        # Formats one entry of the commands
+        def format_one_entry(cmd)
+          sh, long, desc = cmd.option_strings
+          
+          str = "#{leading_spaces}%2s%1s %-#{@options_column_width}s" % 
+            [ sh, (sh ? "," : " "), long]
+
+          size = @total_width - total_leading_spaces.size
+          
+          # Now, add the description.
+          desc_lines = WordWrapper.wrap(desc, size)
+          if long.size >= @options_column_width
+            str += "\n#{total_leading_spaces}"
+          end
+          str += desc_lines.join("\n#{total_leading_spaces}")
+
+          if cmd.has_options?
+            op_start = '  options: '
+            options = cmd.optional_arguments.
+              keys.sort.map { |x| "/#{x}"}.join(' ') 
+            opts_lines = WordWrapper.wrap(options, size - op_start.size)
+            str += "\n#{total_leading_spaces}#{op_start}" + 
+              opts_lines.join("\n#{total_leading_spaces}#{' ' * op_start.size}")
+          end
+          return str
+        end
 
         # Leading spaces to align a string with the other option texts
         def total_leading_spaces
