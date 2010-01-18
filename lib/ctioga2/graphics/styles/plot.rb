@@ -384,7 +384,8 @@ EOH
         daxiscmd.describe("Sets default #{axis.upcase} axis for the plot",
                           <<"EOD", AxisGroup)
 Sets the default axis for the #{axis.upcase} axis for all subsequent
-commands take rely on default axes ({cmd: plot}).
+commands take rely on default axes (such as {command: plot}, 
+{command: xrange}, {command: yrange}...).
 EOD
                                  
         

@@ -54,21 +54,6 @@ EOH
 Adds a line of text unrelated to any curve to the legend.
 EOH
 
-    LegendInsideCommand = 
-      Cmd.new("legend-inside", nil, "--legend-inside",
-              [ CmdArg.new('aligned-point')]) do |plotmaker, point|
-      l = Legends::LegendArea.new(:inside)
-      l.legend_position = point
-      plotmaker.root_object.current_plot.legend_area = l
-    end
-
-    LegendInsideCommand.describe("Draw legends inside the current plot",
-                                 <<EOH, LegendGroup)
-When this option is in effect, all legends for the current plot (and
-possibly subplots) are drawn inside the current plot, at the specified 
-position.
-EOH
-
     AutoLegendCommand = 
       Cmd.new("auto-legend",nil,"--auto-legend", 
               [ CmdArg.new('boolean') ]) do |plotmaker, value|
@@ -103,6 +88,27 @@ its options:
  * scale: the overall scale of the legends
  * text_scale: the scale of the text (and the markers) inside the legends
 EOH
+
+    LegendInsideCommand = 
+      Cmd.new("legend-inside", nil, "--legend-inside",
+              [ CmdArg.new('aligned-point')],
+              LegendStyleOptions) do |plotmaker, point, options|
+      l = Legends::LegendArea.new(:inside)
+      l.legend_position = point
+      plotmaker.root_object.current_plot.legend_area = l
+      l.legend_style.set_from_hash(options)
+    end
+
+    LegendInsideCommand.describe("Draw legends inside the current plot",
+                                 <<EOH, LegendGroup)
+When this option is in effect, all legends for the current plot (and
+possibly subplots) are drawn inside the current plot, at the specified 
+position.
+
+As a shortcut, {command: legend-inside} also takes all the options that 
+{command: legend-style} takes, with the same effect.
+EOH
+
 
   end
 end
