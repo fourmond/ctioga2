@@ -49,6 +49,12 @@ module CTioga2
                   plot_style.get_axis_key(@yaxis || 'y')
                  ]
         end
+
+        # Finalizes the location of the object, that is (for now)
+        # resolves references to default axes.
+        def finalize!(plot_style)
+          @xaxis, @yaxis = *get_axis_keys(plot_style)
+        end
         
       end
 

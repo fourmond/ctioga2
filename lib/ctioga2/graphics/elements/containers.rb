@@ -83,6 +83,11 @@ module CTioga2
           elsif element.is_a? Container
             add_legend_item(element)
           end
+
+          # We call LocationStyle#finalize! if possible
+          if(self.respond_to?(:style) and element.respond_to?(:location))
+            element.location.finalize!(self.style)
+          end
         end
 
 

@@ -103,6 +103,9 @@ module CTioga2
         #
         # Now the question is: how should that affect user-defined
         # axes ? It should not.
+        #
+        # \todo This really should move to Axis when transformations
+        # are handled correctly.
         def set_log_scale(which, val)
           case which
           when :x
@@ -116,6 +119,13 @@ module CTioga2
           else
             raise "Unknown axis: #{which.inspect}"
           end
+        end
+
+        # Sets the axis which should be used for subsequent objects
+        # (for which no axis is specified) for the given plot
+        def set_default_axis(which, name)
+          axis = get_axis_key(name)
+          self.send("#{which}axis_location=", axis)
         end
 
 
@@ -343,52 +353,42 @@ Sets the color of the background lines for the given axis.
 EOH
 
 
-      XAxisLabelCommand = 
-        Cmd.new('xlabel', '-x', '--xlabel', [ CmdArg.new('text') ],
-                FullTextStyleOptions) do |plotmaker, label, options|
-        PlotStyle.current_plot_style(plotmaker).
-          set_label_style('x_label', options, label)
-      end
-
-      XAxisLabelCommand.describe("Sets the X label of the plot", 
-                                 <<"EOH", AxisGroup)
-Sets the X label of the current plot.
+      %w{x y}.each do |axis|
+        labelcmd = Cmd.new("#{axis}label", "-#{axis}", 
+                            "--#{axis}label", [ CmdArg.new('text') ],
+                            FullTextStyleOptions) do |plotmaker, label, options|
+          PlotStyle.current_plot_style(plotmaker).
+            set_label_style("#{axis}_label", options, label)
+        end
+        labelcmd.describe("Sets the #{axis.upcase} label of the plot", 
+                          <<"EOH", AxisGroup)
+Sets the #{axis.upcase} label of the current plot.
+EOH
+        
+        nolabelcmd = Cmd.new("no-#{axis}label", nil, 
+                             "--no-#{axis}label", []) do |plotmaker|
+          PlotStyle.current_plot_style(plotmaker).
+            set_label_style("#{axis}_label", {}, false)
+        end
+        nolabelcmd.describe("Disables #{axis.upcase} label for the plot", 
+                            <<"EOH", AxisGroup)
+Removes the #{axis.upcase} label for the current plot.
 EOH
 
-      NoXAxisLabelCommand = 
-        Cmd.new('no-xlabel', nil, '--no-xlabel', []) do |plotmaker|
-        PlotStyle.current_plot_style(plotmaker).
-          set_label_style('x_label', {}, false)
+        daxiscmd = Cmd.new("#{axis}axis", nil,
+                           "--#{axis}axis", [ CmdArg.new('axis') ],
+                           {}) do |plotmaker, ax|
+          PlotStyle.current_plot_style(plotmaker).
+            set_default_axis(axis, ax)
+        end
+        daxiscmd.describe("Sets default #{axis.upcase} axis for the plot",
+                          <<"EOD", AxisGroup)
+Sets the default axis for the #{axis.upcase} axis for all subsequent
+commands take rely on default axes ({cmd: plot}).
+EOD
+                                 
+        
       end
-
-      NoXAxisLabelCommand.describe("Disables X label for the plot", 
-                                   <<"EOH", AxisGroup)
-Removes the X label for the current plot.
-EOH
-
-
-      YAxisLabelCommand = 
-        Cmd.new('ylabel', '-y', '--ylabel', [ CmdArg.new('text') ],
-                FullTextStyleOptions) do |plotmaker, label, options|
-        PlotStyle.current_plot_style(plotmaker).
-          set_label_style('y_label', options, label)
-      end
-
-      YAxisLabelCommand.describe("Sets the Y label of the plot", 
-                                 <<"EOH", AxisGroup)
-Sets the Y label of the current plot.
-EOH
-
-      NoYAxisLabelCommand = 
-        Cmd.new('no-ylabel', nil, '--no-ylabel', []) do |plotmaker|
-        PlotStyle.current_plot_style(plotmaker).
-          set_label_style('y_label', {}, false)
-      end
-
-      NoYAxisLabelCommand.describe("Disables Y label for the plot", 
-                                   <<"EOH", AxisGroup)
-Removes the Y label for the current plot.
-EOH
 
       TitleLabelCommand = 
         Cmd.new('title', '-t', '--title', [ CmdArg.new('text') ],

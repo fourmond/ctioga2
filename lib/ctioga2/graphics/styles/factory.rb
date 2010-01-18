@@ -52,18 +52,23 @@ module CTioga2
           # The MetaBuilder::Type object that can convert a String to
           # an Array suitable for use with CircularArray.
           attr_accessor :sets_type
+
+          # If this attribute is on, then CurveStyleFactory will not
+          # generate commands for this parameter, only the option.
+          attr_accessor :disable_commands
           
 
           # Creates a new CurveStyleFactoryParameter object.
           def initialize(name, type, sets, description, 
-                         short_option = nil)
+                         short_option = nil, disable_cmds = false)
             @name = name
             @type = Commands::CommandType.get_type(type)
             @sets = sets
             @description = description
             @short_option = short_option
-
-            # \todo it is not very satisfying to mix CommandTypes and
+            @disable_commands = disable_cmds
+            
+            ## \todo it is not very satisfying to mix CommandTypes and
             # MetaBuilder::Type on the same level.
             if @sets
               @sets_type = 
@@ -101,7 +106,7 @@ module CTioga2
 
         # Creates a new parameter for the style factory.
         def self.define_parameter(target, name, type, sets, description, 
-                                  short_option = nil)
+                                  short_option = nil, disable_cmds = false)
           # We define two new types:
           # - first, the color-or-auto type:
           base_type = Commands::CommandType.get_type(type)
@@ -134,7 +139,8 @@ module CTioga2
           end
           param = 
             CurveStyleFactoryParameter.new(name, type, sets, 
-                                           description, short_option)
+                                           description, short_option, 
+                                           disable_cmds)
           @parameters ||= {}
           @parameters[target] = param
 
@@ -165,6 +171,7 @@ module CTioga2
         # * a command to choose the sets.
         def self.create_commands
           parameters.each do |target, param|
+            next if param.disable_commands
             override_cmd = 
               Cmd.new("#{param.name}",
                       param.short_option,
@@ -179,6 +186,7 @@ module CTioga2
             end
 
             if param.sets
+              next if param.disable_commands
               set_cmd = 
                 Cmd.new("#{param.name}-set",
                         nil,
@@ -328,10 +336,10 @@ module CTioga2
 
         # Location:
         define_parameter 'location_xaxis', 'xaxis', 'axis',
-        Sets::XAxisSets, "X axis", nil
+        nil, "X axis", nil, true
 
         define_parameter 'location_yaxis', 'yaxis', 'axis',
-        Sets::YAxisSets, "Y axis", nil
+        nil, "Y axis", nil, true
 
         # And finally, we register all necessary commands...
         create_commands
