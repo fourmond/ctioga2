@@ -195,10 +195,12 @@ module CTioga2
                          CmdArg.new("#{param.type.name}-set")
                         ], {},
                         "Chooses a set for the #{param.description} of subsequent curves",
-                        "Chooses a set for the #{param.description} of subsequent curves", 
+                        "Chooses a set for the #{param.description} of subsequent curves. Also sets #{param.name} to 'auto'", 
                         CurveStyleGroup) do |plotmaker, value|
                 plotmaker.curve_generator.style_factory.
                   set_parameter_set(target, value)
+                plotmaker.curve_generator.style_factory.
+                  set_parameter_override(target, 'auto')
               end
             end
           end
