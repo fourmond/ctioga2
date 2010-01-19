@@ -11,7 +11,7 @@
 
 # Alternative axes
 $ct 'sin(x)' --x2 --y2 'x**2' --yrange -20:50 'cos(x)' /yaxis left \
-    --yaxis left --yrange -1.2:1.2
+    --draw-text 0,50 'biniou' --yaxis left --yrange -1.2:1.2
 
 $ct --legend-inside cc /scale=5 'sin(x)' /legend biniou
 

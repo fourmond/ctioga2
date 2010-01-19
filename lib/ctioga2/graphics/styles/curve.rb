@@ -42,6 +42,9 @@ module CTioga2
         # The style of the error bars when needed, as a ErrorBarStyle.
         attr_accessor :error_bar
 
+        # Filling of the curve, if applicable
+        attr_accessor :fill
+
         # Details of the location of the curve, a LocationStyle object.
         attr_accessor :location
 

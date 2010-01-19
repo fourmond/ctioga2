@@ -47,7 +47,10 @@ module CTioga2
       # This class represents all the stylistic information to draw a
       # Marker.
       #
-      # TODO: many things are still missing here...
+      # \todo many things are still missing here...
+      # 
+      # * in particular, angles could be handled here, and they could
+      #   be handled directly in the marker specification...
       class MarkerStyle < BasicStyle
 
         # The color
@@ -79,6 +82,38 @@ module CTioga2
             t.show_marker(dict)
           end
         end
+      end
+
+      # A style that handles drawing a fill.
+      #
+      # \todo add ways to specify complex fills, such as patterned
+      # fills and so on. Those would use clipping the path and base
+      # themselves on the coordinates of the current frame.
+      #
+      # \todo more attributes ?
+      class FillStyle < BasicStyle
+
+        # The color
+        attr_accessor :color
+
+        # The transparency
+        attr_accessor :transparency
+
+        # Fills the current path with the fill style
+        def fill_path(t)
+          t.context do
+            t.fill_color = @color if @color
+            t.fill_transparency = @transparency if @transparency
+            t.fill
+          end
+        end
+
+      end
+
+      # Same as FillStyle, but with additional parameters that handle
+      # how the fill should be applied to curves.
+      class CurveFillStyle < FillStyle
+        
       end
 
     end
