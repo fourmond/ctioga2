@@ -77,6 +77,7 @@ module CTioga2
           @marker = MarkerStyle.from_hash(hash, 'marker_%s')
           @error_bar = ErrorBarStyle.from_hash(hash, 'error_bar_%s')
           @location = LocationStyle.from_hash(hash, 'location_%s')
+          @fill = CurveFillStyle.from_hash(hash, 'fill_%s')
 
           @legend = hash['legend']
         end

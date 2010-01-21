@@ -69,7 +69,7 @@ module CTioga2
             y = Dvector[y]
           end
           t.context do
-            # Always with line style solid (though that could change ?)
+            ## \todo allow custom line types for markers ?
             t.line_type = LineStyles::Solid
             dict = { 
               'Xs' => x, 'Ys' => y,
@@ -99,13 +99,14 @@ module CTioga2
         # The transparency
         attr_accessor :transparency
 
-        # Fills the current path with the fill style
-        def fill_path(t)
-          t.context do
-            t.fill_color = @color if @color
-            t.fill_transparency = @transparency if @transparency
-            t.fill
-          end
+        # Sets up the parameters for the fill.
+        #
+        # \warning It is not possible to write a function that
+        # directly fills with the appropriate style, as some
+        # parameters can't be changed *after* preparing a path.
+        def set_fill_style(t)
+          t.fill_color = @color if @color
+          t.fill_transparency = @transparency if @transparency
         end
 
       end
@@ -113,6 +114,12 @@ module CTioga2
       # Same as FillStyle, but with additional parameters that handle
       # how the fill should be applied to curves.
       class CurveFillStyle < FillStyle
+
+        # At which Y value we should draw the horizontal line for the
+        # fill ? A float, or:
+        # * :top, :bottom
+        # * false, nil to disable filling altogether
+        attr_accessor :y0
         
       end
 

@@ -15,4 +15,4 @@ $ct 'sin(x)' --x2 --y2 'x**2' --yrange -20:50 'cos(x)' /yaxis left \
 
 $ct --legend-inside cc /scale=5 'sin(x)' /legend biniou
 
-
+$ct --fill xaxis --fill-transparency 0.7 'sin(x+0##3*3.14/2)'

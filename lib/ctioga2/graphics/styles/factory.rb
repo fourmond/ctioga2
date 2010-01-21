@@ -105,6 +105,9 @@ module CTioga2
 
 
         # Creates a new parameter for the style factory.
+        #
+        # \todo add a way to add some more text to the description;
+        # possibly a self.describe_parameter function ?
         def self.define_parameter(target, name, type, sets, description, 
                                   short_option = nil, disable_cmds = false)
           # We define two new types:
@@ -342,6 +345,16 @@ module CTioga2
 
         define_parameter 'location_yaxis', 'yaxis', 'axis',
         nil, "Y axis", nil, true
+
+        # Now, fill style
+        define_parameter 'fill_y0', 'fill', 'fill-until',
+        {}, "Fill until", nil
+
+        define_parameter 'fill_color', 'fill-color', 'color',
+        Sets::ColorSets, "fill color", nil
+
+        define_parameter 'fill_transparency', 'fill-transparency', 'float',
+        {}, "Fill transparency", nil
 
         # And finally, we register all necessary commands...
         create_commands

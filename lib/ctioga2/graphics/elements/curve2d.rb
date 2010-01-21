@@ -140,21 +140,14 @@ module CTioga2
         # Draws the filled region according to the :fill_type element
         # of the style pseudo-hash. It can be:
         def draw_fill(t)
-          #           y = y_value(@style.fill_type)
-          #           return unless y
-
-          #           t.fill_transparency = @style.fill_transparency || 0
-          #           # Now is the tricky part. To do the actual fill, we first make a
-          #           # path according to the make_path function.
-          #           make_path(t)
-
-          #           # Then we add two line segments that go from the end to the
-          #           # beginning.
-          #           close_path(t, y)
-
-          #           # Now the path is ready. Just strike -- or, rather, fill !
-          #           t.fill_color = @style.fill_color
-          #           t.fill
+          y0 = fill_value_to_y(@curve_style.fill.y0)
+          return unless y0
+          t.context do
+            @curve_style.fill.set_fill_style(t)
+            make_path(t)
+            close_path(t, y0)
+            t.fill
+          end
         end
 
         def draw_errorbars(t)
@@ -174,6 +167,7 @@ module CTioga2
             ## #draw_markers... Ideally, any string could be used, and
             ## warnings should be issued on missing symbols.
 
+            draw_fill(t)
             draw_errorbars(t)
             draw_path(t)
             draw_markers(t)
@@ -184,6 +178,19 @@ module CTioga2
             #               self.send("draw_#{op}".to_sym, t)
             #             end
           end
+        end
+
+        protected
+
+        # Converts the value of a fill value into a number (or nil)
+        def fill_value_to_y(fv)
+          return nil unless fv
+          case fv
+          when :bottom,:top
+            bnds = parent.get_el_boundaries(self)
+            return bnds.send(fv)
+          end
+          return fv
         end
         
       end
