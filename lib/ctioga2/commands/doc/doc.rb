@@ -69,7 +69,11 @@ module CTioga2
             elsif ! b
               -1
             else
-              a.priority <=> b.priority
+              if a.priority == b.priority
+                a.name <=> b.name
+              else
+                a.priority <=> b.priority
+              end
             end
           end
           if @ignore_blacklisted
