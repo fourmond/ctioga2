@@ -48,6 +48,10 @@ module CTioga2
         # Details of the location of the curve, a LocationStyle object.
         attr_accessor :location
 
+        # Whether in a region plot, the curve should be above or below
+        # the filled region.
+        attr_accessor :region_position
+
         # True if a line should be drawn.
         def has_line?
           return @line && @line.style
@@ -78,6 +82,8 @@ module CTioga2
           @error_bar = ErrorBarStyle.from_hash(hash, 'error_bar_%s')
           @location = LocationStyle.from_hash(hash, 'location_%s')
           @fill = CurveFillStyle.from_hash(hash, 'fill_%s')
+
+          @region_position = hash['region_position']
 
           @legend = hash['legend']
         end

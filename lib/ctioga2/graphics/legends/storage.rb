@@ -50,7 +50,9 @@ module CTioga2
               retval << el
             elsif el.is_a? Elements::Container and 
                 (not el.legend_area)
-              retval.concat(el.legend_storage.harvest_contents)
+              if el.legend_storage 
+                retval.concat(el.legend_storage.harvest_contents)
+              end
             end
           end
           return retval

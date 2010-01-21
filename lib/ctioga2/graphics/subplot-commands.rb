@@ -103,6 +103,25 @@ EOD
                         <<EOD, SubplotsGroup)
 Leaves the current subobject.
 EOD
+    RegionOptions = {
+      'color' => CmdArg.new('color'),
+      'transparency' => CmdArg.new('float'),
+      'reversed_color' => CmdArg.new('color'),
+      'reversed_transparency' => CmdArg.new('float'),
+    }
+
+    RegionCommand =         
+      Cmd.new("region",nil,"--region", 
+              [ ], RegionOptions) do |plotmaker, options|
+      r = plotmaker.root_object.enter_region
+      r.set_from_hash(options)
+    end
+    
+    RegionCommand.describe('Starts a region with filling between curves',
+                           <<EOD, SubplotsGroup)
+TODO !
+EOD
+
 
     RescaleCommand =         
       Cmd.new("plot-scale",nil,"--plot-scale", 

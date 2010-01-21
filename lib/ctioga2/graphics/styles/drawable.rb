@@ -93,20 +93,28 @@ module CTioga2
       # \todo more attributes ?
       class FillStyle < BasicStyle
 
-        # The color
+        # The color.
         attr_accessor :color
 
         # The transparency
         attr_accessor :transparency
 
-        # Sets up the parameters for the fill.
+        # Sets up the parameters for the fill. Must be called before
+        # any path drawing.
         #
-        # \warning It is not possible to write a function that
-        # directly fills with the appropriate style, as some
-        # parameters can't be changed *after* preparing a path.
-        def set_fill_style(t)
+        # \warning You *must* call FillStyle#do_fill for
+        # filling. Directly calling FigureMaker#fill is not a good
+        # idea, as you lose all 'hand-crafted' fills !
+        def setup_fill(t)
           t.fill_color = @color if @color
           t.fill_transparency = @transparency if @transparency
+        end
+
+        # Does the actual filling step. Must be used within a context,
+        # as it quite messes up with many things. Must be called after
+        # a call to #setup_fill.
+        def do_fill(t)
+          t.fill
         end
 
       end

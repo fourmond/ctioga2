@@ -1,5 +1,5 @@
 # curve2d.rb: a 2D curve
-# copyright (c) 2006, 2007, 2008, 2009 by Vincent Fourmond
+# copyright (c) 2006, 2007, 2008, 2009, 2010 by Vincent Fourmond
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ module CTioga2
       # the old ctioga, such as:
       #
       # * transparency
-      # * filled curves
       # * drawing order
       class Curve2D  < TiogaElement
 
@@ -101,6 +100,18 @@ module CTioga2
           #          end
         end
 
+        
+        # Adds a closed path to the given FigureMaker object. The path
+        # is closed according to the specification given as _fv_,
+        # which is the same as the _y0_ attribute of a CurveFillStyle.
+        #
+        # It must not be _false_
+        def make_closed_path(t, fv)
+          y0 = fill_value_to_y(fv)
+          make_path(t)
+          close_path(t, y0)
+        end
+
         # Strokes the path.
         def draw_path(t)
           if @curve_style.has_line?
@@ -140,13 +151,12 @@ module CTioga2
         # Draws the filled region according to the :fill_type element
         # of the style pseudo-hash. It can be:
         def draw_fill(t)
-          y0 = fill_value_to_y(@curve_style.fill.y0)
-          return unless y0
+          return unless @curve_style.fill.y0
           t.context do
-            @curve_style.fill.set_fill_style(t)
-            make_path(t)
-            close_path(t, y0)
-            t.fill
+            # Remember: first setup_fill, then draw path, then do_fill
+            @curve_style.fill.setup_fill(t)
+            make_closed_path(t,@curve_style.fill.y0)
+            @curve_style.fill.do_fill(t)
           end
         end
 
@@ -171,16 +181,10 @@ module CTioga2
             draw_errorbars(t)
             draw_path(t)
             draw_markers(t)
-            #             # The fill is always first
-            #             draw_fill(t)
-
-            #             for op in CurveStyle::DrawingOrder[@style[:drawing_order]]
-            #               self.send("draw_#{op}".to_sym, t)
-            #             end
           end
         end
 
-        protected
+        protected 
 
         # Converts the value of a fill value into a number (or nil)
         def fill_value_to_y(fv)

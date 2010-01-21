@@ -176,7 +176,7 @@ module CTioga2
         def initial_xy(t, container)
           case @legend_type
           when :right
-            l,r,t,b = container.subframe.to_frame_margins(t)
+            l,r,t,b = container.actual_subframe(t).to_frame_margins(t)
             # Here, we take profit from the fact that frame
             # coordinates are also figure coordinates within the
             # legend.

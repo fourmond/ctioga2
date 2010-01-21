@@ -356,6 +356,10 @@ module CTioga2
         define_parameter 'fill_transparency', 'fill-transparency', 'float',
         {}, "Fill transparency", nil
 
+        # Region handling
+        define_parameter 'region_position', 'region-side', 'region-side',
+        {"default" => [:above, :below]}, "region side", nil
+
         # And finally, we register all necessary commands...
         create_commands
 

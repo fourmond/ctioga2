@@ -81,6 +81,10 @@ module CTioga2
           @user_boundaries[key] = Types::SimpleRange.new(bounds)
         end
 
+        def actual_subframe(t)
+          return @subframe || @style.estimate_margins(t)
+        end
+
         protected
 
         # Makes up a Boundaries object from two axes keys
@@ -105,6 +109,7 @@ module CTioga2
         end
 
 
+
         # Plots all the objects inside the plot.
         def real_do(t)
           # First thing, we setup the boundaries
@@ -112,7 +117,7 @@ module CTioga2
 
           real_boundaries = get_boundaries
 
-          frames = @subframe || @style.estimate_margins(t)
+          frames = actual_subframe(t)
 
           # We wrap the call within a subplot
           t.subplot(frames.to_frame_margins(t)) do

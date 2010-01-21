@@ -81,6 +81,22 @@ but it can also be:
  * top, to fill until the top 
  * none, meaning no fill
 EOD
+
+    RegionSideType = 
+      CmdType.new('region-side', {
+                    :type => :list,
+                    :list => {},
+                    :shortcuts => {
+                      'above' => :above,
+                      'below' => :below,
+                      'ignore' => false,
+                    }
+                  }, <<EOD)
+Within a {command: region}, should the curve be above or below the 
+filled region ?
+EOD
+
+                    
                     
     LineStyleType = 
       CmdType.new('line-style', {

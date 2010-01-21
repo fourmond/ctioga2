@@ -70,6 +70,13 @@ module CTioga2
           return @elements.size
         end
 
+        # Sometimes, the value of the subframe is _nil_ and determined
+        # during the plot. This function is guaranteed to return the
+        # correct value. It takes a reference to a FigureMaker object.
+        def actual_subframe(t)
+          return @subframe
+        end
+
         # Adds an element
         def add_element(element)
           element.parent = self

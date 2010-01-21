@@ -146,6 +146,17 @@ module CTioga2
         return subplot
       end
 
+      # This function is the companion of #subplot, but for Region
+      # objects. Returns the newly created Region.
+      def enter_region
+        if ! @current_container
+          subplot
+        end
+        region = Elements::Region.new(@current_container, self)
+        enter_subobject(region)
+        return region
+      end
+
       # Returns true if not a single drawable object has been pushed
       # unto the RootObject yet.
       def empty?
