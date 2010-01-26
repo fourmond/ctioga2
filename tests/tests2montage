@@ -5,11 +5,11 @@ for f in "$@"; do
     export CT_ADD="--name ${f%%.sh}-%03d"
     NOXPDF=1 sh $f
     echo " -> producing montage outputs"
-    if [ -z $BIG]; then
+    if [ -z $BIG ]; then
 	geometry=340x340+4+4
 	density=150
     else
-	geometry=600x600+4+4
+	geometry=500x500+4+4
 	density=250
     fi
     montage -label %f -frame 5 -background '#336699' \
