@@ -264,7 +264,7 @@ module CTioga2
         @interpreter.run_command_line(command_line)
         
         # Now, draw the main figure
-        file = draw_figure(@figure_name || "Plot", true)
+        file = draw_figure(@figure_name || "Plot-%03d", true)
       rescue SystemExit => e
         # We special-case the exit exception ;-)...
       rescue Exception => e
@@ -275,7 +275,7 @@ module CTioga2
 
     # Flushes the current root object and starts a new one:
     def reset_graphics
-      draw_figure(@figure_name || "Plot", true)
+      draw_figure(@figure_name || "Plot-%03d", true)
 
       @root_object = Graphics::RootObject.new
       @curve_generator = Graphics::CurveGenerator.new
@@ -291,13 +291,37 @@ module CTioga2
       return "#{File.basename($0)} #{quoted_args}"
     end
 
-    # Draws the figure currently accumulated in the #root_object.
-    # It returns the path of the PDF file produced.
+    # Draws the figure currently accumulated in the #root_object.  It
+    # returns the path of the PDF file produced.
+    #
+    # If _figname_ contains a % sign, it will be interpreted as a
+    # format, and ctioga will attempt to find the first numbered file
+    # that does not exists.
     #
     # \todo
     # * cleanup or not ?
-    def draw_figure(figname = "Plot", last = false)
+    def draw_figure(figname = "Plot-%03d", last = false)
       return if @root_object.empty?
+      
+      if figname =~ /%/
+        i = 0
+        prev = figname.dup
+        while true
+          f = figname % i
+          if f == prev
+            figname = f
+            break
+          end
+          if File::exist?("#{f}.pdf")
+            i += 1
+          else
+            figname = f
+            break
+          end
+          prev = f
+        end
+      end
+      
       info "Producing figure '#{figname}'"
 
       t = create_figure_maker
@@ -560,6 +584,13 @@ EOH
 Sets the name of the figure, which is also the base name for the output file.
 This has nothing to do with the title of the plot, which can be set using
 the command {command: title}.
+
+If the name contains a %, it is interpreted by ctioga2 as a
+printf-like format. It will attempt to find the first file that does
+not exist, feeding it with increasing numbers.
+
+The default value is now Plot-%03d, which means you'll get increasing numbers
+automatically.
 EOH
 
     OutputNowCommand = 
