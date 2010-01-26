@@ -1,0 +1,23 @@
+#!/bin/sh
+
+for f in "$@"; do
+    echo "Running $f";
+    export CT_ADD="--name ${f%%.sh}-%03d"
+    NOXPDF=1 sh $f
+    echo " -> producing montage outputs"
+    if [ -z $BIG]; then
+	geometry=340x340+4+4
+	density=150
+    else
+	geometry=600x600+4+4
+	density=250
+    fi
+    montage -label %f -frame 5 -background '#336699' \
+	-geometry $geometry -density $density ${f%%.sh}-*.pdf ${f%%.sh}.png
+    if [ -z $KEEP ]; then
+	echo " -> removing PDF files"
+	rm ${f%%.sh}-*.pdf
+    fi
+    display ${f%%.sh}.png
+    
+done
