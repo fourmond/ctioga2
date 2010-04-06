@@ -83,7 +83,8 @@ module CTioga2
       if @eps
         target = file.sub(/(\.pdf)?$/,'.eps')
         info "Converting #{file} to EPS"
-        spawn("pdftops -eps -paper match #{file} #{target}")
+        ## \todo provide some facility to pass options to pdftops ?
+        spawn("pdftops -eps -level2 -paper match #{file} #{target}")
       end
 
       # Converts to PNG if applicable

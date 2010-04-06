@@ -23,7 +23,11 @@ module CTioga2
     module Documentation
 
       # The documentation strings are written in a simple markup
-      # language. 
+      # language.
+      #
+      # \todo we should provide tags to specifically mark TODO items
+      # in documentation, in such a way that it would be easy to make
+      # a list of them, and possibly ignore it for output.
       class MarkedUpText
 
         # Do we really need logging ?

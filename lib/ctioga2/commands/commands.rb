@@ -32,6 +32,13 @@ module CTioga2
     end
 
     # One of the commands that can be used.
+    #
+    # \todo Write a Shortcut command that would simply be a shortcut
+    # for other things. Possibly taking arguments ? It could take a
+    # description, though that wouldn't be necessary.
+    #
+    # \todo Use this Shortcut to write DeprecatedShortcut for old
+    # ctioga options.
     class Command
 
       # The name of the command, ie how to call it in a commands file

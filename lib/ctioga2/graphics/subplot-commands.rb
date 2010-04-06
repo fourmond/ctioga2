@@ -180,6 +180,20 @@ arguments such as grid:0,1 can be used as the {type: box} argument of
 {cmd: inset} and {cmd: next-inset} commands.
 EOH
 
+    ZoomCommand =         
+      Cmd.new("zoom-inset",nil,"--zoom-inset", 
+              [
+               CmdArg.new('box'),
+              ]) do |plotmaker, box|
+      subplot = plotmaker.root_object.subplot
+      subplot.subframe = box
+    end
+    
+    ZoomCommand.describe('Starts an inset ',
+                          <<EOD, SubplotsGroup)
+@todo
+EOD
+
 
   end
 
