@@ -76,7 +76,14 @@ module CTioga2
 
         def initialize(nup = "2x2")
           if nup.respond_to?(:split)
-            @nup = nup.split(/\s*x\s*/).map { |s| s.to_i }
+            if nup =~ /,/
+              @hscales, @vscales = nup.split(/\s*x\s*/).map { |x| 
+                x.split(/\s*,\s*/).map { |y| y.to_f }
+              }
+              @nup = [@hscales.size, @vscales.size]
+            else
+              @nup = nup.split(/\s*x\s*/).map { |s| s.to_i }
+            end
           else
             @nup = nup.dup
           end
@@ -91,8 +98,8 @@ module CTioga2
           @delta_x = Dimension.new(:dy, 2.5, :x)
           @delta_y = Dimension.new(:dy, 2.5, :y)
 
-          @hscales = [1] * @nup[0]
-          @vscales = [1] * @nup[1]
+          @hscales ||= [1] * @nup[0]
+          @vscales ||= [1] * @nup[1]
         end
 
         # The grid currently in use.

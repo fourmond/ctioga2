@@ -178,6 +178,11 @@ EOD
 Sets up a grid of the given layout (such as 2x1). After this command,
 arguments such as grid:0,1 can be used as the {type: box} argument of
 {cmd: inset} and {cmd: next-inset} commands.
+
+Alternatively, the layout can be specified as 1,2,1x1,4, in which case
+there are three columns and two rows; the second column is 2 times
+larger than the other ones, while the second row is four times larger
+than the first.
 EOH
 
     ZoomCommand =         
