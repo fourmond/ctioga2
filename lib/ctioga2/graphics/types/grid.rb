@@ -1,5 +1,5 @@
 # grib.rb: setup and use of a "graph grid"
-# copyright (c) 2009 by Vincent Fourmond
+# copyright (c) 2009,2010 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,26 +26,64 @@ module CTioga2
     module Types
 
       # The position of a single element in a GridLayout
+      #
+      # \todo add the possibility to override one element of the
+      # final positions.
       class GridBox < Box
 
-        GridBoxRE = /^\s*grid:(\d+)\s*,\s*(\d+)\s*$/
+        OptionHashRE = /([\w-]+)\s*=\s*([^,]+),?\s*/
+
+        GridBoxRE = /^\s*grid:(\d+)\s*,\s*(\d+)(?:,(#{OptionHashRE}+))?\s*$/
+
+        # This hash helps to convert from a hash-based representation
+        # of frame coordinates to the array-based one.
+        #
+        # \todo I should either use existing code or refactor into
+        # something globally useful.
+        FrameCoordsOverride = { 'xl' => 0,
+          'yt' => 1,
+          'xr' => 2,
+          'yb' => 3
+        }
 
         def self.from_text(txt)
           if txt =~ GridBoxRE
-            return GridBox.new(GridLayout.current_grid, $1.to_i, $2.to_i)
+            return GridBox.new(GridLayout.current_grid, $1.to_i, $2.to_i, 
+                               $3) # The latter being to remove
+                                          # the initial comma
           else
             raise "#{txt} is not a grid box."
           end
         end
         
-        def initialize(grid, x, y)
+        def initialize(grid, x, y, options = {})
+          if options.is_a? String
+            str = options
+            options = {}
+            str.split(/\s*,\s*/).map { |s|
+              s =~ OptionHashRE
+              p [s, $1,$2]
+              options[$1] = 
+              BaseCoordinate.from_text($2,if FrameCoordsOverride[$1] % 2 == 0
+                                            :x
+                                          else
+                                            :y
+                                          end, :frame)
+            }
+          end
           @x = x.to_i
           @grid = grid
           @y = y.to_i
+          @overrides = options || {}
         end
 
         def to_frame_coordinates(t)
           a = @grid.frame_coordinates(t, @x, @y)
+          ## \todo write a framework for manipulating this !
+          for k,v in @overrides
+            next unless FrameCoordsOverride.key?(k)
+            a[FrameCoordsOverride[k]] = v.to_frame(t)
+          end
           return a
         end
       end
