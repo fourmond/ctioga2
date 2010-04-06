@@ -89,15 +89,16 @@ module CTioga2
         # what was done before.
         def make_path(t)
           bnds = parent.get_el_boundaries(self)
-          #           if @style.interpolate
-          #             for f in @function.split_monotonic
-          #               new_f = f.bound_values(*bnds.to_a)
-          #               t.append_interpolant_to_path(f.make_interpolant)
-          #             end
-          #           else
-          f = @function.bound_values(*bnds.extrema)
-          t.append_points_to_path(f.x, f.y)
-          #          end
+          case @curve_style.path_style
+          when /splines/
+            for f in @function.split_monotonic
+              new_f = f.bound_values(*bnds.extrema)
+              t.append_interpolant_to_path(new_f.make_interpolant)
+            end
+          else
+            f = @function.bound_values(*bnds.extrema)
+            t.append_points_to_path(f.x, f.y)
+          end
         end
 
         

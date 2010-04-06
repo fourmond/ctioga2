@@ -52,6 +52,14 @@ module CTioga2
         # the filled region.
         attr_accessor :region_position
 
+        # A path style. Ideas include:
+        # - plain lines
+        # - impulses ?
+        # - splines
+        # See gnuplot help for "plot with" for inspiration.
+        attr_accessor :path_style
+
+
         # True if a line should be drawn.
         def has_line?
           return @line && @line.style
@@ -86,6 +94,8 @@ module CTioga2
           @region_position = hash['region_position']
 
           @legend = hash['legend']
+
+          @path_style = hash['style']
         end
 
         # Creates a CurveStyle object straight from a hash

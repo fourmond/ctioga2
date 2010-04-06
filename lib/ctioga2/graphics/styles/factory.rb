@@ -360,6 +360,11 @@ module CTioga2
         define_parameter 'region_position', 'region-side', 'region-side',
         {"default" => [:above, :below]}, "region side", nil
 
+
+        define_parameter 'style', 'style', 'text',
+        {}, "Path style", nil
+
+
         # And finally, we register all necessary commands...
         create_commands
 
