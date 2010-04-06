@@ -62,7 +62,6 @@ module CTioga2
             options = {}
             str.split(/\s*,\s*/).map { |s|
               s =~ OptionHashRE
-              p [s, $1,$2]
               options[$1] = 
               BaseCoordinate.from_text($2,if FrameCoordsOverride[$1] % 2 == 0
                                             :x
