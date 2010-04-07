@@ -85,7 +85,10 @@ EOD
           # We open a bidirectionnal connection to gnuplot:
           gnuplot = IO.popen("gnuplot", "r+")
           output = ""
-          gnuplot.puts "set term table"
+          ## \todo determine gnuplot version for choosing which one we
+          ## want to use.
+          # gnuplot.puts "set term table"
+          gnuplot.puts "set table"
           if @samples
             overrides ||= ""
             overrides += ";set samples #{@samples}"
