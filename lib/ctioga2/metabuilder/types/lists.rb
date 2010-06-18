@@ -173,12 +173,7 @@ module CTioga2
                end
             array = []
             nb.times do |i|
-              a = []
-              f = i * fact
-              e.each_index do |c|
-                a << s[c] * (1 - f) + e[c] * f
-              end
-              array << a
+              array << Utils::mix_objects(e,s, i * fact)
             end
           else
             array = super

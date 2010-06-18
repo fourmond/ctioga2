@@ -122,6 +122,20 @@ EOD
 TODO !
 EOD
 
+    GradientCommand =         
+      Cmd.new("gradient",nil,"--gradient", 
+              [CmdArg.new('color'), CmdArg.new('color') ], {}) do |plotmaker, s, e, options|
+      r = plotmaker.root_object.enter_gradient
+      r.start_color = s
+      r.end_color = e
+      r.set_from_hash(options)
+    end
+    
+    GradientCommand.describe('Use a color gradient for all curves until --end',
+                             <<EOD, SubplotsGroup)
+TODO !
+EOD
+
 
     RescaleCommand =         
       Cmd.new("plot-scale",nil,"--plot-scale", 

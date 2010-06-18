@@ -99,6 +99,16 @@ module CTioga2
       end
     end
 
+    # Takes two arrays of the same size (vectors) and mix them
+    # a * r + b * (1 - r)
+    def self.mix_objects(a,b,r)
+      ret = a.dup
+      a.each_index do |i|
+        ret[i] = a[i] * r + b[i] * (1 - r)
+      end
+      return ret
+    end
+
     # Quotes a string so it can be included directly within a
     # \pdfinfo statement (for instance).
     def self.pdftex_quote_string(str)

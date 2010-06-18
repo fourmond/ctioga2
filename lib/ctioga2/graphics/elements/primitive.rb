@@ -162,7 +162,7 @@ module CTioga2
 
         primitive("marker", "marker", [ 'point', 'marker' ],
                   MarkerOptions) do |t, point, marker, options|
-          # TODO: add a way to specify fonts ???
+          ## \todo add a way to specify fonts ???
           options ||= {}
           options['marker'] = marker
           options['at'] = point.to_figure_xy(t)
@@ -172,7 +172,7 @@ module CTioga2
         primitive("string-marker", "marker", [ 'point', 'text' ],
                   {'font' => 'pdf-font' }.update(MarkerOptions)
                   ) do |t, point, string, options|
-          # TODO: add a way to specify fonts ???
+          ## \todo add a way to specify fonts ???
           options ||= {}
           options['text'] = string
           options['at'] = point.to_figure_xy(t)
@@ -194,6 +194,8 @@ module CTioga2
 
         primitive("arrow", "arrow", [ 'point', 'point' ], 
                   ArrowOptions) do |t, tail,head, options|
+          ## \todo a scale or marker_scale option that sets the scale
+          ## of both head and tail
           options ||= {}
           options['head'] = head.to_figure_xy(t)
           options['tail'] = tail.to_figure_xy(t)

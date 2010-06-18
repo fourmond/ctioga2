@@ -157,6 +157,17 @@ module CTioga2
         return region
       end
 
+      # This function is the companion of #subplot, but for GradientRegion
+      # objects. Returns the newly created GradientRegion
+      def enter_gradient
+        if ! @current_container
+          subplot
+        end
+        region = Elements::GradientRegion.new(@current_container, self)
+        enter_subobject(region)
+        return region
+      end
+
       # Returns true if not a single drawable object has been pushed
       # unto the RootObject yet.
       def empty?
