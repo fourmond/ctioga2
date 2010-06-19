@@ -76,13 +76,13 @@ module CTioga2
     # A logged replacement for system
     def spawn(cmd, priority = :info)
       retval = system(cmd)
-      self.send(priority, "Spawned #{cmd} -> " + 
-                if retval
-                  "success"
-                else
-                  "failure"
-                end
-                )
+      self.send(priority) { "Spawned #{cmd} -> " + 
+        if retval
+          "success"
+        else
+          "failure"
+        end
+      }
       return retval
     end
 
