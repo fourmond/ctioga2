@@ -146,9 +146,9 @@ module CTioga2
           begin
             PlotMaker.plotmaker.interpreter.run_commands(@dataset_hook)
           rescue Exception => e
-            error "There was a problem running the dataset hook '#{@dataset_hook}', disabling it"
+            error { "There was a problem running the dataset hook '#{@dataset_hook}', disabling it" }
             @dataset_hook = nil
-            info "-> '#{format_exception e}'"
+            info { "-> '#{format_exception e}'" }
           end
         end
       end

@@ -389,11 +389,11 @@ module CTioga2
               if parents_params.key?(n)
                 description.add_param(parents_params[n])
               else
-                warn "Param #{n} not found"
+                warn { "Param #{n} not found" }
               end
             end
           else
-            warn "The parent class has no description"
+            warn { "The parent class has no description" }
           end
         end
         

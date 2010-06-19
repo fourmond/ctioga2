@@ -76,13 +76,13 @@ module CTioga2
       # Converts to SVG if applicable
       if @svg
         target = file.sub(/(\.pdf)?$/,'.svg')
-        info "Converting #{file} to SVG"
+        info { "Converting #{file} to SVG" }
         spawn("pdf2svg #{file} #{target}")
       end
 
       if @eps
         target = file.sub(/(\.pdf)?$/,'.eps')
-        info "Converting #{file} to EPS"
+        info { "Converting #{file} to EPS" }
         ## \todo provide some facility to pass options to pdftops ?
         spawn("pdftops -eps -level2 -paper match #{file} #{target}")
       end
@@ -90,8 +90,7 @@ module CTioga2
       # Converts to PNG if applicable
       if @png_res
         target = file.sub(/(\.pdf)?$/,'.png')
-        info "Converting #{file} to PNG"
-        
+        info { "Converting #{file} to PNG" }
         spawn "convert -density #{(@png_oversampling * @png_scale * 72).to_i} #{file} -resize #{@png_res.join('x')} #{target}"
       end
 
@@ -104,7 +103,7 @@ module CTioga2
         else
           cmd = "#{@viewer} #{file}"
         end
-        info "Spawning the viewer as requested for #{file}"
+        info { "Spawning the viewer as requested for #{file}" }
         spawn(cmd)
       end
     end

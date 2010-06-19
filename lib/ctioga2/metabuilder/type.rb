@@ -134,8 +134,8 @@ module CTioga2
       # creates a #type_name instance method returning this value.
       def self.type_name(name, public_name = nil, default_value = nil)
         if @@types.has_key?(name)
-          warn "Redefining type #{name} " +
-            "from #{@@types[name]} to #{self}"
+          warn { "Redefining type #{name} " +
+            "from #{@@types[name]} to #{self}" }
         end
         @@types[name] = self
         self.send(:define_method,:type_name) do

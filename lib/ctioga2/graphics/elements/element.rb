@@ -49,7 +49,7 @@ module CTioga2
         # #real_do, which should be redefined by the children. You can
         # redefine _do_ too if you need another debugging output.
         def do(f)
-          debug "plotting #{self.inspect}"
+          debug { "plotting #{self.inspect}" }
           real_do(f)
         end
 

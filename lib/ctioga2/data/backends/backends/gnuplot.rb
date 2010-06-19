@@ -80,7 +80,7 @@ EOD
         def run_gnuplot(filename, overrides = @variables_overrides)
           date = File::mtime(filename)
           # Get it from the cache !
-          debug "Running gnuplot on file #{filename}"
+          debug { "Running gnuplot on file #{filename}" }
           f = File.open(filename)
           # We open a bidirectionnal connection to gnuplot:
           gnuplot = IO.popen("gnuplot", "r+")
@@ -96,11 +96,15 @@ EOD
           for line in f
             next if line =~ /set\s+term/
             if overrides and line =~ /plot\s+/
-              debug "Found a plot, inserting variable overrides: #{overrides}"
+              debug { 
+                "Found a plot, inserting variable overrides: #{overrides}" 
+              }
               line.gsub!(/plot\s+/, "#{overrides};plot ")
             end
             if @range and line =~ /plot\s+/
-              debug "Found a plot, inserting range: #{@range}"
+              debug { 
+                "Found a plot, inserting range: #{@range}" 
+              }
               line.gsub!(/plot\s+(\[[^\]]+\])?/, 
                          "plot [#{@range}]")
             end

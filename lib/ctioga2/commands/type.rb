@@ -43,7 +43,9 @@ module CTioga2
           return obj
         else 
           if obj.is_a? Symbol
-            warn "Converting type specifcation #{obj.inspect} to string at #{caller[1]}"
+            warn {
+              "Converting type specification #{obj.inspect} to string at #{caller[1]}"
+            }
             obj = obj.to_s
           end
           type = Interpreter::type(obj)

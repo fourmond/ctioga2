@@ -288,7 +288,7 @@ module CTioga2
               if convert.key?(t)
                 value = "=#{convert[t]}".to_sym
               else
-                warn "No known key: #{t}, treating as auto"
+                warn { "No known key: #{t}, treating as auto" }
                 @override_parameters.delete(target)
                 return
               end
@@ -398,7 +398,7 @@ module CTioga2
             if convert.key? k 
               retval[convert[k]] = v
             else
-              warn "Unkown key for hash_name_to_target: #{k}"
+              warn { "Unkown key for hash_name_to_target: #{k}" }
             end
           end
           return retval

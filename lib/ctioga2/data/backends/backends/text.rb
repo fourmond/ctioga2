@@ -147,20 +147,20 @@ EOD
             # Try to find a compressed version
             for ext,method in UNCOMPRESSORS
               if File.readable? "#{file}#{ext}"
-                info "Using compressed file #{file}#{ext} in stead of #{file}"
+                info { "Using compressed file #{file}#{ext} in stead of #{file}" }
                 return IO.popen(method % "#{file}#{ext}")
               end
             end
           else 
             for ext, method in UNCOMPRESSORS
               if file =~ /#{ext}$/ 
-                info "Taking file #{file} as a compressed file"
+                info { "Taking file #{file} as a compressed file" }
                 return IO.popen(method % file)
               end
             end
             return File::open(file)
           end
-          error "Could not open #{file}"
+          error { "Could not open #{file}" }
           return nil
         end
 
@@ -182,11 +182,11 @@ EOD
           while line = io.gets
             line_number += 1
             if line =~ InvalidLineRE
-              debug "Found invalid line at #{line_number}"
+              debug { "Found invalid line at #{line_number}" }
               if ! last_line_is_invalid
                 # We begin a new set.
                 cur_set += 1
-                debug "Found set #{cur_set} at line #{line_number}"
+                debug { "Found set #{cur_set} at line #{line_number}" }
                 if(cur_set > set)
                   return str
                 end
@@ -214,7 +214,7 @@ EOD
             else
               set = 1
             end
-            debug "Trying to get set #{set} from file '#{filename}'"
+            debug { "Trying to get set #{set} from file '#{filename}'" }
             str = get_set_string(get_io_object(filename), set)
             return StringIO.new(str)
           end
@@ -237,7 +237,7 @@ EOD
               'sep' => @separator
             }
             io_set = get_io_set(file)
-            debug "Fancy read '#{file}', options #{fancy_read_options.inspect}"
+            debug { "Fancy read '#{file}', options #{fancy_read_options.inspect}" }
             @cache[name] = Dvector.fancy_read(io_set, nil, fancy_read_options)
           end
           return @cache[name]
@@ -278,7 +278,7 @@ EOD
         def get_data_column(column, compute_formulas = false)
           if compute_formulas
             formula = column.gsub(/\$(\d+)/, 'column[\1]')
-            debug "Using formula #{formula} for column spec: #{column}"
+            debug { "Using formula #{formula} for column spec: #{column}" }
             return Dvector.compute_formula(formula, 
                                            @current_data,
                                            @included_modules)

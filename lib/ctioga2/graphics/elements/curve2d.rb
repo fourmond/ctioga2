@@ -56,7 +56,7 @@ module CTioga2
         def initialize(dataset, style = nil)
           @dataset = dataset
           if @dataset.size > 2
-            warn "Columns Y2 and further were ignored for set #{dataset.name}"
+            warn { "Columns Y2 and further were ignored for set #{dataset.name}" }
           end
           # We build the function on a duplicate of the values ?
           @function = Function.new(@dataset.x.values.dup, 
@@ -170,7 +170,7 @@ module CTioga2
         
         ## Actually draws the curve
         def real_do(t)
-          debug "Plotting curve #{inspect}"
+          debug { "Plotting curve #{inspect}" }
           t.context do
             ## \todo allow customization of the order of drawing,
             ## using a simple user-specificable array of path,

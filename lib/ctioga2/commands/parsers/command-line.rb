@@ -174,7 +174,7 @@ module CTioga2
                 options[$1] = argv.shift
               end
             else
-              warn "Argument #{argv.first} looks like an option, but does not match any of the command #{command.name}"
+              warn { "Argument #{argv.first} looks like an option, but does not match any of the command #{command.name}" }
               break
             end
           end

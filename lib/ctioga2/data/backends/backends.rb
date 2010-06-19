@@ -33,7 +33,7 @@ for file in files.uniq
   begin
     require "ctioga2/data/backends/backends/#{file}"
   rescue Exception => e
-    warn "There was a problem trying to load 'ctioga2/data/backends/backends/#{file}': " 
-    warn "#{e.inspect}"
+    warn { "There was a problem trying to load 'ctioga2/data/backends/backends/#{file}': "  }
+    warn { "#{e.inspect}" }
   end
 end

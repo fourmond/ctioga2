@@ -159,7 +159,7 @@ EOD
         # code while keeping old stuff working.
         def expand_sets(spec)
           if m = /(\d+)##(\d+)/.match(spec)
-            debug "Using expansion rule #1"
+            debug { "Using expansion rule #1" }
             a = m[1].to_i
             b = m[2].to_i
             ret = []
@@ -168,10 +168,10 @@ EOD
             end
             return ret
           elsif m = /\#<(\d+)<(.*?)>(\d+)>/.match(spec)
-            debug "Using expansion rule #2"
+            debug { "Using expansion rule #2" }
             from = m[1].to_i
             to = m[3].to_i
-            debug "Ruby code used for expansion: {|i| #{m[2]} }"
+            debug { "Ruby code used for expansion: {|i| #{m[2]} }" }
             code = eval "proc {|i| #{m[2]} }"
             ret = []
             from.upto(to) do |i|
@@ -179,13 +179,13 @@ EOD
             end
             return ret
           elsif m = /\#<\s*(\w+)\s*=\s*(\d+)\s*<(.*?)>\s*(\d+)\s*>/.match(spec)
-            debug "Using expansion rule #3"
+            debug { "Using expansion rule #3" }
             var = m[1]
             from = m[2].to_i
             to = m[4].to_i
             # Then we replace all occurences of the variable
             literal = '"' + m[3].gsub(/\b#{var}\b/, '#{' + var + '}') + '"'
-            debug "Ruby code used for expansion: {|#{var}| #{literal} }"
+            debug { "Ruby code used for expansion: {|#{var}| #{literal} }" }
             code = eval "proc {|#{var}| #{literal} }"
             ret = []
             from.upto(to) do |i|
@@ -197,10 +197,12 @@ EOD
           return [spec]
         rescue  Exception => ex
           # In case something went wrong in the eval.
-          warn "An error occured during expansion of '#{spec}': #{ex.message}"
-          debug "Error backtrace: #{ex.backtrace.join "\n"}"
-          warn "Ignoring, but you're nearly garanteed something will "+
+          warn { "An error occured during expansion of '#{spec}': #{ex.message}" }
+          debug { "Error backtrace: #{ex.backtrace.join "\n"}" }
+          warn {
+            "Ignoring, but you're nearly garanteed something will "+
             "fail later on"
+          }
           return [spec]
         end
 

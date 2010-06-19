@@ -100,7 +100,9 @@ module CTioga2
                     if cmd.has_option? $1
                       options[$1] = $2
                     else
-                      error "Command #{cmd.name} does not take option #{$1}"
+                      error { 
+                        "Command #{cmd.name} does not take option #{$1}" 
+                      }
                     end
                   end
                 end

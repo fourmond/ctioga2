@@ -74,7 +74,7 @@ module CTioga2
               if @groups[id]
                 write_group(out, g)
               else
-                warn "Unkown group: #{id}"
+                warn { "Unkown group: #{id}" }
               end
             when /^#{RoffCommentRE}\s*write-types\s*$/
               write_types(out)

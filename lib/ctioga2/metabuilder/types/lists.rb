@@ -166,11 +166,11 @@ module CTioga2
             s,e,nb = $1, $2, $3.to_i
             s,e = @subtype.string_to_type(s),@subtype.string_to_type(e)
             fact = if nb > 1
-                 1.0/(nb - 1)     # The famous off-by one...
-               else
-                 warn "Incorrect gradient number: #{nb}"
-                 1.0
-               end
+                     1.0/(nb - 1)     # The famous off-by one...
+                   else
+                     warn { "Incorrect gradient number: #{nb}" }
+                     1.0
+                   end
             array = []
             nb.times do |i|
               array << Utils::mix_objects(e,s, i * fact)

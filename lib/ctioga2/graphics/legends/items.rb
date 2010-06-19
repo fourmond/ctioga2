@@ -142,7 +142,7 @@ module CTioga2
               'bottom' => y,
               'top' => 1 - y - legend_style.picto_height.to_figure(t)
             }
-            debug "Legend margins for '#{@curve_style.legend}' : #{margin_specs.inspect}"
+            debug { "Legend margins for '#{@curve_style.legend}' : #{margin_specs.inspect}" }
             t.subfigure(margin_specs) do
               # We make the markers slightly smaller than the text
               # around.

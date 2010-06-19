@@ -251,12 +251,12 @@ EOD
               if a =~ /^\s*([^=]+)=(.*)/
                 opts[$1] = $2
               else
-                plotmaker.error "Argument found where a option= was expected: #{a}"
+                plotmaker.error { "Argument found where a option= was expected: #{a}" }
               end
             end
             plotmaker.interpreter.run_command(cmd, comp, opts)
           else
-            plotmaker.error "Unkown graphics primitive: #{name}"
+            plotmaker.error { "Unkown graphics primitive: #{name}" }
           end
         end
 

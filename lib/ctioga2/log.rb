@@ -24,28 +24,28 @@ module CTioga2
 
     # Prints a debug message, on channel _channel_. Channel handling
     # is not implemented yet.
-    def debug(message, channel = nil)
-      @@logger.debug(message)
+    def debug(channel = nil)
+      @@logger.debug {yield}
     end
 
     # Prints a warning message
-    def warn(message)
-      @@logger.warn(message)
+    def warn
+      @@logger.warn {yield}
     end
 
     # Prints an informational message
-    def info(message)
-      @@logger.info(message)
+    def info
+      @@logger.info {yield}
     end
 
     # Prints an error message
-    def error(message)
-      @@logger.error(message)
+    def error
+      @@logger.error {yield}
     end
 
     # Prints a fatal error message and initiates program termination.
-    def fatal(message)
-      @@logger.fatal(message)
+    def fatal
+      @@logger.fatal {yield}
       exit 1                    # Fatal error.
     end
 

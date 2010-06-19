@@ -268,8 +268,8 @@ module CTioga2
       rescue SystemExit => e
         # We special-case the exit exception ;-)...
       rescue Exception => e
-        debug format_exception(e)
-        fatal "#{e.message}"
+        debug { format_exception(e) }
+        fatal { "#{e.message}" }
       end
     end
 
@@ -322,7 +322,7 @@ module CTioga2
         end
       end
       
-      info "Producing figure '#{figname}'"
+      info { "Producing figure '#{figname}'" }
 
       t = create_figure_maker
       # If figname is clearly a path, we split it into directory/name
@@ -370,7 +370,7 @@ module CTioga2
         curve_from_dataset(plot, dataset, options)
       plot.add_element(curve)
       @curve_style_stack << curve.curve_style
-      info "Adding curve '#{dataset.name}' to the current plot"
+      info { "Adding curve '#{dataset.name}' to the current plot" }
     end
 
     # Transforms a _dataset_spec_ into one or several Data::Dataset
@@ -381,8 +381,8 @@ module CTioga2
       begin
         sets = @data_stack.get_datasets(dataset_spec, options)
       rescue Exception => exception
-        error "A problem occurred while processing dataset '#{dataset_spec}' using backend #{@data_stack.backend_factory.current.description.name}. Ignoring it."
-        debug format_exception(exception)
+        error { "A problem occurred while processing dataset '#{dataset_spec}' using backend #{@data_stack.backend_factory.current.description.name}. Ignoring it." }
+        debug { format_exception(exception) }
         return
       end
       for set in sets
@@ -415,9 +415,9 @@ module CTioga2
       # We use Vincent's algorithm for major ticks when available ;-)...
       begin
         t.vincent_or_bill = true
-        info "Using Vincent's algorithm for major ticks"
+        info { "Using Vincent's algorithm for major ticks" }
       rescue
-        info "Using Bill's algorithm for major ticks"
+        info { "Using Bill's algorithm for major ticks" }
       end
 
       

@@ -151,7 +151,7 @@ EOD
         Styles::PlotStyle.current_plot_style(plotmaker).text_scale = scale
         Styles::PlotStyle.current_plot_style(plotmaker).lines_scale = scale
       else
-        CTioga2::Log::error "Unkown 'what' option for plot-scale: #{what}"
+        CTioga2::Log::error { "Unkown 'what' option for plot-scale: #{what}" }
       end
     end
     
