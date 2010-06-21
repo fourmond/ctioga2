@@ -305,11 +305,13 @@ EOD
         # _compute_formulas_ is true, the column specification is
         # taken to be a formula (in the spirit of gnuplot's)
         def get_data_column(column, compute_formulas = false, 
-                            parameters = {})
+                            parameters = nil)
           if compute_formulas
             formula = column
-            for k,v in parameters
-              formula.gsub!(/\b#{k}\b/, v.to_s)
+            if parameters
+              for k,v in parameters
+                formula.gsub!(/\b#{k}\b/, v.to_s)
+              end
             end
             formula.gsub!(/\$(\d+)/, 'column[\1]')
             debug { "Using formula #{formula} for column spec: #{column}" }
