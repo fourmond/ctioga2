@@ -76,6 +76,10 @@ EOD
         'regexp', 
         "The columns separator. Defaults to /\s+/"
 
+        param_accessor :param_regex, 'parameters', "Parameters parsing", 
+        'regexp', 
+        "Regular expression for extracting parameters from a file. Defaults to nil (ie nothing)"
+
 
         #     param_accessor :select, 'select', "Select lines", {:type => :string},
         #     "Skips line where the code returns false"
@@ -95,10 +99,14 @@ EOD
           # We don't split data by default.
           @split = false
 
+          @param_regex = nil
+
           super()
 
           # Override Backend's cache - for now.
           @cache = {}               # A cache file_name -> data
+
+          @param_cache = {}     # Same thing as cache, but for parameters
 
         end
 
@@ -220,26 +228,47 @@ EOD
           end
         end
 
+        # Turns an array of comments into a hash[param] -> value
+        def parse_parameters(comments)
+          ret = {}
+          for line in comments
+            if line =~ /#{@param_regex}/ # ??
+              ret[$1] = $2.to_f
+            end
+          end
+          return ret
+        end
+
         # Reads data from a file. If needed, extract the file from the
         # columns specification.
         #
-        # TODO: the cache really should include things such as time of
+        # \todo the cache really should include things such as time of
         # last modification and various parameters that influence the
-        # reading of the file.
+        # reading of the file, and the parameters read from the file
+        # using #parse_paramters
         def read_file(file)
           if file =~ /(.*)@.*/
             file = $1
           end
           name = file               # As file will be modified.
           if ! @cache.key?(file)    # Read the file if it is not cached.
+            comments = []
             fancy_read_options = {'index_col' => true,
               'skip_first' => @skip,
-              'sep' => @separator
+              'sep' => @separator,
+              'comment_out' => comments
             }
             io_set = get_io_set(file)
             debug { "Fancy read '#{file}', options #{fancy_read_options.inspect}" }
             @cache[name] = Dvector.fancy_read(io_set, nil, fancy_read_options)
+            if @param_regex
+              # Now parsing params
+              @param_cache[name] = parse_parameters(comments)
+              info { "Read #{@param_cache[name].size} parameters from #{name}" }
+            end
           end
+          # That is kinda hackish...
+          @current_parameters = @param_cache[name]
           return @cache[name]
         end
 
@@ -268,16 +297,21 @@ EOD
           end
           
           return Dataset.dataset_from_spec(set, col_spec) do |col|
-            get_data_column(col, compute_formulas)
+            get_data_column(col, compute_formulas, @current_parameters)
           end
         end
 
         # Gets the data corresponding to the given column. If
         # _compute_formulas_ is true, the column specification is
         # taken to be a formula (in the spirit of gnuplot's)
-        def get_data_column(column, compute_formulas = false)
+        def get_data_column(column, compute_formulas = false, 
+                            parameters = {})
           if compute_formulas
-            formula = column.gsub(/\$(\d+)/, 'column[\1]')
+            formula = column
+            for k,v in parameters
+              formula.gsub!(/\b#{k}\b/, v.to_s)
+            end
+            formula.gsub!(/\$(\d+)/, 'column[\1]')
             debug { "Using formula #{formula} for column spec: #{column}" }
             return Dvector.compute_formula(formula, 
                                            @current_data,
