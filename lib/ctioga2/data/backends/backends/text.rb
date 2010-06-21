@@ -79,10 +79,6 @@ EOD
         param_accessor :param_regex, 'parameters', "Parameters parsing", 
         'regexp', 
         "Regular expression for extracting parameters from a file. Defaults to nil (ie nothing)"
-
-
-        #     param_accessor :select, 'select', "Select lines", {:type => :string},
-        #     "Skips line where the code returns false"
         
         def initialize
           @dummy = nil
@@ -245,7 +241,14 @@ EOD
         # \todo the cache really should include things such as time of
         # last modification and various parameters that influence the
         # reading of the file, and the parameters read from the file
-        # using #parse_paramters
+        # using #parse_parameters
+        #
+        # \todo There should be a real global handling of meta-data
+        # extracted from files, so that they could be included for
+        # instance in the automatic labels ? (and we could have fun
+        # improving this one ?)
+        #
+        # \warning This needs Tioga r561
         def read_file(file)
           if file =~ /(.*)@.*/
             file = $1
