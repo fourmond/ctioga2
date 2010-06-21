@@ -142,7 +142,7 @@ module CTioga2
       # A Type used for sets for Graphics::Styles::CircularArray
       # objects.
       #
-      # TODO: write a gradient stuff !!!
+      # \todo write a gradient stuff !!!
       class SetParameter < ArrayParameter
         type_name :set
 

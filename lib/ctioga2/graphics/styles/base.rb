@@ -27,7 +27,7 @@ module CTioga2
       # share one common feature: all their attributes can be set
       # using the set_from_hash function.
       #
-      # TODO: maybe a basic MetaBuilder::Type should be associated to
+      # \todo maybe a basic MetaBuilder::Type should be associated to
       # each attribute ??? 
       class BasicStyle
 

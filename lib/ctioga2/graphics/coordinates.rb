@@ -23,7 +23,7 @@ module CTioga2
 
     # Deals with transforming the coordinates of all datasets
     #
-    # TODO:
+    # \todo
     # * offsets
     # * scales
     # * x/y log

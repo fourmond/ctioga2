@@ -73,10 +73,10 @@ module CTioga2
       # create objects at run-time, the classes used by describe
       # *should not need any parameter for #initialize*.
       #
-      # TODO: add functions to prepare commands to set the various
+      # \todo add functions to prepare commands to set the various
       # parameters
       #
-      # TODO: write the parameters stuff again...
+      # \todo write the parameters stuff again...
       class BackendDescription
         # The Class to instantiate. 
         attr_accessor :object_class
@@ -149,7 +149,7 @@ module CTioga2
         # In addition, this function creates a group to store Backend
         # commands.
         #
-        # TODO: finish this !!!
+        # \todo finish this !!!
         def create_backend_commands
           group = CmdGroup.
             new("backend-#{@name}", 

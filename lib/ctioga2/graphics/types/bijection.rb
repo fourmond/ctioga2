@@ -61,10 +61,10 @@ module CTioga2
         # separated by :: -- or only one block in the case of an
         # involution (very common, actually, all 1/x transforms).
         #
-        # TODO: few things around here to change... in particular,
+        # \todo few things around here to change... in particular,
         # I should try to find a way to include Math... 
         #
-        # TODO: add very common cases ?
+        # \todo add very common cases ?
         def self.from_text(spec)
           blocks = spec.split(/::/).map do |code|
             eval("proc do |x|\n#{code}\nend")

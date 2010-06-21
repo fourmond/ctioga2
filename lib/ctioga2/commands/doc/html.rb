@@ -34,7 +34,7 @@ module CTioga2
 
         # The base URL for the file where the backends are documented.
         #
-        # TODO: maybe this should be turned into a directory, and each
+        # \todo maybe this should be turned into a directory, and each
         # file would document a backend on its own ? That would make
         # sense, but that would be rather difficult, I have to admit.
         attr_accessor :backends_url
@@ -218,7 +218,7 @@ module CTioga2
         # equivalent in HTML format. Alternativelely, it can take a
         # String and feed it to MarkedUpText.
         #
-        # TODO: escape correctly the produced HTML code...
+        # \todo escape correctly the produced HTML code...
         def markup_to_html(items)
           if items.is_a? String 
             mup = MarkedUpText.new(@doc, items)

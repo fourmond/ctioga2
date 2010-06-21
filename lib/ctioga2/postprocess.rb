@@ -21,7 +21,7 @@ module CTioga2
 
   # What happens to generated PDF files ?
   #
-  # TODO:
+  # \todo
   # * handle movie generation ? That would be fun !
   class PostProcess
 

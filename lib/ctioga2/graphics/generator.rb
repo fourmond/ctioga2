@@ -45,7 +45,7 @@ module CTioga2
       # Creates a Elements::TiogaElement representing the _dataset_
       # and returns it.
       #
-      # TODO:
+      # \todo
       # * coordinate transformations
       # * other kinds of curves (pseudo-3D, surfaces, histograms...)
       def curve_from_dataset(plot, dataset, options = {})
@@ -55,7 +55,7 @@ module CTioga2
                                 # the --plot command has precedence
                                 # over the one specified by --legend.
 
-        # TODO: copy datasets here !
+        # \todo copy datasets here !
         plot.style.transforms.transform_2d!(dataset)
         curve = Graphics::Elements::Curve2D.new(dataset, style)
         return curve

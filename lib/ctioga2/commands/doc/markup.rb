@@ -53,7 +53,7 @@ module CTioga2
 
         # A markup item representing plain text.
         #
-        # TODO: in to_s a simple word-wrapping algorithm could be
+        # \todo in to_s a simple word-wrapping algorithm could be
         # used.
         class MarkupText < MarkupItem
           # The text

@@ -33,7 +33,7 @@ module CTioga2
     # This is the central class for acquisition and handling of
     # Dataset objects, retrieved from from a Backends::BackendFactory.
     #
-    # TODO: provide real stack manipulation functions such as
+    # \todo provide real stack manipulation functions such as
     # 
     # * interpolation: pops the last object from the stack and add its
     #   interpolated values on the element before.
@@ -55,7 +55,7 @@ module CTioga2
       # A hook executed every time a dataset is pushed unto the stack
       # using #add_dataset.
       #
-      # TODO: this string is parsed for each call to
+      # \todo this string is parsed for each call to
       # #add_dataset. Perhaps it would be good to provide a way to
       # record a Command call, without parsing it from scratch ???
       # 
@@ -142,7 +142,7 @@ module CTioga2
       def add_dataset(dataset, ignore_hooks = false)
         @stack << dataset
         if @dataset_hook && (! ignore_hooks)
-          # TODO: error handling
+          # \todo error handling
           begin
             PlotMaker.plotmaker.interpreter.run_commands(@dataset_hook)
           rescue Exception => e

@@ -103,7 +103,7 @@ module CTioga2
           @legend_storage.add_item(item)
         end
 
-        # TODO: provide coordinate conversion facilities...
+        # \todo provide coordinate conversion facilities...
 
         protected 
 

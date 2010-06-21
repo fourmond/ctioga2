@@ -19,7 +19,7 @@ module CTioga2
   Version::register_svn_info('$Revision$', '$Date$')
 
 
-  # TODO: now, port the backend infrastructure...
+  # \todo now, port the backend infrastructure...
 
   # This module holds all the code that deals with manipulation and
   # acquisition of data of any sort.
@@ -222,7 +222,7 @@ module CTioga2
         select!(&block)
       end
 
-      # TODO: a dup !
+      # \todo a dup !
 
       # Average all the non-X values of successive data points that
       # have the same X values. It is a naive version that also

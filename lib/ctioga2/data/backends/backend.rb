@@ -36,7 +36,7 @@ module CTioga2
       # to retrive data from some source with a consistent way to do so,
       # independent the kind of source accessed.
       #
-      # TODO: update documentation.
+      # \todo update documentation.
       #
       # Subclasses should:
       # * provide a consistent method for creating themselves,
@@ -55,11 +55,11 @@ module CTioga2
       # * wether the actual reading of the data is done at initialization time
       #   or at query time is left to the implementor ;-) !
       #
-      # TODO: adapt to the new structure.
+      # \todo adapt to the new structure.
       #
-      # TODO: add back filters (with time)
+      # \todo add back filters (with time)
       #
-      # TODO: add a Cache ?
+      # \todo add a Cache ?
       class Backend
 
         # Include logging facilities...
@@ -106,7 +106,7 @@ This is the base class for backends. It should never be used directly.
 EOD
 
 
-        # TODO: the baseline should not be implemented.
+        # \todo the baseline should not be implemented.
         # It is much more efficient to ;
         # * implement a dataset subtraction command;
         # * use the add-dataset hook to automatically subtract a given
@@ -244,7 +244,7 @@ EOD
         # * keys inside _exclude_ are removed.
         # * _supp_info_ is added
         #
-        # TODO: get the implementation back again.
+        # \todo get the implementation back again.
         def get_cached_entry(name, exclude = [], supp_info = {}, &code)
           raise YetUnimplemented
           state = save_state

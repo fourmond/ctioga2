@@ -23,9 +23,9 @@ module CTioga2
 
     # This class holds one column, possibly with error bars.
     #
-    # TODO: a way to concatenate two DataColumns
+    # \todo a way to concatenate two DataColumns
     #
-    # TODO: a way to easily access the by "lines"
+    # \todo a way to easily access the by "lines"
     class DataColumn
       
       # A Dvector holding ``real'' values
@@ -37,11 +37,11 @@ module CTioga2
       # A Dvector holding maximal values
       attr_accessor :max_values
 
-      # TODO: a method that resembles the code in the old text backend
+      # \todo a method that resembles the code in the old text backend
       # to set errors according to a speficication (relative,
       # absolute, already max/min)
 
-      # TODO: a dup !
+      # \todo a dup !
 
       def initialize(values, min = nil, max = nil)
         @values = values

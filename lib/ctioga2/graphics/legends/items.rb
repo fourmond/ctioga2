@@ -116,7 +116,7 @@ module CTioga2
       # The legend of a curve object, or rather, the legend
       # corresponding to a given
       #
-      # TODO: finish to adapt: use FullTextStyle to draw the objects.
+      # \todo finish to adapt: use FullTextStyle to draw the objects.
       class CurveLegend < LegendItem
 
         include CTioga2::Log
@@ -130,9 +130,9 @@ module CTioga2
         
         # Draw one single text line
         #
-        # TODO: adapt here !
+        # \todo adapt here !
         #
-        # TODO: _x_ and _y_ are not taken into account the way they should be.
+        # \todo _x_ and _y_ are not taken into account the way they should be.
         def draw(t, legend_style, x, y)
           y = get_baseline_y(t, legend_style, y) 
           t.context do 

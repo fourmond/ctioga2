@@ -199,7 +199,7 @@ EOD
 The specification for a box, such as an inset. Specifications vary for
 now... 
 
-TODO: to be written later on.
+\todo to be written later on.
 EOD
 
     # Coordinate transformations

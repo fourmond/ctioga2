@@ -25,7 +25,7 @@ module CTioga2
 
       # This class holds a series of legends for curves.
       #
-      # TODO:
+      # \todo
       # 
       # * a legend can be plotted either inside a plot or outside the
       #   root object
@@ -44,7 +44,7 @@ module CTioga2
       #   @legend_area for the current Elements::Container, with the
       #   given position.
       #
-      # TODO: make a subclass for a top-level area ???? 
+      # \todo make a subclass for a top-level area ???? 
       class LegendArea
 
         # The style of the LegendStorage, a Styles::LegendStorageStyle
@@ -70,7 +70,7 @@ module CTioga2
         # subobjects. It assumes that the frames have been set
         # according to the return value of #partition_frame
         #
-        # TODO:
+        # \todo
         # 
         # * customization of the x and y of origin (y should match the
         #   top of the corresponding graph, if applicable)
@@ -86,10 +86,10 @@ module CTioga2
 
             # We make figure coordinates frame coordinates
             t.set_bounds([0, 1, 1, 0])
-            # TODO: customize this !
+            # \todo customize this !
             x, y = initial_xy(t, container)
             for item in items
-              # TODO: transform the 0.0 for x into a negative
+              # \todo transform the 0.0 for x into a negative
               # user-specifiable stuff.
               item.draw(t, @legend_style, x , y)
               y -= @legend_style.dy.to_figure(t,:y)
@@ -181,7 +181,7 @@ module CTioga2
             # coordinates are also figure coordinates within the
             # legend.
 
-            # TODO: that won't work in the case of labels on the
+            # \todo that won't work in the case of labels on the
             # right-hand-side.
             return [- l/2, 1.0 - t]
           when :inside

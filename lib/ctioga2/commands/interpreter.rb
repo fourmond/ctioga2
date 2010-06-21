@@ -169,7 +169,7 @@ module CTioga2
       # snapshot of the current commands known to the system, so
       # please instantiate it last.
       #
-      # TODO: probably this behavior is not really desired.
+      # \todo probably this behavior is not really desired.
       # Easy to fix.
       def initialize(target)
         @plotmaker_target = target

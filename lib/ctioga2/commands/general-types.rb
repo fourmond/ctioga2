@@ -76,14 +76,14 @@ EOD
     DataPointType = CmdType.new('data-point', :data_point, <<EOD)
 A point from a Dataset.
 
-TODO: document ;-)...
+\todo document ;-)...
 EOD
 
     # A LaTeX font
     LaTeXFontType = CmdType.new('latex-font', :latex_font, <<EOD)
 A LaTeX font.
 
-TODO: document !
+\todo document !
 EOD
 
 

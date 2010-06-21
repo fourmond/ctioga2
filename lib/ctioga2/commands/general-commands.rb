@@ -88,7 +88,7 @@ EOH
 
     # Write debugging information.
     #
-    # TODO: this should be the place where a lot of customization of
+    # \todo this should be the place where a lot of customization of
     # the debug output could go - including channels or things like
     # that. To be seen later on...
     DebugLogging = 

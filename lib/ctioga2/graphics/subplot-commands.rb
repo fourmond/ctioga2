@@ -75,7 +75,7 @@ Starts a new inset at the specified box. If no graphical commands have
 been issued before this one, it starts a top-level box in a blank 
 background. 
 
-TODO: this surely could be clarified a little tiny bit.
+\todo this surely could be clarified a little tiny bit.
 EOD
 
     NextInsetCommand =         

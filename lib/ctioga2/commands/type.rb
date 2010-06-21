@@ -89,7 +89,7 @@ module CTioga2
 
       # Returns the long option for the option parser.
       #
-      # TODO: maybe this should be rethought a bit ?
+      # \todo maybe this should be rethought a bit ?
       def option_parser_long_option(name, param = nil)
         return @type.option_parser_long_option(name, param)
       end      

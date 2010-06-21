@@ -27,7 +27,7 @@ module CTioga2
 
       # The style of a Elements::Subplot object.
       #
-      # TODO: it should hold
+      # \todo it should hold
       # * labels
       # * axes and edges (in a *clean* way !)
       # * ticks
@@ -259,7 +259,7 @@ module CTioga2
             Types::Dimension.new(:dy, ext)
           end
 
-          # TODO: add the plot title !
+          # \todo add the plot title !
           box = Types::MarginsBox.new(*margins)
           if @padding
             for dim in box.margins

@@ -68,7 +68,7 @@ module CTioga2
               passed_header = true
             when /^#{RoffCommentRE}\s*write-commands\s*$/
               write_commands(out)
-              # TODO: add a write-backends command....
+              # \todo add a write-backends command....
             when /^#{RoffCommentRE}\s*write-group:\s*(.*)\s*$/
               id = $1
               if @groups[id]
@@ -99,12 +99,12 @@ module CTioga2
         # equivalent in roff format. Alternativelely, it can take a
         # String and feed it to MarkedUpText.
         #
-        # TODO: make sure things are escaped the way they should be.
+        # \todo make sure things are escaped the way they should be.
         #
         # if _inside_cmds_ is true, additional indentation is added
         # for the lists, so that is looks neat in the end.
         #
-        # TODO: try to be more clever about spaces in the target
+        # \todo try to be more clever about spaces in the target
         # file. (does not matter too much for the output of man)
         def markup_to_man(items, inside_cmds = true)
           if items.is_a? String 

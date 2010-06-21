@@ -127,7 +127,7 @@ module CTioga2
         t.title_scale = 1
         t.xlabel_scale = 1
         t.ylabel_scale = 1
-        # TODO: I think this is mostly useless. Check.
+        # \todo I think this is mostly useless. Check.
       end
 
       # Creates a subplot of the current plot. If @current_container

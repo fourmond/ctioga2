@@ -43,7 +43,7 @@ module CTioga2
     #    variable = value
     #   They are stored in the form on an InterpreterString
     # 
-    # TODO: The variables system should automatically transform
+    # \todo The variables system should automatically transform
     # recursive variables into immediate ones when there is no
     # variables replacement text.
     class Variables

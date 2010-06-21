@@ -36,7 +36,7 @@ module CTioga2
 This backend returns computations of mathematical formulas.
 EOD
 
-        # TODO: make provisions for 3-D datasets. Ideas: x(t):y(t):z(t)
+        # \todo make provisions for 3-D datasets. Ideas: x(t):y(t):z(t)
         # for parametric plots ? (possibly x(t):y1(t):y2(t):...:yn(t)) ?
 
         param_accessor :samples, 'samples', "Samples", 'integer', 

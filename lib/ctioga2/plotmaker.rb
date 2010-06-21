@@ -94,7 +94,7 @@
 
 
 
-# TODO: make --xrange automatically select the range for the --math
+# \todo make --xrange automatically select the range for the --math
 # backend unless another range was explicitly specified.
 
 require 'ctioga2/utils'
@@ -540,7 +540,7 @@ EOD
 
     PageSizeCommand = 
       Cmd.new("page-size",'-r',"--page-size", 
-              [ CmdArg.new('text') ], # TODO: change that !
+              [ CmdArg.new('text') ], # \todo change that !
               { 'count-legend' => CmdArg.new('boolean')}
               ) do |plotmaker, size, options|
       plotmaker.root_object.set_page_size(size)
