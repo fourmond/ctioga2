@@ -224,11 +224,23 @@ EOD
           end
         end
 
+        undef :param_regex=
+        # A proper writer for @param_regex
+        def param_regex=(val)
+          if val.is_a? Regexp
+            @param_regex = val
+          elsif val =~ /([^\\]|^)\(/     # Has capturing groups
+            @param_regex = /#{val}/
+          else                  # Treat as separator
+            @param_regex = /(\S+)\s*#{val}\s*(\S+)/
+          end
+        end
+
         # Turns an array of comments into a hash[param] -> value
         def parse_parameters(comments)
           ret = {}
           for line in comments
-            if line =~ /#{@param_regex}/ # ??
+            if line =~ @param_regex
               ret[$1] = $2.to_f
             end
           end
@@ -268,6 +280,7 @@ EOD
               # Now parsing params
               @param_cache[name] = parse_parameters(comments)
               info { "Read #{@param_cache[name].size} parameters from #{name}" }
+              debug { "Parameters read: #{@param_cache[name].inspect}" }
             end
           end
           # That is kinda hackish...
