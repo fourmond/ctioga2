@@ -36,32 +36,72 @@ module CTioga2
       # object.
       attr_accessor :legend_provider
 
+      # The current kind of generated. It is a symbol
+      attr_accessor :current_curves
+
       # Creates a CurveGenerator object.
       def initialize
         @legend_provider = Legends::LegendProvider.new
         @style_factory = Styles::CurveStyleFactory.new
+        @current_curves = :classical_2d
       end
 
       # Creates a Elements::TiogaElement representing the _dataset_
       # and returns it.
       #
       # \todo
-      # * coordinate transformations
+      # * (other kinds of) coordinate transformations
       # * other kinds of curves (pseudo-3D, surfaces, histograms...)
       def curve_from_dataset(plot, dataset, options = {})
+        # Does coordinate transforms first ?
+        # \todo copy datasets here rather than overwriting them !
+        plot.style.transforms.transform_2d!(dataset)
+
+        return send(@current_curves, plot, dataset, options)
+      end
+
+      private
+      
+      ## \name Available kinds of curves
+      # 
+      # @{
+      # The "classical" 2D plots.
+      def classical_2d(plot, dataset, options = {})
         legend = @legend_provider.dataset_legend(dataset)
         style = @style_factory.next(options)
         style.legend ||= legend # The legend specified as option to
                                 # the --plot command has precedence
                                 # over the one specified by --legend.
-
-        # \todo copy datasets here !
-        plot.style.transforms.transform_2d!(dataset)
         curve = Graphics::Elements::Curve2D.new(dataset, style)
         return curve
       end
+
+      def parametric_2d(plot, dataset, options = {})
+        legend = @legend_provider.dataset_legend(dataset)
+        style = @style_factory.next(options)
+        style.legend = false
+        style.legend ||= legend # The legend specified as option to
+                                # the --plot command has precedence
+                                # over the one specified by --legend.
+        p [:biniou]
+        curve = Graphics::Elements::Parametric2D.new(dataset, style)
+        return curve
+      end
+
+
+      ## @}
       
     end
+
+    Parametric2DCommand = 
+      Cmd.new("parametric-2d",nil,"--parametric-2d") do |plotmaker|
+      plotmaker.curve_generator.current_curves = :parametric_2d
+    end
+    
+    Parametric2DCommand.describe('psdf', 
+                                 <<EOH, nil)
+mlkdqf
+EOH
 
   end
 end

@@ -63,21 +63,30 @@ module CTioga2
         attr_accessor :scale
 
         # Shows the marker at a given location/set of locations.
-        def draw_markers_at(t, x, y)
-          if x.is_a? Numeric
-            x = Dvector[x]
-            y = Dvector[y]
-          end
+        # 
+        # \p override is a hash that can override part of the
+        # dictionnary specification.
+        def draw_markers_at(t, x, y, override = nil)
           t.context do
             ## \todo allow custom line types for markers ?
             t.line_type = LineStyles::Solid
             dict = { 
-              'Xs' => x, 'Ys' => y,
               'marker' => @marker, 
               'color' => @color
             }
+            if x.is_a? Numeric
+              dict['x'] = x
+              dict['y'] = y
+            else
+              dict['Xs'] = x
+              dict['Ys'] = y
+            end
+
             if @scale
               dict['scale'] = @scale
+            end
+            if override
+              dict.merge!(override)
             end
             t.show_marker(dict)
           end

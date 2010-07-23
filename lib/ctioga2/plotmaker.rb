@@ -1,5 +1,5 @@
 # plotmaker.rb: the main class for ctioga
-# copyright (c) 2006, 2007, 2008, 2009 by Vincent Fourmond
+# copyright (c) 2006, 2007, 2008, 2009, 2010 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
