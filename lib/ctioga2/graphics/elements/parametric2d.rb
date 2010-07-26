@@ -19,7 +19,7 @@ require 'Dobjects/Function'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision: 151 $', '$Date: 2010-06-19 23:45:20 +0200 (Sat, 19 Jun 2010) $')
+  Version::register_svn_info('$Revision$', '$Date$')
 
   module Graphics
 
@@ -81,9 +81,27 @@ module CTioga2
           min = @dataset.z.values.min
           max = @dataset.z.values.max
           if @curve_style.has_marker?
+            ## Here: cheat, we use the couple marker-color/color to
+            # select the (linear) gradient
+            #
+            # \todo mabe make that a new style stuff ? That would be
+            # by far the simplest thing to do... Or make a real
+            # Gradient style.
+            if @curve_style.marker.color != @curve_style.line.color
+              gradient = Styles::TwoPointGradient.
+                new(@curve_style.marker.color, 
+                    @curve_style.line.color)
+            else
+              info { "Both marker and stroke colors are the same, using default color gradient" }
+              gradient = Styles::TwoPointGradient.
+                new(Tioga::ColorConstants::Red,
+                    Tioga::ColorConstants::Green)
+            end
             @dataset.each_values do |i, x,y,*zs|
+
               zi = (zs[0] - min)/(max - min)
-              color = [1 - zi, 0, zi] # Pretty much hardcoded here !
+              
+              color = gradient.color(zi)
               @curve_style.marker.draw_markers_at(t, x, y, { 'color' => color})
             end
           else

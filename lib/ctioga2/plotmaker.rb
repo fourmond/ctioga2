@@ -91,6 +91,8 @@
 #     toplevel (sub)plot positions are absolute ?)
 #     
 #   This scheme would allow for a relatively painless way to draw graphs...
+#
+# * Possibly wite 
 
 
 

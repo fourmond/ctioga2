@@ -65,6 +65,7 @@ module CTioga2
       ## \name Available kinds of curves
       # 
       # @{
+      # 
       # The "classical" 2D plots.
       def classical_2d(plot, dataset, options = {})
         legend = @legend_provider.dataset_legend(dataset)
@@ -76,6 +77,7 @@ module CTioga2
         return curve
       end
 
+      # A 2D-parametric plot.
       def parametric_2d(plot, dataset, options = {})
         legend = @legend_provider.dataset_legend(dataset)
         style = @style_factory.next(options)
@@ -83,7 +85,6 @@ module CTioga2
         style.legend ||= legend # The legend specified as option to
                                 # the --plot command has precedence
                                 # over the one specified by --legend.
-        p [:biniou]
         curve = Graphics::Elements::Parametric2D.new(dataset, style)
         return curve
       end
