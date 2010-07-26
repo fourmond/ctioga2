@@ -43,8 +43,13 @@ module CTioga2
         # Some of the elements will be overridden.
         attr_accessor :curve_style
 
-        # For convenience only.
+        # For convenience only: xy functions
         attr_accessor :function
+
+        # A hash Z value -> corresponding XY functions.
+        attr_accessor :planes
+
+
 
         undef :location=, :location
         
@@ -52,18 +57,23 @@ module CTioga2
         # _style_.
         def initialize(dataset, style = nil)
           @dataset = dataset
-          # We build the function on a duplicate of the values ?
+          @curve_style = style
+          prepare_data
+        end
+
+        # Prepares the internal storage of the data, from the @dataset
+        def prepare_data
           @function = Function.new(@dataset.x.values.dup, 
                                    @dataset.y.values.dup)
-
-          ## We remove NaN, as they are not very liked by Tioga...
-          #
-          # \todo maybe there should be a way to *split* on NaN rather
-          # than to ignore them ?
-          @function.strip_nan
-
-          @curve_style = style
+          @planes = {}
+          @dataset.each_values do |i, x,y,*zs|
+            @planes[zs[0]] ||= Function.new(Dvector.new, Dvector.new)
+            @planes[zs[0]].x << x
+            @planes[zs[0]].y << y
+          end
         end
+        
+        protected :prepare_data
 
         # Returns the LocationStyle object of the curve. Returns the
         # one from #curve_style.
@@ -75,6 +85,38 @@ module CTioga2
         def get_boundaries
           return Types::Boundaries.bounds(@function.x, @function.y)
         end
+
+        # Draws the markers, if applicable.
+        def draw_path(t)
+          min = @dataset.z.values.min
+          max = @dataset.z.values.max
+          if @curve_style.has_line?
+            if @curve_style.marker.color != @curve_style.line.color
+              gradient = Styles::TwoPointGradient.
+                new(@curve_style.marker.color, 
+                    @curve_style.line.color)
+            else
+              info { "Both marker and stroke colors are the same, using default color gradient" }
+              gradient = Styles::TwoPointGradient.
+                new(Tioga::ColorConstants::Red,
+                    Tioga::ColorConstants::Green)
+            end
+            for zs in @planes.keys.sort ## \todo have the sort
+                                        ## direction configurable.
+              zi = (zs - min)/(max - min)
+              f = @planes[zs]
+              color = gradient.color(zi)
+              t.context do 
+                @curve_style.line.set_stroke_style(t)
+                t.stroke_color = color
+                t.show_polyline(f.x, f.y)
+              end
+            end
+          else
+            error { "You really should consider using markers for that kind of stuff, at least if you want to see something out" }
+          end
+        end
+
 
         # Draws the markers, if applicable.
         def draw_markers(t)
@@ -97,12 +139,13 @@ module CTioga2
                 new(Tioga::ColorConstants::Red,
                     Tioga::ColorConstants::Green)
             end
-            @dataset.each_values do |i, x,y,*zs|
-
-              zi = (zs[0] - min)/(max - min)
-              
+            for zs in @planes.keys.sort ## \todo have the sort
+                                        ## direction configurable.
+              zi = (zs - min)/(max - min)
+              f = @planes[zs]
               color = gradient.color(zi)
-              @curve_style.marker.draw_markers_at(t, x, y, { 'color' => color})
+              @curve_style.marker.draw_markers_at(t, f.x, f.y, 
+                                                  { 'color' => color})
             end
           else
             error { "You really should consider using markers for that kind of stuff, at least if you want to see something out" }
@@ -119,6 +162,9 @@ module CTioga2
             ## #draw_markers... Ideally, any string could be used, and
             ## warnings should be issued on missing symbols.
 
+            # draw_fill(t)
+            # draw_errorbars(t)
+            draw_path(t)
             draw_markers(t)
             # draw_error_bars(t) ??
           end
