@@ -35,6 +35,11 @@ module CTioga2
           [MediumSeaGreen, RoyalBlue, Pumpkin, DarkChocolate, Lilac, Crimson],
           "colorblind" => 
           [BrightBlue, Goldenrod, Coral, Lilac, FireBrick, RoyalPurple],
+          "gradient1" => 
+          [DarkMagenta, DarkGreen, OrangeRed, DarkRed, DarkBlue ],
+          "gradient2" => 
+          [LightPlum, PaleGreen, Gold, RedBrown, SkyBlue ],
+
         }
 
         MarkerSets = { 
