@@ -67,7 +67,7 @@ module CTioga2
       # @{
       # 
       # The "classical" 2D plots.
-      def classical_2d(plot, dataset, options = {})
+      def xy_plot(plot, dataset, options = {})
         legend = @legend_provider.dataset_legend(dataset)
         style = @style_factory.next(options)
         style.legend ||= legend # The legend specified as option to
@@ -77,8 +77,8 @@ module CTioga2
         return curve
       end
 
-      # A 2D-parametric plot.
-      def parametric_2d(plot, dataset, options = {})
+      # All kind of XYZ plots, including maps
+      def xyz_plot(plot, dataset, options = {})
         legend = @legend_provider.dataset_legend(dataset)
         style = @style_factory.next(options)
         style.legend = false
@@ -94,14 +94,32 @@ module CTioga2
       
     end
 
-    Parametric2DCommand = 
-      Cmd.new("parametric-2d",nil,"--parametric-2d") do |plotmaker|
-      plotmaker.curve_generator.current_curves = :parametric_2d
+
+    # The group for chosing plot types.
+    PlotTypesGroup =  
+      CmdGroup.new('plot-types',
+                   "Switch between different kinds of plots",
+                   "How to switch between different kinds of plot types", 01)
+    
+
+    XYZPlotCommand = 
+      Cmd.new("xyz-plot",nil,"--xyz-plot") do |plotmaker|
+      plotmaker.curve_generator.current_curves = :xyz_plot
     end
     
-    Parametric2DCommand.describe('psdf', 
-                                 <<EOH, nil)
-mlkdqf
+    XYZPlotCommand.describe('select XYZ plots', 
+                            <<EOH, PlotTypesGroup)
+Switch to XYZ graphs
+EOH
+
+    XYPlotCommand = 
+      Cmd.new("xy-plot",nil,"--xy-plot") do |plotmaker|
+      plotmaker.curve_generator.current_curves = :xy_plot
+    end
+    
+    XYPlotCommand.describe('select XY plots', 
+                           <<EOH, PlotTypesGroup)
+Switch (back) to standard XY graphs (ctioga\'s default)
 EOH
 
   end
