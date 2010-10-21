@@ -13,6 +13,7 @@
 
 require 'ctioga2/utils'
 require 'ctioga2/data/datacolumn'
+require 'ctioga2/data/indexed-dtable'
 
 module CTioga2
 
@@ -264,6 +265,45 @@ module CTioga2
           i += 1
         end
         
+      end
+
+
+      # Returns an IndexedDTable representing the XYZ
+      # data. Information about errors are not included.
+      #
+      # @todo For performance, this will have to be turned into a real
+      # Dtable or Dvector class function. This function is just going
+      # to be *bad* ;-)
+      def indexed_table
+        # We convert the index into three x,y and z arrays
+        x = @x.values.dup
+        y = @ys[0].values.dup
+        z = @ys[1].values.dup
+        
+        xvals = x.sort.uniq
+        yvals = y.sort.uniq
+        
+        # Now building reverse hashes to speed up the conversion:
+        x_index = {}
+        i = 0
+        xvals.each do |x|
+          x_index[x] = i
+          i += 1
+        end
+
+        yvals.each do |x|
+          y_index[x] = i
+          i += 1
+        end
+
+        table = Dtable.new(xvals.size, yvals.size)
+        # We initialize all the values to NaN
+        table.set(0.0/0.0)
+        
+        x.each_index do |i|
+          table[x_index[x[i]], y_index[y[i]]] = z[i]
+        end
+        return IndexedTable.new(xvals, yvals, table)
       end
 
       protected
