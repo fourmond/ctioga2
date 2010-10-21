@@ -286,24 +286,26 @@ module CTioga2
         # Now building reverse hashes to speed up the conversion:
         x_index = {}
         i = 0
-        xvals.each do |x|
-          x_index[x] = i
+        xvals.each do |v|
+          x_index[v] = i
           i += 1
         end
 
-        yvals.each do |x|
-          y_index[x] = i
+        y_index = {}
+        i = 0
+        yvals.each do |v|
+          y_index[v] = i
           i += 1
         end
 
-        table = Dtable.new(xvals.size, yvals.size)
+        table = Dobjects::Dtable.new(xvals.size, yvals.size)
         # We initialize all the values to NaN
         table.set(0.0/0.0)
         
         x.each_index do |i|
           table[x_index[x[i]], y_index[y[i]]] = z[i]
         end
-        return IndexedTable.new(xvals, yvals, table)
+        return IndexedDTable.new(xvals, yvals, table)
       end
 
       protected

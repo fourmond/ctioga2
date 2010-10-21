@@ -77,7 +77,7 @@ module CTioga2
         return curve
       end
 
-      # All kind of XYZ plots, including maps
+      # XYZ plots formerly known as "parametric plots"
       def xyz_plot(plot, dataset, options = {})
         legend = @legend_provider.dataset_legend(dataset)
         style = @style_factory.next(options)
@@ -86,6 +86,18 @@ module CTioga2
                                 # the --plot command has precedence
                                 # over the one specified by --legend.
         curve = Graphics::Elements::Parametric2D.new(dataset, style)
+        return curve
+      end
+
+      # XYZ maps
+      def xyz_map(plot, dataset, options = {})
+        legend = @legend_provider.dataset_legend(dataset)
+        style = @style_factory.next(options)
+        style.legend = false
+        style.legend ||= legend # The legend specified as option to
+                                # the --plot command has precedence
+                                # over the one specified by --legend.
+        curve = Graphics::Elements::XYZMap.new(dataset, style)
         return curve
       end
 
@@ -109,7 +121,7 @@ module CTioga2
     
     XYZPlotCommand.describe('select XYZ plots', 
                             <<EOH, PlotTypesGroup)
-Switch to XYZ graphs
+Switch to XYZ plots
 EOH
 
     XYPlotCommand = 
@@ -119,8 +131,19 @@ EOH
     
     XYPlotCommand.describe('select XY plots', 
                            <<EOH, PlotTypesGroup)
-Switch (back) to standard XY graphs (ctioga\'s default)
+Switch (back) to standard XY plots (ctioga\'s default)
 EOH
+
+    XYZMapCommand = 
+      Cmd.new("xyz-map",nil,"--xyz-map") do |plotmaker|
+      plotmaker.curve_generator.current_curves = :xyz_map
+    end
+    
+    XYZMapCommand.describe('select XYZ maps', 
+                            <<EOH, PlotTypesGroup)
+Switch to XYZ maps
+EOH
+
 
   end
 end

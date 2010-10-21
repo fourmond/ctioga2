@@ -46,6 +46,11 @@ module CTioga2
         @y_values = y
       end
 
+      # Returns the XY boundaries of the object
+      def xy_boundaries
+        return Graphics::Types::Boundaries.bounds(@x_values, @y_values)
+      end
+
     end
 
   end
