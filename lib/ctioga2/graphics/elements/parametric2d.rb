@@ -29,6 +29,10 @@ module CTioga2
       # as markers with various parameters parametrized (color,
       # transparency, marker scale, marker type (discrete), possibly
       # stroke and fill colors ?
+      #
+      # @todo What would be interesting here would be to have indexed
+      # plots, ie draw one curve for each value of Z, with a color
+      # indexed by Z.
       class Parametric2D  < TiogaElement
 
         include Log
