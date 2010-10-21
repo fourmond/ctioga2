@@ -81,6 +81,21 @@ module CTioga2
           t.context do
             # Of course, there are still quite a few things to do
             # ;-)...
+
+            # Ideas: for leaving things out, I may have to use min_gt
+            # along with masking.
+
+            data = t.create_image_data(@table.table.rotate_ccw90, {
+                                         'min_value' => @table.table.min,
+                                         'max_value' => @table.table.max,
+                                       })
+            
+            dict = @table.corner_positions
+            dict.update('width' => @table.width,
+                        'height' => @table.height,
+                        'color_space' => t.mellow_colormap,
+                        'data' => data)
+            t.show_image(dict)
           end
         end
         

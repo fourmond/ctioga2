@@ -274,6 +274,8 @@ module CTioga2
       # @todo For performance, this will have to be turned into a real
       # Dtable or Dvector class function. This function is just going
       # to be *bad* ;-)
+      #
+      # @todo The result should be cached. (for contour stuff)
       def indexed_table
         # We convert the index into three x,y and z arrays
         x = @x.values.dup
