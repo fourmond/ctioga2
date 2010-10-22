@@ -364,6 +364,9 @@ module CTioga2
         define_parameter 'style', 'style', 'text',
         {}, "Path style", nil
 
+        define_parameter 'color_map', 'color-map', 'colormap',
+        nil, "Color map", nil
+
 
         # And finally, we register all necessary commands...
         create_commands

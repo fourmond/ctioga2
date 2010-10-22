@@ -49,7 +49,7 @@ module CTioga2
         # _nil_ for no specific value, :mask for masking them out
         attr_accessor :below, :above
 
-        # Whether the map follows RGB (true) or HSV (false). On by
+        # Whether the map follows RGB (true) or HLS (false). On by
         # default.
         #
         # It does not change anything with respect to how the colors
@@ -75,13 +75,16 @@ module CTioga2
         # above. These colors can also be "cut" or "mask", meaning
         # that the corresponding side isn't displayed.
         def self.from_text(str)
+          str = str.dup
+          hls = false
+          re = /(hls|hsv):?/i
+          if str =~ re
+            str.gsub!(re,'')
+            hls = true
+          end
+
           l = str.split(/::/)
           
-          hsv = false
-          if str =~ /hsv:?/i
-            str.gsub!(/hsv:?/i,'')
-            hsv = true
-          end
 
           if l.size == 2        # This is the complex case
             if l[1] =~ /--/
@@ -137,7 +140,7 @@ module CTioga2
           cm = ColorMap.new(values, colors)
           cm.above = above
           cm.below = below
-          cm.rgb = ! hsv
+          cm.rgb = ! hls
           return cm
         end
 
@@ -176,11 +179,13 @@ module CTioga2
           # (the middle or both around when only one _nil_ is found,
           # 1/3 2/3 for 2 consecutive _nil_ values, and so on).
           last_value = 0
+          p z_values
           1.upto(z_values.size-1) do |i|
             if z_values[i]
               if last_value + 1 < i
-                (last_value+1).up_to(i - 1) do |j|
-                  frac = (j - last_value)/(i - last_value)
+                (last_value+1).upto(i - 1) do |j|
+                  frac = (j - last_value)/(i - last_value + 1.0)
+                  p [last_value, j, i, frac]
                   z_values[j] = z_values[last_value] * frac + 
                     z_values[i] * (1 - frac)
                 end
@@ -188,6 +193,8 @@ module CTioga2
               last_value = i
             end
           end
+
+          p z_values
           
           # OK. Now, we have correct z values. We just need to scale
           # them between z_values[0] and z_values.last, to get a [0:1]
@@ -210,13 +217,13 @@ module CTioga2
             end
           else
             dict['Hs'] = []
+            dict['Ls'] = []
             dict['Ss'] = []
-            dict['Vs'] = []
             for col in @colors
-              col = t.rgb_to_hsv(col)
+              col = t.rgb_to_hls(col)
               dict['Hs'] << col[0]
-              dict['Ss'] << col[1]
-              dict['Vs'] << col[2]
+              dict['Ls'] << col[1]
+              dict['Ss'] << col[2]
             end
           end
           return [t.create_colormap(dict), z_values.first, z_values.last]
