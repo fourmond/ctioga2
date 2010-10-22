@@ -97,7 +97,12 @@ module CTioga2
             dict.update(@table.corner_positions)
             dict.update('width' => @table.width,
                         'height' => @table.height)
-            t.show_image(dict)
+            if (! @curve_style.fill.transparency) || 
+                (@curve_style.fill.transparency < 0.99) 
+              t.show_image(dict)
+            else
+              info { 'Not showing map as transparency is over 0.99' }
+            end
           end
         end
         

@@ -179,7 +179,6 @@ module CTioga2
           # (the middle or both around when only one _nil_ is found,
           # 1/3 2/3 for 2 consecutive _nil_ values, and so on).
           last_value = 0
-          p z_values
           1.upto(z_values.size-1) do |i|
             if z_values[i]
               if last_value + 1 < i
@@ -194,8 +193,6 @@ module CTioga2
             end
           end
 
-          p z_values
-          
           # OK. Now, we have correct z values. We just need to scale
           # them between z_values[0] and z_values.last, to get a [0:1]
           # interval.

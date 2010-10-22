@@ -114,6 +114,23 @@ module CTioga2
         return @y_values.size
       end
 
+      # Returns a [xs, ys, gaps] triplet suitable for use with
+      # t.append_points_with_gaps_to_path to show the given level.
+      #
+      # @todo add algorithm choice too
+      #
+      # @todo For some reasons, X and Y are swapped... I don't
+      # understand why.
+      def make_contour(t, level)
+        gaps = []
+        ys, xs = *t.make_contour('data' => @table,
+                                 'ys' => @x_values, # Why ?
+                                 'xs' => @y_values,
+                                 'gaps' => gaps,
+                                 'level' => level)
+        return  [xs, ys, gaps]
+      end
+
     end
 
   end

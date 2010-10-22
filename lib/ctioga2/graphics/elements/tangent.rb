@@ -13,7 +13,6 @@
 
 
 require 'ctioga2/graphics/elements/primitive'
-require 'shellwords'
 
 # This module contains all the classes used by ctioga
 module CTioga2

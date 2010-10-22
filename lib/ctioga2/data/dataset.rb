@@ -54,6 +54,9 @@ module CTioga2
         @x = columns[0]
         @ys = columns[1..-1]
         @name = name
+
+        # Cache for the indexed dtable
+        @indexed_dtable = nil
       end
 
       # Creates a new Dataset from a specification. This function
@@ -275,8 +278,12 @@ module CTioga2
       # Dtable or Dvector class function. This function is just going
       # to be *bad* ;-)
       #
-      # @todo The result should be cached. (for contour stuff)
+      # @todo The cache should be invalidated when the contents of the
+      # Dataset changes (but that will be *real* hard !)
       def indexed_table
+        if @indexed_dtable
+          return @indexed_dtable
+        end
         # We convert the index into three x,y and z arrays
         x = @x.values.dup
         y = @ys[0].values.dup
@@ -307,7 +314,8 @@ module CTioga2
         x.each_index do |i|
           table[x_index[x[i]], y_index[y[i]]] = z[i]
         end
-        return IndexedDTable.new(xvals, yvals, table)
+        @indexed_dtable = IndexedDTable.new(xvals, yvals, table)
+        return @indexed_dtable
       end
 
       protected

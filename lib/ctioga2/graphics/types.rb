@@ -124,6 +124,13 @@ EOD
 A given point on a figure.
 EOD
 
+# We need a very specific type for that as we want to have a reference
+# to the level too !
+    LevelType = 
+      CmdType.new('level', :level, <<EOD)
+A level on a XYZ map
+EOD
+
     JustificationType = 
       CmdType.new('justification', :tioga_justification, <<EOD)
 Horizontal aligment for text.

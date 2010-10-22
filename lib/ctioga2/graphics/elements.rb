@@ -24,6 +24,7 @@ require 'ctioga2/graphics/elements/xyz-map'
 require 'ctioga2/graphics/elements/primitive'
 
 require 'ctioga2/graphics/elements/tangent'
+require 'ctioga2/graphics/elements/contour'
 
 module CTioga2
 

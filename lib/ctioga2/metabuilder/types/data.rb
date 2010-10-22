@@ -34,6 +34,17 @@ module CTioga2
         end
       end
 
+      class LevelType < Type
+        
+        type_name :level, 'level'
+        
+        # @todo This should be modified eventually to mirror the
+        # DataPoint, but for now, no.
+        def string_to_type_internal(str)
+          return [str.to_f, PlotMaker.plotmaker.data_stack.last]
+        end
+      end
+
     end
   end
 end
