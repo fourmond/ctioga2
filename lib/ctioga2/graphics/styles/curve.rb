@@ -52,12 +52,21 @@ module CTioga2
         # the filled region.
         attr_accessor :region_position
 
-        # A path style. Ideas include:
+        # A path style.
+        #
+        # @todo Ideas for a path tyle include
         # - plain lines
         # - impulses ?
         # - splines
         # See gnuplot help for "plot with" for inspiration.
         attr_accessor :path_style
+
+        # A colormap (only for XYZ data)
+        #
+        # @todo There should be a very clear way to mark curve style
+        # elements which are specific to certain kinds of plots (and
+        # warn the user about misuses ?)
+        attr_accessor :color_map
 
 
         # True if a line should be drawn.
@@ -96,6 +105,9 @@ module CTioga2
           @legend = hash['legend']
 
           @path_style = hash['style']
+
+          @color_map = hash['color_map']
+
         end
 
         # Creates a CurveStyle object straight from a hash

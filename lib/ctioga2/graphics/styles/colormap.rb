@@ -49,9 +49,18 @@ module CTioga2
         # _nil_ for no specific value, :mask for masking them out
         attr_accessor :below, :above
 
+        # Whether the map follows RGB (true) or HSV (false). On by
+        # default.
+        #
+        # It does not change anything with respect to how the colors
+        # are interpreted: whatever happens, the values are RGB.
+        attr_accessor :rgb
+
         def initialize(values = [], colors = [])
           @values = values.dup
           @colors = colors.dup
+
+          @rgb = true
         end
         
         # Creates a ColorMap from a text specification of the kind:
@@ -66,7 +75,14 @@ module CTioga2
         # above. These colors can also be "cut" or "mask", meaning
         # that the corresponding side isn't displayed.
         def self.from_text(str)
-          l = split(str, /::/)
+          l = str.split(/::/)
+          
+          hsv = false
+          if str =~ /hsv:?/i
+            str.gsub!(/hsv:?/i,'')
+            hsv = true
+          end
+
           if l.size == 2        # This is the complex case
             if l[1] =~ /--/
               l.push('')
@@ -81,7 +97,7 @@ module CTioga2
           ## @todo More and more I find that this metabuilder thing is
           ## a little cumbersome, especially since I have an
           ## additional type system on top of this one.
-          colortype = MetaBuilder::Type.get_type(:tioga_color)
+          colortype = Commands::CommandType.get_type('color')
 
           
           # Now, we have three elements
@@ -119,12 +135,92 @@ module CTioga2
             end
           end
           cm = ColorMap.new(values, colors)
-          cm.above = @above
-          cm.below = @below
-          p cm
+          cm.above = above
+          cm.below = below
+          cm.rgb = ! hsv
           return cm
         end
-        
+
+
+        # Prepares the 'data', 'colormap' and 'value_mask' arguments
+        # to t.create_image based on the given data, and the min and
+        # max Z levels
+        #
+        # @todo handle masking + in and out of range.
+        def prepare_data_display(t, data, zmin, zmax)
+          # We correct zmin and zmax
+          cmap, zmin, zmax = *self.to_colormap(t, zmin, zmax)
+          
+          data = t.create_image_data(data.rotate_ccw90,
+                                     'min_value' => zmin,
+                                     'max_value' => zmax)
+          
+          return { 'data' => data,
+            'colormap' => cmap
+          }
+        end
+
+        protected
+
+        # Converts to a Tioga color_map
+        #
+        # @todo That won't work when there are things inside/outside
+        # of the map.
+        def to_colormap(t, zmin, zmax)
+          # Real Z values.
+          z_values = values.dup
+          z_values[0] ||= zmin
+          z_values[-1] ||= zmax
+
+          # Now, we replace all the nil values by the correct position
+          # (the middle or both around when only one _nil_ is found,
+          # 1/3 2/3 for 2 consecutive _nil_ values, and so on).
+          last_value = 0
+          1.upto(z_values.size-1) do |i|
+            if z_values[i]
+              if last_value + 1 < i
+                (last_value+1).up_to(i - 1) do |j|
+                  frac = (j - last_value)/(i - last_value)
+                  z_values[j] = z_values[last_value] * frac + 
+                    z_values[i] * (1 - frac)
+                end
+              end
+              last_value = i
+            end
+          end
+          
+          # OK. Now, we have correct z values. We just need to scale
+          # them between z_values[0] and z_values.last, to get a [0:1]
+          # interval.
+          p_values = Dobjects::Dvector[*z_values]
+          p_values.sub!(p_values.first)
+          p_values.div!(p_values.last)
+          
+          dict = {
+            'points' => p_values
+          }
+          if @rgb
+            dict['Rs'] = []
+            dict['Gs'] = []
+            dict['Bs'] = []
+            for col in @colors
+              dict['Rs'] << col[0]
+              dict['Gs'] << col[1]
+              dict['Bs'] << col[2]
+            end
+          else
+            dict['Hs'] = []
+            dict['Ss'] = []
+            dict['Vs'] = []
+            for col in @colors
+              col = t.rgb_to_hsv(col)
+              dict['Hs'] << col[0]
+              dict['Ss'] << col[1]
+              dict['Vs'] << col[2]
+            end
+          end
+          return [t.create_colormap(dict), z_values.first, z_values.last]
+        end
       end
 
     end

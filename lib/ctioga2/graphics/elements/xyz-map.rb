@@ -58,7 +58,6 @@ module CTioga2
         # Prepares the internal storage of the data, from the @dataset
         def prepare_data
           @table = @dataset.indexed_table
-          p @table
         end
         
         protected :prepare_data
@@ -85,16 +84,19 @@ module CTioga2
             # Ideas: for leaving things out, I may have to use min_gt
             # along with masking.
 
-            data = t.create_image_data(@table.table.rotate_ccw90, {
-                                         'min_value' => @table.table.min,
-                                         'max_value' => @table.table.max,
-                                       })
+            ## @todo handle non-homogeneous XY maps.
+
+            @curve_style.color_map ||= 
+              Styles::ColorMap.from_text("Red--Green")
             
-            dict = @table.corner_positions
+            dict = @curve_style.color_map.
+              prepare_data_display(t,@table.table,
+                                   @table.table.min,
+                                   @table.table.max)
+
+            dict.update(@table.corner_positions)
             dict.update('width' => @table.width,
-                        'height' => @table.height,
-                        'color_space' => t.mellow_colormap,
-                        'data' => data)
+                        'height' => @table.height)
             t.show_image(dict)
           end
         end
