@@ -43,7 +43,7 @@ module CTioga2
       def initialize
         @legend_provider = Legends::LegendProvider.new
         @style_factory = Styles::CurveStyleFactory.new
-        @current_curves = :classical_2d
+        @current_curves = :xy_plot
       end
 
       # Creates a Elements::TiogaElement representing the _dataset_
