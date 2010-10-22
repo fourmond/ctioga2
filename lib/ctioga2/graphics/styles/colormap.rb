@@ -77,9 +77,9 @@ module CTioga2
         def self.from_text(str)
           str = str.dup
           hls = false
-          re = /(hls|hsv):?/i
+          re = /natural:?/i     # Not too bad ?
           if str =~ re
-            str.gsub!(re,'')
+            str.sub!(re,'')
             hls = true
           end
 

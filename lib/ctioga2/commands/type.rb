@@ -21,6 +21,11 @@ module CTioga2
   module Commands
 
     # A named type, based on CTioga2::MetaBuilder::Type
+    #
+    # @todo *Structural* in real, I don't think it is necessary
+    # anymore to rely on MetaBuilder, as most types in CTioga2 already
+    # provide a from_text class function that does a nice job. I
+    # should convert as many things as possible to using that.
     class CommandType
 
       # The underlying  CTioga2::MetaBuilder::Type object.

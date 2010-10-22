@@ -25,14 +25,22 @@ module CTioga2
   module MetaBuilder
     module Types
 
-      # A color for use with Tioga, ie an [red, green, blue] array
-      # of values between 0 and 1.0. It accepts HTML-like colors, or
+      # A color for use with Tioga, ie a [red, green, blue] array of
+      # values between 0 and 1.0. It accepts HTML-like colors, or
       # three comma-separated values between 0 and 1.
       class TiogaColorType < Type
         
         type_name :tioga_color, 'color'
+
+        HLSRegexp = /(?:hls|hsv):/
         
         def string_to_type_internal(str)
+          if str =~ HLSRegexp
+            hls = true
+            str = str.gsub(HLSRegexp,'')
+          else
+            hls = false
+          end
           if str =~ /^\s*#([0-9a-fA-F]{6})\s*$/
               value =  $1.scan(/../).map {
               |i| i.to_i(16)/255.0 
@@ -41,13 +49,17 @@ module CTioga2
               value =  $1.scan(/../).map {
               |i| i.to_i(16)/15.0 
             }
-          else 
+          else
             value = str.split(/\s*,\s*/).map do |s|
               s.to_f
             end
           end
           if value.size != 3
             raise IncorrectInput, "You need exactly three values to make up a color"
+          end
+          if hls
+            # Requires Tioga r599
+            value = Tioga::FigureMaker.hls_to_rgb(value)
           end
           return value
         end
