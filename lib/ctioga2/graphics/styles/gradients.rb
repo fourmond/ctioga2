@@ -29,7 +29,12 @@ module CTioga2
       # A color gradient with two points
       #
       # \todo There could be many more
+      #
+      # @todo This will have to be replaced by a real color map based
+      # on what
       class TwoPointGradient < BasicStyle
+
+        include Log
         
         # The starting color (for x = 0)
         attr_accessor :start
@@ -38,6 +43,7 @@ module CTioga2
         attr_accessor :end
 
         def initialize(s,e)
+          warn { "This class shouldn't be used anymore at #{caller.inspect}" }
           @start = s
           @end = e
         end

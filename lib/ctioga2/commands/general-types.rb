@@ -86,6 +86,13 @@ A LaTeX font.
 \todo document !
 EOD
 
+    # A color map
+    ColorMapType = CmdType.new('colormap', :colormap, <<EOD)
+A Z color map
+
+\todo document !
+EOD
+
 
 
 

@@ -181,6 +181,15 @@ module CTioga2
         end
       end
 
+      # Colormap
+      class LaTeXFontBaseType < Type
+        type_name :colormap, 'color map'
+        
+        def string_to_type_internal(str)
+          return Graphics::Styles::ColorMap.from_text(str)
+        end
+      end
+
     end
   end
 end
