@@ -121,13 +121,14 @@ module CTioga2
       #
       # @todo For some reasons, X and Y are swapped... I don't
       # understand why.
-      def make_contour(t, level)
+      def make_contour(level)
         gaps = []
-        ys, xs = *t.make_contour('data' => @table,
-                                 'ys' => @x_values, # Why ?
-                                 'xs' => @y_values,
-                                 'gaps' => gaps,
-                                 'level' => level)
+        # Requires Tioga r598
+        ys, xs = *Tioga::FigureMaker.make_contour('data' => @table,
+                                                  'ys' => @x_values, # Why ?
+                                                  'xs' => @y_values,
+                                                  'gaps' => gaps,
+                                                  'level' => level)
         return  [xs, ys, gaps]
       end
 

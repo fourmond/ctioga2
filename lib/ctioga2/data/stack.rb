@@ -227,6 +227,29 @@ number. See the type {type: stored-dataset} for more information.
 
 EOH
 
+    ContourOptions = LoadDatasetOptions.dup.update({
+      'which' => CmdArg.new('stored-dataset'),
+    })
+
+
+
+    MakeContourCommand = 
+      Cmd.new("make-contour", nil, "--make-contour", 
+              [ CmdArg.new('float'), ], 
+              ContourOptions) do |plotmaker, level, opts|
+      ds = plotmaker.data_stack.specified_dataset(opts)
+      f = ds.make_contour(level)
+      name = "Level #{level} for plot '#{ds.name}'"
+      newds = Dataset.new(name, [f.x, f.y])
+      plotmaker.data_stack.add_datasets([newds], opts)
+    end
+    
+    MakeContourCommand.describe("Pushes a contour on the data stack",
+                                <<EOH, DataStackGroup)
+EOH
+
+
+
 
     PrintLastCommand =
       Cmd.new("print-dataset", '-P', "--print-dataset",

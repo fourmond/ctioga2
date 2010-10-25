@@ -68,6 +68,7 @@ module CTioga2
 
           # Preparation of the subpath elements
           if @curve_style.split_on_nan
+            # This requires Tioga r601 !
             @path_elements = @function.split_on_nan(:xy)
             info { "Dividing into #{@path_elements.size} subpaths" }
           else

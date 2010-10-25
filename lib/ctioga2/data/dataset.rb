@@ -318,6 +318,18 @@ module CTioga2
         return @indexed_dtable
       end
 
+      # Returns a x,y Function 
+      def make_contour(level)
+        dtable = indexed_table
+        x,y,gaps = *dtable.make_contour(level)
+        n = 0.0/0.0
+        gaps.sort.reverse.each do |i|
+          x.insert(i-1,n)
+          y.insert(i-1,n)
+        end
+        return Dobjects::Function.new(x,y)
+      end
+
       protected
 
       # Returns all DataColumn objects held by this Dataset
