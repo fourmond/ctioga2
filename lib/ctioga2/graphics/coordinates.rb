@@ -34,6 +34,19 @@ module CTioga2
     # \todo Shouldn't this facility be axis-local ? Non-linear
     # transformations definitely belong there as well (and that would
     # be almost trivial to write !).
+    #
+    # @todo For now, this is a mess: these things completely mess up
+    # the data processing... This is a complex problem:
+    # 
+    # * if the Dataset are modified in place, this is a nightmare for
+    #   data processing
+    #   
+    # * on the other hand, if they are not modified in place, this
+    #   means that things that work on data sets and show things on
+    #   the plot (think TangentPrimitive, for instance) will have to
+    #   do additional things to get the target coordinates. This is
+    #   probably the best way to go, though... This would need some
+    #   functions to work directly on XY coordinates.
     class CoordinateTransforms
 
       # A scaling factor for coordinates:
