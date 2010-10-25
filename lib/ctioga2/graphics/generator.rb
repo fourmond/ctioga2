@@ -78,7 +78,7 @@ module CTioga2
       end
 
       # XYZ plots formerly known as "parametric plots"
-      def xyz_plot(plot, dataset, options = {})
+      def xy_parametric(plot, dataset, options = {})
         legend = @legend_provider.dataset_legend(dataset)
         style = @style_factory.next(options)
         style.legend = false
@@ -114,14 +114,16 @@ module CTioga2
                    "How to switch between different kinds of plot types", 01)
     
 
-    XYZPlotCommand = 
-      Cmd.new("xyz-plot",nil,"--xyz-plot") do |plotmaker|
-      plotmaker.curve_generator.current_curves = :xyz_plot
+    XYParametricPlotCommand = 
+      Cmd.new("xy-parametric",nil,"--xy-parametric") do |plotmaker|
+      plotmaker.curve_generator.current_curves = :xy_parametric
     end
     
-    XYZPlotCommand.describe('select XYZ plots', 
-                            <<EOH, PlotTypesGroup)
-Switch to XYZ plots
+    XYParametricPlotCommand.describe('select XY parametric plots', 
+                                     <<EOH, PlotTypesGroup)
+Switch to XY parametric plots, that is standard XY plots whose appearance
+(such as color, marker color, and, potentially, marker kinds and more)
+are governed by one (or more ?) Z values.
 EOH
 
     XYPlotCommand = 
