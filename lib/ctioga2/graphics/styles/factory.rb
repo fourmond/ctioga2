@@ -367,6 +367,9 @@ module CTioga2
         define_parameter 'color_map', 'color-map', 'colormap',
         nil, "Color map", nil
 
+        define_parameter 'split_on_nan', 'split-on-nan', 'boolean',
+        nil, "Split on NaN", nil
+
 
         # And finally, we register all necessary commands...
         create_commands

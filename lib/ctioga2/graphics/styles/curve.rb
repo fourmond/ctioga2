@@ -68,6 +68,9 @@ module CTioga2
         # warn the user about misuses ?)
         attr_accessor :color_map
 
+        # Whether the XY display should split on NaN values (wherever)
+        attr_accessor :split_on_nan
+
 
         # True if a line should be drawn.
         def has_line?
@@ -107,6 +110,8 @@ module CTioga2
           @path_style = hash['style']
 
           @color_map = hash['color_map']
+
+          @split_on_nan = hash['split_on_nan']
 
         end
 

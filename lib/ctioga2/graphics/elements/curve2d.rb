@@ -42,6 +42,9 @@ module CTioga2
         # the sake of manipulations.
         attr_accessor :function
 
+        # Elements of the path, when there are more than one:
+        attr_accessor :path_elements
+
         # The Data::Dataset object that should get plotted.
         attr_accessor :dataset
 
@@ -61,14 +64,17 @@ module CTioga2
           # We build the function on a duplicate of the values ?
           @function = Function.new(@dataset.x.values.dup, 
                                    @dataset.y.values.dup)
+          @curve_style = style
 
-          ## We remove NaN, as they are not very liked by Tioga...
-          #
-          # \todo maybe there should be a way to *split* on NaN rather
-          # than to ignore them ?
+          # Preparation of the subpath elements
+          if @curve_style.split_on_nan
+            @path_elements = @function.split_on_nan(:xy)
+            info { "Dividing into #{@path_elements.size} subpaths" }
+          else
+            @path_elements = [@function]
+          end
           @function.strip_nan
 
-          @curve_style = style
         end
 
         # Returns the LocationStyle object of the curve. Returns the
@@ -89,16 +95,22 @@ module CTioga2
         # what was done before.
         def make_path(t)
           bnds = parent.get_el_boundaries(self)
-          case @curve_style.path_style
-          when /splines/
-            for f in @function.split_monotonic
-              new_f = f.bound_values(*bnds.extrema)
-              t.append_interpolant_to_path(new_f.make_interpolant)
+
+          for func in @path_elements
+            case @curve_style.path_style
+            when /splines/
+              for f in func.split_monotonic
+                new_f = f.bound_values(*bnds.extrema)
+                t.append_interpolant_to_path(new_f.make_interpolant)
+              end
+            else
+              f = func.bound_values(*bnds.extrema)
+              ## @todo this really doesn't look goo with filled paths
+              ## (on the other hand, I don't see why they should ?)
+              t.append_points_with_gaps_to_path(f.x, f.y,[0])
             end
-          else
-            f = @function.bound_values(*bnds.extrema)
-            t.append_points_to_path(f.x, f.y)
           end
+          
         end
 
         
