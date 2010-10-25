@@ -42,7 +42,7 @@ module CTioga2
           # table = PlotMaker.plotmaker.data_stack.last.indexed_table
           l, d = *level
           table = d.indexed_table
-          contour = table.make_contour(t,l)
+          contour = table.make_contour(l)
           contour << options['closed']
 
           ## @todo This $last_curve_style isn't beautiful.
