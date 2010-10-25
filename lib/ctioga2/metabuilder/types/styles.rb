@@ -46,7 +46,7 @@ module CTioga2
               |i| i.to_i(16)/255.0 
             }
           elsif str =~ /^\s*#([0-9a-fA-F]{3})\s*$/
-              value =  $1.scan(/../).map {
+              value =  $1.scan(/./).map {
               |i| i.to_i(16)/15.0 
             }
           else
