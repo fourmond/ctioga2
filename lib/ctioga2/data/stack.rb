@@ -77,35 +77,39 @@ module CTioga2
       # Performs expansion on the given _set_ with the current
       # backend, retrieves corresponding Dataset objects, pushes them
       # onto the stack and returns them.
-      #
-      # _options_ is a Hash that can contain the options available to the
-      # 'load' command:
+      def get_datasets(set, options = {})
+        backend = @backend_factory.current
+        sets = backend.expand_sets(set)
+        datasets = sets.map do |s|
+          backend.dataset(s)
+        end
+        add_datasets(datasets, options)
+        return datasets
+      end
+
+      # Adds a series of datasets, and perform various operations
+      # according to the hash _options_:
       # 
       # * 'name' to name each element added to the stack. A %d will be
       #   replaced by the number of the dataset within the ones just
       #   added.
       #
       # Additional members of the Hash are simply ignored.
-      def get_datasets(set, options = {})
-        backend = @backend_factory.current
-        retval = []
+      def add_datasets(datasets, options = {})
         i = 0
-        for s in backend.expand_sets(set)
-          ds = backend.dataset(s)
-          add_dataset(ds, options['ignore_hooks'])
+        for ds in datasets
+          store_dataset(ds, options['ignore_hooks'])
 
           # Selection
           if options['where']
             ds.select_formula!(options['where'])
           end
 
-          retval << ds
           if options['name']
             @named_datasets[options['name'] % [i]] = ds
           end
           i += 1
         end
-        return retval
       end
 
       # Returns the stored dataset, either using its index in the
@@ -139,7 +143,7 @@ module CTioga2
       # necessary.
       #
       # Makes use of Plotmaker.plotmaker
-      def add_dataset(dataset, ignore_hooks = false)
+      def store_dataset(dataset, ignore_hooks = false)
         @stack << dataset
         if @dataset_hook && (! ignore_hooks)
           # \todo error handling
