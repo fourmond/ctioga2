@@ -312,7 +312,10 @@ module CTioga2
         table.set(0.0/0.0)
         
         x.each_index do |i|
-          table[x_index[x[i]], y_index[y[i]]] = z[i]
+          ix = x_index[x[i]]
+          iy = y_index[y[i]]
+          # Y first !
+          table[iy, ix] = z[i]
         end
         @indexed_dtable = IndexedDTable.new(xvals, yvals, table)
         return @indexed_dtable

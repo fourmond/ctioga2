@@ -118,15 +118,12 @@ module CTioga2
       # t.append_points_with_gaps_to_path to show the given level.
       #
       # @todo add algorithm choice too
-      #
-      # @todo For some reasons, X and Y are swapped... I don't
-      # understand why.
       def make_contour(level)
         gaps = []
         # Requires Tioga r598
-        ys, xs = *Tioga::FigureMaker.make_contour('data' => @table,
-                                                  'ys' => @x_values, # Why ?
-                                                  'xs' => @y_values,
+        xs, ys = *Tioga::FigureMaker.make_contour('data' => @table,
+                                                  'xs' => @x_values, 
+                                                  'ys' => @y_values,
                                                   'gaps' => gaps,
                                                   'level' => level)
         return  [xs, ys, gaps]

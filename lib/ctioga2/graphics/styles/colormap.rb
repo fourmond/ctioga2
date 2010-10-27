@@ -154,7 +154,7 @@ module CTioga2
           # We correct zmin and zmax
           cmap, zmin, zmax = *self.to_colormap(t, zmin, zmax)
           
-          data = t.create_image_data(data.rotate_ccw90,
+          data = t.create_image_data(data.reverse_rows,
                                      'min_value' => zmin,
                                      'max_value' => zmax)
           
