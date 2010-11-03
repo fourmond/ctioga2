@@ -364,8 +364,16 @@ module CTioga2
         define_parameter 'style', 'style', 'text',
         {}, "Path style", nil
 
+        # Only for xyz-maps or xy-parametric
         define_parameter 'color_map', 'color-map', 'colormap',
         nil, "Color map", nil
+
+        ## @todo For xy-parametric, there should be a way to specify
+        ## to which z value the maps apply (ie lines = y2, marker =
+        ## y3...). Although for readability, it is probably better
+        ## to avoid that...
+        define_parameter 'marker_color_map', 'marker-color-map', 'colormap',
+        nil, "Marker color map", nil
 
         define_parameter 'split_on_nan', 'split-on-nan', 'boolean',
         nil, "Split on NaN", nil

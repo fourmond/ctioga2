@@ -95,29 +95,21 @@ module CTioga2
           min = @dataset.z.values.min
           max = @dataset.z.values.max
           if @curve_style.has_line?
-            if @curve_style.marker.color != @curve_style.line.color
-              gradient = Styles::TwoPointGradient.
-                new(@curve_style.marker.color, 
-                    @curve_style.line.color)
-            else
-              info { "Both marker and stroke colors are the same, using default color gradient" }
-              gradient = Styles::TwoPointGradient.
-                new(Tioga::ColorConstants::Red,
-                    Tioga::ColorConstants::Green)
-            end
+            # We use a default color map for the lines
+            @curve_style.color_map ||= 
+              Styles::ColorMap.from_text("Red--Green")
+            cmap = @curve_style.color_map
+
             for zs in @planes.keys.sort ## \todo have the sort
                                         ## direction configurable.
-              zi = (zs - min)/(max - min)
               f = @planes[zs]
-              color = gradient.color(zi)
+              color = cmap.z_color(zs, min, max)
               t.context do 
                 @curve_style.line.set_stroke_style(t)
                 t.stroke_color = color
                 t.show_polyline(f.x, f.y)
               end
             end
-          else
-            error { "You really should consider using markers for that kind of stuff, at least if you want to see something out" }
           end
         end
 
@@ -127,32 +119,17 @@ module CTioga2
           min = @dataset.z.values.min
           max = @dataset.z.values.max
           if @curve_style.has_marker?
-            ## Here: cheat, we use the couple marker-color/color to
-            # select the (linear) gradient
-            #
-            # \todo mabe make that a new style stuff ? That would be
-            # by far the simplest thing to do... Or make a real
-            # Gradient style.
-            if @curve_style.marker.color != @curve_style.line.color
-              gradient = Styles::TwoPointGradient.
-                new(@curve_style.marker.color, 
-                    @curve_style.line.color)
-            else
-              info { "Both marker and stroke colors are the same, using default color gradient" }
-              gradient = Styles::TwoPointGradient.
-                new(Tioga::ColorConstants::Red,
-                    Tioga::ColorConstants::Green)
-            end
+            # We use a default color map for the markers
+            @curve_style.marker_color_map ||= 
+              Styles::ColorMap.from_text("Red--Green")
+            cmap = @curve_style.marker_color_map
             for zs in @planes.keys.sort ## \todo have the sort
                                         ## direction configurable.
-              zi = (zs - min)/(max - min)
               f = @planes[zs]
-              color = gradient.color(zi)
+              color = cmap.z_color(zs, min, max)
               @curve_style.marker.draw_markers_at(t, f.x, f.y, 
                                                   { 'color' => color})
             end
-          else
-            error { "You really should consider using markers for that kind of stuff, at least if you want to see something out" }
           end
         end
         

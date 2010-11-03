@@ -61,12 +61,15 @@ module CTioga2
         # See gnuplot help for "plot with" for inspiration.
         attr_accessor :path_style
 
-        # A colormap (only for XYZ data)
+        # A colormap for strokes (only for XYZ data)
         #
         # @todo There should be a very clear way to mark curve style
         # elements which are specific to certain kinds of plots (and
         # warn the user about misuses ?)
         attr_accessor :color_map
+
+        # A colormap for markers (only for XYZ data) 
+        attr_accessor :marker_color_map
 
         # Whether the XY display should split on NaN values (wherever)
         attr_accessor :split_on_nan
@@ -110,6 +113,8 @@ module CTioga2
           @path_style = hash['style']
 
           @color_map = hash['color_map']
+
+          @marker_color_map = hash['marker_color_map']
 
           @split_on_nan = hash['split_on_nan']
 
