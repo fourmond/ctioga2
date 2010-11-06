@@ -106,9 +106,8 @@ module CTioga2
               end
             else
               f = func.bound_values(*bnds.extrema)
-              ## @todo this really doesn't look goo with filled paths
-              ## (on the other hand, I don't see why they should ?)
-              t.append_points_with_gaps_to_path(f.x, f.y,[0])
+              t.move_to_point(f.x.first, f.y.first)
+              t.append_points_to_path(f.x[1..-1], f.y[1..-1])
             end
           end
           
