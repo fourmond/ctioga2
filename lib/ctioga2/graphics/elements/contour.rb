@@ -28,6 +28,7 @@ module CTioga2
         ContoursOptions = {
           'width' => 'float',
           'color' => 'color',
+          'style' => 'line-style',
           'closed' => 'boolean',
         }
 
