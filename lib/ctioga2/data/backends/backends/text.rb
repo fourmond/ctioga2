@@ -49,6 +49,7 @@ module CTioga2
           ".bz2" => "bunzip2 -c %s",
           ".lzma" => "unlzma -c %s",
           ".lz" => "unlzma -c %s",
+          ".xz" => "unxz -c %s",
         }
 
         include Dobjects
@@ -79,6 +80,11 @@ EOD
         param_accessor :param_regex, 'parameters', "Parameters parsing", 
         'regexp', 
         "Regular expression for extracting parameters from a file. Defaults to nil (ie nothing)"
+
+        param_accessor :header_line_regex, 'header-line', 
+        'Header line regular expression', 
+        'regexp', 
+        "Regular expression indicating the header line (containing column names) (default /^##/"
         
         def initialize
           @dummy = nil
@@ -97,12 +103,17 @@ EOD
 
           @param_regex = nil
 
+          @header_line_regex = /^\#\#\s*/
+
           super()
 
           # Override Backend's cache - for now.
           @cache = {}               # A cache file_name -> data
 
           @param_cache = {}     # Same thing as cache, but for parameters
+
+          @headers_cache = {}   # Same thing as cache, but for header
+                                # lines.
 
         end
 
@@ -247,6 +258,24 @@ EOD
           return ret
         end
 
+        # Turns an array of comments into a hash column name -> column
+        # number (1-based)
+        def parse_header_line(comments)
+          for line in comments
+            if line =~ @header_line_regex
+              colnames = line.gsub(@header_line_regex,'').split(@separator)
+              i = 1
+              ret = {}
+              for n in colnames
+                ret[n] = i
+                i += 1
+              end
+              return ret
+            end
+          end
+          return {}
+        end
+
         # Reads data from a file. If needed, extract the file from the
         # columns specification.
         #
@@ -282,9 +311,17 @@ EOD
               info { "Read #{@param_cache[name].size} parameters from #{name}" }
               debug { "Parameters read: #{@param_cache[name].inspect}" }
             end
+            if @header_line_regex
+              @headers_cache[name] = parse_header_line(comments)
+              info { "Read #{@headers_cache[name].size} column names from #{name}" }
+              debug { "Got: #{@headers_cache[name].inspect}" }
+            end
           end
-          # That is kinda hackish...
+          ## @todo These are not very satisfying; ideally, the data
+          ## information should be embedded into @cache[name] rather
+          ## than as external variables. Well...
           @current_parameters = @param_cache[name]
+          @current_header = @headers_cache[name]
           return @cache[name]
         end
 
@@ -313,7 +350,8 @@ EOD
           end
           
           return Dataset.dataset_from_spec(set, col_spec) do |col|
-            get_data_column(col, compute_formulas, @current_parameters)
+            get_data_column(col, compute_formulas, 
+                            @current_parameters, @current_header)
           end
         end
 
@@ -321,7 +359,7 @@ EOD
         # _compute_formulas_ is true, the column specification is
         # taken to be a formula (in the spirit of gnuplot's)
         def get_data_column(column, compute_formulas = false, 
-                            parameters = nil)
+                            parameters = nil, header = nil)
           if compute_formulas
             formula = column
             if parameters
@@ -330,6 +368,11 @@ EOD
               end
             end
             formula.gsub!(/\$(\d+)/, 'column[\1]')
+            if header
+              for k,v in header
+                formula.gsub!("$#{k}$", "column[#{v}]")
+              end
+            end
             debug { "Using formula #{formula} for column spec: #{column}" }
             return Dvector.compute_formula(formula, 
                                            @current_data,
