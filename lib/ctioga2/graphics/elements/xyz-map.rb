@@ -97,6 +97,7 @@ module CTioga2
             dict.update(@table.corner_positions)
             dict.update('width' => @table.width,
                         'height' => @table.height)
+            dict.update('interpolate' => false)
             if (! @curve_style.fill.transparency) || 
                 (@curve_style.fill.transparency < 0.99) 
               t.show_image(dict)
