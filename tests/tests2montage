@@ -21,10 +21,11 @@ for f in "$@"; do
     else
 	output=outputs/${f%%.sh}
     fi
+    basepdf=${f%%.sh}
 
-    export CT_ADD="--name ${output}-%03d"
+    export CT_ADD="--name ${basepdf}-%03d"
     NOXPDF=1 sh $f
-    if [ -r ${output}-000.pdf ]; then
+    if [ -r ${basepdf}-000.pdf ]; then
 	echo "There are outputs"
 	echo " -> producing montage outputs"
     
@@ -36,10 +37,10 @@ for f in "$@"; do
 	    density=250
 	fi
 	montage -label %f -frame 5 -background '#336699' \
-	    -geometry $geometry -density $density ${output}-*.pdf ${output}.png
+	    -geometry $geometry -density $density ${basepdf}-*.pdf ${output}.png
 	if [ -z $KEEP ]; then
 	    echo " -> removing PDF files"
-	    rm -f ${output}-*.pdf
+	    rm -f ${basepdf}-*.pdf
 	fi
 	display ${output}.png &
     fi
