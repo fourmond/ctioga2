@@ -52,7 +52,7 @@ EOH
 
     # Various coordinate-related commands:
     # 
-    # \todo All these commands should be axis-dependent, and not
+    # @todo All these commands should be axis-dependent, and not
     # plot-dependent.
     CoordinateRelatedCommands = []
     [:x, :y].each do |x|

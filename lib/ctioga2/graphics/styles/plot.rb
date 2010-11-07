@@ -247,6 +247,10 @@ module CTioga2
         #
         # Returns a Types::MarginsBox
         def estimate_margins(t)
+
+          ## @todo Rethink this to not look at the named axes, but get
+          ## a list of all the referenced axes for a given direction
+          ## (that could include additional axes and Z axes)
           margins = [:left, :right, :top, :bottom].map do |side|
             ext = @axes[side].extension(t,self)
             if side == @title.loc
@@ -259,7 +263,7 @@ module CTioga2
             Types::Dimension.new(:dy, ext)
           end
 
-          # \todo add the plot title !
+          ## \todo add the plot title !
           box = Types::MarginsBox.new(*margins)
           if @padding
             for dim in box.margins
