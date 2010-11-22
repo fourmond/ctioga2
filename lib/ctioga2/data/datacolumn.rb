@@ -244,6 +244,14 @@ module CTioga2
         end
         return m
       end
+
+      def convolve!(kernel, middle = nil)
+        middle ||= kernel.size/2
+        # We smooth everything, stupidly?
+        for v in all_vectors
+          v.replace(v.convolve(kernel,middle)) if v
+        end
+      end
       
       protected
 

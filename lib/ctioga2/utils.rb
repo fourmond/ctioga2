@@ -125,6 +125,15 @@ module CTioga2
       end
     end
 
+    # Binomial coefficients (for the smooth filter)
+    def self.cnk(n,k)
+      res = 1.0
+      n.downto(n - k) { |i| res *= i}
+      k.downto(1) {|i| res = res/i }
+      return res
+    end
+    
+
   end
 
 end

@@ -81,6 +81,8 @@ EOH
       TrimFilter = 
         Cmd.new("trim", nil, "--trim", 
                 [CmdArg.new('integer')], {}) do |plotmaker, number, opts|
+        ## @todo There should be a way to add commands in a type-safe
+        ## way, without having to convert to string first.
         plotmaker.data_stack.add_to_dataset_hook("trim-last(#{number})")
       end
       
@@ -153,6 +155,21 @@ Install the {command: avg-dup-last} command as a dataset hook (see
 {command: dataset-hook}): all datasets acquired after this is on will
 be averaged if they have identical successive values of X.
 EOH
+
+
+      SmoothOperation = 
+        Cmd.new("smooth-last", nil, "--smooth-last", 
+                [CmdArg.new('integer')], {}) do |plotmaker, number|
+        plotmaker.data_stack.last.naive_smooth!(number)
+      end
+      
+      SmoothOperation.describe("Smooths data using a gaussian filter",
+                               <<EOH, FiltersGroup)
+Smooth the data using a simple (naive even) gaussian filter. Good for
+producing 'lines to guide the eye'
+EOH
+
+
 
 
 

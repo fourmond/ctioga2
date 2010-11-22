@@ -333,6 +333,18 @@ module CTioga2
         return Dobjects::Function.new(x,y)
       end
 
+      # Smooths the data using a naive gaussian-like convolution (but
+      # not exactly). Not for use for reliable data filtering.
+      def naive_smooth!(number)
+        kernel = Dobjects::Dvector.new(number) { |i|
+          Utils.cnk(number,i)
+        }
+        mid = number - number/2 - 1
+        for y in @ys
+          y.convolve!(kernel, mid)
+        end
+      end
+
       protected
 
       # Returns all DataColumn objects held by this Dataset
