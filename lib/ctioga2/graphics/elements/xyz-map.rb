@@ -27,6 +27,9 @@ module CTioga2
 
       # This class represents a XY map of Z values, ie something that
       # is represented using an image
+      #
+      # @todo There should be a way to automatically display level
+      # lines, and possibly only that.
       class XYZMap  < TiogaElement
 
         include Log
