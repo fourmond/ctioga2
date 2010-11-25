@@ -85,12 +85,22 @@ module CTioga2
           return @subframe || @style.estimate_margins(t)
         end
 
+        # In general, subplot's boundaries do not count for the parent
+        # plot.
+        def count_boundaries?
+          return false
+        end
+
         protected
 
         # Makes up a Boundaries object from two axes keys
         def get_given_boundaries(horiz, vert)
-          return Types::Boundaries.from_ranges(@computed_boundaries[horiz],
-                                               @computed_boundaries[vert])
+          if @computed_boundaries
+            return Types::Boundaries.from_ranges(@computed_boundaries[horiz],
+                                                 @computed_boundaries[vert])
+          else
+            return nil
+          end
         end
 
         def compute_boundaries
@@ -163,7 +173,7 @@ module CTioga2
           boundaries = {}
           for el in @elements
             if el.respond_to? :get_boundaries
-              if el.respond_to?(:count_boundaries) && ! (el.count_boundaries)
+              if el.respond_to?(:count_boundaries?) && ! (el.count_boundaries?)
                 # Ignoring
               else
                 bounds = el.get_boundaries

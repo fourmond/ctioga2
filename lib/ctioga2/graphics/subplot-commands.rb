@@ -65,6 +65,7 @@ EOH
               [
                CmdArg.new('box'),
               ]) do |plotmaker, box|
+      Log::debug { "Starting a subplot with specs #{box.inspect}" }
       subplot = plotmaker.root_object.subplot
       subplot.subframe = box
     end

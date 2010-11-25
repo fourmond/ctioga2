@@ -190,7 +190,7 @@ module CTioga2
         # specification. Splits up the text at a comma and
         def self.from_text(text, default = :figure)
           if not text =~ /^\s*([btlrc]{2})(?::([^,]+),\s*(.*))?\s*$/
-            return "Invalid format for #{text}"
+            raise "Invalid format for aligned point: #{text}"
           end
 
           specs = $1
