@@ -93,7 +93,7 @@ module CTioga2
             spec['stroke_color'] = @stroke_color
           end
           t.show_axis(spec)
-          @axis_label.loc = @location.tioga_location
+          @axis_label.loc = @location
           default = vertical? ? 'ylabel' : 'xlabel'
           @axis_label.draw(t, default)
         end
@@ -251,6 +251,7 @@ module CTioga2
 
       PartialAxisStyle = {
         'transform' => CmdArg.new('bijection'),
+        'location' => CmdArg.new('location'),
         'stroke_color' => CmdArg.new('color')
       }
 

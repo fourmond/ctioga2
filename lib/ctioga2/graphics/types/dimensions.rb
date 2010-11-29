@@ -85,6 +85,13 @@ module CTioga2
                         to_figure(t, orientation))
         end
 
+        # Express the Dimension in units of text height (dy)
+        def to_text_height(t, orientation = nil)
+          orientation ||= @orientation
+          return self.to_figure(t, orientation)/
+            t.send("default_text_height_d#{orientation}")
+        end
+
         # Replace this Dimension by _dimension_ if the latter is
         # bigger. Conserves the current orientation.
         def replace_if_bigger(t, dimension)

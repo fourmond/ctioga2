@@ -96,6 +96,16 @@ module CTioga2
               prepare_data_display(t,@table.table,
                                    @table.table.min,
                                    @table.table.max)
+            if @curve_style.zaxis
+              begin
+                @parent.style.get_axis_style(@curve_style.zaxis).
+                  set_color_map(@curve_style.color_map, 
+                                @table.table.min,
+                                @table.table.max)
+              rescue
+                error { "Could not set Z info to non-existent axis #{@curve_style.zaxis}" }
+              end
+            end
 
             dict.update(@table.corner_positions)
             dict.update('width' => @table.width,

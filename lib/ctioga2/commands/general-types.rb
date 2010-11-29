@@ -93,10 +93,13 @@ A Z color map
 \todo document !
 EOD
 
-
-
+    # Something meant to be fed to PlotStyle#get_axis_style
+    LocationType = CmdType.new('location', :location, <<EOD)
+A plot location, ie bottom, top, left, right
+EOD
 
     # This ones get here since they mess up with syntax highlighting
+
 
     # A stored dataset.
     StoredDatasetType = CmdType.new('stored-dataset', 

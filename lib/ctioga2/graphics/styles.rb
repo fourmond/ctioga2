@@ -28,6 +28,7 @@ require 'ctioga2/graphics/styles/errorbar'
 require 'ctioga2/graphics/styles/sets'
 
 require 'ctioga2/graphics/styles/axes'
+require 'ctioga2/graphics/styles/map-axes'
 require 'ctioga2/graphics/styles/background'
 require 'ctioga2/graphics/styles/plot'
 

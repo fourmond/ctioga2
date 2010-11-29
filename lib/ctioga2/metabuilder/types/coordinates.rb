@@ -121,6 +121,16 @@ module CTioga2
 
       end
 
+      class LocationType < Type
+        
+        type_name :location, 'location'
+        
+        def string_to_type_internal(str)
+          return Graphics::Types::PlotLocation.from_text(str)
+        end
+
+      end
+
     end
   end
 end

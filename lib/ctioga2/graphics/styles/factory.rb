@@ -368,6 +368,10 @@ module CTioga2
         define_parameter 'color_map', 'color-map', 'colormap',
         nil, "Color map", nil
 
+
+        define_parameter 'zaxis', 'zaxis', 'text',
+        nil, "Name for the Z axis", nil
+
         ## @todo For xy-parametric, there should be a way to specify
         ## to which z value the maps apply (ie lines = y2, marker =
         ## y3...). Although for readability, it is probably better

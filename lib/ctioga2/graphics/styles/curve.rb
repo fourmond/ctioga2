@@ -68,6 +68,12 @@ module CTioga2
         # warn the user about misuses ?)
         attr_accessor :color_map
 
+        # The name of an axis to create to use for the display of the
+        # Z scale.
+        #
+        # @todo specify the behaviour when the axis exists.
+        attr_accessor :zaxis
+
         # A colormap for markers (only for XYZ data) 
         attr_accessor :marker_color_map
 
@@ -118,6 +124,7 @@ module CTioga2
 
           @split_on_nan = hash['split_on_nan']
 
+          @zaxis = hash['zaxis']
         end
 
         # Creates a CurveStyle object straight from a hash

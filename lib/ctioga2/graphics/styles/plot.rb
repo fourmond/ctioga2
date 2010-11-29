@@ -37,6 +37,8 @@ module CTioga2
 
         include Tioga::FigureConstants
 
+        include Log
+
         # The various sides of the plot. A hash location -> AxisStyle.
         attr_accessor :axes
 
@@ -145,6 +147,7 @@ module CTioga2
         def get_axis_style(name)
           style = @axes[get_axis_key(name)]
           if ! style
+            ## @todo Type-safe exception here
             raise "Unkown named axis: '#{name}'"
           else
             return style
@@ -161,6 +164,13 @@ module CTioga2
             return clean_axis_name(name)
           end
         end
+
+        def set_axis_style(name, style)
+          key = get_axis_key(name)
+          @axes[key] = style
+        end
+
+
 
         # Returns a BaseTextStyle or similar for the given
         # location. The location is of the form:
@@ -203,8 +213,14 @@ module CTioga2
         def draw_all_axes(t, bounds)
           for which, axis in @axes
             t.context do
-              axis.set_bounds_for_axis(t, bounds[which])
-              axis.draw_axis(t)
+              begin
+                axis.set_bounds_for_axis(t, bounds[which])
+                axis.draw_axis(t)
+                p which
+              rescue Exception => e
+                error { "Impossible to draw axis #{which}: #{e.message}" }
+                debug { "Full message: #{e.inspect}" }
+              end
             end
           end
           # We draw the title last
@@ -331,7 +347,7 @@ given axis, through its various options:
  * decoration
 EOH
 
-      BackgroundLinesCommands = 
+      BackgroundLinesCommand = 
         Cmd.new('background-lines', nil, '--background-lines',
                 [
                  CmdArg.new('axis'), 
@@ -354,7 +370,7 @@ EOH
         end
       end
       
-      BackgroundLinesCommands.
+      BackgroundLinesCommand.
         describe("Sets the color of the background lines", 
                  <<"EOH", AxisGroup)
 Sets the color of the background lines for the given axis.
@@ -452,6 +468,24 @@ and turns on full decoration for the right axis. Shortcut for:
 # axis-style(right,decoration=full)
 EOH
 
+      NewZAxisCommand = 
+        Cmd.new('new-zaxis', nil, '--new-zaxis',
+                [
+                 CmdArg.new('text')
+                ],ZAxisStyle) do |plotmaker, name, options|
+        axis = Styles::MapAxisStyle.new
+        PlotStyle.current_plot_style(plotmaker).
+          set_axis_style(name, axis)
+        axis.set_from_hash(options)
+      end
+      
+      NewZAxisCommand.
+        describe("Creates a Z axis", 
+                 <<"EOH", AxisGroup)
+Creates a named Z axis that can display information from Z color maps 
+EOH
+
+
       LabelStyleCommand = 
         Cmd.new('label-style', nil, '--label-style',
                 [ CmdArg.new('label') ], # Here: change the label too... 
@@ -466,7 +500,7 @@ Sets the style of the given label (see the type {type: label} for more
 information).
 
 The option text permits to also set the text of the label (does not
-work for ticks). 
+work for ticks).
 
 For tick labels, setting the color option also sets the color for the
 lines of the corresponding axis. If you don't want that, you can 

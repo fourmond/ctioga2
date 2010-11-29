@@ -48,6 +48,24 @@ module CTioga2
           :at_y_origin => false
         }
 
+        # A few helper hashes to convert from sides to margins
+        # @todo won't work for origins.
+        LocationBaseMargins = {
+          :left => [0,1,0,0],
+          :right => [1,0,0,0],
+          :bottom => [0,0,1,0],
+          :top => [0,0,0,1]
+        }
+
+        # Multiply this by the frame dimension in the correct
+        # direction to get the frame margins.
+        LocationMarginMultiplier = {
+          :left => [-1,0,0,0],
+          :right => [0,-1,0,0],
+          :bottom => [0,0,0,-1],
+          :top => [0,0,-1,0]
+        }
+
 
         # The position of the object, one of :left, :right, :top,
         # :bottom, :at_y_origin or :at_x_origin.
@@ -109,6 +127,49 @@ module CTioga2
         # Returns whether the location is on the given side.
         def is_side?(which)
           return @base_location == which
+        end
+
+        # Returns the margins argument suitable for sending to
+        # set_subframe to paint within the region defined by the given
+        # size at the given position.
+        # 
+        # _size_ is a Dimension object.
+        def frame_margins_for_size(t, size)
+          margins = Dobjects::Dvector[*LocationBaseMargins[@base_location]]
+          ## @todo handle the case of at Y and at X
+          dim = size.to_frame(t, if vertical?
+                                   :y
+                                 else
+                                   :x
+                                 end
+                              )
+          add = Dobjects::Dvector[*LocationMarginMultiplier[@base_location]]
+          add.mul!(dim)
+          margins += add
+          return margins
+        end
+
+        def do_sub_frame(t, size) 
+          margins = frame_margins_for_size(t, size)
+          # Now, convert to page coordinates ?
+          # This is really ugly
+          left = t.convert_frame_to_page_x(margins[0])
+          right = t.convert_frame_to_page_x(1 - margins[1])
+          top = t.convert_frame_to_page_y(1 - margins[2])
+          bottom = t.convert_frame_to_page_y(margins[3])
+          p [left, right, top, bottom]
+          t.context do 
+            t.set_frame_sides(left, right, top, bottom)
+            yield
+          end
+        end
+
+        # Creates a location from the given text
+        #
+        # So far, no real parsing
+        def self.from_text(str)
+          str.gsub!(/-/,"_")
+          return PlotLocation.new(str.to_sym)
         end
 
         
