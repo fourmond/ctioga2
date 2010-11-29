@@ -57,9 +57,35 @@ module CTioga2
         def draw_axis(t)
           # Not beautiful at all
           size = Types::Dimension.new(:dy,extension(t))
-          p t.frame_left
           @location.do_sub_frame(t, size) do
-            t.fill_frame
+            # Here, do the correct setup, using a MarginsBox:
+            # * correctly setup the axes/edges
+            # * handle the sides correctly.
+            # * position the subplot within accordingly
+            # * use draw_axis for the axis ?
+            # 
+
+            # xmin = 0; xmax = 1; xmid = 0.5
+            # t.xaxis_type = AXIS_LINE_ONLY
+            # t.xaxis_loc = BOTTOM
+            # t.top_edge_type = AXIS_LINE_ONLY
+            # t.yaxis_loc = t.ylabel_side = RIGHT
+            # t.yaxis_type = AXIS_WITH_TICKS_AND_NUMERIC_LABELS
+            # t.left_edge_type = AXIS_WITH_TICKS_ONLY
+            # t.ylabel_shift += 0.5
+            # t.yaxis_major_tick_length *= 0.6
+            # t.yaxis_minor_tick_length *= 0.5
+            # t.do_box_labels(nil, nil, 'Log Pressure')
+            t.show_plot('boundaries' => [0, 1, @bounds.last, 
+                                         @bounds.first]) do
+              t.axial_shading(
+                              'start_point' => [0.5, @bounds.first],
+                              'end_point' => [0.5, @bounds.last],
+                              'colormap' => @color_map.
+                              to_colormap(t, @bounds.first,
+                                          @bounds.last).first
+                              )
+            end
           end
         end
 

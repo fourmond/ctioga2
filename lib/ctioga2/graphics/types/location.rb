@@ -152,12 +152,12 @@ module CTioga2
         def do_sub_frame(t, size) 
           margins = frame_margins_for_size(t, size)
           # Now, convert to page coordinates ?
-          # This is really ugly
+          ## @todo This is really ugly, and should probably integrate
+          ## some common class.
           left = t.convert_frame_to_page_x(margins[0])
           right = t.convert_frame_to_page_x(1 - margins[1])
           top = t.convert_frame_to_page_y(1 - margins[2])
           bottom = t.convert_frame_to_page_y(margins[3])
-          p [left, right, top, bottom]
           t.context do 
             t.set_frame_sides(left, right, top, bottom)
             yield
