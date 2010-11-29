@@ -87,7 +87,7 @@ module CTioga2
           @yaxis_location = :left
 
           @title = TextLabel.new
-          @title.loc = :top
+          @title.loc = Types::PlotLocation.new(:top)
 
           @plot_margin = nil
 
@@ -251,8 +251,8 @@ module CTioga2
             exts = axes_for_side(side).map do |ax|
               ax.extension(t,self)
             end
-            if side == @title.loc
-              exts << @title.label_extension(t, 'title', side) * 
+            if @title.loc.is_side?(side)
+              exts << @title.label_extension(t, 'title', @title.loc) * 
                 (@text_scale || 1)
             end
             Types::Dimension.new(:dy, exts.max)
@@ -284,7 +284,7 @@ module CTioga2
         def axes_for_side(side)
           ret = []
           for k,v in @axes
-            ret << v if v.location == side
+            ret << v if v.location.is_side?(side)
           end
           return ret
         end

@@ -68,7 +68,7 @@ module CTioga2
         # Creates a new AxisStyle object at the given location with
         # the given style.
         def initialize(location = nil, decoration = nil, label = nil)
-          @location = location
+          @location = Types::PlotLocation.new(location)
           @decoration = decoration
 
           @tick_label_style = FullTextStyle.new
@@ -93,7 +93,7 @@ module CTioga2
             spec['stroke_color'] = @stroke_color
           end
           t.show_axis(spec)
-          @axis_label.loc = LocationToTiogaLocation[@location]
+          @axis_label.loc = @location.tioga_location
           default = vertical? ? 'ylabel' : 'xlabel'
           @axis_label.draw(t, default)
         end
@@ -181,15 +181,14 @@ module CTioga2
 
         # Whether the axis is vertical or not
         def vertical?
-          return LocationVertical[@location]
+          return @location.vertical?
         end
 
         # Returns: _ticks_shift_, _ticks_scale_ for the axis.
         #
         # \todo try something clever with the angles ?
         def get_ticks_parameters(t)
-          i = t.axis_information({'location' => 
-                                   LocationToTiogaLocation[@location]})
+          i = t.axis_information({'location' => @location.tioga_location})
           retval = []
           retval << (@tick_label_style.shift || i['shift'])
           retval << (@tick_label_style.scale || i['scale'])
@@ -213,8 +212,7 @@ module CTioga2
             raise YetUnimplemented, "This has not been implemented yet"
           else
             retval.
-              update({'location' => 
-                       LocationToTiogaLocation[@location],
+              update({'location' => @location.tioga_location,
                        'type' => @decoration, 'log' => @log})
             return retval
           end
@@ -224,8 +222,7 @@ module CTioga2
         def compute_coordinate_transforms(t)
           return unless @transform
           # We'll proceed by steps...
-          i = t.axis_information({'location' => 
-                                   LocationToTiogaLocation[@location]})
+          i = t.axis_information({'location' => @location.tioga_location})
           t.context do 
             if i['vertical']
               top,b = @transform.convert_to([t.bounds_top, t.bounds_bottom])
@@ -235,8 +232,7 @@ module CTioga2
               l,r = @transform.convert_to([t.bounds_left, t.bounds_right])
             end
             t.set_bounds([l,r,top,b])
-            i = t.axis_information({'location' => 
-                                     LocationToTiogaLocation[@location]})
+            i = t.axis_information({'location' => @location.tioga_location})
             # Now, we have the location of everything we need.
           end
           # In the following, the || are because of a fix in Tioga

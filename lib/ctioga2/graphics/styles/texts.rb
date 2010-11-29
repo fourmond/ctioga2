@@ -23,28 +23,6 @@ module CTioga2
 
     module Styles
 
-      # Conversion between the #location attribute and the real
-      # constant used for Tioga
-      LocationToTiogaLocation = {
-        :left => Tioga::FigureConstants::LEFT,
-        :right => Tioga::FigureConstants::RIGHT,
-        :bottom => Tioga::FigureConstants::BOTTOM,
-        :top => Tioga::FigureConstants::TOP,
-        :at_x_origin => Tioga::FigureConstants::AT_X_ORIGIN,
-        :at_y_origin => Tioga::FigureConstants::AT_Y_ORIGIN
-      }
-
-      # Horizontal or vertical
-      LocationVertical = {
-        :left => true,
-        :right => true,
-        :bottom => false,
-        :top => false,
-        :at_x_origin => true,
-        :at_y_origin => false
-      }
-
-
       # The style of a text object. This class is suitable for
       # inclusion as a Hash to FigureMaker#show_axis, for the tick
       # labels.
@@ -85,8 +63,11 @@ module CTioga2
             dict['at'] = [x_or_loc, y]
           else
             # Perform automatic conversion on the location
-            if x_or_loc.is_a? Symbol
-              x_or_loc = LocationToTiogaLocation[x_or_loc]
+            case x_or_loc
+            when Symbol, Types::PlotLocation
+              ## @todo It won't be easy to implement shifts for this,
+              ## though it may be useful eventually.
+              x_or_loc = Types::PlotLocation.new(x_or_loc).tioga_location
             end
             dict['loc'] = x_or_loc
           end
@@ -127,6 +108,9 @@ module CTioga2
         attr_accessor :text
         
         # The location of the label.
+        #
+        # @todo This will have to eventually use PlotLocation, as it
+        # makes much more sense.
         attr_accessor :loc
 
         def initialize(text = nil)
@@ -146,16 +130,12 @@ module CTioga2
         # Gets the extension of the label, in units of text height.
         # Default values for the various parameters are taken from the
         # _default_ parameter if they are not specified.
-        def label_extension(t, default = nil, side = nil)
+        def label_extension(t, default = nil, location = nil)
           if @text
-            dict = prepare_label_dict(t, default, nil) 
-            case side
-            when :bottom, :right
-              extra = 0.5       # To account for baseline ?
-            when :top, :left
-              extra = 1
-            else                # We take the safe side !
-              extra = 1
+            dict = prepare_label_dict(t, default, nil)
+            extra = 0
+            if location
+              extra = location.label_extra_space(t)
             end
             return (dict['shift'] + extra) * dict['scale']
           else

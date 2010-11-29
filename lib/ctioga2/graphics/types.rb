@@ -16,6 +16,8 @@ require 'ctioga2/graphics/types/point'
 require 'ctioga2/graphics/types/boundaries'
 require 'ctioga2/graphics/types/boxes'
 require 'ctioga2/graphics/types/bijection'
+require 'ctioga2/graphics/types/location'
+
 
 require 'ctioga2/graphics/types/grid'
 
