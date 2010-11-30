@@ -100,8 +100,11 @@ module CTioga2
               t.set_bounds(bounds)
               t.context do 
                 t.clip_to_frame
-                sp = [0.5, @bounds.first]
-                ep = [0.5, @bounds.last]
+                cmap, zmin, zmax = *@color_map.to_colormap(t, @bounds.first,
+                                                          @bounds.last)
+
+                sp = [0.5, zmin]
+                ep = [0.5, zmax]
                 if ! @location.vertical?
                   sp.reverse!
                   ep.reverse!
@@ -109,9 +112,7 @@ module CTioga2
                 t.axial_shading(
                                 'start_point' => sp,
                                 'end_point' => ep,
-                                'colormap' => @color_map.
-                                to_colormap(t, @bounds.first,
-                                            @bounds.last).first
+                                'colormap' => cmap
                                 )
               end
               ## @todo handle axis color ?
