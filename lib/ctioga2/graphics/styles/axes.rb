@@ -159,7 +159,6 @@ module CTioga2
         # might change
         def labels_only_extension(t, style = nil)
           ticks_shift, ticks_scale = *get_ticks_parameters(t)
-          p [ticks_shift, ticks_scale]
           default =  vertical? ? 'ylabel' : 'xlabel'
           le = @axis_label.label_extension(t, default, @location)
 

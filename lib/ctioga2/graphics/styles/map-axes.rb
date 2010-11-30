@@ -58,6 +58,9 @@ module CTioga2
           @padding = Types::Dimension.new(:dy, 0.5, :x)
 
           @decoration = AXIS_WITH_TICKS_AND_NUMERIC_LABELS
+
+          # 
+          @other_side_decoration = nil
         end
 
         def set_color_map(color_map, zmin, zmax)
@@ -98,28 +101,20 @@ module CTioga2
                                             @bounds.last).first
                                 )
               end
+              ## @todo handle axis color ?
+              t.stroke_frame
+              ## @todo potentially handle decorations for the other
+              ## side too.
+
+              ## @todo This is a ugly hack, but Ruby doesn't allow a
+              ## clean one. Though
+              ## http://stackoverflow.com/questions/1251178/calling-another-method-in-super-class-in-ruby
+              ## seems like the way to go !
+              self.class.superclass.instance_method(:draw_axis).
+                bind(self).call(t)
+              
             end
 
-            # # xmin = 0; xmax = 1; xmid = 0.5
-            # # t.xaxis_type = AXIS_LINE_ONLY
-            # # t.xaxis_loc = BOTTOM
-            # # t.top_edge_type = AXIS_LINE_ONLY
-            # # t.yaxis_loc = t.ylabel_side = RIGHT
-            # # t.yaxis_type = AXIS_WITH_TICKS_AND_NUMERIC_LABELS
-            # # t.left_edge_type = AXIS_WITH_TICKS_ONLY
-            # # t.ylabel_shift += 0.5
-            # # t.yaxis_major_tick_length *= 0.6
-            # # t.yaxis_minor_tick_length *= 0.5
-            # # t.do_box_labels(nil, nil, 'Log Pressure')
-            # t.show_plot('boundaries' => ) do
-            #   t.axial_shading(
-            #                   'start_point' => [0.5, @bounds.first],
-            #                   'end_point' => [0.5, @bounds.last],
-            #                   'colormap' => @color_map.
-            #                   to_colormap(t, @bounds.first,
-            #                               @bounds.last).first
-            #                   )
-            # end
           end
         end
 
