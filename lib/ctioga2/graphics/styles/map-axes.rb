@@ -39,7 +39,7 @@ module CTioga2
 
         # Space to be left between the graph and the beginning of the
         # graph
-        attr_accessor :shift
+        attr_accessor :bar_shift
 
         # Space to be left on the side
         attr_accessor :padding
@@ -52,14 +52,14 @@ module CTioga2
           @bar_size = Types::Dimension.new(:dy, 2, :x)
 
           # Shifting away from the location.
-          @shift = Types::Dimension.new(:dy, 0.3, :x)
+          @bar_shift = Types::Dimension.new(:dy, 0.3, :x)
 
           ## @todo maybe use different padding for left and right ?
           @padding = Types::Dimension.new(:dy, 0.5, :x)
 
           @decoration = AXIS_WITH_TICKS_AND_NUMERIC_LABELS
 
-          # 
+          # To be implemented one day...
           @other_side_decoration = nil
         end
 
@@ -87,7 +87,7 @@ module CTioga2
             # * use draw_axis for the axis ?
 
             plot_box = Types::MarginsBox.
-              new(*@location.reorient_margins(@shift, label_size, 
+              new(*@location.reorient_margins(@bar_shift, label_size, 
                                               @padding, @padding))
 
             # We wrap the call within a subplot
@@ -144,6 +144,7 @@ module CTioga2
           base = super(t, style)
 
           base += @bar_size.to_text_height(t, @location.orientation)
+          base += @bar_shift.to_text_height(t, @location.orientation)
           return base
         end
 
@@ -153,7 +154,10 @@ module CTioga2
         end
 
       end
+
       ZAxisStyle = FullAxisStyle.dup
+      ZAxisStyle['bar_size'] = CmdArg.new('dimension')
+      ZAxisStyle['bar_shift'] = CmdArg.new('dimension')
     end
   end
 end
