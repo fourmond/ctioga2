@@ -49,7 +49,7 @@ module CTioga2
         def initialize()
           super()
 
-          @bar_size = Types::Dimension.new(:dy, 2.4, :x)
+          @bar_size = Types::Dimension.new(:dy, 2, :x)
 
           # Shifting away from the location.
           @shift = Types::Dimension.new(:dy, 0.3, :x)
@@ -71,9 +71,11 @@ module CTioga2
 
         def draw_axis(t)
           # Not beautiful at all
-          size = Types::Dimension.new(:dy, extension(t))
+          size = Types::Dimension.new(:dy, extension(t), 
+                                      @location.orientation)
           label_size = 
-            Types::Dimension.new(:dy, labels_only_extension(t, style = nil))
+            Types::Dimension.new(:dy, labels_only_extension(t, style = nil),
+                                 @location.orientation)
 
           @location.do_sub_frame(t, size) do
             # This is a necessary workaround for a small bug
@@ -90,12 +92,23 @@ module CTioga2
 
             # We wrap the call within a subplot
             t.subplot(plot_box.to_frame_margins(t)) do
-              t.set_bounds([0, 1, @bounds.last, @bounds.first])
+              bounds = if @location.vertical?
+                         [0, 1, @bounds.last, @bounds.first]
+                       else
+                         [@bounds.first, @bounds.last, 0, 1]
+                       end
+              t.set_bounds(bounds)
               t.context do 
                 t.clip_to_frame
+                sp = [0.5, @bounds.first]
+                ep = [0.5, @bounds.last]
+                if ! @location.vertical?
+                  sp.reverse!
+                  ep.reverse!
+                end
                 t.axial_shading(
-                                'start_point' => [0.5, @bounds.first],
-                                'end_point' => [0.5, @bounds.last],
+                                'start_point' => sp,
+                                'end_point' => ep,
                                 'colormap' => @color_map.
                                 to_colormap(t, @bounds.first,
                                             @bounds.last).first
@@ -109,7 +122,7 @@ module CTioga2
               ## @todo This is a ugly hack, but Ruby doesn't allow a
               ## clean one. Though
               ## http://stackoverflow.com/questions/1251178/calling-another-method-in-super-class-in-ruby
-              ## seems like the way to go !
+              ## seems like the way to go ! To be implemented one day.
               self.class.superclass.instance_method(:draw_axis).
                 bind(self).call(t)
               
@@ -130,7 +143,7 @@ module CTioga2
         def extension(t, style = nil)
           base = super(t, style)
 
-          base += @bar_size.to_text_height(t)
+          base += @bar_size.to_text_height(t, @location.orientation)
           return base
         end
 

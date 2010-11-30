@@ -112,6 +112,15 @@ module CTioga2
           return LocationVertical[@base_location]
         end
 
+        # Returns the orientation away from the graph
+        def orientation
+          if vertical?
+            return :x
+          else
+            return :y
+          end
+        end
+
         # Extra extension that should be reserved for a label on the
         # given side based on simple heuristics. Value is returned in
         # text height units.
@@ -156,12 +165,8 @@ module CTioga2
         def frame_margins_for_size(t, size)
           margins = Dobjects::Dvector[*LocationBaseMargins[@base_location]]
           ## @todo handle the case of at Y and at X
-          dim = size.to_frame(t, if vertical?
-                                   :y
-                                 else
-                                   :x
-                                 end
-                              )
+          dim = size.to_frame(t, orientation)
+
           add = Dobjects::Dvector[*LocationMarginMultiplier[@base_location]]
           add.mul!(dim)
           margins += add
@@ -170,13 +175,20 @@ module CTioga2
 
         def do_sub_frame(t, size) 
           margins = frame_margins_for_size(t, size)
-          # Now, convert to page coordinates ?
-          ## @todo This is really ugly, and should probably integrate
-          ## some common class.
+
+          ## @todo This is should integrate some common class.
           left = t.convert_frame_to_page_x(margins[0])
           right = t.convert_frame_to_page_x(1 - margins[1])
           top = t.convert_frame_to_page_y(1 - margins[2])
           bottom = t.convert_frame_to_page_y(margins[3])
+
+          # Ensure that we don't have coords outside of the page range
+          # because of rounding problems:
+          left = 0.0 if left < 0
+          bottom = 0.0 if bottom < 0
+          right = 1.0 if right > 1
+          top = 1.0 if top > 1
+
           t.context do 
             t.set_frame_sides(left, right, top, bottom)
             yield

@@ -178,7 +178,15 @@ EOD
     AxisDecorationType = 
       CmdType.new('axis-decoration', :tioga_axis_type, <<EOD)
 Kinds of decoration on a axis line, such as nothing, lines, ticks, 
-tick labels...
+tick labels. Possible values:
+
+ * hidden or off: axis
+ * line: only a line
+ * ticks: only ticks
+ * major: only major ticks
+ * major-num: major ticks along with their labels
+ * full: major ticks and labels + minor ticks
+
 EOD
 
     # Dimensions
