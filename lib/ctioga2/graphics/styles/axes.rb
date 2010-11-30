@@ -152,17 +152,14 @@ module CTioga2
             get_axis_style(spec)
         end
 
-        # Returns the extension of the axis (including tick labels and
-        # labels if applicable) perpendicular to itself, in units of
-        # text height (at scale = current text scale when drawing
-        # axes).
+        # Returns the part of the #extension only due to the labels
+        # (ticks and standard label).
         #
-        # _style_ is a PlotStyle object containing the style
-        # information for the target plot.
-        #
-        # \todo handle offset axes when that is implemented.
-        def extension(t, style = nil)
+        # For now, it returns the same value as #extension, but that
+        # might change
+        def labels_only_extension(t, style = nil)
           ticks_shift, ticks_scale = *get_ticks_parameters(t)
+          p [ticks_shift, ticks_scale]
           default =  vertical? ? 'ylabel' : 'xlabel'
           le = @axis_label.label_extension(t, default, @location)
 
@@ -175,6 +172,19 @@ module CTioga2
           end
           return Dobjects::Dvector[le,te].max * 
             (style ? style.text_scale || 1 : 1)
+        end
+
+        # Returns the extension of the axis (including tick labels and
+        # labels if applicable) perpendicular to itself, in units of
+        # text height (at scale = current text scale when drawing
+        # axes).
+        #
+        # _style_ is a PlotStyle object containing the style
+        # information for the target plot.
+        #
+        # \todo handle offset axes when that is implemented.
+        def extension(t, style = nil)
+          return labels_only_extension(t, style)
         end
 
         protected

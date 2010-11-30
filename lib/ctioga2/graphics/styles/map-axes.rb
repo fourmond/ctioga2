@@ -37,6 +37,13 @@ module CTioga2
         # Size of the bar (not counting the label)
         attr_accessor :bar_size
 
+        # Space to be left between the graph and the beginning of the
+        # graph
+        attr_accessor :shift
+
+        # Space to be left on the side
+        attr_accessor :padding
+
         # Creates a new MapAxisStyle object at the given location with
         # the given style.
         def initialize()
@@ -45,7 +52,12 @@ module CTioga2
           @bar_size = Types::Dimension.new(:dy, 2.4, :x)
 
           # Shifting away from the location.
-          @shift = Types::Dimension.new(:dy, 0.1, :x)
+          @shift = Types::Dimension.new(:dy, 0.3, :x)
+
+          ## @todo maybe use different padding for left and right ?
+          @padding = Types::Dimension.new(:dy, 0.5, :x)
+
+          @decoration = AXIS_WITH_TICKS_AND_NUMERIC_LABELS
         end
 
         def set_color_map(color_map, zmin, zmax)
@@ -56,36 +68,58 @@ module CTioga2
 
         def draw_axis(t)
           # Not beautiful at all
-          size = Types::Dimension.new(:dy,extension(t))
+          size = Types::Dimension.new(:dy, extension(t))
+          label_size = 
+            Types::Dimension.new(:dy, labels_only_extension(t, style = nil))
+
           @location.do_sub_frame(t, size) do
+            # This is a necessary workaround for a small bug
+            t.set_subframe([0,0,0,0])
             # Here, do the correct setup, using a MarginsBox:
             # * correctly setup the axes/edges
             # * handle the sides correctly.
             # * position the subplot within accordingly
             # * use draw_axis for the axis ?
-            # 
 
-            # xmin = 0; xmax = 1; xmid = 0.5
-            # t.xaxis_type = AXIS_LINE_ONLY
-            # t.xaxis_loc = BOTTOM
-            # t.top_edge_type = AXIS_LINE_ONLY
-            # t.yaxis_loc = t.ylabel_side = RIGHT
-            # t.yaxis_type = AXIS_WITH_TICKS_AND_NUMERIC_LABELS
-            # t.left_edge_type = AXIS_WITH_TICKS_ONLY
-            # t.ylabel_shift += 0.5
-            # t.yaxis_major_tick_length *= 0.6
-            # t.yaxis_minor_tick_length *= 0.5
-            # t.do_box_labels(nil, nil, 'Log Pressure')
-            t.show_plot('boundaries' => [0, 1, @bounds.last, 
-                                         @bounds.first]) do
-              t.axial_shading(
-                              'start_point' => [0.5, @bounds.first],
-                              'end_point' => [0.5, @bounds.last],
-                              'colormap' => @color_map.
-                              to_colormap(t, @bounds.first,
-                                          @bounds.last).first
-                              )
+            plot_box = Types::MarginsBox.
+              new(*@location.reorient_margins(@shift, label_size, 
+                                              @padding, @padding))
+
+            # We wrap the call within a subplot
+            t.subplot(plot_box.to_frame_margins(t)) do
+              t.set_bounds([0, 1, @bounds.last, @bounds.first])
+              t.context do 
+                t.clip_to_frame
+                t.axial_shading(
+                                'start_point' => [0.5, @bounds.first],
+                                'end_point' => [0.5, @bounds.last],
+                                'colormap' => @color_map.
+                                to_colormap(t, @bounds.first,
+                                            @bounds.last).first
+                                )
+              end
             end
+
+            # # xmin = 0; xmax = 1; xmid = 0.5
+            # # t.xaxis_type = AXIS_LINE_ONLY
+            # # t.xaxis_loc = BOTTOM
+            # # t.top_edge_type = AXIS_LINE_ONLY
+            # # t.yaxis_loc = t.ylabel_side = RIGHT
+            # # t.yaxis_type = AXIS_WITH_TICKS_AND_NUMERIC_LABELS
+            # # t.left_edge_type = AXIS_WITH_TICKS_ONLY
+            # # t.ylabel_shift += 0.5
+            # # t.yaxis_major_tick_length *= 0.6
+            # # t.yaxis_minor_tick_length *= 0.5
+            # # t.do_box_labels(nil, nil, 'Log Pressure')
+            # t.show_plot('boundaries' => ) do
+            #   t.axial_shading(
+            #                   'start_point' => [0.5, @bounds.first],
+            #                   'end_point' => [0.5, @bounds.last],
+            #                   'colormap' => @color_map.
+            #                   to_colormap(t, @bounds.first,
+            #                               @bounds.last).first
+            #                   )
+            # end
           end
         end
 
@@ -98,9 +132,8 @@ module CTioga2
           # Nothing to do
         end
 
-        # Code mostly coming from the
         def extension(t, style = nil)
-          base = super
+          base = super(t, style)
 
           base += @bar_size.to_text_height(t)
           return base
@@ -111,71 +144,7 @@ module CTioga2
           return @location.vertical?
         end
 
-        protected
-
-
-        # Returns: _ticks_shift_, _ticks_scale_ for the axis.
-        #
-        # \todo try something clever with the angles ?
-        def get_ticks_parameters(t)
-          # i = t.axis_information({'location' => @location.tioga_location})
-          # retval = []
-          # retval << (@tick_label_style.shift || i['shift'])
-          # retval << (@tick_label_style.scale || i['scale'])
-
-          # retval[0] += 1
-          # return retval
-        end
-        
-        # Returns an argument suitable for use for
-        # FigureMaker#show_axis or FigureMaker#axis_information.
-        #
-        # For the log axis scale to work, tioga revision 543 is
-        # absolutely necessary. It won't fail, though, without it.
-        def get_axis_specification(t)
-          # if @transform
-          #   retval = compute_coordinate_transforms(t)
-          # else
-          #   retval = {}
-          # end
-          # if @offset 
-          #   raise YetUnimplemented, "This has not been implemented yet"
-          # else
-          #   retval.
-          #     update({'location' => @location.tioga_location,
-          #              'type' => @decoration, 'log' => @log})
-          #   return retval
-          # end
-        end
-
-        # Setup coordinate transformations
-        def compute_coordinate_transforms(t)
-          # return unless @transform
-          # # We'll proceed by steps...
-          # i = t.axis_information({'location' => @location.tioga_location})
-          # t.context do 
-          #   if i['vertical']
-          #     top,b = @transform.convert_to([t.bounds_top, t.bounds_bottom])
-          #     l,r = t.bounds_left, t.bounds_right
-          #   else
-          #     top,b = t.bounds_top, t.bounds_bottom
-          #     l,r = @transform.convert_to([t.bounds_left, t.bounds_right])
-          #   end
-          #   t.set_bounds([l,r,top,b])
-          #   i = t.axis_information({'location' => @location.tioga_location})
-          #   # Now, we have the location of everything we need.
-          # end
-          # # In the following, the || are because of a fix in Tioga
-          # # r545
-          # return { 'labels' => i['labels'], 
-          #   'major_ticks' => @transform.
-          #   convert_from(i['major_ticks'] || i['major']),
-          #   'minor_ticks' => @transform.
-          #   convert_from(i['minor_ticks'] || i['minor'] )
-          # }
-        end
       end
-
       ZAxisStyle = FullAxisStyle.dup
     end
   end

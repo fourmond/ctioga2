@@ -66,6 +66,12 @@ module CTioga2
           :top => [0,0,-1,0]
         }
 
+        LocationsReorientMargins = {
+          :left => [1,0,3,2],
+          :right => [0,1,2,3],
+          :top => [2,3,1,0],
+          :bottom => [3,2,0,1]
+        }
 
         # The position of the object, one of :left, :right, :top,
         # :bottom, :at_y_origin or :at_x_origin.
@@ -127,6 +133,19 @@ module CTioga2
         # Returns whether the location is on the given side.
         def is_side?(which)
           return @base_location == which
+        end
+
+        # Takes a set of margins, expressed in relative terms, ie
+        # * _close_ (the margins on the side next to the graph),
+        # * _away_ (on the other side),
+        # * _aleft_ (on the left going away from the graph) and
+        # * _aright_ (on the right going away from the graph)
+        # into a left,right,top,bottom suitable for standards margins calls.
+        def reorient_margins(close, away, aleft, aright)
+          a = [close, away, aleft, aright]
+          return LocationsReorientMargins[@base_location].map do |i|
+            a[i]
+          end
         end
 
         # Returns the margins argument suitable for sending to
