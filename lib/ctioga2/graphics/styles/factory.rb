@@ -127,7 +127,7 @@ module CTioga2
 
             # Now, register a type for the type or automatic.
             CmdType.new("#{base_type.name}-or-auto", mb_type,
-                        "Same thing as type #{base_type.name}, or 'auto'")
+                        "Same thing as {type:#{base_type.name}}, or @auto@ to let the style factory handle automatically.")
 
           end
 
@@ -138,7 +138,7 @@ module CTioga2
                           :subtype => base_type.type,
                           :shortcuts => sets
                         } ,
-                        "Sets of #{base_type.name}")
+                        "Sets of {type: #{base_type.name}}")
           end
           param = 
             CurveStyleFactoryParameter.new(name, type, sets, 
@@ -165,8 +165,8 @@ module CTioga2
         # The CmdGroup for stylistic information about
         # curves.
         CurveStyleGroup = 
-          CmdGroup.new('curve-style', "Curve styles", 
-                       "Set stylistic details about curves", 1)
+          CmdGroup.new('curve-style', "Curves styles", 
+                       "Set stylistic details of curves or other object drawn from data", 1)
 
 
         # Creates two commands for each parameter of the object:
@@ -183,7 +183,7 @@ module CTioga2
                        CmdArg.new("#{param.type.name}-or-auto") 
                       ], {},
                       "Sets the #{param.description} for subsequent curves",
-                      "Sets the #{param.description} for subsequent curves, until cancelled with 'auto' as argument.", CurveStyleGroup) do |plotmaker, value|
+                      "Sets the #{param.description} for subsequent curves, until cancelled with @auto@ as argument.", CurveStyleGroup) do |plotmaker, value|
               plotmaker.curve_generator.style_factory.
                 set_parameter_override(target, value)
             end
@@ -198,7 +198,7 @@ module CTioga2
                          CmdArg.new("#{param.type.name}-set")
                         ], {},
                         "Chooses a set for the #{param.description} of subsequent curves",
-                        "Chooses a set for the #{param.description} of subsequent curves. Also sets #{param.name} to 'auto'", 
+                        "Chooses a set for the #{param.description} of subsequent curves. Also sets {command: #{param.name}} to @auto@, so that the set takes effect immediately", 
                         CurveStyleGroup) do |plotmaker, value|
                 plotmaker.curve_generator.style_factory.
                   set_parameter_set(target, value)

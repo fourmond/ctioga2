@@ -114,20 +114,22 @@ EOD
 
     # Something meant to be fed to PlotStyle#get_axis_style
     AxisType = CmdType.new('axis', :string, <<EOD)
-The name of an axis. It can be:
- * left, top, bottom or right;
- * x, xaxis, y, yaxis, which return one of the above depending 
-   on the preferences of the current plot;
- * one of the named axes.
+The name of the axis of a plot. It can be:
+ * @left@, @top@, @bottom@ or @right@;
+ * @x@, @xaxis@, @y@, @yaxis@, which return one of the above depending 
+   on the preferences of the current plot (see {command: xaxis} and 
+   {command: yaxis} to change them);
+ * one of the named axes, such as the ones created by 
+   {command: new-zaxis}.
 EOD
 
     # Something meant to be fed to PlotStyle#get_label_style
     LabelType = CmdType.new('label', :string, <<EOD)
 The name of an label. It can be:
- * title to mean the current plot's title.
- * axis_tick or axis_ticks or simply axis, where axis is a a valid
-   {type: axis}.  It means the ticks of the given axis.
- * axis_label, same as above but targets the label of the given axis.
+ * @title@ to mean the current plot's title.
+ * @axis_tick@ or @axis_ticks@ or simply @axis@, where @axis@ is a a valid
+   {type: axis}. It designates the ticks of the named axis.
+ * @axis_label@, same as above but targets the label of the named axis.
 EOD
 
     

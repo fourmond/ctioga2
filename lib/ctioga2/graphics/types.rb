@@ -51,11 +51,11 @@ module CTioga2
                               :namespace => Tioga::ColorConstants
                             }, <<EOD)
 A color. It can take three forms:
- * the name of a named color; see 
+ * a named color, see 
 {url: http://tioga.rubyforge.org/doc/classes/Tioga/ColorConstants.html}
-for the list of colors.
- * an HTML color: for instance, #f00 or #ff0000 is red;
- * a list of three numbers between 0 and 1: 1,0,0 is red too.
+for the list of color names.
+ * an HTML color: for instance, @#f00@ or @#ff0000@ is red;
+ * a list of three numbers between 0 and 1: @1,0,0@ is red too.
 EOD
 
     ColorOrFalseType = 
@@ -76,12 +76,12 @@ EOD
                                          /no(?:ne)?/i => false
                                        }
                                      }, <<EOD)
-The Y values until which a filled curve will be filled. Generally a float, 
+The Y values until which a filled curve will be filled. Generally a number, 
 but it can also be:
- * axis (or xaxis), which means 0
- * bottom, to fill until the bottom of the graph
- * top, to fill until the top 
- * none, meaning no fill
+ * @axis@ (or @xaxis@), which means 0
+ * @bottom@, to fill until the bottom of the graph
+ * @top@, to fill until the top 
+ * @none@, meaning no fill
 EOD
 
     RegionSideType = 
@@ -94,8 +94,11 @@ EOD
                       'ignore' => false,
                     }
                   }, <<EOD)
-Within a {command: region}, should the curve be above or below the 
-filled region ?
+Within a {command: region}, designates the position of the curve with
+respect to the region:
+ * @above@
+ * @below@
+ * @ignore@ if this curve is not to be taken into account
 EOD
 
                     
@@ -130,7 +133,7 @@ EOD
 # to the level too !
     LevelType = 
       CmdType.new('level', :level, <<EOD)
-A level on a XYZ map
+A level on a XYZ map (that is, just a Z value).
 EOD
 
     JustificationType = 
@@ -140,13 +143,19 @@ EOD
 
     AlignmentType = 
       CmdType.new('alignment', :tioga_align, <<EOD)
-Vertical aligment for text.
+Vertical aligment for text. Can be one of:
+ * @t@ or @top@
+ * @c@, @center@, @m@ or @midheight@ (vertically centered)
+ * @B@, @Baseline@ or @baseline@ to align at the baseline
+ * @b@ or @bottom@
 EOD
 
     PDFFont = 
       CmdType.new('pdf-font', :integer, <<EOD)
 A number between 1 and 14 that designates one of the 14 standard 
-PDF fonts.
+PDF fonts. (see for instance
+{url: http://tioga.rubyforge.org/doc/classes/Tioga/MarkerConstants.html}
+for more information).
 EOD
 
     AlignedPointType = 
@@ -162,14 +171,13 @@ EOD
 Margins around a plot, ie the distance from the side of the plot to
 the corresponding side of the container (most likely the whole
 PDF). It can take three forms:
+ * @dimension@ (applies to all sides)
+ * @left_right, top_bottom@
+ * @left, right, top, bottom@
 
- * dimension (applies to all sides)
- * left_right, top_bottom
- * left, right, top, bottom
+Each of these elements is a valid {type: dimension}.
 
-Each of the elements is a valid {type: dimension}.
-
-It can also be auto, in which case the position of the margins is
+It can also be @auto@, in which case the position of the margins is
 computed automatically to accomodate the various labels/ticks.
 EOD
 
@@ -179,14 +187,12 @@ EOD
       CmdType.new('axis-decoration', :tioga_axis_type, <<EOD)
 Kinds of decoration on a axis line, such as nothing, lines, ticks, 
 tick labels. Possible values:
-
- * hidden or off: axis
- * line: only a line
- * ticks: only ticks
- * major: only major ticks
- * major-num: major ticks along with their labels
- * full: major ticks and labels + minor ticks
-
+ * @hidden@ or @off@: no axis at all
+ * @line@: only a line
+ * @ticks@: only ticks
+ * @major@: only major ticks
+ * @major-num@: major ticks along with their labels
+ * @full@: major ticks and labels + minor ticks
 EOD
 
     # Dimensions
@@ -197,16 +203,13 @@ EOD
 
 A dimension, in absolute units, or in units of text height, figure,
 frame or page coordinates. It is in the form 
-
-@ value unit
-
-Where value is a number and unit can be one of pt,bp,in,cm (absolute
-units, same meaning as in TeX), dy (1.0 dy is the height of a text
-line), figure (for figure coordinates, i.e. the coordinates of the
-plot), frame (1.0 frame is the full size of the current subplot) and
-page (1.0 page is the whole height/width of the output file).
-
-figure can be abbreviated as f, frame as F and page as p.
+@value unit@
+where @value@ is a number and unit can be one of @pt@,
+@bp@, @in@, @cm@ (absolute units, same meaning as in TeX), 
+@dy@ (@1.0 dy@ is the height of a text
+line), @figure@ or @f@ (for figure coordinates, i.e. the coordinates of the
+plot), @frame@ or @F@ (@1.0 frame@ is the full size of the current subplot) and
+@page@ or @p@ (@1.0 page@ is the whole height/width of the output file).
 EOD
 
     # Boxes
@@ -216,20 +219,20 @@ EOD
 The specification for a box, such as an inset. Specifications vary for
 now... 
 
-\todo to be written later on.
+@todo to be written later on.
 EOD
 
     # Coordinate transformations
     BijectionType = 
       CmdType.new('bijection', :bijection, <<EOD)
 A pair of functions of x specifying a bidirectional coordinate
-transformation , separated by a double colon (::), in the order
-from::to.
+transformation separated by a double colon (@::@), in the order
+@from::to@.
 
 Each of the functions must be valid Ruby code - it is not exactly
 mathematical functions, in particular Ruby does not like floats which
-are missing digits on either side of the dot : for instance, .3 and
-1. are not valid. Sorry.
+are missing digits on either side of the dot : for instance, @.3@ and
+@1.@ are not valid. Sorry.
 
 In most of the usual cases, the coordinate transform is an involution,
 that is from and to is the same function (this is the case for
