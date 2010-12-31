@@ -239,6 +239,8 @@ module CTioga2
                 link = "#{@types_url}#type-#{it.target.name}"
               when Data::Backends::BackendDescription
                 link = "#{@backends_url}#backend-#{it.target.name}"
+              when String       # plain URL target
+                link = "#{it.target}"
               else
                 raise "The link target should be either a group, a command or a type, but is a #{it.target.class}"
               end

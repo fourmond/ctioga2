@@ -108,15 +108,23 @@ module CTioga2
           attr_accessor :target
           
           # _target_ is the name of the target, which can be of _type_
-          # 'group', 'command', 'backend' and 'type'.
+          # 'group', 'command', 'backend', 'type' and 'url'
           def initialize(doc, target, type)
             super(doc)
-            @target = doc.send("#{type}s")[target]
+            if type =~ /url/
+              @target = target
+            else
+              @target = doc.send("#{type}s")[target]
+            end
           end
 
           def to_s
-            if @target
-              return @target.name
+            if @target 
+              begin
+                return @target.name
+              rescue NoMethodError
+                return @target
+              end
             else
               return "unknown"
             end
@@ -273,7 +281,7 @@ module CTioga2
         # elements.
         def parse_paragraph_markup(doc, string)
           els = []
-          while string =~ /\{(group|type|command|backend):\s*([^}]+?)\s*\}/
+          while string =~ /\{(group|type|command|backend|url):\s*([^}]+?)\s*\}/
             els << MarkupText.new(doc, $`)
             els << MarkupLink.new(doc, $2, $1) 
             string = $'

@@ -244,7 +244,7 @@ module CTioga2
         def write_type(out, type, indent = "")
           out.puts ".TP #{indent}"
           out.puts ".I #{type.name}"
-          out.puts "#{type.description}"
+          out.puts markup_to_man(type.description)
         end
 
         # Returns the header string
