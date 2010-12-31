@@ -52,7 +52,7 @@ module CTioga2
                             }, <<EOD)
 A color. It can take three forms:
  * the name of a named color; see 
-http://tioga.rubyforge.org/doc/classes/Tioga/ColorConstants.html
+{url: http://tioga.rubyforge.org/doc/classes/Tioga/ColorConstants.html}
 for the list of colors.
  * an HTML color: for instance, #f00 or #ff0000 is red;
  * a list of three numbers between 0 and 1: 1,0,0 is red too.

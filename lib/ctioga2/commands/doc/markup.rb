@@ -52,9 +52,6 @@ module CTioga2
         end
 
         # A markup item representing plain text.
-        #
-        # \todo in to_s a simple word-wrapping algorithm could be
-        # used.
         class MarkupText < MarkupItem
           # The text
           attr_accessor :text
@@ -227,6 +224,9 @@ module CTioga2
         # * a {group: ...} or {type: ...} or {command: ...} is a link
         #   to the element.
         # * a blank line marks a paragraph break.
+        #
+        # \todo Add elements to do some inline markup (such as bold,
+        # code, italics; mostly code for now will do very fine)
         def parse_from_string(string)
           @last_type = nil
           @last_string = ""

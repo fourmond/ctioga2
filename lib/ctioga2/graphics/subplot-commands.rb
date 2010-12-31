@@ -72,11 +72,10 @@ EOH
     
     InsetCommand.describe('Begins a new inset',
                           <<EOD, SubplotsGroup)
-Starts a new inset at the specified box. If no graphical commands have
-been issued before this one, it starts a top-level box in a blank 
-background. 
+Starts a new inset within the given box.
 
-\todo this surely could be clarified a little tiny bit.
+If no graph has been started yet, it just creates a new graph using
+the given box. In short, it does what it seems it should.
 EOD
 
     NextInsetCommand =         
@@ -92,6 +91,9 @@ EOD
     NextInsetCommand.describe('Ends the previous inset and begins a new one',
                               <<EOD, SubplotsGroup)
 Has the same effet as {command: end} followed by {command: inset}.
+
+Particularly useful for chaining subgraphs. In that case, you might be 
+interested in the grid box specification and {command: setup-grid}.
 EOD
 
     EndCommand =         
@@ -120,7 +122,10 @@ EOD
     
     RegionCommand.describe('Starts a region with filling between curves',
                            <<EOD, SubplotsGroup)
-TODO !
+The curves up to the corresponding {command: end} will be considered for
+delimiting a colored region between them. The actual position of the
+curves with respect to the region can be fine-tuned using the 
+{command: region-side} command (or the corresponding option to {command: plot}).
 EOD
 
     GradientCommand =         
@@ -134,7 +139,9 @@ EOD
     
     GradientCommand.describe('Use a color gradient for all curves until --end',
                              <<EOD, SubplotsGroup)
-TODO !
+All the curves between this command and the corresponding {command: end}
+will have their {command: color} set to a weighted average of the
+colors given as argument. This gives a neat gradient effect.
 EOD
 
 
@@ -192,7 +199,7 @@ EOD
                               <<"EOH", SubplotsGroup)
 Sets up a grid of the given layout (such as 2x1). After this command,
 arguments such as grid:0,1 can be used as the {type: box} argument of
-{cmd: inset} and {cmd: next-inset} commands.
+{command: inset} and {command: next-inset} commands.
 
 Alternatively, the layout can be specified as 1,2,1x1,4, in which case
 there are three columns and two rows; the second column is 2 times
@@ -207,11 +214,12 @@ EOH
               ]) do |plotmaker, box|
       subplot = plotmaker.root_object.subplot
       subplot.subframe = box
+      raise YetUnimplemented.new("zooms are not yet implemented !")
     end
     
     ZoomCommand.describe('Starts an inset ',
                           <<EOD, SubplotsGroup)
-@todo
+Zooms are currently not implemented yet.
 EOD
 
 
