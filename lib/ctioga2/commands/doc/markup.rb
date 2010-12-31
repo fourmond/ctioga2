@@ -56,9 +56,14 @@ module CTioga2
           # The text
           attr_accessor :text
           
-          def initialize(doc, text = "", strip = true)
+          # The kind of markup, nil means no markup
+          attr_accessor :kind
+          
+          def initialize(doc, text = "", strip = true, 
+                         kind = nil)
             super(doc)
             @text = text
+            @kind = kind
             if strip
               @text.gsub!(/\n/, " ")
             end
@@ -275,15 +280,25 @@ module CTioga2
 
         protected 
 
+        # A few constants to help writing out the paragraph markup
+        LinkRE = /\{(group|type|command|backend|url):\s*([^}]+?)\s*\}/
+
+        MarkOnceRE = /@([^@]+)@/
+        
+
         # Parses the markup found within a paragraph (ie: links and
         # other text attributes, but not verbatim, list or other
         # markings) and returns an array containing the MarkupItem
         # elements.
         def parse_paragraph_markup(doc, string)
           els = []
-          while string =~ /\{(group|type|command|backend|url):\s*([^}]+?)\s*\}/
+          while string =~ /#{LinkRE}|#{MarkOnceRE}/
             els << MarkupText.new(doc, $`)
-            els << MarkupLink.new(doc, $2, $1) 
+            if $1
+              els << MarkupLink.new(doc, $2, $1) 
+            elsif $3
+              els << MarkupText.new(doc, $3, true, :code)
+            end
             string = $'
           end
           els << MarkupText.new(doc, string)

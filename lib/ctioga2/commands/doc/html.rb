@@ -228,7 +228,19 @@ module CTioga2
           for it in items
             case it
             when MarkedUpText::MarkupText
-              str << it.to_s
+              el = nil
+              case it.kind
+              when :code
+                el = "code"
+              end
+              if el
+                prefix = "<#{el}>"
+                suffix = "</#{el}>"
+              else
+                prefix = ""
+                suffix = ""
+              end
+              str << "#{prefix}#{it.to_s}#{suffix}"
             when MarkedUpText::MarkupLink
               case it.target
               when Command
