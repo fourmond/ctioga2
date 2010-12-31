@@ -1,0 +1,584 @@
+#!/usr/bin/ruby 
+
+=begin rdoc
+This is a small helper script for keeping changelogs up to date.
+It is copyright 2006 by Vincent Fourmond, and can be distributed under
+the terms of the General Public License version 2.
+=end
+
+
+require 'tempfile'
+# we need a decent parsing of command-line here...
+# it is provided by optparse, which is quite cool...
+
+require 'optparse'
+require 'ostruct'
+require 'etc'
+
+
+
+# A class to describe and parse a changelog line
+class CLLine
+  # The text of the line:
+  attr_accessor :line
+
+  # The type of the line:
+  # * :version (i.e. mkmf2 -- 0.1.2)
+  # * :blank
+  # * :name (describing the name [...])
+  # * :entry ( starting with ' * ')
+  # * :entry_cont (starting with enough blank space)
+  # * :sig (signature)
+  attr_accessor :kind
+
+  # Hash that can be used to store interesting informations.
+  attr_accessor :data
+
+  def initialize(line = "")
+    @line = line
+    @data = {}
+    
+    # we parse the line here.
+    case line
+    when /^\s*(\w+)\s+\(\s*([\w.-]+)\s*\)\s*(?:\w+\s*)?$/
+      # this is a version line
+      @kind = :version
+      @data["package"] = $1
+      @data["version"] = $2
+    when /^\s+\*/
+      @kind = :entry
+    when /^\s*$/
+      @kind = :blank
+    when /^\s*\[\s*([^\]]+?)\s*\]/
+      @kind = :name
+      @data["name"] = $1
+    when /^\s--\s*((.*?)\s*<(.*)>)[\s,]\s([^<>]*?)\s*$/
+      @kind = :sig
+      @data["full name"] = $1
+      @data["name"] = $2
+      @data["email"] = $3
+      @data["date"] = $4
+    when /^\s\s+\S+/
+      @kind = :entry_cont
+    end
+  end
+
+  # A small wrapper around the data structure...
+  def [](str)
+    return @data[str]
+  end
+
+  # Changes the current entry into a proper signature...
+  def sign(email,date)
+    @kind = :sig
+    @line = " -- #{email}  #{date}"
+    @data["full name"] = email
+    @data["date"] = date.chomp
+    if @data["full name"] =~ /^(.*?)\s*<(.*)>/
+      @data["name"] = $1
+      @data["email"] = $2
+    else
+      # we take the email address for the name
+      @data["name"] = @data["full name"]
+    end
+  end
+
+end
+
+# An section consists of a version, entries and a signature
+class CLSection
+  # The CLLine object containing the version
+  attr_accessor :version
+  
+  # The siganture
+  attr_accessor :signature
+
+  # The rest inbetween
+  attr_accessor :entries
+
+  # The names of the differents contributors. It is a hash where to a
+  # name corresponds the CLLine object where it is found.
+  attr_accessor :contributors
+  
+  # This function takes an array of CLLines, removes blank lines
+  # then, takes everything between a version and a signature, removing them from
+  # the array. You'd better make a copy of the array if you need it otherwise.
+  def initialize(cllines)
+    # Stripping trailing blank lines.
+    while cllines[0] && cllines[0].kind == :blank
+      cllines.shift
+    end
+    if cllines[0].kind != :version
+      raise "Error parsing the changelog: version line expected, but got " +
+        cllines[0].inspect
+    end
+    @version = cllines.shift
+    @entries = []
+    @contributors = {}
+    while cllines[0].kind != :sig
+      @entries.push cllines.shift
+      if @entries.last.kind == :name
+        @contributors[@entries.last["name"]] = @entries.last
+      end
+    end
+    @signature = cllines.shift
+    # and removing all the blank lines after, to make sure nothing is left
+    # in the array if it is the end of the changelog.
+
+    while cllines[0] && cllines[0].kind == :blank
+      cllines.shift
+    end
+  end
+  
+  # returns an array with the text lines of the section
+  def lines
+    lines = []
+    lines << @version.line
+    lines += @entries.collect { |e| 
+      e.line
+    }
+    lines << @signature.line
+  end
+
+  # Returns the text for the section.
+  def to_s
+    return lines.join('')
+  end
+
+  def email_to_name(email)
+    email =~ /^\s*(.*?)\s*<(.*)>/
+    return $1
+  end
+
+  # returns the CLLine object corresponding to the last :entry of
+  # a contributor. You need to provide it's short name
+  def last_contributor_entry(name)
+    if ! @contributors.key?(name)
+      if name == sig_name
+        return last_entry
+      else
+        return nil
+      end
+    end
+    index = @entries.index(@contributors[name]) + 1
+    last = nil
+    while @entries[index] and @entries[index].kind == :blank
+      last = @entries[index]
+      index += 1
+    end
+    while @entries[index] and 
+        (@entries[index].kind == :entry or 
+        @entries[index].kind == :entry_cont)
+      last = @entries[index]
+      index += 1
+    end
+    
+    # it can be the blank just after the name.
+    return last
+  end
+
+  def last_entry
+    entries = @entries.dup
+    while a = entries.pop
+      return a unless a.kind == :blank
+    end
+    return nil
+  end
+
+  def sig_name
+    return @signature["name"]
+  end
+
+  # adds a contributor to the list, and make the corresponding entries
+  def add_contributor(name)
+    return if @contributors.key?(name)
+
+    @contributors[name] = CLLine.new("  [#{name}]\n")
+    
+    # we add the contributor at the end:
+    @entries.push @contributors[name]
+    @entries.push CLLine.new("\n")
+  end
+    
+
+  # This functions adds a new entry to the section, with the given
+  # contributor name and returns an array containing:
+  # * the line number where the entry was added
+  # * an array containing the text lines
+  #
+  # The contributor name should include full email
+  def add_entry(contributor, entry = "")
+    # nil = ""
+    if entry.nil?
+      entry = ""
+    end
+    # we check if we need to add contributors name or not:
+    name = email_to_name(contributor)
+    new_entry = CLLine.new("  * #{entry}\n")
+    if name != sig_name
+      add_sig_name
+      add_contributor(name)
+    end
+    last_entry_index = @entries.index(last_contributor_entry(name))
+    # raise "Problem parsing the changelog ??" if last_entry_index.nil?
+    # no, this is not right: we want to be able to deal with almost empty
+    # Changelogs -- namely, the ones created by this very program ;-) !
+    if last_entry_index.nil?
+      last_entry_index = -1
+      # we add an initial \n:
+      new_entry.line = "\n#{new_entry.line}"
+    end
+    @entries[last_entry_index + 1, 0] = new_entry
+    
+    # last thing: we need to update the signature:
+    @signature.sign(contributor, CLFile.date)
+    return [@entries.index(new_entry) + 2, lines]
+  end
+  
+  # Adds a name entry in the beginning with the name of the signature
+  def add_sig_name
+    return if @contributors.key?(sig_name)
+    @contributors[sig_name] = 
+      CLLine.new("  [#{sig_name}]\n")
+    @entries.unshift @contributors[sig_name]
+    @entries.unshift CLLine.new("\n")
+  end
+
+  # normalize makes sure that the entries start and end with a blank line, and
+  # that there are never more than one blank line in a row
+  def normalize
+    # to be written...
+  end
+end
+
+# The class describing the Changelog file.
+class CLFile
+  # The lines of the file
+  attr_accessor :lines
+
+  # The sections of the file
+  attr_accessor :sections
+
+  # returns the date in the wanted format...
+  def CLFile.date
+    return `date`
+  end
+  
+  # file can be either an IO object or a file name.
+  def initialize(file)
+    if file.is_a? String
+      file = File.open(file)
+    end
+
+    @lines = []
+    for line in file
+      @lines << CLLine.new(line)
+    end
+    @sections = []
+
+    # we make a copy to feed it to CLSection
+    lines = @lines.dup
+    while lines.length > 0
+      @sections.push CLSection.new(lines)
+    end
+  end
+  
+  def latest_version
+    return @sections[0].version["version"]
+  end
+
+  # Creates a release of the given directory by parsing the changelog and
+  # creating an appropriately named archive. The directory name will be
+  # changed to match the _package_-_version_ convention.
+  #
+  # As is, it probably shouldn't be used directly, but rather through
+  # a slightly more advanced interface.
+  def CLFile.make_release(dir, changelog = "Changelog")
+    base_dir = File.dirname(dir)
+    
+    ch = CLFile.new(File.join(dir, changelog))
+    target_name = "#{ch.package_name}-#{ch.latest_version}"
+    # First, we rename the directory to the correct name
+    File.rename(dir, File.join(base_dir, target_name))
+    # Then, we make an archive out of it:
+    cmd = "cd #{base_dir}; tar cvzf #{target_name}.tar.gz #{target_name}"
+    system cmd
+    # and that's done !!!
+    target_name
+  end
+
+  # This convenience function does the following:
+  # * exports the given module from the given repository with the given tag
+  # * looks for a Changelog file in it
+  # * calls make_release
+  # * and erases the exported directory
+
+  def CLFile.cvs_release(mod, tag, rep = nil, changelog = "Changelog")
+    # we first make up a temporary directory name...
+    export_dir = "biniou-temp"
+    cmd = "cvs " + if rep
+                     " -d #{rep} "
+                   else
+                     ""
+                   end +
+      "export -d #{export_dir} -r #{tag} #{mod}"
+    puts cmd
+    system cmd
+    tg = make_release(File.join(Dir::pwd, export_dir), 
+                      changelog)
+  end
+
+
+  # Increases a version number and returns it
+  def CLFile.increase_version(version)
+    return version.sub(/(\w+)\W*$/) do |str|
+      str.succ
+    end
+  end
+
+  def increase_version
+    return CLFile.increase_version(latest_version)
+  end
+  
+  def package_name
+    return @sections[0].version["package"]
+  end
+  
+  # This is the most interesting function: it adds a new entry, or prompts
+  # the user for it (via an external text editor). If version is :increase
+  # then the latest version is taken and increased automatically. The output
+  # is written to the file specified by target_file (which has to be an IO
+  # object -- and a real file in case of user interaction).
+  # This function returns true if the provided file has been modified in a
+  # reasonable way (that is: either we provided text, or the user did actually
+  # modify the file)
+  def add_new_entry(target_file,email, 
+                    version = nil, entry = nil,
+                    editor = "nano",
+                    verbose = false,
+                    editor_line_syntax = "+%d") 
+    if version.nil? or version == latest_version
+      line_number, lines = @sections[0].add_entry(email, entry)
+      text = lines.join('') + "\n" +  
+        @sections[1..@sections.size - 1].collect do |v|
+        v.to_s
+      end.join("\n")
+    else
+      if version == :increase
+        version = increase_version
+      end
+      text = CLFile.create_new(email, version,
+                               package_name,if entry
+                                              entry
+                                            else
+                                              ""
+                                            end
+                               ) + 
+        @sections.collect do |v|
+        v.to_s
+      end.join("\n")
+      line_number = 3
+    end
+    # now, text is the text of the changelog, and line_number
+    # the number of the line which the user should edit
+
+    target_file.print text
+    target_file.close
+    # closing the file so that its contents appear on
+    # the hard drive...
+    if(entry.nil?) 
+      # interactive edition
+      time_before = File::mtime(target_file.path)
+      line_number_spec = sprintf(editor_line_syntax, line_number)
+      cmd = "#{editor} #{line_number_spec} #{target_file.path}"
+      puts cmd if verbose
+      system cmd
+      time_after = File::mtime(target_file.path)
+      return time_before < time_after
+    end
+    return true
+  end
+  
+  # Creates a new changelog from scratch and writes it to filename,
+  # or returns the corresponding string. 
+  def CLFile.create_new(email, version, package, 
+                        entry = nil,
+                        filename = nil)
+    contents = "#{package} (#{version})\n\n" + if entry
+                                                 "  * #{entry}\n\n"
+                                               else
+                                                 ""
+                                               end +
+      " -- #{email}  #{CLFile.date}\n" 
+    if filename
+      File.open(filename, "w") do |f|
+        f.print contents
+      end
+    end
+    return contents
+  end
+
+end
+
+
+# new generic structure:
+options = OpenStruct.new
+options.version = nil
+
+if ENV.has_key? "RCH_EMAIL"
+  options.email = ENV["RCH_EMAIL"]
+else
+  # Try to make up something from the etc gecos field
+  # and the environment variable EMAIL (or username@hostname if not defined)
+  email = ""
+  if ENV.has_key? "EMAIL"
+    email = ENV["EMAIL"]
+  else 
+    # Make up one email, not nice-looking, but not too bad.
+    email = "#{Etc.getpwuid.name}@localhost"
+  end
+  options.email = "#{Etc.getpwuid.gecos.split(',')[0]} <#{email}>"
+end
+options.package = nil
+
+# The editor
+if ENV.has_key? "EDITOR"
+  options.editor = ENV["EDITOR"]
+else
+  options.editor = "nano"       # nano by default
+end
+
+
+# The editor's specification for a command-line 
+if ENV.has_key? "EDITOR_LINE_SPEC"
+  options.editor_line_spec = ENV["EDITOR_LINE_SPEC"]
+else
+  options.editor_line_spec = "+%d" # works for nano, and for others as well
+end
+
+
+options.verbose = false
+
+opts = OptionParser.new do |opts|
+  opts.banner = "$0 [options]"
+  
+  opts.on("--version VERSION", 
+          "Create a new entry for the version VERSION") do |version|
+    puts "Got version #{version}"
+    options.version = version
+  end
+
+  opts.on("-e","--entry ENTRY", 
+          "Adds the entry ENTRY without prompting the user") do |entry|
+    options.entry = entry
+  end
+
+  opts.on("-i","--increase", 
+          "Increase automatically the version number") do 
+    options.version = :increase
+  end
+
+  opts.on("--email EMAIL", 
+          "Sets the full email address to EMAIL") do |email|
+    options.email = email
+  end
+
+  opts.on("-p","--package PACKAGE", 
+          "Sets the package name to PACKAGE") do |package|
+    options.package = package
+  end
+
+  opts.on("-c","--create", 
+          "Creates a brand new changelog. Version and package " +
+          "have to be specified") do 
+    options.create = true
+  end
+
+  opts.on("--editor EDITOR", 
+          "Specifies your default editor for editing the changelog") do |e| 
+    options.editor = e
+  end
+
+  opts.on("--line_spec SPEC", 
+          "How rch should tell the editor which line to edit" +
+          " (like for sprintf)") do |l| 
+    options.editor_line_spec = l 
+  end
+
+  opts.on("--release", 
+          "Make an archive of the current directory, and name it " +
+          " according to the changelog.") do 
+    options.release = true
+  end
+
+  opts.on("--cvs MODULE", 
+          "Does a cvs release -- you need to specify a " +
+          "tag and maybe a repository") do |mod|
+    options.cvs_release = true 
+    options.module = mod
+  end
+
+  opts.on("--cvs-tag TAG", 
+          "Does a cvs release") do |tag|
+    options.tag = tag
+  end
+
+  opts.on("-v","--verbose", 
+          "Prints out a command before executing it") do 
+    options.verbose = true
+  end
+
+
+  opts.on("--repository REP", 
+          "Chooses the repository REP for --cvs") do |rep|
+    options.repository = rep
+  end
+
+  opts.on("--print-version", 
+          "Only prints the latest version of the package and exit") do |rep|
+    options.print_version = rep
+  end
+
+
+end
+
+opts.parse!
+
+file = "Changelog" 
+if $*[0]
+  file = $*[0]
+end
+
+if options.create
+  if options.version && options.package
+    CLFile.create_new(options.email, options.version, 
+                      options.package,nil,file)
+  else
+    puts "You should specify a package name and a version"
+  end
+elsif options.cvs_release
+  CLFile.cvs_release(options.module, options.tag,
+                     options.repository,
+                     file)
+elsif options.release
+  CLFile.make_release(Dir.pwd, file)
+else
+  cl = CLFile.new(file)
+  if options.print_version
+    print cl.latest_version
+    exit
+  end
+
+  # basic changelog addition:
+  temp_file = Tempfile.new('rch_changelog')
+  if cl.add_new_entry(temp_file, options.email,
+                      options.version, options.entry,
+                      options.editor, options.verbose,
+                      options.editor_line_spec)
+    cmd = "cp '#{temp_file.path}' '#{file}'"
+    puts cmd if options.verbose
+    system cmd
+  end
+end
+
+
