@@ -126,7 +126,7 @@ module CTioga2
         
         def string_to_type_internal(str)
           for k,v in @re_hash
-            if str =~ k
+            if str =~ /^\s*#{k}\s*$/
               return v
             end
           end

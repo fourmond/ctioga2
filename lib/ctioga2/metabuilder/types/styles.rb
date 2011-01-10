@@ -136,29 +136,6 @@ module CTioga2
         end
       end
 
-      # Justification (horizontal alignement)
-      class JustificationType < Type
-
-        include Tioga::FigureConstants
-
-        ValidTypes = {
-          /l(eft)?/i => LEFT_JUSTIFIED,
-          /c(enter)?/i => CENTERED,
-          /r(ight)?/ => RIGHT_JUSTIFIED
-        }
-        
-        type_name :tioga_justification, 'halign'
-        
-        def string_to_type_internal(str)
-          for k,v in ValidTypes
-            if str =~ /^\s*#{k}\s*/
-                return v
-            end
-          end
-          raise IncorrectInput, "Not a justification: #{str}"
-        end
-      end
-
       # LaTeX font
       class LaTeXFontBaseType < Type
         type_name :latex_font, 'latex font'

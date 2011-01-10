@@ -136,9 +136,19 @@ EOD
 A level on a XYZ map (that is, just a Z value).
 EOD
 
+   JustificationRE = {
+      /l(eft)?/i => Tioga::FigureConstants::LEFT_JUSTIFIED,
+      /c(enter)?/i => Tioga::FigureConstants::CENTERED,
+      /r(ight)?/i => Tioga::FigureConstants::RIGHT_JUSTIFIED
+    }
+
     JustificationType = 
-      CmdType.new('justification', :tioga_justification, <<EOD)
-Horizontal aligment for text.
+      CmdType.new('justification', {:type => :re_list,
+                    :list => JustificationRE}, <<EOD)
+Horizontal aligment for text. Can be one of:
+ * @l@ or @left@
+ * @c@, @center@
+ * @r@, @right@
 EOD
 
    # Regular expression for vertical alignment
