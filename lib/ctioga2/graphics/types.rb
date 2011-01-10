@@ -141,8 +141,18 @@ EOD
 Horizontal aligment for text.
 EOD
 
+   # Regular expression for vertical alignment
+   AlignmentRE = {
+      /t(op)?/i => Tioga::FigureConstants::ALIGNED_AT_TOP,
+      /c(enter)|m(idheight)/i => Tioga::FigureConstants::ALIGNED_AT_MIDHEIGHT,
+      /B|Baseline|baseline/ => Tioga::FigureConstants::ALIGNED_AT_BASELINE,
+      /b(ottom)?/ => Tioga::FigureConstants::ALIGNED_AT_BOTTOM
+    }
+
     AlignmentType = 
-      CmdType.new('alignment', :tioga_align, <<EOD)
+        CmdType.new('alignment', {:type => :re_list,
+                      :list => AlignmentRE}, 
+                    <<EOD)
 Vertical aligment for text. Can be one of:
  * @t@ or @top@
  * @c@, @center@, @m@ or @midheight@ (vertically centered)

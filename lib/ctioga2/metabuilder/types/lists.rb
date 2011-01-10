@@ -107,6 +107,38 @@ module CTioga2
         end
       end
 
+
+      # A choice between different symbols based on regular expressions.
+      class REListParameter < Type
+
+        type_name :re_list
+
+        def initialize(type)
+          super
+          raise "type must have a :list key" unless type.has_key?(:list)
+          # We make a copy for our own purposes.
+          @re_hash = type[:list].dup
+        end
+        
+        def type_name
+          return 'relist'
+        end
+        
+        def string_to_type_internal(str)
+          for k,v in @re_hash
+            if str =~ k
+              return v
+            end
+          end
+          raise IncorrectInput, "Invalid input: #{str} should match " +
+            @re_hash.keys.map {|s| s.to_s}.join(',')
+        end
+
+        def type_to_string_internal(val)
+          return val.to_s
+        end
+      end
+
       # An array of identical elements of type specified by :subtype. Defaults
       # to String
       class ArrayParameter < Type

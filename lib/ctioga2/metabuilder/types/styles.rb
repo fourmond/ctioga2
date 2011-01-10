@@ -159,31 +159,6 @@ module CTioga2
         end
       end
 
-      # Vertical alignement
-      class AlignmentType < Type
-
-        include Tioga::FigureConstants
-
-        type_name :tioga_align, 'valign'
-        
-        ValidTypes = {
-          /t(op)?/i => ALIGNED_AT_TOP,
-          /c(enter)|m(idheight)/i => ALIGNED_AT_MIDHEIGHT,
-          /B|Baseline|baseline/ => ALIGNED_AT_BASELINE,
-          /b(ottom)?/ => ALIGNED_AT_BOTTOM
-        }
-        
-        
-        def string_to_type_internal(str)
-          for k,v in ValidTypes
-            if str =~ /^\s*#{k}\s*/
-                return v
-            end
-          end
-          raise IncorrectInput, "Not a vertical alignment: #{str}"
-        end
-      end
-
       # LaTeX font
       class LaTeXFontBaseType < Type
         type_name :latex_font, 'latex font'
