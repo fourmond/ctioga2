@@ -5,8 +5,20 @@ ctioga2 (0.1)
   * Added a filter for averaging one successive identical values of X
   * Make the gnuplot backend able to change the number of samples
     required.
+  * Implemented error bars
+  * Implemented a grid layout (via setup-grid and the grid inset specification)
+  * Implemented alternate axes (y2, x2)
+  * Neatly colored help with pager(1) using the --help option 
+  * Filled curves
+  * Implemented colored regions
+  * Automatic output file name incrementation
+  * Neat and easy color gradients for successive curves using the
+    --gradient command
+  * XYZ maps display
+  * Contours on XYZ maps
+  * The text backend now supports naming columns
 
- -- Vincent Fourmond <vincent.fourmond@9online.fr>  Sun Nov 22 19:48:39 CET 2009
+ -- Vincent Fourmond <vincent.fourmond@9online.fr>  Wed Jan 12 00:35:23 CET 2011
 
 ctioga2 (0.0)
 
