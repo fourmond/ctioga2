@@ -205,6 +205,22 @@ module CTioga2
 
         
       end
+
+      # Something meant to be fed to PlotStyle#get_axis_style
+      LocationType = CmdType.new('location', { :type => :function_based,
+                                 :class => Graphics::Types::PlotLocation
+                                 }, <<EOD)
+A position on the plot, referenced with respect to the sides. Can be:
+ * @left@
+ * @right@
+ * @top@
+ * @bottom@
+
+In addition, there will one day be the possibility to specify an 
+offset from these locations. But that is still something to do.
+EOD
+
+
       
     end
   end
