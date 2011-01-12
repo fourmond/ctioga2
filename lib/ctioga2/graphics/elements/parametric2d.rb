@@ -1,3 +1,4 @@
+# -*- coding: undecided -*-
 # parametric2d.rb: a 2D curve whose parameters depend on Z values
 # copyright (c) 2006, 2007, 2008, 2009, 2010 by Vincent Fourmond
 
@@ -147,6 +148,18 @@ module CTioga2
             # draw_errorbars(t)
             draw_path(t)
             draw_markers(t)
+
+            if @curve_style.zaxis
+              begin
+                @parent.style.get_axis_style(@curve_style.zaxis).
+                  set_color_map(@curve_style.marker_color_map, 
+                                @dataset.z.values.min,
+                                @dataset.z.values.max)
+              rescue
+                error { "Could not set Z info to non-existent axis #{@curve_style.zaxis}" }
+              end
+            end
+
             # draw_error_bars(t) ??
           end
         end
