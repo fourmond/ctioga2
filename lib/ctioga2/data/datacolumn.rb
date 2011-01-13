@@ -1,5 +1,5 @@
 # datacolumn.rb: a class holding a 'column' of data
-# copyright (c) 2009 by Vincent Fourmond
+# copyright (c) 2009-2011 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,6 +47,19 @@ module CTioga2
         @values = values
         @min_values = min
         @max_values = max
+      end
+
+      # Creates a DataColumn object
+      def self.create(number, with_errors = false)
+        a = Dobjects::Dvector.new(number, NaN::NaN)
+        if with_errors
+          b = Dobjects::Dvector.new(number, NaN::NaN)
+          c = Dobjects::Dvector.new(number, NaN::NaN)
+        else
+          b = nil
+          c = nil
+        end
+        return self.new(a, b, c)
       end
 
 
@@ -124,6 +137,16 @@ module CTioga2
       # Returns the number of elements.
       def size
         return @values.size
+      end
+
+      # Sets the values at the given index
+      def set_values_at(i, value, min = nil, max = nil)
+        @values[i] = value
+        if min && max
+          ensure_has_errors
+          @min_values[i] = min
+          @max_vaklues[i] = max
+        end
       end
 
       # Creates dummy errors (ie, min_values = max_values = values) if

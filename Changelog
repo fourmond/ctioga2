@@ -17,8 +17,10 @@ ctioga2 (0.1)
   * XYZ maps display
   * Contours on XYZ maps
   * The text backend now supports naming columns
+  * Added a --merge-datasets function to merge data sets with common X
+    (and more) values...
 
- -- Vincent Fourmond <vincent.fourmond@9online.fr>  Wed Jan 12 00:35:23 CET 2011
+ -- Vincent Fourmond <vincent.fourmond@9online.fr>  Thu Jan 13 12:08:25 CET 2011
 
 ctioga2 (0.0)
 

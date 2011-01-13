@@ -176,7 +176,7 @@ module CTioga2
         end
       end
 
-      # Pops the last _n_ datasets off the stack
+      # Pops the last _n_ datasets off the stack and pushes back the
       def concatenate_datasets(n = 2)
         ds = @stack.pop
         raise "Nothing on the stack" unless ds
@@ -185,6 +185,17 @@ module CTioga2
           raise "Not enough datasets on the stack" unless ds2
           ds << ds2
         end
+        @stack.push(ds)
+      end
+
+      # Merges the last datasets into a new one.
+      #
+      # Over
+      def merge_datasets(n = 2, columns = [0], precision = nil)
+        ds = @stack.pop
+        raise "Nothing on the stack" unless ds
+        datasets = @stack[-1..-(n-1)]
+        ds.merge_datasets_in(datasets, columns, precision)
         @stack.push(ds)
       end
 
@@ -284,6 +295,20 @@ EOH
 Pops the last two (or number, if it is specified) datasets from the
 stack, concatenates them (older last) and push them back onto the
 stack.
+EOH
+
+
+    MergeToLastCommand = 
+      Cmd.new("merge-datasets", nil, "--merge-datasets", 
+              [], {'number' => CmdArg.new('integer')}) do |plotmaker, opts|
+      nb = opts['number'] || 2
+      ## @todo all
+      plotmaker.data_stack.merge_datasets(nb)
+    end
+    
+    MergeToLastCommand.describe("....",
+                               <<EOH, DataStackGroup)
+....
 EOH
 
     SetDatasetHookCommand = 

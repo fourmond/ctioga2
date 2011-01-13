@@ -1,5 +1,5 @@
 # dataset.rb: a class holding *one* dataset
-# copyright (c) 2009 by Vincent Fourmond
+# copyright (c) 2009-2011 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -145,11 +145,11 @@ module CTioga2
 
       # Iterates over all the values of the Dataset.  Values of
       # optional arguments are those of DataColumn::values_at.
-      def each_values(expand = false, expand_nil = true)
+      def each_values(with_errors = false, expand_nil = true)
         @x.size.times do |i|
-          v = @x.values_at(i,expand, expand_nil)
+          v = @x.values_at(i,with_errors, expand_nil)
           for y in @ys
-            v += y.values_at(i,expand, expand_nil)
+            v += y.values_at(i,with_errors, expand_nil)
           end
           yield i, *v
         end
@@ -343,6 +343,75 @@ module CTioga2
         for y in @ys
           y.convolve!(kernel, mid)
         end
+      end
+
+
+      # Merges one or more other data sets into this one; one or more
+      # columns are designated as "master" columns and their values
+      # must match in all datasets. Extra columns are simply appended,
+      # in the order in which the datasets are given
+      #
+      # Comparisons between the values are made in abritrary precision
+      # unless precision is given, in which case values only have to
+      # match to this given number of digits.
+      #
+      # @todo update column names.
+      def merge_datasets_in(datasets, columns = [0], precision = nil)
+        # First thing, the data precision block:
+
+        prec = if precision then
+                 proc do |x|
+            ("%.#{@precision}g" % x) # This does not need to be a Float
+          end
+               else
+                 proc {|x| x}   # For exact comparisons
+               end
+
+        # First, we build an index of the master columns of the first
+        # dataset.
+
+        hash = {}
+        self.each_values(false) do |i, *cols|
+          signature = columns.map {|j|
+            prec.call(cols[j])
+          }
+          hash[signature] = i
+        end
+
+        remove_indices = columns.sort.reverse
+
+        for set in datasets
+          old_columns = set.all_columns
+          for i in remove_indices
+            old_columns.slice!(i)
+          end
+
+          # Now, we got rid of the master columns, we add the given
+          # number of columns
+
+          new_columns = []
+          old_columns.each do |c|
+            new_columns << DataColumn.create(@x.size, c.has_errors?)
+          end
+
+          set.each_values(false) do |i, *cols|
+            signature = columns.map {|j|
+              prec.call(cols[j])
+            }
+            idx = hash[signature]
+            if idx
+              old_columns.each_index  { |j|
+                new_columns[j].
+                set_values_at(idx, 
+                              * old_columns[j].values_at(i, true, true))
+              }
+            else
+              # Data points are lost
+            end
+          end
+          @ys.concat(new_columns)
+        end
+
       end
 
       protected
