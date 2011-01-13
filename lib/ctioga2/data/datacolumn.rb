@@ -90,29 +90,29 @@ module CTioga2
         end
       end
 
-      # Values, [value, min, max], at the given index. If #min and
-      # #max are nil only [value] is returned -- unless _expand_ is
-      # set, in which case we make up a default value for min and max:
-      # the same as value if _expand_nil_ is false, or _nil_ if it is
-      # true.
-      def values_at(i, expand = false, expand_nil = true)
+      # Values at the given index.
+      #
+      # If _with_errors_ is false, only [value] is returned.
+      #
+      # If _with_errors_ is true, then, non-existent values are
+      # expanded to _nil_ if _expand_nil_ is true or to value if not.
+      def values_at(i, with_errors = false, expand_nil = true)
+        if ! with_errors 
+          return [@values[i]]
+        end
         if has_errors?
           return [@values[i], @min_values[i], @max_values[i]]
         else
-          if expand
-            if expand_nil
-              return [@values[i], nil, nil]
-            else
-              return [@values[i], @values[i], @values[i]]
-            end
+          if expand_nil
+            return [@values[i], nil, nil]
           else
-            return [@values[i]]
+            return [@values[i], @values[i], @values[i]]
           end
         end
       end
 
       # Vectors: all values if there are error bars, or only the
-      # #value one if there isn't and _expand_ isn't true.
+      # #value one if there isn't.
       def vectors
         if has_errors?
           return [@values, @min_values, @max_values]
