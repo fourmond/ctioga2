@@ -70,6 +70,8 @@ module CTioga2
         def prepare_data
           @function = Function.new(@dataset.x.values.dup, 
                                    @dataset.y.values.dup)
+
+          ## @todo this should eventually use Dataset::index_on_cols.
           @planes = {}
           @dataset.each_values do |i, x,y,*zs|
             @planes[zs[0]] ||= Function.new(Dvector.new, Dvector.new)

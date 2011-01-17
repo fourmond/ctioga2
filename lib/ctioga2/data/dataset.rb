@@ -59,6 +59,15 @@ module CTioga2
         @indexed_dtable = nil
       end
 
+      # Creates a 
+      def self.create(name, number)
+        cols = []
+        number.times do
+          cols << Dobjects::Dvector.new()
+        end
+        return self.new(name, cols)
+      end
+
       # Creates a new Dataset from a specification. This function
       # parses a specification in the form of:
       # * a:b{:c}+
@@ -179,6 +188,16 @@ module CTioga2
         end
       end
 
+      # Appends the given values (as yielded by each_values(true)) to
+      # the stack. Elements of _values_ laying after the last
+      # DataColumn in the Dataset are simply ignored. Giving less than
+      # there should be will give interesting results.
+      def push_values(*values)
+        @x.push_values(*(values[0..2]))
+        @ys.size.times do |i|
+          @ys[i].push_values(*(values.slice(3*(i+1),3)))
+        end
+      end
       
       # Modifies the dataset to only keep the data for which the block
       # returns true. The block should take the following arguments,
@@ -345,6 +364,34 @@ module CTioga2
         end
       end
 
+      # Returns a hash of Datasets indexed on the values of the
+      # columns _cols_. Datasets contain the same number of columns.
+      def index_on_cols(cols = [2])
+        # Transform column number into index in the each_values call
+        cols.map! do |i|
+          i*3 
+        end
+
+        datasets = {}
+        self.each_values(true) do |i,*values|
+          signature = cols.map do |i|
+            values[i]
+          end
+          datasets[signature] ||= Dataset.create(name, self.size)
+          datasets[signature].push_values(values)
+        end
+        
+      end
+
+      
+      # Massive linear regressions over all X and Y values
+      # corresponding to a unique set of all the other Y2... Yn
+      # values.
+      #
+      # 
+      def reglin
+      end
+
 
       # Merges one or more other data sets into this one; one or more
       # columns are designated as "master" columns and their values
@@ -356,6 +403,8 @@ module CTioga2
       # match to this given number of digits.
       #
       # @todo update column names.
+      #
+      # @todo write provisions for column names, actually ;-)...
       def merge_datasets_in(datasets, columns = [0], precision = nil)
         # First thing, the data precision block:
 

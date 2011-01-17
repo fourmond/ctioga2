@@ -149,6 +149,13 @@ module CTioga2
         end
       end
 
+      # Appends the given values at the end of the DataColumn
+      #
+      # @todo This isn't very efficient. Does it really matter ?
+      def push_values(value, min=nil, max=nil)
+        set_values_at(@values.size, value, min, max)
+      end
+
       # Creates dummy errors (ie, min_values = max_values = values) if
       # the datacolumn does not currently have one.
       def ensure_has_errors
