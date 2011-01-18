@@ -378,9 +378,9 @@ module CTioga2
             values[i]
           end
           datasets[signature] ||= Dataset.create(name, self.size)
-          datasets[signature].push_values(values)
+          datasets[signature].push_values(*values)
         end
-        
+        return datasets
       end
 
       
@@ -390,6 +390,17 @@ module CTioga2
       #
       # 
       def reglin
+        cols = []
+        2.up_to(self.size-1) do |i|
+          cols << i
+        end
+        datasets = index_on_cols(cols)
+
+        # Here be clever
+        for k,v in datasets
+          f = Dobjects::Function.new(v.x.values, v.y.values)
+          a,b = f.reglin
+        end
       end
 
 

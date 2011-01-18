@@ -311,6 +311,17 @@ EOH
 ....
 EOH
 
+    XYReglinCommand = 
+      Cmd.new("xy-reglin", nil, "--xy-reglin", 
+              [], {}) do |plotmaker, opts|
+      p plotmaker.data_stack.last.index_on_cols
+    end
+    
+    XYReglinCommand.describe("....",
+                             <<EOH, DataStackGroup)
+....
+EOH
+
     SetDatasetHookCommand = 
       Cmd.new("dataset-hook", nil, "--dataset-hook", 
               [CmdArg.new('commands')], {}) do |plotmaker, commands, opts|
