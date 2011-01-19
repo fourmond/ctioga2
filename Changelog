@@ -2,7 +2,7 @@ ctioga2 (0.1)
 
   * Setting any set now resets its index
   * Implemented a mechanism for tangents !
-  * Added a filter for averaging one successive identical values of X
+  * Added a filter for averaging on successive identical values of X
   * Make the gnuplot backend able to change the number of samples
     required.
   * Implemented error bars
