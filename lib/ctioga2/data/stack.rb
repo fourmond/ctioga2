@@ -312,9 +312,14 @@ EOH
 EOH
 
     XYReglinCommand = 
-      Cmd.new("xy-reglin", nil, "--xy-reglin", 
-              [], {}) do |plotmaker, opts|
-      p plotmaker.data_stack.last.index_on_cols
+      Cmd.new("xy-reglin", nil, "--xy-reglin", [], {
+                'which' => CmdArg.new('stored-dataset'),
+              }) do |plotmaker,opts|
+      stack = plotmaker.data_stack
+      ds = stack.specified_dataset(opts)
+      coeffs, lines = ds.reglin(opts)
+      stack.store_dataset(lines, true)
+      stack.store_dataset(coeffs, true)
     end
     
     XYReglinCommand.describe("....",

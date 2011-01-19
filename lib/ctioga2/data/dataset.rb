@@ -198,6 +198,15 @@ module CTioga2
           @ys[i].push_values(*(values.slice(3*(i+1),3)))
         end
       end
+
+      # Almost the same thing as #push_values, but when you don't care
+      # about the min/max things.
+      def push_only_values(values)
+        @x.push_values(values[0])
+        @ys.size.times do |i|
+          @ys[i].push_values(values[i+1])
+        end
+      end
       
       # Modifies the dataset to only keep the data for which the block
       # returns true. The block should take the following arguments,
@@ -388,21 +397,34 @@ module CTioga2
       # corresponding to a unique set of all the other Y2... Yn
       # values.
       #
-      # 
-      def reglin
+      # Returns the [coeffs, lines]
+      #
+      # @todo Have the possibility to elaborate on the regression side
+      # (in particular force b to 0)
+      def reglin(options = {})
         cols = []
-        2.up_to(self.size-1) do |i|
+        2.upto(self.size-1) do |i|
           cols << i
         end
         datasets = index_on_cols(cols)
 
-        # Here be clever
+        # Create two new datasets:
+        # * one that collects the keys and a,b
+        # * another that collects the keys and x1,y1, x2y2
+        coeffs = Dataset.create("coefficients", self.size)
+        lines = Dataset.create("lines", self.size)
+
         for k,v in datasets
           f = Dobjects::Function.new(v.x.values, v.y.values)
           a,b = f.reglin
+          
+          coeffs.push_only_values(k + [a, b])
+          lines.push_only_values(k + [f.x.min, b + a * f.x.min])
+          lines.push_only_values(k + [f.x.max, b + a * f.x.max])
         end
-      end
 
+        return [coeffs, lines]
+      end
 
       # Merges one or more other data sets into this one; one or more
       # columns are designated as "master" columns and their values
