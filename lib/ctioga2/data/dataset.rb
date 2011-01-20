@@ -416,11 +416,24 @@ module CTioga2
 
         for k,v in datasets
           f = Dobjects::Function.new(v.x.values, v.y.values)
-          a,b = f.reglin
+          if options['linear']  # Fit to y = a*x
+            d = f.x.dup
+            d.mul!(f.x)
+            sxx = d.sum
+            d.replace(f.x)
+            d.mul!(f.y)
+            sxy = d.sum
+            a = sxy/sxx
+            coeffs.push_only_values(k + [a,0])
+            lines.push_only_values(k + [f.x.min, a * f.x.min])
+            lines.push_only_values(k + [f.x.max, a * f.x.max])
+          else
+            a,b = f.reglin
+            coeffs.push_only_values(k + [a, b])
+            lines.push_only_values(k + [f.x.min, b + a * f.x.min])
+            lines.push_only_values(k + [f.x.max, b + a * f.x.max])
+          end
           
-          coeffs.push_only_values(k + [a, b])
-          lines.push_only_values(k + [f.x.min, b + a * f.x.min])
-          lines.push_only_values(k + [f.x.max, b + a * f.x.max])
         end
 
         return [coeffs, lines]

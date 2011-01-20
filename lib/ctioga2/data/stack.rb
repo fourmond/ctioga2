@@ -314,6 +314,7 @@ EOH
     XYReglinCommand = 
       Cmd.new("xy-reglin", nil, "--xy-reglin", [], {
                 'which' => CmdArg.new('stored-dataset'),
+                'linear' => CmdArg.new('boolean'),
               }) do |plotmaker,opts|
       stack = plotmaker.data_stack
       ds = stack.specified_dataset(opts)
