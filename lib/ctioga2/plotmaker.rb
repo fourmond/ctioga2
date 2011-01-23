@@ -473,7 +473,7 @@ EOH
     PlotLastCommand.describe("Plots the last dataset pushed onto the stack",
                              <<EOH, PlotGroup)
 Plots the last dataset pushed onto the data stack (or the one
-specified with the 'which' option), with the current style. All
+specified with the @which@ option), with the current style. All
 aspects of the curve style (colors, markers, line styles...) can be
 overridden through the use of options.
 EOH

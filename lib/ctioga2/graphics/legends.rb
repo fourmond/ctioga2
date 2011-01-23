@@ -37,8 +37,8 @@ EOD
 
     NextLegendCommand.describe("Sets the legend for the next dataset",
                                <<EOH, LegendGroup)
-Sets the legend for the next dataset. Overridden by the legend= option
-to the plot command.
+Sets the legend for the next dataset. Overridden by the @legend@ option
+to the {command: plot} command.
 EOH
 
     LegendLineCommand = 
@@ -84,9 +84,9 @@ EOH
                                 <<EOH, LegendGroup)
 Sets the various aspects of the style of the legends throught 
 its options:
- * dy: the spacing between consecutive lines
- * scale: the overall scale of the legends
- * text_scale: the scale of the text (and the markers) inside the legends
+ * @dy@: the spacing between consecutive lines
+ * @scale@: the overall scale of the legends
+ * @text_scale@: the scale of the text (and the markers) inside the legends
 EOH
 
     LegendInsideCommand = 
@@ -101,9 +101,8 @@ EOH
 
     LegendInsideCommand.describe("Draw legends inside the current plot",
                                  <<EOH, LegendGroup)
-When this option is in effect, all legends for the current plot (and
-possibly subplots) are drawn inside the current plot, at the specified 
-position.
+Using this command sets the position of the legends for the current
+(sub)plot inside it, at the precise location given.
 
 As a shortcut, {command: legend-inside} also takes all the options that 
 {command: legend-style} takes, with the same effect.

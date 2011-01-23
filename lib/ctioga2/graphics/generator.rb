@@ -143,7 +143,8 @@ EOH
     
     XYZMapCommand.describe('select XYZ maps', 
                             <<EOH, PlotTypesGroup)
-Switch to XYZ maps
+Switch to XYZ maps, ie plots where the color at a XY location is given by 
+its Z value.
 EOH
 
 
