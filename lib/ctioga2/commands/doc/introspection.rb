@@ -34,7 +34,7 @@ module CTioga2
             puts names
           when :yaml
             require 'yaml'
-            list = []
+            commands = {}
             for n in names
               cmd = cmds[n]
               command = {}
@@ -46,9 +46,9 @@ module CTioga2
               command['short_option'] = cmd.short_option
               command['short_description'] = cmd.short_description
               command['long_description'] = cmd.long_description
-              list << command
+              commands[n] = command
             end
-            puts YAML.dump(list)
+            puts YAML.dump(commands)
           else
             puts "Known commands:" 
             max = names.inject(0) {|m,x| [m,x.size].max}
