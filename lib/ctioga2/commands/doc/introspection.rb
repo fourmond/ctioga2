@@ -20,20 +20,35 @@ module CTioga2
 
   module Commands
 
-    # The base of the 'self-documentation' of CTioga2
     module Documentation
 
       # This class provides facilities to display information
       class Introspection
         
         # Display all known commands, along with their definition place
-        def list_commands(raw = false)
-          puts "Known commands:" unless raw
+        def list_commands(format = :pretty)
           cmds = Interpreter::commands
           names = cmds.keys.sort
-          if raw
+          case format
+          when :list
             puts names
+          when :yaml
+            require 'yaml'
+            list = []
+            for n in names
+              cmd = cmds[n]
+              command = {}
+              command['name'] = n
+              f,l = cmd.context
+              command['file'] = f
+              command['line'] = l.to_i
+              command['long_option'] = cmd.long_option
+              command['short_option'] = cmd.short_option
+              list << command
+            end
+            puts YAML.dump(list)
           else
+            puts "Known commands:" 
             max = names.inject(0) {|m,x| [m,x.size].max}
             max2 = names.inject(0) {|m,x| [m,cmds[x].long_option.size].max}
             for n in names
@@ -112,17 +127,36 @@ module CTioga2
 
       end
 
+      InternalFormatRE = {
+        /list|raw/i => :list,
+        /default|pretty/i => :pretty,
+        /yaml/i => :yaml
+      }
+      
+      
+      InternalFormatType = CmdType.new('internal-format',
+                                       { :type => :re_list,
+                                         :list => InternalFormatRE}, <<EOD)
+Output format for internals.
+EOD
+
+
       IntrospectionGroup = 
         CmdGroup.new('introspection', "Introspection",
-                     "Displays information about the internals of ctioga2",
-                     100, true)
+                     <<EOD, 100)
+Commands displaying information about the internals of ctioga2, such 
+as known types/commands/backends...
+EOD
 
+      TypeOption = {'format' => CmdArg.new('internal-format')}
       RawOption = {'raw' => CmdArg.new('boolean')}
 
       ListCommandsCmd = 
         Cmd.new('list-commands', nil, '--list-commands',
-                [], RawOption) do |p, opts|
-        Introspection.new.list_commands(opts['raw'])
+                [], RawOption.dup.update(TypeOption)) do |p, opts|
+        opts['format'] = :list if opts['raw']
+        
+        Introspection.new.list_commands(opts['format'])
       end
 
       ListCommandsCmd.describe("List known commands",
