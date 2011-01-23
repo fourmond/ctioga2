@@ -44,6 +44,8 @@ module CTioga2
               command['line'] = l.to_i
               command['long_option'] = cmd.long_option
               command['short_option'] = cmd.short_option
+              command['short_description'] = cmd.short_description
+              command['long_description'] = cmd.long_description
               list << command
             end
             puts YAML.dump(list)
