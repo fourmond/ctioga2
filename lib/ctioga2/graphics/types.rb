@@ -106,9 +106,12 @@ EOD
     LineStyleType = 
       CmdType.new('line-style', {
                     :type => :tioga_line_style,
-                    :namespace => LineStyles
+                    :namespace => LineStyles,
+                    :shortcuts => {
+                      /no(ne)?|off/i => false,
+                    }
                   }, <<EOD)
-A line style.
+A line style, or @no@, @none@ or @off@ to mean no line.
 EOD
 
     MarkerType = 
