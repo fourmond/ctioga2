@@ -19,7 +19,7 @@ $ct -t 'See how to specify the second Y label' \
     -x '$x$ values' 'sin(x)' -y '$y_1$ values' \
     --y2 'x**2' -y '$y_2$ values' 
 
-# TODO: this shows it is cumbersome to change all the colors in one go:
+# @todo this shows it is cumbersome to change all the colors in one go:
 # providing a --axis-color that just works would be great.
 
 # See how the meaning of y and yaxis is dependent on the default axis.

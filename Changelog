@@ -19,8 +19,9 @@ ctioga2 (0.1)
   * The text backend now supports naming columns
   * Added a --merge-datasets function to merge data sets with common X
     (and more) values...
+  * Setup of a tests/ directory containing a whole bunch of visual tests.
 
- -- Vincent Fourmond <vincent.fourmond@9online.fr>  Thu Jan 13 12:08:25 CET 2011
+ -- Vincent Fourmond <vincent.fourmond@9online.fr>  Mon Jan 31 19:00:00 CET 2011
 
 ctioga2 (0.0)
 
