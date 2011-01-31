@@ -137,3 +137,11 @@ module CTioga2
   end
 
 end
+
+begin
+  # This is a dirty hack in order to ensure that the SVN revision
+  # information is kept up-to-date even when using git-svn. This
+  # file is not present in standard installations.
+  require 'ctioga2/git-fools-svn'
+rescue
+end
