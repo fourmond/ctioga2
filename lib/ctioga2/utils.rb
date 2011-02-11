@@ -24,7 +24,7 @@ module CTioga2
     # The current version of the program.
     def self.version
       if CTIOGA_VERSION =~ /SVN/
-        return "SVN, revision #{SVN_INFO['revision']}, #{SVN_INFO['date']}"
+        return "SVN, revision #{SVN_INFO['revision']}#{SVN_INFO['suffix']}, #{SVN_INFO['date']}"
       else
         return CTIOGA_VERSION
       end
@@ -49,6 +49,10 @@ module CTioga2
           SVN_INFO['revision'] = rev.to_i
           SVN_INFO['date'] = date
         end
+        # Hmmm, we want to see how many revisions is git ahead of SVN
+        if rev_str =~ /(\+git\d+)/
+          SVN_INFO['suffix'] = $1
+        end
       end
     end
 
@@ -65,7 +69,8 @@ module CTioga2
     # Informations collected about subversion revisions
     SVN_INFO = { 
       'revision' => 0,
-      'date' => "old"
+      'date' => "old",
+      'suffix' => ''
     }
 
     # The position of the URL, used for getting the version
