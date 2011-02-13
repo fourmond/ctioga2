@@ -31,9 +31,16 @@ module CTioga2
       # transparency, marker scale, marker type (discrete), possibly
       # stroke and fill colors ?
       #
-      # @todo What would be interesting here would be to have indexed
-      # plots, ie draw one curve for each value of Z, with a color
-      # indexed by Z.
+      # @todo Find a mechanism to really say what varies. Ideally, one
+      # would want to say:
+      # * Y2 is marker color
+      # * Y3 is marker size
+      # * Y4 only takes discrete values and represents markers
+      # 
+      # However, this is complex enough to be left out of the curve
+      # factory, I think. Color maps can be used for colors, but for
+      # the rest, things will have to be implemented as parameters to
+      # the curve generator, or even separated commands.
       class Parametric2D  < TiogaElement
 
         include Log
