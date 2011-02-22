@@ -148,5 +148,5 @@ begin
   # information is kept up-to-date even when using git-svn. This
   # file is not present in standard installations.
   require 'ctioga2/git-fools-svn'
-rescue
+rescue LoadError => e
 end
