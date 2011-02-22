@@ -2,8 +2,9 @@ ctioga2 (0.2)
 
   * Fix small details in the legend positioning in the 'outside' scheme
   * And added tests to ensure everything now looks (almost) fine
+  * Fixed a few bugs with legends inside regions and gradients
 
- -- Vincent Fourmond <vincent.fourmond@9online.fr>  Tue Feb 22 20:28:43 CET 2011
+ -- Vincent Fourmond <vincent.fourmond@9online.fr>  Tue Feb 22 21:15:13 CET 2011
 
 ctioga2 (0.1)
 
