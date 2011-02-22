@@ -1,3 +1,10 @@
+ctioga2 (0.2)
+
+  * Fix small details in the legend positioning in the 'outside' scheme
+  * And added tests to ensure everything now looks (almost) fine
+
+ -- Vincent Fourmond <vincent.fourmond@9online.fr>  Tue Feb 22 20:28:43 CET 2011
+
 ctioga2 (0.1)
 
   * Setting any set now resets its index

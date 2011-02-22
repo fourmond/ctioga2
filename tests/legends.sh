@@ -17,3 +17,14 @@ $ct -t 'Legend lines' -r 10cmx10cm \
     -l '$\sin x$' 'sin(x)' \
     --legend-line 'A line by itself' /color=Blue \
     'cos(x)' /legend='$\cos x$'
+
+$ct -t 'Legend lines' -r 10cmx10cm \
+    -l '$\sin x$' 'sin(x)' \
+    --legend-line 'See how the size of the plot adapts to long lines' \
+    /color=Blue \
+    'cos(x)' /legend='$\cos x$'
+
+$ct -t 'Legends inside' -r 10cmx10cm \
+    --legend-inside tc /scale 2 /dy=1.02 \
+    -l '$x^2$' 'x**2' \
+    -l '$5 x$' '5 * x'

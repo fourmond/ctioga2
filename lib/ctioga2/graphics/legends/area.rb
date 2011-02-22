@@ -86,10 +86,10 @@ module CTioga2
 
             # We make figure coordinates frame coordinates
             t.set_bounds([0, 1, 1, 0])
-            # \todo customize this !
+            ## \todo customize this !
             x, y = initial_xy(t, container)
             for item in items
-              # \todo transform the 0.0 for x into a negative
+              ## \todo transform the 0.0 for x into a negative
               # user-specifiable stuff.
               item.draw(t, @legend_style, x , y)
               y -= @legend_style.dy.to_figure(t,:y)
@@ -145,9 +145,6 @@ module CTioga2
         #  
         # These arrays can be used as arguments for subframe_margins
         # or respectively the graph and the legends part of the plot.
-        #
-        # This function will *eventually* also work in the case of a
-        # #legend_type :inside?
         def partition_frame(t, container)
           w,h = size(t, container)
           case @legend_type
@@ -176,14 +173,14 @@ module CTioga2
         def initial_xy(t, container)
           case @legend_type
           when :right
-            l,r,t,b = container.actual_subframe(t).to_frame_margins(t)
+            l,r,top,b = container.actual_subframe(t).to_frame_margins(t)
             # Here, we take profit from the fact that frame
             # coordinates are also figure coordinates within the
             # legend.
 
-            # \todo that won't work in the case of labels on the
+            ## \todo that won't work in the case of labels on the
             # right-hand-side.
-            return [- l/2, 1.0 - t]
+            return [0, 1.0 - top]
           when :inside
             return [0.0, 1.0]
           else
