@@ -31,7 +31,7 @@ module CTioga2
       #
       # Like Region It is a fake container in the sense that all the
       # elements are actually forwarded to the parent.
-      class GradientRegion < Container
+      class GradientRegion < RedirectingContainer
 
         undef :elements
         undef :subframe
@@ -68,11 +68,6 @@ module CTioga2
 
         # Sets the various things from hash.
         def set_from_hash(hash)
-        end
-
-        # Redirects to the parent's style
-        def style(*a)
-          return parent.style(*a)
         end
 
         protected 

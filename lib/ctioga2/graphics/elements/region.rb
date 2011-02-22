@@ -26,7 +26,7 @@ module CTioga2
       # A Region is an object that draws filled regions among its
       # "elements". It is a fake container in the sense that all the
       # elements are actually forwarded to the parent.
-      class Region < Container
+      class Region < RedirectingContainer
 
         undef :elements
         undef :subframe
@@ -72,11 +72,6 @@ module CTioga2
           @fill_style.set_from_hash(hash)
           # Reversed isn't what I want...
           @reversed_fill_style.set_from_hash(hash, 'reversed_%s')
-        end
-
-        # Redirects to the parent's style
-        def style(*a)
-          return parent.style(*a)
         end
 
         protected 
