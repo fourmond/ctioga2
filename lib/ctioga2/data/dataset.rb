@@ -349,14 +349,20 @@ module CTioga2
         return @indexed_dtable
       end
 
-      # Returns a x,y Function 
+      # Returns a x,y Function
+      #
+      # @todo add algorithm
       def make_contour(level)
         dtable = indexed_table
         x,y,gaps = *dtable.make_contour(level)
+
+        # We remove any gap corresponding to the element size,
+        # meaningless.
+        gaps -= [x.size]
         n = 0.0/0.0
         gaps.sort.reverse.each do |i|
-          x.insert(i-1,n)
-          y.insert(i-1,n)
+          x.insert(i,n)
+          y.insert(i,n)
         end
         return Dobjects::Function.new(x,y)
       end

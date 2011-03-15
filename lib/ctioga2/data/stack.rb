@@ -308,7 +308,9 @@ EOH
     
     MergeToLastCommand.describe("....",
                                <<EOH, DataStackGroup)
-....
+...
+
+This command will get documented some day.
 EOH
 
     XYReglinCommand = 
@@ -325,7 +327,31 @@ EOH
     
     XYReglinCommand.describe("....",
                              <<EOH, DataStackGroup)
-....
+...
+
+This command will get documented some day.
+EOH
+
+
+    ComputeContourCommand = 
+      Cmd.new("compute-contour", nil, "--compute-contour", 
+              [CmdArg.new("float")], {
+                'which' => CmdArg.new('stored-dataset')
+              }) do |plotmaker, level, opts|
+      stack = plotmaker.data_stack
+      ds = stack.specified_dataset(opts)
+      f = ds.make_contour(level)
+      newds = Dataset.new("Contour #{level}", [f.x, f.y])
+      stack.store_dataset(newds, true)
+    end
+    
+    ComputeContourCommand.describe("computes the contour and push it to data stack",
+                             <<EOH, DataStackGroup)
+Computes the contour at the given level for the given dataset (or the
+last on the stack if none is specified) and pushes it onto the data
+stack.
+
+You can further manipulate it as usual.
 EOH
 
     SetDatasetHookCommand = 

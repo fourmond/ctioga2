@@ -1,5 +1,5 @@
 # contour.rb: contouring code for XYZ data
-# copyright (c) 2009 by Vincent Fourmond
+# copyright (c) 2010, 2011 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,6 +36,9 @@ module CTioga2
         # $last_curve_style calls for a context for the primitive, ie
         # which was the state of the dataset/curve stack at the moment
         # when the primitive was drawn ?
+        #
+        # Worse, I already designed something better. I'll need to get
+        # that straight some day.
         TiogaPrimitiveCall.
           primitive("contour", "contour", [ 'level'],
                     ContoursOptions) do |t, level,options|
