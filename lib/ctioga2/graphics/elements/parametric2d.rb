@@ -1,4 +1,3 @@
-# -*- coding: undecided -*-
 # parametric2d.rb: a 2D curve whose parameters depend on Z values
 # copyright (c) 2006, 2007, 2008, 2009, 2010 by Vincent Fourmond
 
