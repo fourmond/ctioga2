@@ -194,7 +194,7 @@ module CTioga2
       def merge_datasets(n = 2, columns = [0], precision = nil)
         ds = @stack.pop
         raise "Nothing on the stack" unless ds
-        datasets = @stack[-1..-(n-1)]
+        datasets = @stack[-(n-1)..-1].reverse()
         ds.merge_datasets_in(datasets, columns, precision)
         @stack.push(ds)
       end
