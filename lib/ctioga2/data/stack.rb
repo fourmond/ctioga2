@@ -297,6 +297,24 @@ stack, concatenates them (older last) and push them back onto the
 stack.
 EOH
 
+    ApplyLastCommand =
+      Cmd.new("apply-formula", '', "--apply-formula",
+              [CmdArg.new('text')], 
+              {
+                'which' => CmdArg.new('stored-dataset'),
+                'name' => CmdArg.new('text'),
+              }) do |plotmaker, formula, opts|
+      ds = plotmaker.data_stack.specified_dataset(opts)
+      newds = ds.apply_formulas(formula)
+      plotmaker.data_stack.add_datasets([newds], opts)
+    end
+    
+    ApplyLastCommand.describe("Applies a formula to the last dataset",
+                              <<EOH, DataStackGroup)
+Applies a formula to the last dataset (or the named one)
+EOH
+
+
 
     MergeToLastCommand = 
       Cmd.new("merge-datasets", nil, "--merge-datasets", 

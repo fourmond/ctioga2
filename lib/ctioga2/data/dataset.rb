@@ -12,6 +12,7 @@
 # GNU General Public License for more details (in the COPYING file).
 
 require 'ctioga2/utils'
+require 'ctioga2/log'
 require 'ctioga2/data/datacolumn'
 require 'ctioga2/data/indexed-dtable'
 
@@ -42,6 +43,8 @@ module CTioga2
       # The name of the Dataset, such as one that could be used in a
       # legend (like for the --auto-legend option of ctioga).
       attr_accessor :name
+
+      include Log
 
       # Creates a new Dataset object with the given data columns
       # (Dvector or DataColumn). #x is the first one
@@ -296,6 +299,43 @@ module CTioga2
           i += 1
         end
         
+      end
+
+      # Applies formulas to values. Formulas are like text-backend
+      # specification: ":"-separated specs of the target
+      def apply_formulas(formula)
+        columns = []
+        columns << Dobjects::Dvector.new(@x.size) do |i|
+          i
+        end
+        columns << @x.values
+        for y in @ys
+          columns << y.values
+        end
+
+        # Names:
+        heads = {
+          'x' => 1,
+          'y' => 2,
+          'z' => 3,
+        }
+        i = 1
+        for f in @ys
+          heads["y#{i}"] = i+1
+          i += 1
+        end
+
+        result = []
+        for f in formula.split(/:/) do
+          fm = Utils::parse_formula(f, nil, heads)
+          debug { 
+            "Using formula #{fm} for column spec: #{f} (##{result.size})" 
+          }
+          result << DataColumn.new(Dobjects::Dvector.
+                                   compute_formula(fm, 
+                                                   columns))
+        end
+        return Dataset.new(name + "_mod", result)
       end
 
 
