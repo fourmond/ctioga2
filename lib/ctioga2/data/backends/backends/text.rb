@@ -361,18 +361,7 @@ EOD
         def get_data_column(column, compute_formulas = false, 
                             parameters = nil, header = nil)
           if compute_formulas
-            formula = column
-            if parameters
-              for k,v in parameters
-                formula.gsub!(/\b#{k}\b/, v.to_s)
-              end
-            end
-            formula.gsub!(/\$(\d+)/, 'column[\1]')
-            if header
-              for k,v in header
-                formula.gsub!("$#{k}$", "column[#{v}]")
-              end
-            end
+            formula = Utils::parse_formula(column, parameters, headers)
             debug { "Using formula #{formula} for column spec: #{column}" }
             return Dvector.compute_formula(formula, 
                                            @current_data,

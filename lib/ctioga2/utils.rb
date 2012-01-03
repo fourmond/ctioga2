@@ -137,6 +137,30 @@ module CTioga2
       k.downto(1) {|i| res = res/i }
       return res
     end
+
+    # This converts a text formula that can contain:
+    # * any litteral thing
+    # * references to columns in the form of \$1 for column 1 (ie the
+    #   second one)
+    # * references to named columns in the form $name$
+    # * references to parameters
+    #
+    # The return value is ready to be passed to Dvector.compute_formula
+    def self.parse_formula(formula, parameters = nil, header = nil)
+      formula = formula.dup
+      if parameters
+        for k,v in parameters
+          formula.gsub!(/\b#{k}\b/, v.to_s)
+        end
+      end
+      formula.gsub!(/\$(\d+)/, 'column[\1]')
+      if header
+        for k,v in header
+          formula.gsub!("$#{k}$", "column[#{v}]")
+        end
+      end
+      return formula
+    end
     
 
   end
