@@ -180,6 +180,12 @@ module CTioga2
         @doc = Documentation::Doc.new()
         @variables = Variables.new
 
+        # We import the variables from the environment, just like a in
+        # a Makefile
+        for k, v in ENV
+          @variables.define_variable(k, v)
+        end
+
         @file_parser = Parsers::FileParser.new
       end
 

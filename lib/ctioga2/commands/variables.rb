@@ -32,7 +32,6 @@ module CTioga2
     # There are two kind of variables
     # * immediate, defined by
     #    variable := value
-    #   or
     #   These ones are evaluated for once when they are defined.
     #   They are stored in the form of a String
     # * recursively expanded variables. They are mostly like immediate
@@ -57,10 +56,11 @@ module CTioga2
       end
 
       # Sets a the variable _name_ to _value_ (being an
-      # InterpreterString or a String). If _interpreter_ is given, the
-      # value is expanded at the time of the definition, (immediate
-      # variable), whereas if it stays _nil_, the variable is defined
-      # as a recursively defined variable.
+      # InterpreterString or a String). In the former case
+      # (InterpreterString), if _interpreter_ is given, the value is
+      # expanded at the time of the definition, (immediate variable),
+      # whereas if it stays _nil_, the variable is defined as a
+      # recursively defined variable.
       def define_variable(name, value, interpreter = nil)
         if value.respond_to? :expand_to_string
           if interpreter
