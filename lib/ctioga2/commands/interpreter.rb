@@ -202,10 +202,10 @@ module CTioga2
       # the base name of the given file if no figure name was
       # specified.
       def run_command_file(file)
-        @file_parser.run_command_file(file, self)
         if ! @plotmaker_target.figure_name
           @plotmaker_target.figure_name = file.gsub(/\.[^.]+$/,'')
         end
+        @file_parser.run_command_file(file, self)
       end
 
       # Parses and runs the given string.
