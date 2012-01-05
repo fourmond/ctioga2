@@ -361,7 +361,7 @@ EOD
         def get_data_column(column, compute_formulas = false, 
                             parameters = nil, header = nil)
           if compute_formulas
-            formula = Utils::parse_formula(column, parameters, headers)
+            formula = Utils::parse_formula(column, parameters, header)
             debug { "Using formula #{formula} for column spec: #{column}" }
             return Dvector.compute_formula(formula, 
                                            @current_data,
