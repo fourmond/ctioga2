@@ -102,6 +102,8 @@
 require 'ctioga2/utils'
 require 'ctioga2/log'
 
+CTioga2::Log::init_logger
+
 require 'shellwords'
 
 # Maybe, maybe, maybe... We need tioga ?

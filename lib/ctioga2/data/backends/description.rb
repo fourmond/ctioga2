@@ -179,10 +179,14 @@ module CTioga2
                   backend_options, "Selects the '{backend: #{@name}}' backend", 
                   nil, group) do |plotmaker, options|
             plotmaker.data_stack.backend_factory.set_current_backend(@name)
-            for k,v in options
-              plotmaker.data_stack.backend_factory.
-                set_backend_parameter_value(@name, k, v)
-            end
+            if options
+              for k,v in options
+                plotmaker.data_stack.backend_factory.
+                  set_backend_parameter_value(@name, k, v)
+              end 
+            end               # Commands#run_command set options to
+            # nil if the options hash is an empty hash, so we have to
+            # tackle this if it happens
           end
         end
 
