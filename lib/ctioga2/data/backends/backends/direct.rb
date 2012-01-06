@@ -59,8 +59,7 @@ EOD
           io = StringIO.new(str)
           
           cols = Dvector::fancy_read(io, nil)
-          p cols
-          
+
           return Dataset.new("direct", cols)
         end
 
