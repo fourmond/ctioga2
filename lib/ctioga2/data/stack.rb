@@ -80,8 +80,13 @@ module CTioga2
       def get_datasets(set, options = {})
         backend = @backend_factory.current
         sets = backend.expand_sets(set)
-        datasets = sets.map do |s|
-          backend.dataset(s)
+        datasets = []
+        for s in sets
+          begin
+            datasets << backend.dataset(s)
+          rescue Exception => e
+            error { "Could not load dataset #{s} -- #{e}" }
+          end
         end
         add_datasets(datasets, options)
         return datasets
