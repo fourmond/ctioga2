@@ -55,7 +55,7 @@ module CTioga2
         include Dobjects
 
         describe 'text', 'Text format', <<EOD
-This backend can read text files in a format close to the one understood
+This backend reads text files in a format close to the one understood
 by gnuplot and the like.
 EOD
 
@@ -288,6 +288,11 @@ EOD
         # extracted from files, so that they could be included for
         # instance in the automatic labels ? (and we could have fun
         # improving this one ?)
+        #
+        # @todo There should be a way to read pure text columns and
+        # use them somehow, to annotate the output ? This should be
+        # implemented at the Tioga level, though (both for reading, in
+        # fancy_read, and for using hover stuff)
         #
         # \warning This needs Tioga r561
         def read_file(file)
