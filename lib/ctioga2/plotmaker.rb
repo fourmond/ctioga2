@@ -390,12 +390,6 @@ module CTioga2
         return
       end
       for set in sets
-        # We first trim elements from options that are not inside
-        # Graphics::Styles::CurveStyleFactory::PlotCommandOptions
-        options.delete_if { |k,v|
-          ! Graphics::Styles::
-          CurveStyleFactory::PlotCommandOptions.key?(k)
-        }
         add_curve(set, options)
       end
     end
@@ -441,6 +435,10 @@ module CTioga2
     
 
     PlotOptions.merge!(Data::LoadDatasetOptions) do |key, oldval, newval| 
+      raise "Duplicated option between PlotCommandOptions and LoadDatasetOptions"
+    end
+
+    PlotOptions.merge!(Graphics::CurveGenerator::PlotOptions) do |key, oldval, newval| 
       raise "Duplicated option between PlotCommandOptions and LoadDatasetOptions"
     end
 

@@ -55,6 +55,8 @@ module CTioga2
         attr_accessor :plot_margin
 
         # Coordinate tranforms
+        #
+        # @todo they should be axis-specific.
         attr_accessor :transforms
 
         # Style of the background of the plot
@@ -100,6 +102,13 @@ module CTioga2
           # A padding of 4bp ? Why ?? Why not ?
           @padding = Types::Dimension.new(:bp, 4)
         end
+
+        # Apply (destructively) the current transformations to the
+        # given dataset
+        def apply_transforms!(dataset)
+          @transforms.transform_2d!(dataset)
+        end
+
 
         # Whether to use log scale for the given axis.
         #

@@ -22,6 +22,8 @@ module CTioga2
 
   module Graphics
 
+
+
     # This class is in charge of generating Elements::TiogaElement,
     # such as Elements::Curve2D, from a dataset. It takes care of
     # generating the appropriate style and of transforming the
@@ -46,16 +48,31 @@ module CTioga2
         @current_curves = :xy_plot
       end
 
+      PlotOptions = { 
+        'bypass-transforms' => CmdArg.new('boolean')
+      }
+
+
       # Creates a Elements::TiogaElement representing the _dataset_
       # and returns it.
       #
       # \todo
-      # * (other kinds of) coordinate transformations
+      # * other kinds of coordinate transformations
       # * other kinds of curves (pseudo-3D, surfaces, histograms...)
       def curve_from_dataset(plot, dataset, options = {})
         # Does coordinate transforms first ?
-        # \todo copy datasets here rather than overwriting them !
-        plot.style.transforms.transform_2d!(dataset)
+        # @todo copy datasets here rather than overwriting them !
+        #   -> this should be an option !
+        if ! options['bypass-transforms']
+          plot.style.apply_transforms!(dataset)
+        end
+
+        # Now, we trim options unrelated to the plotting
+        options.delete_if { |k,v|
+          ! Graphics::Styles::
+          CurveStyleFactory::PlotCommandOptions.key?(k)
+        }
+
 
         return send(@current_curves, plot, dataset, options)
       end
