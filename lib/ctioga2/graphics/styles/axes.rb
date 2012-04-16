@@ -261,6 +261,7 @@ module CTioga2
       PartialAxisStyle = {
         'transform' => CmdArg.new('bijection'),
         'location' => CmdArg.new('location'),
+        'log' => CmdArg.new('boolean'),
         'stroke_color' => CmdArg.new('color')
       }
 
