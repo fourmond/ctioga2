@@ -86,6 +86,7 @@ module CTioga2
             datasets << backend.dataset(s)
           rescue Exception => e
             error { "Could not load dataset #{s} -- #{e}" }
+            debug { "#{e.backtrace.join("\n")}" }
           end
         end
         add_datasets(datasets, options)
