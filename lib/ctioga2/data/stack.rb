@@ -325,7 +325,7 @@ EOH
                 'name' => CmdArg.new('text') 
               }) do |plotmaker, opts|
       nb = opts['number'] || 2
-      plotmaker.data_stack.concatenate_datasets(nb)
+      plotmaker.data_stack.concatenate_datasets(nb, opts['name'])
     end
     
     ConcatLastCommand.describe("Concatenates the last datasets on the stack",
