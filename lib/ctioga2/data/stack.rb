@@ -210,6 +210,32 @@ module CTioga2
         return @stack.last
       end
 
+      # Displays the contents of the stack
+      def show
+        STDERR.puts "Stack contents"
+        i = 0
+        # Swap the named dataset stuff
+        ## @todo Maybe a hash pair should be maintained in permanence ?
+        rev = {}
+        for k,v in @named_datasets
+          rev[v] = k
+        end
+
+        for ds in @stack
+          name = rev[ds]
+          if name
+            name = "(named: '#{name}')"
+          else
+            name = ""
+          end
+          
+          pref = sprintf("#%-2d %-3d:", i, - @stack.size + i)
+          
+          STDERR.puts " * #{pref} #{ds.name} -- #{ds.ys.size + 1} columns #{name}"
+          i += 1
+        end
+      end
+
       
     end
 
@@ -318,6 +344,22 @@ EOH
     ApplyLastCommand.describe("Applies a formula to the last dataset",
                               <<EOH, DataStackGroup)
 Applies a formula to the last dataset (or the named one)
+EOH
+
+    ShowStackCommand = 
+      Cmd.new("show-stack", nil, "--show-stack", 
+              [], 
+              { }
+              ) do |plotmaker, opts|
+      plotmaker.data_stack.show
+    end
+    
+    ShowStackCommand.describe("Displays the content of the stack",
+                              <<EOH, DataStackGroup)
+Displays the current contents of the dataset stack. 
+
+Mostly used for debugging when operations like {cmd: merge-datasets}
+or {cmd: join-datasets} don't work as expected.
 EOH
 
 
