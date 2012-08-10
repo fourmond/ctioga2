@@ -183,7 +183,8 @@ module CTioga2
       end
 
       # Pops the last _n_ datasets off the stack and pushes back the
-      def concatenate_datasets(n = 2)
+      # results, optionally naming it.
+      def concatenate_datasets(n = 2, name = nil)
         ds = @stack.pop
         raise "Nothing on the stack" unless ds
         (n-1).times do
@@ -192,6 +193,8 @@ module CTioga2
           ds << ds2
         end
         @stack.push(ds)
+        # Name the dataset
+        @named_datasets[name] = ds if name
       end
 
       # Merges one or more datasets into the last one.
@@ -315,8 +318,12 @@ onto the stack, or the given stored dataset if the which option is given.
 EOH
 
     ConcatLastCommand = 
-      Cmd.new("join-datasets", nil, "--join-datasets", 
-              [], {'number' => CmdArg.new('integer')}) do |plotmaker, opts|
+      Cmd.new("join-datasets", "-j", "--join-datasets", 
+              [], 
+              { 
+                'number' => CmdArg.new('integer'),
+                'name' => CmdArg.new('text') 
+              }) do |plotmaker, opts|
       nb = opts['number'] || 2
       plotmaker.data_stack.concatenate_datasets(nb)
     end
@@ -325,7 +332,7 @@ EOH
                                <<EOH, DataStackGroup)
 Pops the last two (or number, if it is specified) datasets from the
 stack, concatenates them (older last) and push them back onto the
-stack.
+stack. The name option can be used to give a name to the new dataset. 
 EOH
 
     ApplyLastCommand =
