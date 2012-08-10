@@ -194,13 +194,12 @@ module CTioga2
         @stack.push(ds)
       end
 
-      # Merges the last datasets into a new one.
+      # Merges one or more datasets into the last one.
       #
-      # Over
-      def merge_datasets(n = 2, columns = [0], precision = nil)
+      # The last dataset of the stack is overwritten.
+      def merge_datasets_into_last(datasets, columns = [0], precision = nil)
         ds = @stack.pop
         raise "Nothing on the stack" unless ds
-        datasets = @stack[-(n-1)..-1].reverse()
         ds.merge_datasets_in(datasets, columns, precision)
         @stack.push(ds)
       end
@@ -363,20 +362,41 @@ or {cmd: join-datasets} don't work as expected.
 EOH
 
 
-
+    ## @todo Add column selection ?
     MergeToLastCommand = 
       Cmd.new("merge-datasets", nil, "--merge-datasets", 
-              [], {'number' => CmdArg.new('integer')}) do |plotmaker, opts|
-      nb = opts['number'] || 2
-      ## @todo all
-      plotmaker.data_stack.merge_datasets(nb)
+              [], 
+              {
+                'number' => CmdArg.new('integer'), 
+                'which' => CmdArg.new('stored-dataset')
+              }
+              ) do |plotmaker, opts|
+      stack = plotmaker.data_stack
+      if opts['which']
+        if opts['number']
+          warn { "Cannot use both which and number for merge-datasets" }
+        end
+        datasets = [stack.specified_dataset(opts)]
+      else
+        nb = opts['number'] || 2
+        if stack.stack.size < nb
+          raise "Not enough datasets on the stack"
+        end
+        datasets = stack.stack[(- nb).. -2]
+        datasets.reverse!
+      end
+      plotmaker.data_stack.merge_datasets_into_last(datasets)
     end
     
-    MergeToLastCommand.describe("....",
-                               <<EOH, DataStackGroup)
-...
+    MergeToLastCommand.describe("Merge datasets based on X column",
+                                <<EOH, DataStackGroup)
+This commands merges data with matching X values from a dataset (by
+default the one before the last) into the last one. Data points that
+have no corresponding X value in the current dataset are simply
+ignored.
 
-This command will get documented some day.
+This can be used to build 3D datasets for {cmd: xyz-map} or 
+{cmd: xy-parametric}.
 EOH
 
     XYReglinCommand = 
