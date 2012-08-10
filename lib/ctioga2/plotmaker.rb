@@ -148,6 +148,11 @@ require 'ctioga2/postprocess'
 # * CTioga2::Data
 #
 # Have fun hacking...
+#
+# \section todo Various things and ideas...
+#
+# @li have a way to make one axis scale slave to another one (ie, for
+# displays of rate constants vs potentials)
 module CTioga2
 
   Version::register_svn_info('$Revision$', '$Date$')

@@ -70,6 +70,9 @@ module CTioga2
         def parse_io_object(io, interpreter)
           # The process is simple: we look for symbols and
           # corresponding syntax element: parentheses or assignments
+
+          ## @todo It would be really great if assignments could be
+          ## made conditional (a bit like in makefiles)
           while(1)
             symbol = up_to_next_symbol(io)
             break if not symbol
