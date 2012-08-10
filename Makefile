@@ -5,6 +5,10 @@ RUBY = ruby
 # --diagram is way too painful.
 RDOC_OPTIONS = --exclude setup.rb -m CTioga2::PlotMaker
 
+install:
+	@ [ -r .config ] || (echo "Run make config or make config-home before running make install" ; false)
+	$(RUBY) setup.rb install
+
 doc:
 # to avoid partial regeneration of the documentation
 	rm -rf doc		
@@ -20,9 +24,6 @@ config-home:
 config:
 	$(RUBY) setup.rb config
 
-install:
-	@ [ -r .config ] || (echo "Run make config or make config-home before running make install" ; false)
-	$(RUBY) setup.rb install
 
 # I'm annoyed at having to set the svn:keywords properties on
 # every single file around.
