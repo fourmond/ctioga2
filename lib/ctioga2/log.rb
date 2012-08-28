@@ -20,6 +20,9 @@ module CTioga2
 
   # This module should be included (or extended) by every class that
   # need logging/debugging facilities.
+  #
+  # @todo The debug information should contain the command being
+  # currently executed.
   module Log
 
     # Prints a debug message, on channel _channel_. Channel handling

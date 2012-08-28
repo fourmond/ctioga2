@@ -163,6 +163,25 @@ module CTioga2
         end
       end
 
+      # Returns a list of datasets, either a named dataset, or the
+      # last datasets from the stack
+      def latest_datasets(opts)
+        if opts['which']
+          if opts['number']
+            warn { "Cannot use both which and number" }
+          end
+          datasets = [ specified_dataset(opts) ]
+        else
+          nb = opts['number'] || 2
+          if stack.stack.size < nb
+            raise "Not enough datasets on the stack"
+          end
+          datasets = stack.stack[(- nb).. -2]
+          datasets.reverse!
+        end
+      end
+        
+        
       # Appends a set of commands to the dataset hook
       def add_to_dataset_hook(commands)
         if @dataset_hook
@@ -182,14 +201,12 @@ module CTioga2
         end
       end
 
-      # Pops the last _n_ datasets off the stack and pushes back the
-      # results, optionally naming it.
-      def concatenate_datasets(n = 2, name = nil)
+      # Add all the given datasets to the current one.
+      def concatenate_datasets(datasets, name = nil)
         ds = @stack.pop
         raise "Nothing on the stack" unless ds
-        (n-1).times do
-          ds2 = @stack.pop
-          raise "Not enough datasets on the stack" unless ds2
+
+        for ds2 in datasets
           ds << ds2
         end
         @stack.push(ds)
@@ -322,10 +339,12 @@ EOH
               [], 
               { 
                 'number' => CmdArg.new('integer'),
+                'which' => CmdArg.new('stored-dataset'),
                 'name' => CmdArg.new('text') 
               }) do |plotmaker, opts|
-      nb = opts['number'] || 2
-      plotmaker.data_stack.concatenate_datasets(nb, opts['name'])
+      stack = plotmaker.data_stack
+      datasets = stack.latest_datasets(opts)
+      stack.concatenate_datasets(datasets, opts['name'])
     end
     
     ConcatLastCommand.describe("Concatenates the last datasets on the stack",
@@ -379,19 +398,7 @@ EOH
               }
               ) do |plotmaker, opts|
       stack = plotmaker.data_stack
-      if opts['which']
-        if opts['number']
-          warn { "Cannot use both which and number for merge-datasets" }
-        end
-        datasets = [stack.specified_dataset(opts)]
-      else
-        nb = opts['number'] || 2
-        if stack.stack.size < nb
-          raise "Not enough datasets on the stack"
-        end
-        datasets = stack.stack[(- nb).. -2]
-        datasets.reverse!
-      end
+      datasets = stack.latest_datasets(opts)
       plotmaker.data_stack.merge_datasets_into_last(datasets)
     end
     
