@@ -1,8 +1,13 @@
 ctioga2 (0.3)
 
   * Implemented a compute-contour command to directly manipulate contours
+  * Scripts now import environment variables (makefile-style)
+  * Added an apply-formula command to modify already loaded datasets
+  * Added a direct backend to input a couple of points directly on
+    command-line
+  * Improved the stack manipulation functions
 
- -- Vincent Fourmond <vincent.fourmond@9online.fr>  Tue Mar 15 11:07:23 CET 2011
+ -- Vincent Fourmond <vincent.fourmond@9online.fr>  Mon Sep  3 21:10:34 CEST 2012
 
 ctioga2 (0.2)
 
