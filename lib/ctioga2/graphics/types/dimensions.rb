@@ -150,7 +150,7 @@ module CTioga2
             end
             return Dimension.new(unit, value, orientation)
           else
-            raise "Unkown Dimension specification: '#{text}'"
+            raise "Unknown Dimension specification: '#{text}'"
           end
         end
         
