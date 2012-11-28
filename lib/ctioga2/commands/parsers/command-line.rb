@@ -71,6 +71,7 @@ module CTioga2
           # We duplicate the original array
           argv = argv.dup
           options = nil         # currently never used.
+          number = 0
           while argv.size > 0
             current = argv.shift
             if current =~ /^--(.*)/ # a long option
@@ -78,6 +79,8 @@ module CTioga2
                 command, arguments, options = 
                   extract_command_arguments(argv, @long_options[$1])
 
+                number += 1
+                interpreter.context.parsing_option(current, number)
                 interpreter.run_command(command, arguments, options)
               else
                 raise OptionUnkown, "Long option #{current} is not known"
@@ -89,6 +92,8 @@ module CTioga2
                 if @short_options.key?(short)
                   command, arguments, options = 
                     extract_command_arguments(argv, @short_options[short])
+                  number += 1
+                  interpreter.context.parsing_option("-#{short}", number)
                   interpreter.run_command(command, arguments, options)
                 else
                   raise OptionUnkown, "Short option -#{short} is not known"
@@ -99,6 +104,8 @@ module CTioga2
                 argv.unshift current
                 command, arguments, options = 
                   extract_command_arguments(argv, @default_command)
+                number += 1
+                interpreter.context.parsing_option("(default)", number)
                 interpreter.run_command(command, arguments, options)
               else
                 yield current

@@ -13,6 +13,7 @@
 
 require 'ctioga2/utils'
 require 'ctioga2/commands/commands'
+require 'ctioga2/commands/context'
 require 'ctioga2/commands/variables'
 require 'ctioga2/commands/strings'
 require 'ctioga2/commands/parsers/command-line'
@@ -162,6 +163,9 @@ module CTioga2
       # The Parsers::FileParser object used to... parse files ?
       attr_reader :file_parser
 
+      # The current context
+      attr_accessor :context
+
       # Creates an Interpreter with _target_ as the PlotMaker target
       # object.
       #
@@ -187,6 +191,7 @@ module CTioga2
         end
 
         @file_parser = Parsers::FileParser.new
+        @context = ParsingContext.new
       end
 
 

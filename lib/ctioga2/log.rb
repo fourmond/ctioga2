@@ -25,30 +25,34 @@ module CTioga2
   # currently executed.
   module Log
 
+    def self.context
+      return " while processing #{PlotMaker.plotmaker.interpreter.context.to_s}"
+    end
+
     # Prints a debug message, on channel _channel_. Channel handling
     # is not implemented yet.
     def debug(channel = nil)
-      @@logger.debug {yield}
+      @@logger.debug {yield + Log.context}
     end
 
     # Prints a warning message
     def warn
-      @@logger.warn {yield}
+      @@logger.warn {yield + Log.context} 
     end
 
     # Prints an informational message
     def info
-      @@logger.info {yield}
+      @@logger.info {yield + Log.context}
     end
 
     # Prints an error message
     def error
-      @@logger.error {yield}
+      @@logger.error {yield + Log.context}
     end
 
     # Prints a fatal error message and initiates program termination.
     def fatal
-      @@logger.fatal {yield}
+      @@logger.fatal {yield + Log.context}
       exit 1                    # Fatal error.
     end
 

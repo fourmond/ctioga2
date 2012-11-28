@@ -110,6 +110,7 @@ module CTioga2
                   end
                 end
 
+                interpreter.context.parsing_file(symbol, io) # Missing line number
                 interpreter.run_command(cmd, real_args, options)
                 io.getc         # Slurp up the )
                 break
