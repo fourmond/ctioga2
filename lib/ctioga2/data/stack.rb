@@ -173,10 +173,10 @@ module CTioga2
           datasets = [ specified_dataset(opts) ]
         else
           nb = opts['number'] || 2
-          if stack.stack.size < nb
+          if @stack.size < nb
             raise "Not enough datasets on the stack"
           end
-          datasets = stack.stack[(- nb).. -2]
+          datasets = @stack[(- nb).. -2]
           datasets.reverse!
         end
       end
