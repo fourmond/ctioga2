@@ -103,8 +103,14 @@ module CTioga2
         # Makes up a Boundaries object from two axes keys
         def get_given_boundaries(horiz, vert)
           if @computed_boundaries
-            return Types::Boundaries.from_ranges(@computed_boundaries[horiz],
-                                                 @computed_boundaries[vert])
+            if @computed_boundaries.key?(horiz) and 
+                @computed_boundaries.key?(vert)
+              return Types::Boundaries.from_ranges(@computed_boundaries[horiz],
+                                                   @computed_boundaries[vert])
+            else
+              error { "A subplot element doesn't have inner bounds -- which probably means that no curves were defined" }
+              return Types::Boundaries.new(0.0,1.0,0.0,1.0)
+            end
           else
             return nil
           end
