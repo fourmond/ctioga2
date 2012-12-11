@@ -15,3 +15,10 @@ $ct -t 'Text drawing' -r 10cmx10cm \
     /color Orange /scale 1.2  /alignment bottom \
     --draw-line -6,-0.3 6,-0.3 /color Green /line_style Dots 
 
+
+$ct -t 'Boxes' -r 10cmx10cm \
+    'sin(x)' \
+    --draw-box -2,0.2 2,-0.2 /color=Blue /width=2 \
+    --draw-box -5,0.8 -3,-0.4 /fill-color=Pink /color=Black \
+    --draw-box 3,0.8 7,0 /fill-color=Pink /fill-transparency=0.7
+
