@@ -29,6 +29,7 @@
   (modify-syntax-entry ?\n "> " ctioga2-syntax-table)
   (modify-syntax-entry ?\( "()" ctioga2-syntax-table)
   (modify-syntax-entry ?\) ")(" ctioga2-syntax-table)
+  (modify-syntax-entry ?\' "\"'" ctioga2-syntax-table)
   )
 
 (defvar ctioga2-available-commands nil
@@ -51,14 +52,14 @@
    (list
     (concat
      "\\<\\("
-     (mapconcat
-      'identity
-      (ctioga2-command-list)
-      "\\|")
+     (regexp-opt (ctioga2-command-list))
      "\\)[[:blank:]]*(")
     1 font-lock-function-name-face
     )
    '("\\$(\\([[:alnum:]_]+\\))"
+     1
+     font-lock-variable-name-face t)
+   '("^[[:blank:]]*\\([[:alnum:]_]+\\)[[:blank:]]*:?="
      1
      font-lock-variable-name-face)
    )
@@ -78,7 +79,6 @@
   (make-local-variable 'comment-end)
   (setq comment-start "# " comment-end "")
 
-  
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults 
         (list (ctioga2-make-font-lock)
