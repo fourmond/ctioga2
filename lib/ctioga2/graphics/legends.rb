@@ -70,6 +70,7 @@ EOH
       'dy' => CmdArg.new('dimension'),
       'scale' => CmdArg.new('float'),
       'text_scale' => CmdArg.new('float'),
+      'symbol_scale' => CmdArg.new('float')
     }
       
 

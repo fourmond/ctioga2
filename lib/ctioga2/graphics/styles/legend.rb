@@ -38,12 +38,15 @@ module CTioga2
         # The distance between the legend pictogram and the text
         attr_accessor :picto_to_text
 
-        # The scale of the legend
+        # The overall scale of the legend
         attr_accessor :scale
 
         # The scale of the legend text -- relative to the overall
         # scale.
         attr_accessor :text_scale
+
+        # The scale of the pictogram
+        attr_accessor :symbol_scale
 
         def initialize
           @dy = Types::Dimension.new(:dy, 1.6, :y)
@@ -55,6 +58,7 @@ module CTioga2
 
           @scale = 0.8
           @text_scale = 0.82
+          @symbol_scale = 1
         end
       end
     end
