@@ -27,7 +27,7 @@ module CTioga2
       class LegendStorageStyle < BasicStyle
 
         # The distance between two lines, a Types::Dimension object.
-        attr_accessor :dy
+        typed_attribute :dy, 'dimension'
 
         # The width of the legend pictogram, a Types::Dimension object.
         attr_accessor :picto_width
@@ -39,14 +39,14 @@ module CTioga2
         attr_accessor :picto_to_text
 
         # The overall scale of the legend
-        attr_accessor :scale
+        typed_attribute :scale, 'float'
 
         # The scale of the legend text -- relative to the overall
         # scale.
-        attr_accessor :text_scale
+        typed_attribute :text_scale, 'float'
 
         # The scale of the pictogram
-        attr_accessor :symbol_scale
+        typed_attribute :symbol_scale, 'float'
 
         def initialize
           @dy = Types::Dimension.new(:dy, 1.6, :y)

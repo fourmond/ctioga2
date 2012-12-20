@@ -66,13 +66,7 @@ When this option is in effect (off by default), all datasets get a legend,
 their 'dataset name', unless another legend is manually specified.
 EOH
 
-    LegendStyleOptions = {
-      'dy' => CmdArg.new('dimension'),
-      'scale' => CmdArg.new('float'),
-      'text_scale' => CmdArg.new('float'),
-      'symbol_scale' => CmdArg.new('float')
-    }
-      
+    LegendStyleOptions = Styles::LegendStorageStyle.options_hash()
 
     LegendStyleCommand = 
       Cmd.new("legend-style",nil,"--legend-style", 

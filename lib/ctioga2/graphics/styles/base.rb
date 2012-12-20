@@ -1,5 +1,5 @@
 # base.rb: the base of style objects
-# copyright (c) 2009 by Vincent Fourmond
+# copyright (c) 2009, 2012 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,6 +51,25 @@ module CTioga2
             else
               []
             end
+        end
+
+        # This function should be the main way now of declaring
+        # attributes, as it allows one to automatically generate an
+        # options hash for Command
+        def self.typed_attribute(symbol, type)
+          sym = symbol.to_sym
+          self.attr_accessor(sym)
+          type = CmdArg.new(type) unless type.respond_to? :string_to_type
+          @attribute_types ||= {}
+          @attribute_types[sym] = type
+        end
+
+        def self.options_hash(key = "%s")
+          ret = {}
+          for k, v in @attribute_types
+            ret[key % k] = v
+          end
+          return ret
         end
 
         # Sets the values of the attributes from the given
