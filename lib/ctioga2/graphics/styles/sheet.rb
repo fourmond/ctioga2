@@ -181,11 +181,11 @@ module CTioga2
                   ], 
                   cls.options_hash
                   ) do |plotmaker, what, opts|
-          if StyleSheet.get_type(name) != cls
-            error "Incorrect type for style #{name}"
+          if StyleSheet.get_type(what) != cls
+            Log::error {"Incorrect type for style #{name}"}
           else
-            StyleSheet.current_sheet.own_styles[name] ||= {}
-            StyleSheet.current_sheet.own_styles[name].merge!(opts)
+            StyleSheet.current_sheet.own_styles[what] ||= {}
+            StyleSheet.current_sheet.own_styles[what].merge!(opts)
           end
         end
         StyleSheetCommands.last.
