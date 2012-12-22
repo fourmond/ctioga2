@@ -49,6 +49,20 @@ module CTioga2
               commands[n] = command
             end
             puts YAML.dump(commands)
+          when :spec
+            for n in names
+              cmd = cmds[n]
+              puts "#{n}:"
+              for a in cmd.arguments
+                puts " - #{a.type.name}"
+              end
+
+              opts = cmd.optional_arguments.keys.sort
+              for on in opts
+                opt = cmd.optional_arguments[on]
+                puts " * /#{on}=#{opt.type.name}"
+              end
+            end
           else
             puts "Known commands:" 
             max = names.inject(0) {|m,x| [m,x.size].max}
@@ -132,6 +146,7 @@ module CTioga2
       InternalFormatRE = {
         /list|raw/i => :list,
         /default|pretty/i => :pretty,
+        /spec/i => :spec,
         /yaml/i => :yaml
       }
       

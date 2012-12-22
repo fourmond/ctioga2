@@ -23,7 +23,7 @@ module CTioga2
     # An argument to a Command
     class CommandArgument
 
-      # The type of the argument, a CTioga2::MetaBuilder::Type object.
+      # The type of the argument, a CommandType object.
       attr_accessor :type
 
       # The name of the argument. Uniquely for display in the help
