@@ -33,6 +33,10 @@ module CTioga2
       # * ticks
       # * background (uniform fill + watermark if applicable + possibly
       #   a picture .?)
+      #
+      # This class is way too complex and needs too much flexibility
+      # to be handled by a subclass of BasicStyle. However, all
+      # substyles should be.
       class PlotStyle
 
         include Tioga::FigureConstants
@@ -77,15 +81,19 @@ module CTioga2
         def initialize
           # Default style for the plots.
           @axes = {}
-          @axes[:left] = AxisStyle.new(:left, 
-                                       AXIS_WITH_TICKS_AND_NUMERIC_LABELS,
-                                       '$y$')
-          @axes[:bottom] = AxisStyle.new(:bottom, 
-                                         AXIS_WITH_TICKS_AND_NUMERIC_LABELS,
-                                         '$x$')
+          @axes[:left] = 
+            StyleSheet.style_for('left', :left, 
+                                 AXIS_WITH_TICKS_AND_NUMERIC_LABELS,
+                                 '$y$')
+          @axes[:bottom] = 
+            StyleSheet.style_for('bottom', :bottom, 
+                                 AXIS_WITH_TICKS_AND_NUMERIC_LABELS,
+                                 '$x$')
 
-          @axes[:right] = AxisStyle.new(:right, AXIS_WITH_TICKS_ONLY)
-          @axes[:top] = AxisStyle.new(:top, AXIS_WITH_TICKS_ONLY)
+          @axes[:right] = 
+            StyleSheet.style_for('right', :right, AXIS_WITH_TICKS_ONLY)
+          @axes[:top] = 
+            StyleSheet.style_for('top', :top, AXIS_WITH_TICKS_ONLY)
 
           @xaxis_location = :bottom
           @yaxis_location = :left

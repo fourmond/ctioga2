@@ -36,3 +36,6 @@ require 'ctioga2/graphics/styles/legend'
 
 
 require 'ctioga2/graphics/styles/factory'
+
+# Style sheets
+require 'ctioga2/graphics/styles/sheet'
