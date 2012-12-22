@@ -96,6 +96,10 @@ module CTioga2
         
         set_type AxisStyle, %w(axis xaxis yaxis left right top bottom)
 
+        def self.all_types()
+          return @style_type
+        end
+
         # This returns the style we have in this object for the given
         # name. Inner cascading should take place (ie object
         # hierarchy, but not scope hierarchy).
@@ -173,6 +177,14 @@ module CTioga2
 
       kinds.each do |k|
         name, cls, desc = *k
+
+        # Now, we get all the names that match the style
+        all_names = []
+        for k,v in StyleSheet.all_types
+          if v == cls
+            all_names << k
+          end
+        end
         StyleSheetCommands << 
           Cmd.new("default-#{name}-style",nil,
                   "--default-#{name}-style", 
@@ -192,6 +204,8 @@ module CTioga2
           describe("Sets the default style for the given #{desc}.", 
                    <<"EOH", StyleSheetGroup)
 Sets the default style for the named #{desc}.
+
+Possible values for the name: #{all_names.join(', ')}.
 EOH
       end
       
