@@ -26,24 +26,27 @@ module CTioga2
       # The style of a text object. This class is suitable for
       # inclusion as a Hash to FigureMaker#show_axis, for the tick
       # labels.
+      #
+      # @todo alignement and justification are poor names. halign
+      # and/or valign would be better.
       class BaseTextStyle < BasicStyle
         
         # The angle of the text
-        attr_accessor :angle
+        typed_attribute :angle, 'float'
 
         # The 'shift' of the text. Only meaningful for axes and tick
         # labels, where the position of the text is specified using a
-        # side rather than a precise position
-        attr_accessor :shift
+        # side rather than a precise position. In frame coordinates ?
+        typed_attribute :shift, 'float'
 
         # The scale of the text
-        attr_accessor :scale
+        typed_attribute :scale, 'float'
 
         # The vertical alignment 
-        attr_accessor :alignement
+        typed_attribute :alignement, 'alignment'
 
         # The horizontal alignment
-        attr_accessor :justification
+        typed_attribute :justification, 'justification'
 
         # Draw the _text_ at the given location with the given style.
         # If _y_ is _nil_, then _x_or_loc_ is taken to be a location
@@ -83,15 +86,17 @@ module CTioga2
       # The style of a full text object.
       class FullTextStyle < BaseTextStyle
         # The color of the text
-        attr_accessor :color
+        typed_attribute :color, 'color'
 
         # The (horizontal) position with respect to a location. You'll
         # seldom need that.
-        attr_accessor :position
+        typed_attribute :position, 'float'
       end
 
       # A hash that can be used as a base for optional arguments to
       # things that take texts.
+      #
+      # @todo This shouldn't be needed anymore
       FullTextStyleOptions = {
         'angle' => CmdArg.new('float'),
         'shift' => CmdArg.new('float'),
@@ -105,13 +110,13 @@ module CTioga2
       class TextLabel < FullTextStyle
         # The text of the label. _nil_ or _false_ means there will be
         # no text displayed
-        attr_accessor :text
+        typed_attribute :text, "text"
         
         # The location of the label.
         #
         # @todo This will have to eventually use PlotLocation, as it
         # makes much more sense.
-        attr_accessor :loc
+        typed_attribute :loc, "location"
 
         def initialize(text = nil)
           @text = text
@@ -185,30 +190,31 @@ module CTioga2
 
 
         # The angle of the text
-        attr_accessor :angle
+        typed_attribute :angle, 'float'
 
         # The scale of the text
-        attr_accessor :scale
+        typed_attribute :scale, "float"
 
         # The horizontal scale of the text
-        attr_accessor :horizontal_scale
+        typed_attribute :horizontal_scale, "float"
 
         # The vertical scale of the text
-        attr_accessor :vertical_scale
+        typed_attribute :vertical_scale, "float"
 
         # The vertical alignment 
-        attr_accessor :alignement
+        typed_attribute :alignment, "alignment"
 
         # The horizontal alignment
-        attr_accessor :justification
+        typed_attribute :justification, "justification"
 
         # Colors
-        attr_accessor :color
-        attr_accessor :stroke_color
-        attr_accessor :fill_color
+        typed_attribute :color, 'color-or-false'
+        typed_attribute :stroke_color, 'color-or-false'
+        typed_attribute :fill_color, 'color-or-false'
+
 
         # A number between 1 to 14 -- a PDF font
-        attr_accessor :font
+        typed_attribute :font, "pdf-font"
 
         # The rendering mode.
         attr_accessor :mode

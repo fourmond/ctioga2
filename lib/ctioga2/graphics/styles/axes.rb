@@ -33,19 +33,21 @@ module CTioga2
         # AXIS_WITH_TICKS_ONLY,
         # AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS, and
         # AXIS_WITH_TICKS_AND_NUMERIC_LABELS.
-        attr_accessor :decoration
+        typed_attribute :decoration, 'axis-decoration'
         
         # The position of the axis. Can be one of :left, :right, :top,
         # :bottom, :at_y_origin or :at_x_origin.
-        attr_accessor :location
+        typed_attribute :location, 'location'
 
         # Offset of the axis with respect to its normal position. It
         # is counted *away* from the graph. It is either a
         # Types::Dimension object or _nil_.
-        attr_accessor :offset
+        typed_attribute :offset, 'dimension'
 
         # The background lines for the given axis. _nil_ for nothing,
         # or a StrokeStyle object if we want to draw something.
+        #
+        # @todo Use a sub-style for that when that is implemented.
         attr_accessor :background_lines
 
         # The style of the tick labels

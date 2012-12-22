@@ -28,13 +28,13 @@ module CTioga2
       # a Tioga path.
       class StrokeStyle < BasicStyle
         # The color
-        attr_accessor :color
+        typed_attribute :color, 'color-or-false'
         
         # The line style
-        attr_accessor :style
+        typed_attribute :style, 'line-style'
 
         # The line width
-        attr_accessor :width
+        typed_attribute :width, 'float'
 
         # Sets the stroke style to a FigureMaker object, _t_.
         def set_stroke_style(t)
@@ -54,13 +54,13 @@ module CTioga2
       class MarkerStyle < BasicStyle
 
         # The color
-        attr_accessor :color
+        typed_attribute :color, 'color'
         
         # The marker
-        attr_accessor :marker
+        typed_attribute :marker, 'marker'
 
         # The marker scale
-        attr_accessor :scale
+        typed_attribute :scale, 'float'
 
         # Shows the marker at a given location/set of locations.
         # 
@@ -97,16 +97,18 @@ module CTioga2
       #
       # \todo add ways to specify complex fills, such as patterned
       # fills and so on. Those would use clipping the path and base
-      # themselves on the coordinates of the current frame.
+      # themselves on the coordinates of the current frame -- or more
+      # nicely use dimensions ? (which would allow to mix both to some
+      # extent ?)
       #
       # \todo more attributes ?
       class FillStyle < BasicStyle
 
         # The color.
-        attr_accessor :color
+        typed_attribute :color, "color"
 
         # The transparency
-        attr_accessor :transparency
+        typed_attribute :transparency, 'float'
 
         # Sets up the parameters for the fill. Must be called before
         # any path drawing.
@@ -136,7 +138,7 @@ module CTioga2
         # fill ? A float, or:
         # * :top, :bottom
         # * false, nil to disable filling altogether
-        attr_accessor :y0
+        typed_attribute :y0, 'fill-until'
         
       end
 

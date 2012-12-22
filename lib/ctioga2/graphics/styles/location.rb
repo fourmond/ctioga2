@@ -36,10 +36,10 @@ module CTioga2
         
         # The name of the X axis, something to be fed to
         # PlotStyle#get_axis_key
-        attr_accessor :xaxis
+        typed_attribute :xaxis, 'axis'
 
         # The name of the Y axis
-        attr_accessor :yaxis
+        typed_attribute :yaxis, 'axis'
 
         # Given a PlotStyle object, returns the axes keys as would
         # PlotStyle#get_axis_key

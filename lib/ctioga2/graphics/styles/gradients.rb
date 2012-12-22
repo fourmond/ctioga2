@@ -37,10 +37,10 @@ module CTioga2
         include Log
         
         # The starting color (for x = 0)
-        attr_accessor :start
+        typed_attribute :start, 'color'
 
         # The ending color (for x = 1)
-        attr_accessor :end
+        typed_attribute :end, 'color'
 
         def initialize(s,e)
           warn { "This class shouldn't be used anymore at #{caller.inspect}" }

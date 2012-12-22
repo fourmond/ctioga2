@@ -41,6 +41,10 @@ module CTioga2
           @attributes ||= []
           @attributes << symbol
           OldAttrAccessor.call(symbol)
+          # cl = caller()
+          # if not cl[0] =~ /typed_attribute/
+          #   puts "old-style attribute: #{cl[0]}"
+          # end
         end
 
         # Returns the list of attributes.
@@ -56,6 +60,12 @@ module CTioga2
         # This function should be the main way now of declaring
         # attributes, as it allows one to automatically generate an
         # options hash for Command
+        #
+        # @todo There may be a reason to make some of the attributes
+        # private to some extent ?
+        #
+        # @todo Provide a function to make attributes "aliases" of
+        # others (but just on the hash side of the things)
         def self.typed_attribute(symbol, type)
           sym = symbol.to_sym
           self.attr_accessor(sym)
