@@ -28,16 +28,18 @@ module CTioga2
       # * pictures (in a distant future ?)
       class BackgroundStyle < BasicStyle
 
-        # The background color for a uniform fill. 
-        attr_accessor :background_color
+        # The background color for a uniform fill.
+        #
+        # @todo This should be turned into a full-scale fill style
+        typed_attribute :background_color, 'color-or-false'
 
         # The text of the watermark, or _nil_ if there should be no
         # watermark.
-        attr_accessor :watermark_text
+        typed_attribute :watermark, 'text'
 
         # A MarkerStringStyle object representing the style of the
         # watermark.
-        attr_accessor :watermark_style
+        sub_style :watermark_style, MarkerStringStyle, "watermark_%s" 
         
         # Creates a new AxisStyle object at the given location with
         # the given style.
@@ -62,7 +64,7 @@ module CTioga2
         end
 
         def draw_watermark(t)
-          if @watermark_text
+          if @watermark
             x = t.convert_frame_to_figure_x(0.5)
             y = t.convert_frame_to_figure_y(0.5)
             
@@ -70,7 +72,7 @@ module CTioga2
               real_vertical_scale
             
             # We split lines on \\, just like in standard LaTeX
-            lines = @watermark_text.split(/\s*\\\\\s*/)
+            lines = @watermark.split(/\s*\\\\\s*/)
             i = + (lines.size-1)/2.0
             for text in lines 
               @watermark_style.
@@ -106,16 +108,16 @@ EOH
       WatermarkCmd = 
         Cmd.new('watermark', nil, '--watermark', 
                 [ CmdArg.new('text') ], 
-                StringMarkerOptions) do |plotmaker, text, opts|
+                MarkerStringStyle.options_hash) do |plotmaker, text, opts|
         bg = PlotStyle.current_plot_style(plotmaker).
           background
-        bg.watermark_text = text
+        bg.watermark = text
         bg.watermark_style.set_from_hash(opts)
       end
 
       WatermarkCmd.describe("Sets a watermark for the current plot", 
                             <<"EOH", BackgroundGroup)
-Watermark...
+Sets a watermark for the background of the current plot.
 EOH
     end
   end

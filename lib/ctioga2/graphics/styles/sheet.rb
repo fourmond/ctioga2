@@ -95,6 +95,11 @@ module CTioga2
         end
         
         set_type AxisStyle, %w(axis xaxis yaxis left right top bottom)
+        set_type BackgroundStyle, 'background'
+
+
+
+
 
         def self.all_types()
           return @style_type
@@ -170,7 +175,8 @@ module CTioga2
       
       # We create the commands programmatically
       kinds = [
-               ['axis', AxisStyle, 'axis']
+               ['axis', AxisStyle, 'axis'],
+               ['background', BackgroundStyle, 'plot background']
               ]
 
       StyleSheetCommands = []

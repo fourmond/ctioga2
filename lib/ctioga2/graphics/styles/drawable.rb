@@ -102,6 +102,9 @@ module CTioga2
       # extent ?)
       #
       # \todo more attributes ?
+      #
+      # @todo This class should also provide image-based fills, with
+      # CSS-like capacities (scaling, tiling, centering, and so on...)
       class FillStyle < BasicStyle
 
         # The color.

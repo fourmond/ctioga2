@@ -105,7 +105,8 @@ module CTioga2
 
           @transforms = CoordinateTransforms.new
 
-          @background = BackgroundStyle.new
+          @background = 
+            StyleSheet.style_for('background')
 
           # A padding of 4bp ? Why ?? Why not ?
           @padding = Types::Dimension.new(:bp, 4)
