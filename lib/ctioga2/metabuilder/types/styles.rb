@@ -33,8 +33,8 @@ module CTioga2
         type_name :tioga_color, 'color'
 
         HLSRegexp = /(?:hls):/i
-        
-        def string_to_type_internal(str)
+
+        def parse_one_color(str)
           if str =~ HLSRegexp
             hls = true
             str = str.gsub(HLSRegexp,'')
@@ -50,6 +50,13 @@ module CTioga2
               |i| i.to_i(16)/15.0 
             }
           else
+            begin 
+              if Tioga::ColorConstants::const_defined?(str)
+                value = Tioga::ColorConstants::const_get(str)
+                return value
+              end
+            rescue
+            end
             value = str.split(/\s*,\s*/).map do |s|
               s.to_f
             end
@@ -62,6 +69,26 @@ module CTioga2
             value = Tioga::FigureMaker.hls_to_rgb(value)
           end
           return value
+        end
+
+        def string_to_type_internal(str)
+          # We implement a xcolor-like color mix stuff
+          elems = str.split(/!(\d+(?:\.\d+)?)!?/)
+          if (elems.size % 2) == 0
+            elems << "White"    # Implicit mix with white
+          end
+          
+          temp = parse_one_color(elems.shift)
+          
+          while elems.size > 0
+            frac = elems.shift.to_f/100.0
+            new_color = parse_one_color(elems.shift)
+            3.times do |i|
+              temp[i] = frac * temp[i] + (1 - frac) * new_color[i]
+            end
+          end
+
+          return temp
         end
       end
 

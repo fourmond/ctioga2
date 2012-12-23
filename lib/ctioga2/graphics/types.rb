@@ -48,7 +48,6 @@ module CTioga2
 
     ColorType = CmdType.new('color', {
                               :type => :tioga_color,
-                              :namespace => Tioga::ColorConstants
                             }, <<EOD)
 A color. It can take three forms:
  * a named color, see 
@@ -61,7 +60,6 @@ EOD
     ColorOrFalseType = 
       CmdType.new('color-or-false', {
                     :type => :tioga_color,
-                    :namespace => Tioga::ColorConstants,
                     :shortcuts => {'none' => false }
                   }, <<EOD)
 A {type: color}, or false to say that nothing should be drawn.
