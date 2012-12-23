@@ -66,6 +66,12 @@ module CTioga2
         # The color of the stroke for the lines of the axis
         typed_attribute :stroke_color, 'color'
 
+        typed_attribute :major_tick_length, 'float'
+        typed_attribute :major_tick_width, 'float'
+
+        typed_attribute :minor_tick_length, 'float'
+        typed_attribute :minor_tick_width, 'float'
+
 
         # Creates a new AxisStyle object at the given location with
         # the given style.
@@ -91,8 +97,14 @@ module CTioga2
           spec = get_axis_specification(t)
           # Add tick label style:
           spec.merge!(@tick_label_style.to_hash)
-          if @stroke_color
-            spec['stroke_color'] = @stroke_color
+
+          # Direct copy of attributes 
+          for key in %w(stroke_color major_tick_length major_tick_width
+minor_tick_length minor_tick_width)
+            val = self.send(key.to_sym)
+            if val
+              spec[key] = val
+            end
           end
           t.show_axis(spec)
           @axis_label.loc = @location
