@@ -48,7 +48,7 @@ module CTioga2
         # or a StrokeStyle object if we want to draw something.
         #
         # @todo Use a sub-style for that when that is implemented.
-        attr_accessor :background_lines
+        sub_style :background_lines, StrokeStyle
 
         # The style of the tick labels
         attr_accessor :tick_label_style
@@ -64,7 +64,7 @@ module CTioga2
         attr_accessor :transform
 
         # The color of the stroke for the lines of the axis
-        attr_accessor :stroke_color
+        typed_attribute :stroke_color, 'color'
 
 
         # Creates a new AxisStyle object at the given location with

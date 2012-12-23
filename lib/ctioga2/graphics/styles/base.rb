@@ -74,12 +74,40 @@ module CTioga2
           @attribute_types[sym] = type
         end
 
+        # Defines an accessor for an attribute which is a BasicStyle
+        # subclass in itself.
+        #
+        # _format_ is the thing fed to the subclass for the
+        # _from_hash_ function.
+        def self.sub_style(symbol, cls, fmt = nil)
+          @sub_styles ||= []    # A list of [symbol, cls, fmt]
+          
+          if ! fmt
+            fmt = "#{symbol.to_s}_%s"
+          end
+          
+          @sub_styles << [symbol, cls, fmt]
+          # Define the accessor
+          OldAttrAccessor.call(symbol)
+        end
+
         def self.options_hash(key = "%s")
           ret = {}
           for k, v in @attribute_types
             ret[key % k] = v
           end
+
+          if @sub_styles
+            for sub in @sub_styles
+              sym, cls, fmt = *sub
+              ret.merge!(cls.options_hash(fmt))
+            end
+          end
           return ret
+        end
+
+        def self.sub_styles
+          return @sub_styles
         end
 
         # Sets the values of the attributes from the given
@@ -91,13 +119,38 @@ module CTioga2
         #
         # Unspecified attributes are not removed from the
         # object. Extra keys are silently ignored.
+        #
+        # @todo Maybe there should be a way to detect extra attributes ?
+        #
+        # This function returns the number of properties that were
+        # effectively set (including those set in sub-styles)
         def set_from_hash(hash, name = "%s")
+          nb_set = 0
           for key_name in self.class.attributes
             hash_key = name % key_name
             if hash.key? hash_key 
               self.send("#{key_name}=", hash[hash_key])
+              nb_set += 1
             end
           end
+
+          if self.class.sub_styles
+            for sub in self.class.sub_styles
+              sym, cls, fmt = *sub
+              cur_var = self.send(sym)
+              if ! cur_var        # Create if not present
+                cur_var = cls.new
+                set_after = true
+              end
+              nb = cur_var.set_from_hash(hash, fmt)
+              if nb > 0 and set_after
+                self.send("#{sym}=", cur_var)
+              end
+              nb_set += nb
+            end
+          end
+          return nb_set
+            
         end
 
         # Creates a new object from a hash specification, just as in

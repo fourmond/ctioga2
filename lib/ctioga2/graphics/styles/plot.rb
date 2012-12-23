@@ -235,7 +235,7 @@ module CTioga2
                 axis.draw_axis(t)
               rescue Exception => e
                 error { "Impossible to draw axis #{which}: #{e.message}" }
-                debug { "Full message: #{e.inspect}" }
+                debug { "Full message: #{e.inspect}\n#{e.backtrace.join("\n")}" }
               end
             end
           end
