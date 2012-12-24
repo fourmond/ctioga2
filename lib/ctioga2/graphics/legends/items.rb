@@ -146,7 +146,7 @@ module CTioga2
             t.subfigure(margin_specs) do
               # We make the markers slightly smaller than the text
               # around.
-              t.rescale_text(0.8 * legend_style.picto_scale)
+              t.rescale_text(0.8 * legend_style.symbol_scale)
               @curve_style.draw_legend_pictogram(t)
             end
           end
