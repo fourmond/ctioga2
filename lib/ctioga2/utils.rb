@@ -165,6 +165,57 @@ module CTioga2
 
   end
 
+  # This class implements a Hash whose values can also be retrieved by
+  # pattern matching.
+  class RegexpHash
+
+    # Hash for non regexp keys
+    attr_accessor :hash
+
+    # Hash for regexp keys
+    attr_accessor :regexp_hash
+
+    def initialize()
+      @hash = {}
+      @regexp_hash = {}
+    end
+
+    # Sets the key to the given value
+    def []=(key, value)
+      if Regexp === key
+        @regexp_hash[key] = value
+      else
+        @hash[key] = value
+      end
+    end
+
+    # Gets the value corresponding to the key, using pattern matching
+    # should the need arise.
+    def [](key)
+      if @hash.key?(key)
+        return @hash[key]
+      else
+        for k,v in @regexp_hash
+          if k === key
+            return v
+          end
+        end
+      end
+      return nil
+    end
+
+    def keys_for(value)
+      ret = []
+      for k,v in @hash
+        if value == v
+          ret << k
+        end
+      end
+      return ret
+    end
+
+  end
+
 end
 
 # Here, we define an additional function in the Hash class: without

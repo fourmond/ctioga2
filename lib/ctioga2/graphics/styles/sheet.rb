@@ -58,7 +58,7 @@ module CTioga2
 
         # This hash contains the parent style for each of the style
         # listed in
-        @style_parent = {}
+        @style_parent = RegexpHash.new
 
         # Sets the parent for the given style
         def self.set_parent(style, parent)
@@ -80,7 +80,14 @@ module CTioga2
         set_parent "right",  "yaxis"
 
 
-        @style_type = {}
+        # All arrow styles descend from the base 'arrow' style
+        set_parent /^arrow./, "arrow"
+
+        # Same thing for lines
+        set_parent /^line./, "line"
+
+
+        @style_type = RegexpHash.new
 
         # Sets the class for the given style. It should be
         # comprehensive. 
@@ -97,6 +104,8 @@ module CTioga2
         set_type AxisStyle, %w(axis xaxis yaxis left right top bottom)
         set_type BackgroundStyle, 'background'
         set_type TextLabel, 'title'
+        set_type StrokeStyle, 'line'
+        set_type StrokeStyle, /^line./
 
 
 
@@ -147,9 +156,23 @@ module CTioga2
         #
         # Additional arguments are passed to the constructor
         def self.style_for(name, *args)
-          a = self.get_type(name).new(*args)
+          type = self.get_type(name)
+          if ! type
+            return nil
+          end
+          a = type.new(*args)
+          
           a.set_from_hash(@sheet.get_style_hash_for(name))
           return a
+        end
+
+        def self.typed_style_for(name, cls)
+          style = self.style_for(name)
+          if ! style.is_a?(cls)
+            Log::error { "Style '#{name}' is not of the appropriate type (#{cls.name})" }
+            style = cls.new
+          end
+          return style
         end
 
         def self.enter_scope()
@@ -178,7 +201,8 @@ module CTioga2
       kinds = [
                ['axis', AxisStyle, 'axis'],
                ['background', BackgroundStyle, 'plot background'],
-               ['title', TextLabel, 'plot title']
+               ['title', TextLabel, 'plot title'],
+               ['line', StrokeStyle, 'lines']
               ]
 
       StyleSheetCommands = []
@@ -187,12 +211,8 @@ module CTioga2
         name, cls, desc = *k
 
         # Now, we get all the names that match the style
-        all_names = []
-        for k,v in StyleSheet.all_types
-          if v == cls
-            all_names << k
-          end
-        end
+        all_names = StyleSheet.all_types.keys_for(cls)
+
         StyleSheetCommands << 
           Cmd.new("default-#{name}-style",nil,
                   "--default-#{name}-style", 

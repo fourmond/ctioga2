@@ -42,6 +42,14 @@ module CTioga2
           t.line_type = @style if @style
           t.line_width = @width if @width
         end
+
+        # Draws a line according with this style
+        def draw_line(t, x1, y1, x2, y2)
+          t.context do 
+            set_stroke_style(t)
+            t.stroke_line(x1, y1, x2, y2)
+          end
+        end
       end
 
       # This class represents all the stylistic information to draw a

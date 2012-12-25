@@ -16,6 +16,7 @@ require 'ctioga2/utils'
 require 'ctioga2/log'
 
 require 'ctioga2/graphics/types'
+require 'ctioga2/graphics/styles'
 require 'shellwords'
 
 # This module contains all the classes used by ctioga
@@ -103,7 +104,11 @@ module CTioga2
 
           cmd_opts = {}
           for k,v in opts
-            cmd_opts[k] = CmdArg.new(v)
+            cmd_opts[k] = if v.respond_to?(:type)
+                            v
+                          else
+                            CmdArg.new(v)
+                          end
           end
           
           cmd = Cmd.new("draw-#{name}",nil,"--draw-#{name}", 
@@ -120,6 +125,33 @@ module CTioga2
                        "Directly draws #{long_name} on the current plot", PrimitiveGroup)
 
           PrimitiveCommands[name] = cmd
+        end
+
+        # This creates a primitive base on a style object, given a
+        # _style_class_, the base _style_name_ for the underlying
+        # styling system, options to remove and options to add.
+        #
+        # The underlying code receives:
+        # * the FigureMaker object
+        # * the compulsory arguments
+        # * the style
+        # * the raw options
+        def self.styled_primitive(name, long_name, comp, style_class, 
+                                  style_name, without = [],
+                                  additional_options = {},
+                                  &code)
+          options = style_class.options_hash.without(without)
+          options.merge!(additional_options)
+          options['base-style'] = 'text' # the base style name
+          
+          self.primitive(name, long_name, comp, options) do |*all|
+            opts = all.pop
+            st_name = opts['base-style'] || style_name
+            style = Styles::StyleSheet.typed_style_for(st_name, style_class) 
+            style.set_from_hash(opts)
+            all << style << opts
+            code.call(*all)
+          end
         end
 
 
@@ -207,20 +239,13 @@ module CTioga2
           t.show_arrow(options)
         end
  
-        primitive("line", "line", [ 'point', 'point' ],
-                  {
-                    'color' => 'color',
-                    'line_width' => 'float',
-                    'line_style' => 'line-style',
-                  }
-                  ) do |t, tail,head, options|
-          options ||= {}
-          for a in ['head', 'tail'] 
-            options["#{a}_marker"] = "None"
-          end
-          options['head'] = head.to_figure_xy(t)
-          options['tail'] = tail.to_figure_xy(t)
-          t.show_arrow(options)
+        styled_primitive("line", "line", 
+                         [ 'point', 'point' ],
+                         Styles::StrokeStyle,
+                         'line'
+                  ) do |t, tail, head, style, options|
+          style.draw_line(t, *(tail.to_figure_xy(t)),
+                          *(head.to_figure_xy(t)))
         end
 
         primitive("box", "box", [ 'point', 'point' ],

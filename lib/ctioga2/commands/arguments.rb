@@ -21,6 +21,11 @@ module CTioga2
   module Commands
 
     # An argument to a Command
+    #
+    # @todo There should be real options mangling capacities, with:
+    # * (possibly deprecated) aliases for options
+    # * _ to - mangling
+    # * other things ?
     class CommandArgument
 
       # The type of the argument, a CommandType object.
