@@ -30,6 +30,7 @@ $ct -t 'Styled lines and text' -r 10cmx10cm --math-xrange -3:3 \
     --default-line-style line2 /width=1 \
     --draw-line 2,0.2 -2,-0.2 /color=Red /width=2 \
     --draw-line 2,-0.2 -2,-0.2 /color=Green /base-style=line2 \
+    --draw-line 2.5,-0.4 2.5,0.5 /color=Purple /line_width=3 /line_style=Solid \
     --draw-text 0,0 'style changes apply to the whole graph' \
     --default-text-style text /scale=1.6 /color=Green \
     --default-text-style text1 /color='Red!20' \

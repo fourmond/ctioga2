@@ -218,7 +218,7 @@ module CTioga2
           style.draw_arrow(t, *tail.to_figure_xy(t),
                            *head.to_figure_xy(y))
         end
- 
+
         styled_primitive("line", "line", 
                          [ 'point', 'point' ],
                          Styles::StrokeStyle,
@@ -226,6 +226,14 @@ module CTioga2
                   ) do |t, tail, head, style, options|
           style.draw_line(t, *(tail.to_figure_xy(t)),
                           *(head.to_figure_xy(t)))
+        end
+
+        # Here, we need to add deprecated options for backward
+        # compatibility
+
+        for cmd in ['draw-line', 'draw-arrow']
+          Commands::make_alias_for_option cmd, 'width', 'line_width', true
+          Commands::make_alias_for_option cmd, 'style', 'line_style', true
         end
 
         primitive("box", "box", [ 'point', 'point' ],
