@@ -57,11 +57,11 @@ module CTioga2
         sub_style :axis_label, TextLabel
 
         # Whether the axis should be log scale or not
-        attr_accessor :log
+        typed_attribute :log, 'boolean'
 
         # Transform: a Types::Bijection object specifying a coordinate
         # transformation for the axis.
-        attr_accessor :transform
+        typed_attribute :transform, 'bijection'
 
         # The color of the stroke for the lines of the axis
         typed_attribute :stroke_color, 'color'

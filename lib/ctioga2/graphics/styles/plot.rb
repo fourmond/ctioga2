@@ -406,6 +406,8 @@ EOH
                           <<"EOH", AxisGroup)
 Sets the #{axis.upcase} label of the current plot.
 EOH
+
+        Commands::make_alias_for_option "#{axis}label", 'alignment', 'align', true
         
         nolabelcmd = Cmd.new("no-#{axis}label", nil, 
                              "--no-#{axis}label", []) do |plotmaker|
@@ -446,6 +448,8 @@ EOD
                                  <<"EOH", AxisGroup)
 Sets the title of the current plot.
 EOH
+
+      Commands::make_alias_for_option 'title', 'alignment', 'align', true
 
       NoTitleLabelCommand = 
         Cmd.new('no-title', nil, '--no-title', []) do |plotmaker|
@@ -513,6 +517,8 @@ EOH
         PlotStyle.current_plot_style(plotmaker).
           set_label_style(which, options)
       end
+
+      Commands::make_alias_for_option 'label-style', 'alignment', 'align', true
       
       LabelStyleCommand.describe("Sets the style of the given label", 
                                  <<"EOH", AxisGroup)
@@ -528,6 +534,7 @@ override the color using the /stroke_color option of
 {command: axis-style}. This will only work with Tioga version 1.11 or 
 greater.
 EOH
+
 
     end
   end

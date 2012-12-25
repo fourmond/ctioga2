@@ -54,6 +54,9 @@ EOH
 Adds a line of text unrelated to any curve to the legend.
 EOH
 
+    
+    Commands::make_alias_for_option 'legend-line', 'alignment', 'align', true
+    
     AutoLegendCommand = 
       Cmd.new("auto-legend",nil,"--auto-legend", 
               [ CmdArg.new('boolean') ]) do |plotmaker, value|
