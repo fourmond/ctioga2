@@ -83,8 +83,9 @@ module CTioga2
         # All arrow styles descend from the base 'arrow' style
         set_parent /^arrow./, "arrow"
 
-        # Same thing for lines
+        # Same thing for lines, text
         set_parent /^line./, "line"
+        set_parent /^text./, "text"
 
 
         @style_type = RegexpHash.new
@@ -104,8 +105,8 @@ module CTioga2
         set_type AxisStyle, %w(axis xaxis yaxis left right top bottom)
         set_type BackgroundStyle, 'background'
         set_type TextLabel, 'title'
-        set_type StrokeStyle, 'line'
-        set_type StrokeStyle, /^line./
+        set_type StrokeStyle, 'line', /^line./
+        set_type FullTextStyle, 'text', /^text./
 
 
 
@@ -202,6 +203,7 @@ module CTioga2
                ['axis', AxisStyle, 'axis'],
                ['background', BackgroundStyle, 'plot background'],
                ['title', TextLabel, 'plot title'],
+               ['text', FullTextStyle, 'text'],
                ['line', StrokeStyle, 'lines']
               ]
 

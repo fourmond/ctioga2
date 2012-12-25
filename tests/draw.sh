@@ -23,11 +23,17 @@ $ct -t 'Boxes' -r 10cmx10cm \
     --draw-box -5,0.8 -3,-0.4 /fill-color=Pink /color=Black \
     --draw-box 3,0.8 7,0 /fill-color=Pink /fill-transparency=0.7
 
-$ct -t 'Styled lines' -r 10cmx10cm --math-xrange -3:3 \
+$ct -t 'Styled lines and text' -r 10cmx10cm --math-xrange -3:3 \
     'sin(x)' \
     --draw-line -2,0.2 2,-0.2 /color=Blue /width=2 \
     --default-line-style line /style=Dots \
     --default-line-style line2 /width=1 \
     --draw-line 2,0.2 -2,-0.2 /color=Red /width=2 \
-    --draw-line 2,-0.2 -2,-0.2 /color=Green /base-style=line2
+    --draw-line 2,-0.2 -2,-0.2 /color=Green /base-style=line2 \
+    --draw-text 0,0 'style changes apply to the whole graph' \
+    --default-text-style text /scale=1.6 /color=Green \
+    --default-text-style text1 /color='Red!20' \
+    --draw-text 0,0.5 'with default style' \
+    --draw-text 0,-0.5 'with text1 style' /base-style=text1
+    
 

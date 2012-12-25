@@ -43,7 +43,7 @@ module CTioga2
         typed_attribute :scale, 'float'
 
         # The vertical alignment 
-        typed_attribute :alignement, 'alignment'
+        typed_attribute :alignment, 'alignment'
 
         # The horizontal alignment
         typed_attribute :justification, 'justification'
@@ -52,8 +52,10 @@ module CTioga2
         # If _y_ is _nil_, then _x_or_loc_ is taken to be a location
         # (see FigureMaker#show_text).
         def draw_text(t, text, x_or_loc, y = nil, measure = nil)
-          dict = prepare_show_text_dict(text, x_or_loc, y, measure)
-          t.show_text(dict)
+          t.context do
+            dict = prepare_show_text_dict(text, x_or_loc, y, measure)
+            t.show_text(dict)
+          end
         end
 
         protected

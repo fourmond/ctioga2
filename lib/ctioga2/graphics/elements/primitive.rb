@@ -122,7 +122,8 @@ module CTioga2
               add_element(call)
           end
           cmd.describe("Draws #{long_name}",
-                       "Directly draws #{long_name} on the current plot", PrimitiveGroup)
+                       "Directly draws #{long_name} on the current plot", 
+                       PrimitiveGroup)
 
           PrimitiveCommands[name] = cmd
         end
@@ -163,25 +164,19 @@ module CTioga2
 
         # Now, a list of primitives, along with their code.
 
-        primitive("text", "text", [ 'point', 'text' ],
-                  {
-                    'color' => 'color',
-                    'scale' => 'float',
-                    'angle' => 'float',
-                    'justification' => 'justification',
-                    'alignment' => 'alignment',
-                    'font' => 'latex-font',
-                  }
-                  ) do |t, point, string, options|
+        styled_primitive("text", "text", 
+                         [ 'point', 'text' ],
+                         Styles::FullTextStyle,
+                         'text',
+                         ['text'],
+                         {'font' => 'latex-font'}
+                  ) do |t, point, string, style, options|
           # @todo add a way to specify fonts ???
           options ||= {}
           if options['font']
             string = options['font'].fontify(string)
-            options.delete('font')
           end
-          options['text'] = string
-          options['at'] = point.to_figure_xy(t)
-          t.show_text(options)
+          style.draw_text(t, string, *(point.to_figure_xy(t)))
         end
 
         # @todo add rendering mode !!
