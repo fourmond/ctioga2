@@ -28,6 +28,11 @@ module CTioga2
     module Elements
       
       # A TiogaElement that represents a graphics primitive.
+      #
+      # @todo Most of the objects here should rely on getting a
+      # BasicStyle object from the options hash and use it to
+      # draw. There is no need to make cumbersome and hard to extend
+      # hashes.
       class TiogaPrimitiveCall < TiogaElement
         
         # Some kind of reimplementation of Command for graphics

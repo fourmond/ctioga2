@@ -26,10 +26,6 @@ module CTioga2
       # This style is the base class of a series of style objects that
       # share one common feature: all their attributes can be set
       # using the set_from_hash function.
-      #
-      # \todo a basic MetaBuilder::Type should be associated to each
-      # attribute ??? This would allow the class to provide a
-      # parameters_hash method to allow commands to directly pull those.
       class BasicStyle
 
         OldAttrAccessor = method(:attr_accessor)
