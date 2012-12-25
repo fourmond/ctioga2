@@ -78,7 +78,7 @@ module CTioga2
             elems << "White"    # Implicit mix with white
           end
           
-          temp = parse_one_color(elems.shift)
+          temp = parse_one_color(elems.shift).dup
           
           while elems.size > 0
             frac = elems.shift.to_f/100.0
