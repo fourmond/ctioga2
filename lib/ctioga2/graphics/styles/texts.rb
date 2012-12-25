@@ -169,19 +169,6 @@ module CTioga2
       # like that.
       class MarkerStringStyle < BasicStyle
         
-        MarkerOptions = {
-          'color' => 'color',
-          'stroke_color' => 'color',
-          'fill_color' => 'color',
-          'scale' => 'float',
-          'horizontal_scale' => 'float',
-          'vertical_scale' => 'float',
-          'angle' => 'float',
-          'justification' => 'justification',
-          'alignment' => 'alignment',
-        }
-
-
         # The angle of the text
         typed_attribute :angle, 'float'
 
@@ -225,8 +212,14 @@ module CTioga2
           dict = self.to_hash
           dict['text'] = text
           dict['at'] = [x, y]
-          # TODO !
-          dict['mode'] = 
+          t.show_marker(dict)
+        end
+
+        # Draws the string marker at the given location
+        def draw_marker(t, marker, x, y)
+          dict = self.to_hash
+          dict['marker'] = marker
+          dict['at'] = [x, y]
           t.show_marker(dict)
         end
 
@@ -236,19 +229,6 @@ module CTioga2
         end
       end
       
-      StringMarkerOptions = {
-        'color' => CmdArg.new('color'),
-        'stroke_color' => CmdArg.new('color'),
-        'fill_color' => CmdArg.new('color'),
-        'scale' => CmdArg.new('float'),
-        'horizontal_scale' => CmdArg.new('float'),
-        'vertical_scale' => CmdArg.new('float'),
-        'angle' => CmdArg.new('float'),
-        'justification' => CmdArg.new('justification'),
-        'alignment' => CmdArg.new('alignment'),
-        'font' => CmdArg.new('pdf-font')
-      }
-
       # A LaTeX font. It should be applied to text using the function
       # #fontify.
       #

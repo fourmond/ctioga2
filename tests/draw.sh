@@ -37,3 +37,15 @@ $ct -t 'Styled lines and text' -r 10cmx10cm --math-xrange -3:3 \
     --draw-text 0,-0.5 'with text1 style' /base-style=text1
     
 
+$ct -t 'Styled markers' -r 10cmx10cm --math-xrange -3:3 \
+    'sin(x)' \
+    --default-marker-style marker /color=Red \
+    --default-marker-style marker1 /vertical_scale=2 \
+    --default-marker-style marker-string /horizontal_scale=2 \
+    --draw-marker '0,0' TriangleUp \
+    --draw-marker '1,0' TriangleUp /base-style=marker1 \
+    --draw-string-marker '0,0.5' TriangleUp \
+    --draw-string-marker '0,-0.5' TriangleUp \
+    /vertical_scale=0.5 /color=Green \
+    --draw-string-marker '0,-0.2' TriangleUp \
+    /horizontal_scale=1 /color=Blue

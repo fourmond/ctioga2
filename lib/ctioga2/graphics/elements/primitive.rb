@@ -179,37 +179,24 @@ module CTioga2
           style.draw_text(t, string, *(point.to_figure_xy(t)))
         end
 
-        # @todo add rendering mode !!
-        MarkerOptions = {
-          'color' => 'color',
-          'stroke_color' => 'color',
-          'fill_color' => 'color',
-          'scale' => 'float',
-          'horizontal_scale' => 'float',
-          'vertical_scale' => 'float',
-          'angle' => 'float',
-          'justification' => 'justification',
-          'alignment' => 'alignment',
-        }
-
-        primitive("marker", "marker", [ 'point', 'marker' ],
-                  MarkerOptions) do |t, point, marker, options|
-          ## \todo add a way to specify fonts ???
-          options ||= {}
-          options['marker'] = marker
-          options['at'] = point.to_figure_xy(t)
-          t.show_marker(options)
+        styled_primitive("marker", "marker", 
+                         [ 'point', 'marker' ],
+                         Styles::MarkerStringStyle,
+                         'marker',
+                         ['font'] # font doesn't make any sense with a
+                         # marker spec
+                         ) do |t, point, marker, style, options|
+          style.draw_marker(t, marker, *point.to_figure_xy(t))
         end
 
-        primitive("string-marker", "marker", [ 'point', 'text' ],
-                  {'font' => 'pdf-font' }.update(MarkerOptions)
-                  ) do |t, point, string, options|
-          ## \todo add a way to specify fonts ???
-          options ||= {}
-          options['text'] = string
-          options['at'] = point.to_figure_xy(t)
-          t.show_marker(options)
+        styled_primitive("string-marker", "marker", 
+                         [ 'point', 'text' ],
+                         Styles::MarkerStringStyle,
+                         'marker-string'
+                         ) do |t, point, string, style, options|
+          style.draw_string_marker(t, string, *point.to_figure_xy(t))
         end
+
 
         # options for arrows (and therefore tangents)
         ArrowOptions = {

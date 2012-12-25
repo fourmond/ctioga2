@@ -86,6 +86,8 @@ module CTioga2
         # Same thing for lines, text
         set_parent /^line./, "line"
         set_parent /^text./, "text"
+        set_parent /^marker./, "marker"
+        set_parent /^marker-string./, "marker-string"
 
 
         @style_type = RegexpHash.new
@@ -107,6 +109,7 @@ module CTioga2
         set_type TextLabel, 'title'
         set_type StrokeStyle, 'line', /^line./
         set_type FullTextStyle, 'text', /^text./
+        set_type MarkerStringStyle, 'marker', 'marker-string', /^marker./
 
 
 
@@ -204,6 +207,7 @@ module CTioga2
                ['background', BackgroundStyle, 'plot background'],
                ['title', TextLabel, 'plot title'],
                ['text', FullTextStyle, 'text'],
+               ['marker', MarkerStringStyle, 'marker'],
                ['line', StrokeStyle, 'lines']
               ]
 

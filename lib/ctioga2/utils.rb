@@ -177,13 +177,13 @@ module CTioga2
 
     def initialize()
       @hash = {}
-      @regexp_hash = {}
+      @regexp_kv = []
     end
 
     # Sets the key to the given value
     def []=(key, value)
       if Regexp === key
-        @regexp_hash[key] = value
+        @regexp_kv <<  [key, value]
       else
         @hash[key] = value
       end
@@ -191,11 +191,15 @@ module CTioga2
 
     # Gets the value corresponding to the key, using pattern matching
     # should the need arise.
+    #
+    # If there are several regexps matching a given key, the
+    # implementation guarantees that the last one to have been
+    # inserted that matches is taken
     def [](key)
       if @hash.key?(key)
         return @hash[key]
       else
-        for k,v in @regexp_hash
+        for k,v in @regexp_kv.reverse
           if k === key
             return v
           end
