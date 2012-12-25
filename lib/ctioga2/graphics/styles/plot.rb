@@ -98,8 +98,10 @@ module CTioga2
           @xaxis_location = :bottom
           @yaxis_location = :left
 
-          @title = TextLabel.new
-          @title.loc = Types::PlotLocation.new(:top)
+          @title = 
+            StyleSheet.style_for('title',
+                                 nil, 
+                                 Types::PlotLocation.new(:top))
 
           @plot_margin = nil
 
@@ -328,13 +330,12 @@ module CTioga2
                                "Axes and labels", "Axes and labels", 40)
 
 
-      
       AxisTypeCommands = []
       [:left, :right, :top, :bottom].each do |loc|
         AxisTypeCommands << 
           Cmd.new("#{loc}",nil,"--#{loc}", 
                   [
-                   CmdArg.new('axis-decoration'),
+                   AxisStyleOptions['decoration'],
                   ], PartialAxisStyle) do |plotmaker, dec, opts|
           style = AxisStyle.current_axis_style(plotmaker, loc)
           style.decoration = dec
@@ -352,7 +353,7 @@ EOH
           Cmd.new("axis-style",nil,"--axis-style", 
                   [
                    CmdArg.new('axis'),
-                  ], FullAxisStyle) do |plotmaker, which, opts|
+                  ], AxisStyleOptions) do |plotmaker, which, opts|
         style = AxisStyle.current_axis_style(plotmaker, which)
         style.set_from_hash(opts)
       end
@@ -369,10 +370,9 @@ EOH
                 [
                  CmdArg.new('axis'), 
                  CmdArg.new('color-or-false')
-                ],{
-                  'style' => CmdArg.new('line-style'),
-                  'width' => CmdArg.new('float')
-                }) do |plotmaker, which, color, options|
+                ],
+                StrokeStyle.options_hash().without('color')
+                ) do |plotmaker, which, color, options|
         axis = AxisStyle.current_axis_style(plotmaker, which)
         if color
           style = {'color' => color}
@@ -397,7 +397,8 @@ EOH
       %w{x y}.each do |axis|
         labelcmd = Cmd.new("#{axis}label", "-#{axis}", 
                             "--#{axis}label", [ CmdArg.new('text') ],
-                            FullTextStyleOptions) do |plotmaker, label, options|
+                            TextLabel.options_hash().without('text')
+                           ) do |plotmaker, label, options|
           PlotStyle.current_plot_style(plotmaker).
             set_label_style("#{axis}_label", options, label)
         end
@@ -433,8 +434,10 @@ EOD
       end
 
       TitleLabelCommand = 
-        Cmd.new('title', '-t', '--title', [ CmdArg.new('text') ],
-                FullTextStyleOptions) do |plotmaker, label, options|
+        Cmd.new('title', '-t', '--title', 
+                [ CmdArg.new('text') ],
+                TextLabel.options_hash().without('text')
+                ) do |plotmaker, label, options|
         PlotStyle.current_plot_style(plotmaker).
           set_label_style('title', options, label)
       end

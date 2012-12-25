@@ -272,17 +272,9 @@ minor_tick_length minor_tick_width)
        
       end
 
-      PartialAxisStyle = {
-        'transform' => CmdArg.new('bijection'),
-        'location' => CmdArg.new('location'),
-        'log' => CmdArg.new('boolean'),
-        'stroke_color' => CmdArg.new('color')
-      }
-
-      FullAxisStyle = PartialAxisStyle.dup
-      FullAxisStyle['decoration'] = CmdArg.new('axis-decoration')
-                       
-
+      AxisStyleOptions = AxisStyle.options_hash()
+      PartialAxisStyle = AxisStyleOptions.without('decoration')
+      
     end
   end
 end

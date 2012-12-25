@@ -355,7 +355,7 @@ stack. The name option can be used to give a name to the new dataset.
 EOH
 
     ApplyLastCommand =
-      Cmd.new("apply-formula", '', "--apply-formula",
+      Cmd.new("apply-formula", nil, "--apply-formula",
               [CmdArg.new('text')], 
               {
                 'which' => CmdArg.new('stored-dataset'),

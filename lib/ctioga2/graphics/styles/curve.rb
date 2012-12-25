@@ -28,6 +28,9 @@ module CTioga2
       # \todo maybe for objects different than Curve2D, a subclass of
       # CurveStyle could be used ? This way, we could have clearly
       # separated legends and the like ?
+      #
+      # @todo This should probably be a subclass of basicStyle, to
+      # handle style sheets.
       class CurveStyle
 
         # The style of the line that is drawn, as a StrokeStyle. 
@@ -105,6 +108,9 @@ module CTioga2
         #    plotted onto
         #
         # \todo make #legend another object derived from BasicStyle ?
+        #
+        # @todo This function should essentially disappear if we make
+        # this derive from BasicStyle.
         def set_from_hash(hash)
           @line = StrokeStyle.from_hash(hash, 'line_%s')
           @marker = MarkerStyle.from_hash(hash, 'marker_%s')

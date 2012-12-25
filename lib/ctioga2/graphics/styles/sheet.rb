@@ -96,6 +96,7 @@ module CTioga2
         
         set_type AxisStyle, %w(axis xaxis yaxis left right top bottom)
         set_type BackgroundStyle, 'background'
+        set_type TextLabel, 'title'
 
 
 
@@ -176,7 +177,8 @@ module CTioga2
       # We create the commands programmatically
       kinds = [
                ['axis', AxisStyle, 'axis'],
-               ['background', BackgroundStyle, 'plot background']
+               ['background', BackgroundStyle, 'plot background'],
+               ['title', TextLabel, 'plot title']
               ]
 
       StyleSheetCommands = []

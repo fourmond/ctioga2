@@ -167,6 +167,17 @@ module CTioga2
 
 end
 
+# Here, we define an additional function in the Hash class: without
+class Hash
+  def without(*args)
+    ret = self.dup
+    for a in args.flatten
+      ret.delete(a)
+    end
+    return ret
+  end
+end
+
 begin
   # This is a dirty hack in order to ensure that the SVN revision
   # information is kept up-to-date even when using git-svn. This

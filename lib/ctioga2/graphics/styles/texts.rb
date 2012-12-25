@@ -95,16 +95,7 @@ module CTioga2
 
       # A hash that can be used as a base for optional arguments to
       # things that take texts.
-      #
-      # @todo This shouldn't be needed anymore
-      FullTextStyleOptions = {
-        'angle' => CmdArg.new('float'),
-        'shift' => CmdArg.new('float'),
-        'scale' => CmdArg.new('float'),
-        'justification' => CmdArg.new('justification'),
-        'color' => CmdArg.new('color'),
-        'align' => CmdArg.new('alignment'),
-      }
+      FullTextStyleOptions = FullTextStyle.options_hash()
 
       # A label.
       class TextLabel < FullTextStyle
@@ -118,9 +109,10 @@ module CTioga2
         # makes much more sense.
         typed_attribute :loc, "location"
 
-        def initialize(text = nil)
+        def initialize(text = nil, loc = nil)
           super()
           @text = text
+          @loc = loc
         end
         
         # Draw the label, if #text is not _nil_ or _false_.
@@ -165,10 +157,8 @@ module CTioga2
 
       end
 
-      # Same thing as FullTextStyleOptions, but also permits to
-      # override the #text part of the whole stuff..
-      FullTextLabelOptions = FullTextStyleOptions.dup
-      FullTextLabelOptions['text'] = CmdArg.new('text')
+
+      FullTextLabelOptions = TextLabel.options_hash()
 
 
 

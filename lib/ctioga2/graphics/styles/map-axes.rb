@@ -32,17 +32,17 @@ module CTioga2
         attr_accessor :color_map
         
         # Zmin and Zmax boundaries
-        attr_accessor :bounds
+        typed_attribute :bounds, "float-range"
 
         # Size of the bar (not counting the label)
-        attr_accessor :bar_size
+        typed_attribute :bar_size, 'dimension'
 
         # Space to be left between the graph and the beginning of the
         # graph
-        attr_accessor :bar_shift
+        typed_attribute :bar_shift, 'dimension'
 
         # Space to be left on the side
-        attr_accessor :padding
+        typed_attribute :padding, 'dimension'
 
         # Creates a new MapAxisStyle object at the given location with
         # the given style.
@@ -155,10 +155,9 @@ module CTioga2
         end
 
       end
+      # @todo This naming doesn't look that good, honestly
+      ZAxisStyle = MapAxisStyle.options_hash()
 
-      ZAxisStyle = FullAxisStyle.dup
-      ZAxisStyle['bar_size'] = CmdArg.new('dimension')
-      ZAxisStyle['bar_shift'] = CmdArg.new('dimension')
     end
   end
 end

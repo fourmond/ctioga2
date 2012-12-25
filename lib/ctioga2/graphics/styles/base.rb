@@ -87,6 +87,9 @@ module CTioga2
           OldAttrAccessor.call(symbol)
         end
 
+        # Returns a hash suitable for using as an options hash.
+        #
+        # _key_ provides tuning of the key names.
         def self.options_hash(key = "%s")
           ret = if superclass.respond_to?(:options_hash)
                   superclass.options_hash(key)
@@ -106,6 +109,7 @@ module CTioga2
               ret.merge!(cls.options_hash(fmt))
             end
           end
+
           return ret
         end
 
