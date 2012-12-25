@@ -38,11 +38,21 @@ module CTioga2
       # A small description of the argument
       attr_accessor :description
 
+      # The target for the option, in case it is different from its
+      # name
+      attr_accessor :option_target
+
+      # Whether or not the option is deprecated
+      attr_accessor :option_deprecated
+
       # _type_ is a named CommandType
       def initialize(type, name = nil, desc = nil)
         @type = CommandType.get_type(type)
         @name = name
         @description = desc
+
+        @option_target = nil
+        @option_deprecated = false
       end
       
       # Returns a name suitable for display in a documentation, such

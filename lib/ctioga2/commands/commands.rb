@@ -214,12 +214,20 @@ module CTioga2
           if ! @optional_arguments.key? k
             raise CommandOptionUnkown, "Unkown option #{k} for command #{@name}"
           end
+          opt = @optional_arguments[k]
           if v.is_a? String
-            target_options[k] = @optional_arguments[k].type.
-              string_to_type(v)
-          else
-            target_options[k] = v
+            v = opt.type.string_to_type(v)
           end
+          target = opt.option_target || k
+          if opt.option_deprecated
+            expl = ""
+            if opt.option_target
+              expl = " -- please use #{opt.option_target} instead"
+            end
+            Log::warn { "Deprecated option #{k}#{expl}" }
+          end
+
+          target_options[target] = v
         end
         return target_options
       end

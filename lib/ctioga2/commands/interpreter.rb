@@ -251,6 +251,22 @@ module CTioga2
                             converted_options)
       end
     end
+
+    def self.make_alias_for_option(cmd_name, option, 
+                                   new_name, deprecated = false)
+      cmd = Interpreter.command(cmd_name)
+      if ! cmd
+        raise "Impossible to find command #{cmd_name}"
+      end
+      new_opt = cmd.optional_arguments[option]
+      if ! new_opt
+        raise "No #{option} option to command #{cmd_name}"
+      end
+      new_opt = new_opt.dup
+      new_opt.option_deprecated = deprecated
+      new_opt.option_target = option
+      cmd.optional_arguments[new_name] = new_opt
+    end
   end
   
   # An alias for Commands::Command
