@@ -224,6 +224,8 @@ end
 
 # Here, we define an additional function in the Hash class: without
 class Hash
+
+  # Returns a copy of the hash without the given keys
   def without(*args)
     ret = self.dup
     for a in args.flatten
@@ -231,6 +233,13 @@ class Hash
     end
     return ret
   end
+
+  # Renames the given key
+  def rename_key(old, new)
+    self[new] = self[old]
+    self.delete(old)
+  end
+
 end
 
 begin

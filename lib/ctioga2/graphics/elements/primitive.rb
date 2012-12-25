@@ -211,14 +211,12 @@ module CTioga2
           'line_style' => 'line-style',
         }
 
-        primitive("arrow", "arrow", [ 'point', 'point' ], 
-                  ArrowOptions) do |t, tail,head, options|
-          ## \todo a scale or marker_scale option that sets the scale
-          ## of both head and tail
-          options ||= {}
-          options['head'] = head.to_figure_xy(t)
-          options['tail'] = tail.to_figure_xy(t)
-          t.show_arrow(options)
+        styled_primitive("arrow", "arrow", 
+                         [ 'point', 'point' ], 
+                         Styles::ArrowStyle,
+                         'arrow') do |t, tail, head, style, options|
+          style.draw_arrow(t, *tail.to_figure_xy(t),
+                           *head.to_figure_xy(y))
         end
  
         styled_primitive("line", "line", 
