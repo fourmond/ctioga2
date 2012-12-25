@@ -92,12 +92,19 @@ module CTioga2
         end
 
         def self.options_hash(key = "%s")
-          ret = {}
-          for k, v in @attribute_types
-            ret[key % k] = v
-          end
+          ret = if superclass.respond_to?(:options_hash)
+                  superclass.options_hash(key)
+                else
+                  {}
+                end
 
-          if @sub_styles
+          if @attribute_types   # Not always present
+            for k, v in @attribute_types
+              ret[key % k] = v
+            end
+          end
+            
+          if @sub_styles        # Not always present too
             for sub in @sub_styles
               sym, cls, fmt = *sub
               ret.merge!(cls.options_hash(fmt))

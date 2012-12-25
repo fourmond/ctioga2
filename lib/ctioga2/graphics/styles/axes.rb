@@ -51,10 +51,10 @@ module CTioga2
         sub_style :background_lines, StrokeStyle
 
         # The style of the tick labels
-        attr_accessor :tick_label_style
+        sub_style :tick_label_style, FullTextStyle, "tick_label_%s"
 
         # The label of the axis, if there is one
-        attr_accessor :axis_label
+        sub_style :axis_label, TextLabel
 
         # Whether the axis should be log scale or not
         attr_accessor :log

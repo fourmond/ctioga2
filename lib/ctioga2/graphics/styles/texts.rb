@@ -119,6 +119,7 @@ module CTioga2
         typed_attribute :loc, "location"
 
         def initialize(text = nil)
+          super()
           @text = text
         end
         
