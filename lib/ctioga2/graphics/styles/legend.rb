@@ -48,6 +48,13 @@ module CTioga2
         # The scale of the pictogram
         typed_attribute :symbol_scale, 'float'
 
+
+        # A frame around the legend
+        sub_style :frame, BoxStyle
+
+        # Padding around the frame
+        typed_attribute :frame_padding, 'dimension'
+
         def initialize
           @dy = Types::Dimension.new(:dy, 1.6, :y)
 
@@ -59,6 +66,10 @@ module CTioga2
           @scale = 0.8
           @text_scale = 0.82
           @symbol_scale = 1
+
+          @frame = BoxStyle.new()
+          
+          @frame_padding = Types::Dimension.from_text("1mm", :x)
         end
       end
     end

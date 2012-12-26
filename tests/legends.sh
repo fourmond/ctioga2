@@ -28,3 +28,18 @@ $ct -t 'Legends inside' -r 10cmx10cm \
     --legend-inside tc /scale 2 /dy=1.02 \
     -l '$x^2$' 'x**2' \
     -l '$5 x$' '5 * x'
+
+$ct -t 'Legend frames, take 1' -r 10cmx10cm \
+    --legend-inside tc /scale 2 /dy=1.02 /frame_color=Black \
+    /frame_fill_color='Blue!10' /frame_width=0.5 \
+    -l '$x^2$' 'x**2' \
+    -l '$5 x$' '5 * x' \
+    --legend-line Bottom
+
+$ct -t 'Legend frames, take 2' -r 10cmx10cm \
+    --legend-inside cc /scale 2 /dy=1.02 /frame_color=Black \
+    /frame_fill_color='White' /frame_fill_transparency=0.2 \
+    /frame_width=0.5 /frame_padding=5mm\
+    -l '$x^2$' 'x**2' \
+    -l '$5 x$' '5 * x' \
+    --legend-line 'More padding !'

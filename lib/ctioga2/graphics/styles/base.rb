@@ -106,6 +106,7 @@ module CTioga2
           if @sub_styles        # Not always present too
             for sub in @sub_styles
               sym, cls, fmt = *sub
+              fmt = key % fmt
               ret.merge!(cls.options_hash(fmt))
             end
           end
@@ -149,6 +150,7 @@ module CTioga2
                 cur_var = cls.new
                 set_after = true
               end
+              fmt = name % fmt
               nb = cur_var.set_from_hash(hash, fmt)
               if nb > 0 and set_after
                 self.send("#{sym}=", cur_var)

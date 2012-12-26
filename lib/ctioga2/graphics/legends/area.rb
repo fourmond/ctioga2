@@ -27,13 +27,6 @@ module CTioga2
       #
       # \todo
       # 
-      # * a legend can be plotted either inside a plot or outside the
-      #   root object
-      #   
-      # * in case it is plotted outside the root object, the user should
-      #   be able to choose whether it should be counted in the
-      #   real-size or not.
-      #
       # * legends should provide all the kind of things that were in the
       #   first ctioga, such as background, frames, and so on...
       #
@@ -88,6 +81,13 @@ module CTioga2
             t.set_bounds([0, 1, 1, 0])
             ## \todo customize this !
             x, y = initial_xy(t, container)
+
+            w,h = *size(t, container)
+            h /= @legend_style.scale * @legend_style.text_scale
+            @legend_style.frame.
+              draw_box_around(t, x, y,
+                              x + w, y - h, @legend_style.frame_padding)
+            
             for item in items
               ## \todo transform the 0.0 for x into a negative
               # user-specifiable stuff.

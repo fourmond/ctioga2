@@ -25,6 +25,8 @@ module CTioga2
     module Styles
 
       # This class represents styles attached to a box
+      #
+      # @todo Add rounded corners and the like...
       class BoxStyle < StrokeStyle
 
         sub_style 'fill', FillStyle
@@ -46,6 +48,16 @@ module CTioga2
             end
           end
 
+        end
+
+        # Draws a box around the given box, leaving dx and dy
+        # around. If _dy_ is omitted, it defaults to _dx_
+        def draw_box_around(t, x1, y1, x2, y2, dx, dy = nil)
+          dy ||= dx
+          dx = dx.to_figure(t, :x)
+          dy = dy.to_figure(t, :y)
+          draw_box(t, x1 - dx, y1 + dy,
+                   x2 + dx, y2 - dy)
         end
 
       end
