@@ -109,6 +109,7 @@ module CTioga2
         set_type BackgroundStyle, 'background'
         set_type TextLabel, 'title'
         set_type StrokeStyle, 'line', /^line./
+        set_type ArrowStyle, 'arrow', /^arrow./
         set_type FullTextStyle, 'text', /^text./
         set_type MarkerStringStyle, 'marker', 'marker-string', /^marker./
         set_type BoxStyle, 'box', /^box./
@@ -201,8 +202,22 @@ module CTioga2
 
       StyleSheetGroup = CmdGroup.new('style-sheets',
                                      "Default styles", 
-                                     "Default styles", 40)
-      
+                                     <<EOD, 40)
+Commands for defining default styles.
+
+All commands take the name of the style to redefine. Depending on the
+command, you may either pick from a fixed list of modifiable types or
+define your own, provided they start with the right prefix.
+
+ctioga2 does not support changing a style after its use. It may
+affect only the following objects or all the ones that were created
+from the beginning, depending on the context. For safety, only define
+style before issueing any graphics command.
+
+ctioga2 may support at a later time loading style files, but that is
+not the case for now.
+
+EOD
       # We create the commands programmatically
       kinds = [
                ['axis', AxisStyle, 'axis'],
@@ -215,15 +230,17 @@ module CTioga2
                ['line', StrokeStyle, 'lines']
               ]
 
-      StyleSheetCommands = []
+      StyleSheetCommands = {}
+      StyleSheetPredefinedNames = {}
 
       kinds.each do |k|
         name, cls, desc = *k
 
         # Now, we get all the names that match the style
         all_names = StyleSheet.all_types.keys_for(cls)
+        StyleSheetPredefinedNames[name] = all_names
 
-        StyleSheetCommands << 
+        StyleSheetCommands[name] = 
           Cmd.new("default-#{name}-style",nil,
                   "--default-#{name}-style", 
                   [
@@ -232,13 +249,13 @@ module CTioga2
                   cls.options_hash
                   ) do |plotmaker, what, opts|
           if StyleSheet.get_type(what) != cls
-            Log::error {"Incorrect type for style #{name}"}
+            Log::error { "Incorrect type for style #{name}" }
           else
             StyleSheet.current_sheet.own_styles[what] ||= {}
             StyleSheet.current_sheet.own_styles[what].merge!(opts)
           end
         end
-        StyleSheetCommands.last.
+        StyleSheetCommands[name].
           describe("Sets the default style for the given #{desc}.", 
                    <<"EOH", StyleSheetGroup)
 Sets the default style for the named #{desc}.
@@ -246,6 +263,46 @@ Sets the default style for the named #{desc}.
 Possible values for the name: #{all_names.join(', ')}.
 EOH
       end
+      
+      StyleSheetCommands['line'].long_description = <<EOD
+Sets the default style for lines. All line styles descend from the
+@line@ base style, and they must all start with @line@. Use a style
+different than @line@ by passing its name as the @/base-style@ option 
+to the {command: draw-line} command.
+
+Meaning of the style parameters:
+
+ * @color@: the color of the line, see {type: color}
+ * @style@: the line style, see {type: line-style}
+ * @width@: the line width (in points)
+
+> --default-line-style line /color=Pink
+
+makes all lines drawn pink (unless overriden by the /color option to
+{command: draw-line}), while
+
+> --default-line-style line-pink /color=Pink
+
+only affect those to which the /base-style=line-pink style option
+was given.
+EOD
+
+      StyleSheetCommands['arrow'].long_description = <<EOD
+Sets the default style for arrows. All arrows styles descend from the
+@arrow@ base style, and they must all start with @arrow@. Use a style
+different than @arrow@ by passing its name as the @/base-style@ option 
+to the {command: draw-arrow} command.
+
+Meaning of the style parameters:
+
+ * @color@, @style@ and @width@: same as in {command: default-line-style}
+ * @head_marker@, @tail_marker@: a {type: marker} to be used for the head 
+   or for the tail
+ * @head_scale@, @tail_scale@: scale of the head or tail markers
+ * @head_angle@, @tail_angle@: rotate the head or the tail by that many
+   degrees
+ * @head_color@, @tail_color@: the {type: color} of the head or tail
+EOD
       
     end
   end

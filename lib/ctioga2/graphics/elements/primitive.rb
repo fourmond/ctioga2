@@ -216,7 +216,7 @@ module CTioga2
                          Styles::ArrowStyle,
                          'arrow') do |t, tail, head, style, options|
           style.draw_arrow(t, *tail.to_figure_xy(t),
-                           *head.to_figure_xy(y))
+                           *head.to_figure_xy(t))
         end
 
         styled_primitive("line", "line", 

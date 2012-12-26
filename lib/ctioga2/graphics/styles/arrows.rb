@@ -43,6 +43,7 @@ module CTioga2
           dict.rename_key('style', 'line_style')
           dict['head'] = [x2,y2]
           dict['tail'] = [x1,y1]
+          t.show_arrow(dict)
         end
 
       end
