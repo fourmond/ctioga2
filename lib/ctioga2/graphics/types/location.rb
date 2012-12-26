@@ -199,7 +199,7 @@ module CTioga2
         #
         # So far, no real parsing
         def self.from_text(str)
-          str.gsub!(/-/,"_")
+          str = str.gsub(/-/,"_") # Avoid problems with frozen strings
           return PlotLocation.new(str.to_sym)
         end
 
