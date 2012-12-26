@@ -236,39 +236,18 @@ module CTioga2
           Commands::make_alias_for_option cmd, 'style', 'line_style', true
         end
 
-        primitive("box", "box", [ 'point', 'point' ],
-                  {
-                    'color' => 'color',
-                    'width' => 'float',
-                    'style' => 'line-style',
-                    'fill-color' => 'color',
-                    'fill-transparency' => 'float',
-                  }
-                  ) do |t, tl,br, options|
-          ss = Styles::StrokeStyle.from_hash(options)
-          fs = Styles::FillStyle.from_hash(options, "fill-%s")
-
-          t.context do
-            t.discard_path
-
-            x1,y1 = tl.to_figure_xy(t)
-            x2,y2 = br.to_figure_xy(t)
-            
-
-            ## @todo Rounded rects!
-            if fs.color
-              fs.setup_fill(t)
-              t.append_rect_to_path(x1, y1, x2 - x1, y2 - y1)
-              fs.do_fill(t)
-            end
-            if ss.color
-              ss.set_stroke_style(t)
-              t.append_rect_to_path(x1, y1, x2 - x1, y2 - y1)
-              t.stroke
-            end
-          end
+        styled_primitive("box", "box", 
+                         [ 'point', 'point' ], 
+                         Styles::BoxStyle,
+                         'box') do |t, tl, br, style, options|
+          x1,y1 = tl.to_figure_xy(t)
+          x2,y2 = br.to_figure_xy(t)
+          style.draw_box(t, x1, y1, x2, y2)
         end
 
+
+        Commands::make_alias_for_option 'draw-box', 'fill_color', 'fill-color'
+        Commands::make_alias_for_option 'draw-box', 'fill_transparency', 'fill-transparency'
 
         protected
 

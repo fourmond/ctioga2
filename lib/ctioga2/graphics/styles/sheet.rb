@@ -83,11 +83,12 @@ module CTioga2
         # All arrow styles descend from the base 'arrow' style
         set_parent /^arrow./, "arrow"
 
-        # Same thing for lines, text
+        # Same thing for lines, text, markers, boxes
         set_parent /^line./, "line"
         set_parent /^text./, "text"
         set_parent /^marker./, "marker"
         set_parent /^marker-string./, "marker-string"
+        set_parent /^box./, "box"
 
 
         @style_type = RegexpHash.new
@@ -110,6 +111,7 @@ module CTioga2
         set_type StrokeStyle, 'line', /^line./
         set_type FullTextStyle, 'text', /^text./
         set_type MarkerStringStyle, 'marker', 'marker-string', /^marker./
+        set_type BoxStyle, 'box', /^box./
 
 
 
@@ -208,6 +210,8 @@ module CTioga2
                ['title', TextLabel, 'plot title'],
                ['text', FullTextStyle, 'text'],
                ['marker', MarkerStringStyle, 'marker'],
+               ['box', BoxStyle, 'boxes'],
+               ['arrow', ArrowStyle, 'arrows'],
                ['line', StrokeStyle, 'lines']
               ]
 

@@ -15,6 +15,7 @@ require 'ctioga2/graphics/styles/base'
 
 require 'ctioga2/graphics/styles/drawable'
 require 'ctioga2/graphics/styles/arrows'
+require 'ctioga2/graphics/styles/box'
 require 'ctioga2/graphics/styles/location'
 require 'ctioga2/graphics/styles/texts'
 require 'ctioga2/graphics/styles/carrays'
