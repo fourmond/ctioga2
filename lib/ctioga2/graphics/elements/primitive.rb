@@ -93,7 +93,8 @@ module CTioga2
 
         # Creates a new primitive with the given parameters, and makes
         # it immediately available as a command.
-        def self.primitive(name, long_name, comp, opts = {}, &code)
+        def self.primitive(name, long_name, comp, opts = {}, 
+                           desc = nil, &code)
           primitive = TiogaPrimitive.new(name, comp, opts, &code)
           @known_primitives[name] = primitive
           
@@ -121,8 +122,11 @@ module CTioga2
             plotmaker.root_object.current_plot.
               add_element(call)
           end
+          if ! desc
+            desc = "Directly draws #{long_name} on the current plot"
+          end
           cmd.describe("Draws #{long_name}",
-                       "Directly draws #{long_name} on the current plot", 
+                       desc, 
                        PrimitiveGroup)
 
           PrimitiveCommands[name] = cmd
@@ -140,15 +144,25 @@ module CTioga2
         def self.styled_primitive(name, long_name, comp, style_class, 
                                   style_name, without = [],
                                   additional_options = {},
+                                  set_style_command = nil, # This
+                                                           # could be
+                                                           # removed
                                   &code)
           options = style_class.options_hash.without(without)
           options.merge!(additional_options)
           options['base-style'] = 'text' # the base style name
-          
-          self.primitive(name, long_name, comp, options) do |*all|
+
+          set_style_command ||= style_name
+          desc = <<"EOD"
+Draws #{long_name} on the current plot, using the given style.
+For more information on the available options, see the 
+{command: default-#{set_style_command}-style} command.
+EOD
+
+          self.primitive(name, long_name, comp, options, desc) do |*all|
             opts = all.pop
-            st_name = opts['base-style'] || style_name
-            style = Styles::StyleSheet.typed_style_for(st_name, style_class) 
+            st_name = opts['base-style'] || "base"
+            style = Styles::StyleSheet.style_for(style_class,st_name) 
             style.set_from_hash(opts)
             all << style << opts
             code.call(*all)
@@ -192,7 +206,9 @@ module CTioga2
         styled_primitive("string-marker", "marker", 
                          [ 'point', 'text' ],
                          Styles::MarkerStringStyle,
-                         'marker-string'
+                         'marker-string', [],
+                         {},
+                         'marker'
                          ) do |t, point, string, style, options|
           style.draw_string_marker(t, string, *point.to_figure_xy(t))
         end

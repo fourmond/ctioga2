@@ -383,8 +383,8 @@ EOH
                               <<EOH, DataStackGroup)
 Displays the current contents of the dataset stack. 
 
-Mostly used for debugging when operations like {cmd: merge-datasets}
-or {cmd: join-datasets} don't work as expected.
+Mostly used for debugging when operations like {command: merge-datasets}
+or {command: join-datasets} don't work as expected.
 EOH
 
 

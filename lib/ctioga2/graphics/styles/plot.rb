@@ -82,24 +82,26 @@ module CTioga2
           # Default style for the plots.
           @axes = {}
           @axes[:left] = 
-            StyleSheet.style_for('left', :left, 
+            StyleSheet.style_for(AxisStyle, 'left', :left, 
                                  AXIS_WITH_TICKS_AND_NUMERIC_LABELS,
                                  '$y$')
           @axes[:bottom] = 
-            StyleSheet.style_for('bottom', :bottom, 
+            StyleSheet.style_for(AxisStyle, 'bottom', :bottom, 
                                  AXIS_WITH_TICKS_AND_NUMERIC_LABELS,
                                  '$x$')
 
           @axes[:right] = 
-            StyleSheet.style_for('right', :right, AXIS_WITH_TICKS_ONLY)
+            StyleSheet.style_for(AxisStyle, 'right', :right, 
+                                 AXIS_WITH_TICKS_ONLY)
           @axes[:top] = 
-            StyleSheet.style_for('top', :top, AXIS_WITH_TICKS_ONLY)
+            StyleSheet.style_for(AxisStyle, 'top', :top, 
+                                 AXIS_WITH_TICKS_ONLY)
 
           @xaxis_location = :bottom
           @yaxis_location = :left
 
           @title = 
-            StyleSheet.style_for('title',
+            StyleSheet.style_for(TextLabel, 'title',
                                  nil, 
                                  Types::PlotLocation.new(:top))
 
@@ -108,7 +110,7 @@ module CTioga2
           @transforms = CoordinateTransforms.new
 
           @background = 
-            StyleSheet.style_for('background')
+            StyleSheet.style_for(BackgroundStyle, 'background')
 
           # A padding of 4bp ? Why ?? Why not ?
           @padding = Types::Dimension.new(:bp, 4)

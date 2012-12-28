@@ -45,7 +45,8 @@ module CTioga2
         # The parent of the style sheet, or nil if this is the top one.
         attr_accessor :parent
 
-        # The styles, in form of a style name -> style object hash
+        # The styles, in form of a style class -> style name -> style
+        # object nested hash
         #
         # The style object is actually a hash ready to be fed to the
         # BasicStyle#set_from_hash
@@ -58,82 +59,64 @@ module CTioga2
 
         # This hash contains the parent style for each of the style
         # listed in
-        @style_parent = RegexpHash.new
+        #
+        # Keyed by class -> style name -> parent name
+        @style_parent = {}
 
         # Sets the parent for the given style
-        def self.set_parent(style, parent)
-          @style_parent[style] = parent
+        def self.set_parent(cls, style, parent)
+          @style_parent[cls] ||= {}
+          @style_parent[cls][style] = parent
         end
         
         # Returns the parent style for the style (or _nil_ should the
         # style have no parent)
-        def self.get_parent(style)
-          return @style_parent[style]
-        end
-
-        set_parent "xaxis",  "axis"
-        set_parent "yaxis",  "axis"
-
-        set_parent "bottom", "xaxis"
-        set_parent "top",    "xaxis"
-        set_parent "left",   "yaxis"
-        set_parent "right",  "yaxis"
-
-
-        # All arrow styles descend from the base 'arrow' style
-        set_parent /^arrow./, "arrow"
-
-        # Same thing for lines, text, markers, boxes
-        set_parent /^line./, "line"
-        set_parent /^text./, "text"
-        set_parent /^marker./, "marker"
-        set_parent /^marker-string./, "marker-string"
-        set_parent /^box./, "box"
-
-
-        @style_type = RegexpHash.new
-
-        # Sets the class for the given style. It should be
-        # comprehensive. 
-        def self.set_type(type, *names)
-          for name in names.flatten
-            @style_type[name] = type
+        #
+        # All styles (but base) derive from the corresponding "base"
+        # style.
+        def self.get_parent(cls, style)
+          @style_parent[cls] ||= {}
+          stl = @style_parent[cls][style]
+          if (! stl) and (! style == 'base')
+            return 'base'
           end
+          return stl
         end
 
-        def self.get_type(name)
-          return @style_type[name]
-        end
-        
-        set_type AxisStyle, %w(axis xaxis yaxis left right top bottom)
-        set_type BackgroundStyle, 'background'
-        set_type TextLabel, 'title'
-        set_type StrokeStyle, 'line', /^line./
-        set_type ArrowStyle, 'arrow', /^arrow./
-        set_type FullTextStyle, 'text', /^text./
-        set_type MarkerStringStyle, 'marker', 'marker-string', /^marker./
-        set_type BoxStyle, 'box', /^box./
+        set_parent AxisStyle, "x",  "base"
+        set_parent AxisStyle, "y",  "base"
+
+        set_parent AxisStyle, "bottom", "x"
+        set_parent AxisStyle, "top",    "x"
+        set_parent AxisStyle, "left",   "y"
+        set_parent AxisStyle, "right",  "y"
 
 
+        # # All arrow styles descend from the base 'arrow' style
+        # set_parent /^arrow./, "arrow"
+
+        # # Same thing for lines, text, markers, boxes
+        # set_parent /^line./, "line"
+        # set_parent /^text./, "text"
+        # set_parent /^marker./, "marker"
+        # set_parent /^marker-string./, "marker-string"
+        # set_parent /^box./, "box"
 
 
-
-        def self.all_types()
-          return @style_type
-        end
 
         # This returns the style we have in this object for the given
         # name. Inner cascading should take place (ie object
         # hierarchy, but not scope hierarchy).
         #
         # This returns a hash that can be modified.
-        def own_style_hash_for(name)
-          p = self.class.get_parent(name)
+        def own_style_hash_for(cls, name)
+          p = self.class.get_parent(cls, name)
           base = {}
           if p
-            base = own_style_hash_for(p)
+            base = own_style_hash_for(cls, p)
           end
-          style = @own_styles[name]
+          @own_styles[cls] ||= {}
+          style = @own_styles[cls][name]
           if ! style
             return base
           end
@@ -143,12 +126,12 @@ module CTioga2
         end
 
         # The style for the given name, including all cascading
-        def get_style_hash_for(name)
+        def get_style_hash_for(cls, name)
           ps = {}
           if @parent
-            ps = @parent.get_style_hash_for(name);
+            ps = @parent.get_style_hash_for(cls, name);
           end
-          style = own_style_hash_for(name)
+          style = own_style_hash_for(cls, name)
           style.merge!(ps) { |key, v1, v2| v1 }
           return style
         end
@@ -162,24 +145,10 @@ module CTioga2
         # crashes if the name isn't known.
         #
         # Additional arguments are passed to the constructor
-        def self.style_for(name, *args)
-          type = self.get_type(name)
-          if ! type
-            return nil
-          end
-          a = type.new(*args)
-          
-          a.set_from_hash(@sheet.get_style_hash_for(name))
+        def self.style_for(cls, name, *args)
+          a = cls.new(*args)
+          a.set_from_hash(@sheet.get_style_hash_for(cls, name))
           return a
-        end
-
-        def self.typed_style_for(name, cls)
-          style = self.style_for(name)
-          if ! style.is_a?(cls)
-            Log::error { "Style '#{name}' is not of the appropriate type (#{cls.name})" }
-            style = cls.new
-          end
-          return style
         end
 
         def self.enter_scope()
@@ -205,9 +174,9 @@ module CTioga2
                                      <<EOD, 40)
 Commands for defining default styles.
 
-All commands take the name of the style to redefine. Depending on the
-command, you may either pick from a fixed list of modifiable types or
-define your own, provided they start with the right prefix.
+All commands take the name of the style to redefine. Different styles
+live in a different name space, so there is no risk naming an @axis@ and
+a @text@ style with the same name. All 
 
 ctioga2 does not support changing a style after its use. It may
 affect only the following objects or all the ones that were created
@@ -236,31 +205,22 @@ EOD
       kinds.each do |k|
         name, cls, desc = *k
 
-        # Now, we get all the names that match the style
-        all_names = StyleSheet.all_types.keys_for(cls)
-        StyleSheetPredefinedNames[name] = all_names
-
         StyleSheetCommands[name] = 
-          Cmd.new("default-#{name}-style",nil,
-                  "--default-#{name}-style", 
+          Cmd.new("define-#{name}-style",nil,
+                  "--define-#{name}-style", 
                   [
                    CmdArg.new('text'),
                   ], 
                   cls.options_hash
                   ) do |plotmaker, what, opts|
-          if StyleSheet.get_type(what) != cls
-            Log::error { "Incorrect type for style #{name}" }
-          else
-            StyleSheet.current_sheet.own_styles[what] ||= {}
-            StyleSheet.current_sheet.own_styles[what].merge!(opts)
-          end
+          StyleSheet.current_sheet.own_styles[cls] ||= {}
+          StyleSheet.current_sheet.own_styles[cls][what] ||= {}
+          StyleSheet.current_sheet.own_styles[cls][what].merge!(opts)
         end
         StyleSheetCommands[name].
           describe("Sets the default style for the given #{desc}.", 
                    <<"EOH", StyleSheetGroup)
 Sets the default style for the named #{desc}.
-
-Possible values for the name: #{all_names.join(', ')}.
 EOH
       end
       
