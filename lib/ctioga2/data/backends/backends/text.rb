@@ -56,7 +56,17 @@ module CTioga2
 
         describe 'text', 'Text format', <<EOD
 This backend reads text files in a format close to the one understood
-by gnuplot and the like.
+by gnuplot and the like. More specifically, it reads text files organized
+in columns.
+
+The column separator is specified by the @separator@ option or using
+the {command: text-separator} command; it is a {type: regexp}
+
+By default, the {command: text} backend only loads the column 1 as X
+and 2 as Y, but that can be changed either by specifiying a default
+column spec using either the @default_column_spec@ option or by adding
+a specification directly after the file name.
+
 EOD
 
         # Inherit the baseline handling, can be useful !
