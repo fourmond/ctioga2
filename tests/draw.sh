@@ -26,27 +26,27 @@ $ct -t 'Boxes' -r 10cmx10cm \
 $ct -t 'Styled lines and text' -r 10cmx10cm --math-xrange -3:3 \
     'sin(x)' \
     --draw-line -2,0.2 2,-0.2 /color=Blue /width=2 \
-    --default-line-style line /style=Dots \
-    --default-line-style line2 /width=1 \
+    --define-line-style base /style=Dots \
+    --define-line-style line2 /width=1 \
     --draw-line 2,0.2 -2,-0.2 /color=Red /width=2 \
     --draw-line 2,-0.2 -2,-0.2 /color=Green /base-style=line2 \
     --draw-line 2.5,-0.4 2.5,0.5 /color=Purple /line_width=3 /line_style=Solid \
     --draw-text 0,0 'style changes apply to the whole graph' \
-    --default-text-style text /scale=1.6 /color=Green \
-    --default-text-style text1 /color='Red!20' \
+    --define-text-style base /scale=1.6 /color=Green \
+    --define-text-style text1 /color='Red!20' \
     --draw-text 0,0.5 'with default style' \
     --draw-text 0,-0.5 'with text1 style' /base-style=text1
     
 
 $ct -t 'Styled markers' -r 10cmx10cm --math-xrange -3:3 \
     'sin(x)' \
-    --default-marker-style marker /color=Red \
-    --default-marker-style marker1 /vertical_scale=2 \
-    --default-marker-style marker-string /horizontal_scale=2 \
+    --define-marker-style base /color=Red \
+    --define-marker-style marker1 /vertical_scale=2 \
+    --define-marker-style marker-string /horizontal_scale=2 \
     --draw-marker '0,0' TriangleUp \
     --draw-marker '1,0' TriangleUp /base-style=marker1 \
-    --draw-string-marker '0,0.5' TriangleUp \
-    --draw-string-marker '0,-0.5' TriangleUp \
+    --draw-string-marker '0,0.5' TriangleUp /base-style=marker-string \
+    --draw-string-marker '0,-0.5' TriangleUp /base-style=marker-string \
     /vertical_scale=0.5 /color=Green \
-    --draw-string-marker '0,-0.2' TriangleUp \
+    --draw-string-marker '0,-0.2' TriangleUp /base-style=marker-string \
     /horizontal_scale=1 /color=Blue

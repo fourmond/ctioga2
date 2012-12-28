@@ -77,7 +77,7 @@ module CTioga2
         def self.get_parent(cls, style)
           @style_parent[cls] ||= {}
           stl = @style_parent[cls][style]
-          if (! stl) and (! style == 'base')
+          if (! stl) and (! (style == 'base'))
             return 'base'
           end
           return stl
@@ -90,18 +90,6 @@ module CTioga2
         set_parent AxisStyle, "top",    "x"
         set_parent AxisStyle, "left",   "y"
         set_parent AxisStyle, "right",  "y"
-
-
-        # # All arrow styles descend from the base 'arrow' style
-        # set_parent /^arrow./, "arrow"
-
-        # # Same thing for lines, text, markers, boxes
-        # set_parent /^line./, "line"
-        # set_parent /^text./, "text"
-        # set_parent /^marker./, "marker"
-        # set_parent /^marker-string./, "marker-string"
-        # set_parent /^box./, "box"
-
 
 
         # This returns the style we have in this object for the given
@@ -176,7 +164,8 @@ Commands for defining default styles.
 
 All commands take the name of the style to redefine. Different styles
 live in a different name space, so there is no risk naming an @axis@ and
-a @text@ style with the same name. All 
+a @text@ style with the same name. All styles for a given type inherit from 
+the style name @base@.
 
 ctioga2 does not support changing a style after its use. It may
 affect only the following objects or all the ones that were created
