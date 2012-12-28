@@ -215,9 +215,8 @@ EOH
       
       StyleSheetCommands['line'].long_description = <<EOD
 Sets the default style for lines. All line styles descend from the
-@line@ base style, and they must all start with @line@. Use a style
-different than @line@ by passing its name as the @/base-style@ option 
-to the {command: draw-line} command.
+@base@ style. Use a style different than @base@ by passing its name as
+the @/base-style@ option to the {command: draw-line} command.
 
 Meaning of the style parameters:
 
@@ -225,32 +224,123 @@ Meaning of the style parameters:
  * @style@: the line style, see {type: line-style}
  * @width@: the line width (in points)
 
-> --default-line-style line /color=Pink
+> --define-line-style base /color=Pink
 
-makes all lines drawn pink (unless overriden by the /color option to
+makes all lines  pink (unless overriden by the /color option to
 {command: draw-line}), while
 
-> --default-line-style line-pink /color=Pink
+> --define-line-style line-pink /color=Pink
 
 only affect those to which the /base-style=line-pink style option
 was given.
 EOD
 
       StyleSheetCommands['arrow'].long_description = <<EOD
-Sets the default style for arrows. All arrows styles descend from the
-@arrow@ base style, and they must all start with @arrow@. Use a style
-different than @arrow@ by passing its name as the @/base-style@ option 
-to the {command: draw-arrow} command.
+Sets the default style for arrows. All arrow styles descend from the
+@base@ style. Use a style different than @base@ by passing its name as
+the @/base-style@ option to the {command: draw-arrow} command.
 
 Meaning of the style parameters:
 
- * @color@, @style@ and @width@: same as in {command: default-line-style}
+ * @color@, @style@ and @width@: same as in {command: define-line-style}
  * @head_marker@, @tail_marker@: a {type: marker} to be used for the head 
    or for the tail
  * @head_scale@, @tail_scale@: scale of the head or tail markers
  * @head_angle@, @tail_angle@: rotate the head or the tail by that many
    degrees
  * @head_color@, @tail_color@: the {type: color} of the head or tail
+EOD
+
+      StyleSheetCommands['box'].long_description = <<EOD
+Sets the default style for boxes. All box styles descend from the
+@base@ style. Use a style different than @base@ by passing its name as
+the @/base-style@ option to the {command: draw-box} command.
+
+Meaning of the style parameters:
+
+ * @color@, @style@ and @width@: same as in {command: define-line-style}
+ * @fill_color@: fill color for the box
+ * @fill_transparency@: the transparency for the fill, from 0 to 1
+EOD
+
+      StyleSheetCommands['text'].long_description = <<EOD
+Sets the default style for texts. All text styles descend from the
+@base@ style. Use a style different than @base@ by passing its name as
+the @/base-style@ option to the {command: draw-text} command.
+
+Meaning of the style parameters:
+
+ * @alignment@: vertical alignment
+ * @justification@: horizontal alignment
+ * @angle@: angle in degrees to the horizontal (or default orientation in
+   some cases)
+ * @color@: text color
+ * @scale@: text scale
+EOD
+
+      StyleSheetCommands['title'].long_description = <<EOD
+Sets the style for title. All title styles descend from the
+@base@ style. In addition, the title of a plot is addressed by the 
+style name @title@.
+
+Meaning of the style parameters:
+
+ * @alignment@, @justification@, @angle@, @color@ and @scale@: 
+   as in {command: define-text-style}
+ * @text@: sets the title text
+ * @loc@: the side on which to display the title, a {type: location}
+ * @shift@: the distance away from the plot in text size units 
+   (maybe a dimension should be better later)
+ * @position@: shift from the center (parallel to the plot side)
+EOD
+
+      StyleSheetCommands['marker'].long_description = <<EOD
+Sets the style for marker and marker strings.  All marker and marker
+string styles descend from the @base@ style. Use a style different
+than @base@ by passing its name as the @/base-style@ option to the
+{command: draw-marker} or {command: draw-string-marker} commands.
+
+Meaning of the style parameters:
+
+ * @alignment@, @justification@, @angle@, @color@ and @scale@: 
+   as in {command: define-text-style}
+ * @fill_color@ and @stroke_color@: markers are both stroked and filled,
+   you can control all colors in one go using @color@ or specifying each
+   with @fill_color@ and @stroke_color@
+ * @font@: is a PDF font number (from 1 to 14), only used for marker
+   strings
+ * @horizontal_scale@, @vertical_scale@: scales the marker only
+   horizontally or vertically
+EOD
+
+      StyleSheetCommands['background'].long_description = <<EOD
+Sets the style for plot background. All background styles descend from the
+@base@ style. In addition, the background of a plot is change by the 
+style name @background@.
+
+Meaning of the style parameters:
+
+ * @watermark@: the text of the watermark
+ * all @watermark_@ styles have the same meaning as in 
+   {command: define-text-style}, as the watermark is a string marker
+ * @background_color@: the color of the background
+EOD
+
+      StyleSheetCommands['axis'].long_description = <<EOD
+Sets the style for a whole axis. All axis styles descend from the
+@base@ style. Horizontal and vertical axis styles descend from the 
+@x@ and @y@ styles, and plot sides are styled with the @left@, @right@, 
+@top@ and @bottom@ styles.
+
+Axis styles have lots of parameters:
+
+ * @axis_label_@ and @tick_label_@ parameters are title style parameters
+   whose meaning is given in {command: define-title-style}, that affect
+   ticks and axis labels
+ * @decoration@: a {type: axis-decoration} that specify which ticks and 
+   tick labels to draw
+ * @background_lines_@ parameters define the style of background lines, 
+   as in {command: define-line-style}
 EOD
       
     end

@@ -92,6 +92,8 @@ module CTioga2
 
         # The (horizontal) position with respect to a location. You'll
         # seldom need that.
+        #
+        # @todo Maybe this needs to fo in TextLabel rather than here ?
         typed_attribute :position, 'float'
       end
 

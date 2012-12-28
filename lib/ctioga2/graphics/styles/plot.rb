@@ -348,7 +348,11 @@ module CTioga2
           describe("Sets the type of the #{loc} axis", 
                    <<"EOH", AxisGroup)
 Sets the type of the #{loc} axis.
+
+The options have the same meaning as for {command: define-axis-style},
+see that command for more information.
 EOH
+
       end
 
       AxisStyleCommand = 
@@ -363,8 +367,8 @@ EOH
         describe("Sets the style of the given axis", 
                  <<"EOH", AxisGroup)
 This command can be used to set various aspects of the style of the 
-given axis, through its various options:
- * decoration
+given axis, through its various options, which are documented in more details 
+in the {command: define-axis-style} command.
 EOH
 
       BackgroundLinesCommand = 

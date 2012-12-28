@@ -156,7 +156,7 @@ module CTioga2
           desc = <<"EOD"
 Draws #{long_name} on the current plot, using the given style.
 For more information on the available options, see the 
-{command: default-#{set_style_command}-style} command.
+{command: define-#{set_style_command}-style} command.
 EOD
 
           self.primitive(name, long_name, comp, options, desc) do |*all|

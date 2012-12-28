@@ -61,7 +61,9 @@ module CTioga2
         # private to some extent ?
         #
         # @todo Provide a function to make attributes "aliases" of
-        # others (but just on the hash side of the things)
+        # others (but just on the hash side of the things), in order
+        # for instance to have halign and valign as aliases for the
+        # less intuitive alignment and justification.
         def self.typed_attribute(symbol, type)
           sym = symbol.to_sym
           self.attr_accessor(sym)
