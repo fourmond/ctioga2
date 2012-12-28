@@ -1,3 +1,21 @@
+ctioga2 (0.4)
+
+  * Fixed a bug in /which (dataset) options
+  * Added some context to error reporting, that may help understand where 
+    errors come from
+  * Improved error reporting on empty plots
+  * New command: --draw-box
+  * Improvements to the customization of legends, including the possiblity to 
+    draw a (possibly filled) frame around it
+  * Improvements of axis customization
+  * xcolor-like color mixing capacities
+  * An emacs major mode for editing ctioga2 command files
+  * Added a fully-fledged styling system that make it much simpler now to
+    change the style of a whole graph with a minimum of effort
+  * Added tests for most of the new possibilities
+
+ -- Vincent Fourmond <vincent.fourmond@9online.fr>  Fri Dec 28 17:49:07 CET 2012
+
 ctioga2 (0.3)
 
   * Implemented a compute-contour command to directly manipulate contours
