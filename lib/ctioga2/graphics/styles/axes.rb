@@ -72,6 +72,8 @@ module CTioga2
         typed_attribute :minor_tick_length, 'float'
         typed_attribute :minor_tick_width, 'float'
 
+        typed_attribute :ticks_side, 'ticks-side'
+
 
         # Creates a new AxisStyle object at the given location with
         # the given style.
@@ -82,6 +84,7 @@ module CTioga2
           @tick_label_style = FullTextStyle.new
           @axis_label = TextLabel.new(label)
           @log = false
+          @ticks_side = {}
         end
 
         # Draws the axis within the current plot. Boundaries are the
@@ -106,6 +109,8 @@ minor_tick_length minor_tick_width)
               spec[key] = val
             end
           end
+
+          spec.update(@ticks_side)
           t.show_axis(spec)
           @axis_label.loc = @location
           default = vertical? ? 'ylabel' : 'xlabel'

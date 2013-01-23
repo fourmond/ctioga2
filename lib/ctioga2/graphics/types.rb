@@ -216,6 +216,25 @@ tick labels. Possible values:
  * @full@: major ticks and labels + minor ticks
 EOD
 
+    TicksSideRE = {
+      /i(nside)?/i =>  {'ticks_inside' => true,
+        'ticks_outside' => false},
+      /o(utside)?/i => {'ticks_outside' => true,
+        'ticks_inside' => false},
+      /b(oth)?/i => {'ticks_outside' => true,
+        'ticks_inside' => true}
+    }
+
+    TicksSideType = 
+      CmdType.new('ticks-side', {:type => :re_list,
+                    :list => TicksSideRE}, <<EOD)
+On what side of an axis line are the ticks positioned:
+ * @inside@: on the inside
+ * @outside@: on the outside
+ * @both@: on both the inside and the outside
+EOD
+
+
     # Dimensions
 
     DimensionType = 
