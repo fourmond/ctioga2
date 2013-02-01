@@ -226,6 +226,7 @@ module CTioga2
           return [t.create_colormap(dict), zvs.first, zvs.last]
         end
 
+
         protected
 
         # Returns a Dvector holding z values corresponding to each of

@@ -73,8 +73,9 @@ module CTioga2
           CurveStyleFactory::PlotCommandOptions.key?(k)
         }
 
-
-        return send(@current_curves, plot, dataset, options)
+        curve = send(@current_curves, plot, dataset, options)
+        curve.curve_style.target = curve
+        return curve
       end
 
       private
@@ -98,11 +99,11 @@ module CTioga2
       def xy_parametric(plot, dataset, options = {})
         legend = @legend_provider.dataset_legend(dataset)
         style = @style_factory.next(options)
-        style.legend = false
         style.legend ||= legend # The legend specified as option to
                                 # the --plot command has precedence
                                 # over the one specified by --legend.
         curve = Graphics::Elements::Parametric2D.new(dataset, style)
+        style
         return curve
       end
 
@@ -110,10 +111,10 @@ module CTioga2
       def xyz_map(plot, dataset, options = {})
         legend = @legend_provider.dataset_legend(dataset)
         style = @style_factory.next(options)
-        style.legend = false
         style.legend ||= legend # The legend specified as option to
                                 # the --plot command has precedence
                                 # over the one specified by --legend.
+        style.legend = false    # No legend for XYZ maps
         curve = Graphics::Elements::XYZMap.new(dataset, style)
         return curve
       end

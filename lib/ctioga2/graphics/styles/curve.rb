@@ -83,6 +83,10 @@ module CTioga2
         # Whether the XY display should split on NaN values (wherever)
         attr_accessor :split_on_nan
 
+        # The object attached to this style. It is set by
+        # Generator#curve_from_dataset
+        attr_accessor :target
+        
 
         # True if a line should be drawn.
         def has_line?
@@ -131,6 +135,8 @@ module CTioga2
           @split_on_nan = hash['split_on_nan']
 
           @zaxis = hash['zaxis']
+
+          @target = nil
         end
 
         # Creates a CurveStyle object straight from a hash
@@ -147,14 +153,31 @@ module CTioga2
         #
         # \todo add more elements to the pictogram in case of more
         # complex things.
+        #
+        # @todo Most probably the legend pictogram should be done by
+        # the curve directly rather than by the style.
         def draw_legend_pictogram(t)
           t.context do
-            if has_line?
-              @line.set_stroke_style(t)
-              t.stroke_line(0.0, 0.5, 1.0, 0.5)
-            end
-            if has_marker?
-              @marker.draw_markers_at(t, [0.5], [0.5])
+            case @target
+            when Elements::Curve2D
+              if has_line?
+                @line.set_stroke_style(t)
+                t.stroke_line(0.0, 0.5, 1.0, 0.5)
+              end
+              if has_marker?
+                @marker.draw_markers_at(t, [0.5], [0.5])
+              end
+            when Elements::Parametric2D
+              if has_marker? && @marker_color_map
+                colors = @marker_color_map.colors.uniq
+                i = 1
+                total = colors.size + 1.0
+                for c in colors
+                  @marker.draw_markers_at(t, [i/total], [0.5], 
+                                          {'color' => c} )
+                  i += 1
+                end
+              end
             end
           end
         end
