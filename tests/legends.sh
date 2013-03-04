@@ -43,3 +43,12 @@ $ct -t 'Legend frames, take 2' -r 10cmx10cm \
     -l '$x^2$' 'x**2' \
     -l '$5 x$' '5 * x' \
     --legend-line 'More padding !'
+
+$ct -t 'Tiled legends inside' -r 10cmx10cm \
+    --legend-inside tc /scale 2 /dy=1.02 \
+    --legend-line 'Line outside of tiles' \
+    --legend-multicol /dx=12mm \
+    -l '$x^2$' 'x**2' \
+    -l '$2 x$' '2 * x' \
+    -l '$3 x$' '3 * x' \
+    -l '$5 x$' '5 * x' 
