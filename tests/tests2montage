@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if [ -z $OUTPUTS ]; then
+    OUTPUTS=outputs
+fi
+
 if [ -d ../.git -o -d ../.svn ]; then
     if [ -d ../.git ]; then
 	prefix="git "
@@ -11,22 +15,22 @@ if [ -d ../.git -o -d ../.svn ]; then
 fi
 
 # A dir specific for outputs
-mkdir -p outputs
+mkdir -p "$OUTPUTS"
     
 for f in "$@"; do
     echo "Running $f";
 
     if [ "$revision" ]; then
-	output=outputs/${f%%.sh}-$revision
+	output="$OUTPUTS"/${f%%.sh}-$revision
     else
-	output=outputs/${f%%.sh}
+	output="$OUTPUTS"/${f%%.sh}
     fi
     basepdf=${f%%.sh}
 
     export CT_ADD="--name ${basepdf}-%03d"
     NOXPDF=1 sh $f
     if [ -r ${basepdf}-000.pdf ]; then
-	echo "There are outputs"
+	echo "PDF files were generated"
 	echo " -> producing montage outputs"
     
 	if [ -z $BIG ]; then
