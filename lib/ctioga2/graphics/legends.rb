@@ -16,6 +16,7 @@ require 'ctioga2/graphics/legends/items'
 require 'ctioga2/graphics/legends/area'
 require 'ctioga2/graphics/legends/storage'
 require 'ctioga2/graphics/legends/provider'
+require 'ctioga2/graphics/legends/multicols'
 
 module CTioga2
 
@@ -104,6 +105,23 @@ Using this command sets the position of the legends for the current
 
 As a shortcut, {command: legend-inside} also takes all the options that 
 {command: legend-style} takes, with the same effect.
+EOH
+
+
+    LegendMulticolOptions = Styles::MultiColumnLegendStyle.options_hash()
+
+    LegendMultiColCommand = 
+      Cmd.new("legend-multicol", nil, "--legend-multicol",
+              [], LegendMulticolOptions) do |plotmaker, options|
+      multicol = Legends::MultiColumnLegend.new
+      multicol.style.set_from_hash(options)
+      plotmaker.root_object.current_plot.
+        enter_legend_subcontainer(multicol)
+    end
+
+    LegendMultiColCommand.describe("Lay out legends in several columns",
+                                   <<EOH, LegendGroup)
+Following legends will be layed out in multiple columns.
 EOH
 
 

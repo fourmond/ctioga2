@@ -47,6 +47,10 @@ module CTioga2
         # object
         attr_accessor :legend_storage
 
+        # The current legend container to which legend items are added.
+        # Defaults to the #legend_storage, but it can be changed
+        attr_accessor :legend_item_target
+
         # Creates an empty new Container with the given _parent_.
         def initialize(parent = nil, root = nil)
           @parent = parent
@@ -60,6 +64,8 @@ module CTioga2
           @root_object = root
 
           @legend_storage = Legends::LegendStorage.new
+          
+          @legend_item_target = @legend_storage
 
           # By default, don't display legends.
           @legend_area = nil
@@ -98,9 +104,22 @@ module CTioga2
         end
 
 
-        # Adds a legend item to the #associated_legend_storage
+        # Adds a legend item to the current storage
         def add_legend_item(item)
-          @legend_storage.add_item(item)
+          @legend_item_target.add_item(item)
+        end
+
+        # Adds a legend item to the current storage and make that item
+        # the next target for legend items.
+        #
+        # If @a sub is nil, then switch back to the top
+        def enter_legend_subcontainer(sub)
+          if sub
+            add_legend_item(sub)
+            @legend_item_target = sub
+          else
+            @legend_item_target = @legend_storage
+          end
         end
 
         # \todo provide coordinate conversion facilities...

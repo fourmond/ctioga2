@@ -71,6 +71,27 @@ module CTioga2
           
           @frame_padding = Types::Dimension.from_text("1mm", :x)
         end
+
+        def dy_to_figure(t)
+          return @scale * @text_scale * @dy.to_figure(t, :y)
+        end
+
+      end
+
+      class MultiColumnLegendStyle < BasicStyle
+
+        # Padding !
+        typed_attribute :dx, 'dimension'
+
+        # Number of columns
+        typed_attribute :columns, 'integer'
+        
+        def initialize()
+
+          @dx = Types::Dimension.new(:dy, 0.2, :x)
+
+          @columns = 2
+        end
       end
     end
   end
