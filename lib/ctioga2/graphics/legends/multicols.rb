@@ -1,5 +1,5 @@
 # items.rb: individual legend items
-# copyright (c) 2008,2009 by Vincent Fourmond
+# copyright (c) 2013 by Vincent Fourmond
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
