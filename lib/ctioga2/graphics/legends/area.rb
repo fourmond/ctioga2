@@ -111,7 +111,11 @@ module CTioga2
             # Hmmm... this is plain wrong... 
             # height += h
 
-            height += @legend_style.dy_to_figure(t)
+            dyl = @legend_style.dy_to_figure(t)
+            if dyl > h
+              h = dyl
+            end
+            height += h
           end
           return [ width, height ]
         end
