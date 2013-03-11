@@ -70,7 +70,7 @@ module CTioga2
             if col == 0
               dy -= cur_height unless index == 0
               dx = 0
-              cur_height = legend_style.dy_to_figure(t)
+              cur_height = h
             else
               dx += @column_widths[col - 1]
             end
@@ -103,7 +103,7 @@ module CTioga2
             # Flush
             if col == 0
               height += cur_height unless index == 0
-              cur_height = legend_style.dy_to_figure(t)
+              cur_height = h
             end
             if widths[col] < w
               widths[col] = w

@@ -82,8 +82,8 @@ module CTioga2
             ## \todo customize this !
             x, y = initial_xy(t, container)
 
-            w,h = *size(t, container)
-            h /= @legend_style.scale * @legend_style.text_scale
+
+            w,h = *size(t, container, false)
             @legend_style.frame.
               draw_box_around(t, x, y,
                               x + w, y - h, @legend_style.frame_padding)
@@ -91,8 +91,9 @@ module CTioga2
             for item in items
               ## \todo transform the 0.0 for x into a negative
               # user-specifiable stuff.
+              iw, ih = *item.size(t, @legend_style)
               item.draw(t, @legend_style, x , y)
-              y -= @legend_style.dy.to_figure(t,:y)
+              y -= ih
             end
           end
         end
@@ -100,22 +101,26 @@ module CTioga2
         # Returns the total size of the legend as a
         #  [ width, height ]
         # array in figure coordinates.
-        def size(t, container)
+        #
+        # It assumes that the scales are not setup yet, unless
+        # _resize_ is set to true.
+        def size(t, container, resize = true)
           items = container.legend_storage.harvest_contents
           width, height = 0,0
-          for item in items
-            w,h = item.size(t, @legend_style)
-            if w > width
-              width = w
+          t.context do 
+            if resize
+              t.rescale(@legend_style.scale)
+              t.rescale_text(@legend_style.text_scale)
             end
-            # Hmmm... this is plain wrong... 
-            # height += h
-
-            dyl = @legend_style.dy_to_figure(t)
-            if dyl > h
-              h = dyl
+              
+            for item in items
+              w,h = item.size(t, @legend_style)
+              if w > width
+                width = w
+              end
+              
+              height += h
             end
-            height += h
           end
           return [ width, height ]
         end

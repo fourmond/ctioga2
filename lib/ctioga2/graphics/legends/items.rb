@@ -64,8 +64,31 @@ module CTioga2
 
         # Returns the _y_ value for the baseline of the text in terms
         # of figure coordinates.
+        #
+        # This is plain wrong, I think...
         def get_baseline_y(t, legend_style, y)
-          return y - Types::Dimension.new(:dy,1.0,:y).to_figure(t) 
+          w , h = size(t, legend_style)
+          return y - h          # This is wrong, but not as bad ;-)...
+        end
+
+        # Computes the text size
+        def text_size(t, legend_style)
+          height = legend_style.dy_to_figure(t)
+
+          width = 0.0
+
+          info = t.get_text_size(legend_name)
+          
+          if info.key? 'width'
+            width += t.convert_output_to_figure_dx(10*info['width'])
+
+            h = t.convert_output_to_figure_dy(10*info['height'])
+            if h > height
+              height = h
+            end
+          end
+
+          return [ width, height ]
         end
 
 
@@ -98,17 +121,7 @@ module CTioga2
         # Computes the size of the line. Height should always be
         # accurate, but width can be 0 sometimes...
         def size(t, legend_style)
-          height = legend_style.dy.to_figure(t)
-
-          width = 0.0
-
-          info = t.get_text_size(legend_name)
-          
-          if info.key? 'width'
-            width += t.convert_output_to_figure_dx(10*info['width'])
-          end
-
-          return [ width, height ]
+          return text_size(t, legend_style)
         end
         
       end
@@ -155,23 +168,16 @@ module CTioga2
                       legend_style.picto_to_text.to_figure(t), 
                       'y' => y, 'text' => @curve_style.legend,
                       'measure' => legend_name,
-                      'justification' => Tioga::FigureConstants::LEFT_JUSTIFIED)
+                      'justification' => Tioga::FigureConstants::LEFT_JUSTIFIED,
+                      'alignment' => Tioga::FigureConstants::ALIGNED_AT_BASELINE)
         end
 
         # Computes the size of the line. Height should always
         # be accurate, but width can be 0 sometimes...
         def size(t, legend_style)
-          height = legend_style.dy.to_figure(t)
-
-          width = legend_style.picto_width.to_figure(t) + 
+          width, height = text_size(t, legend_style)
+          width += legend_style.picto_width.to_figure(t) + 
             legend_style.picto_to_text.to_figure(t) 
-
-          info = t.get_text_size(legend_name)
-          
-          if info.key? 'width'
-            width += t.convert_output_to_figure_dx(10*info['width'])
-          end
-
           return [ width, height ]
         end
         

@@ -27,7 +27,10 @@ module CTioga2
       class LegendStorageStyle < BasicStyle
 
         # The distance between two lines, a Types::Dimension object.
-        typed_attribute :dy, 'dimension'
+        deprecated_attribute :dy, 'dimension', "use vpadding instead"
+
+        # The minimum distance between successive vertical elements
+        typed_attribute :vpadding, 'dimension'
 
         # The width of the legend pictogram, a Types::Dimension object.
         attr_accessor :picto_width
@@ -56,7 +59,10 @@ module CTioga2
         typed_attribute :frame_padding, 'dimension'
 
         def initialize
-          @dy = Types::Dimension.new(:dy, 1.6, :y)
+
+          # @dy = Types::Dimension.new(:dy, 1.6, :y)
+
+          @vpadding = Types::Dimension.new(:dy, 0.3, :y)
 
           @picto_width = Types::Dimension.new(:dy, 1.6, :x)
           @picto_height = Types::Dimension.new(:dy, 0.6, :y)
@@ -73,7 +79,23 @@ module CTioga2
         end
 
         def dy_to_figure(t)
-          return @scale * @text_scale * @dy.to_figure(t, :y)
+
+          # Defaults to one line height + the padding
+
+          if @dy
+            return @dy.to_figure(t, :y)
+          end
+
+          line = Types::Dimension.new(:dy, 1, :y) 
+          return line.to_figure(t, :y) + @vpadding.to_figure(t, :y)
+        end
+
+        def vpadding_to_figure(t)
+          if @dy 
+            line = Types::Dimension.new(:dy, 1, :y) 
+            return (@dy.to_figure(t, :y) - line.to_figure(t, :y))
+          end
+          return @vpadding.to_figure(t, :y)
         end
 
       end
