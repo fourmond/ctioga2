@@ -223,6 +223,9 @@ module CTioga2
             expl = ""
             if opt.option_target
               expl = " -- please use #{opt.option_target} instead"
+            elsif opt.option_deprecated != true # Ie more than plain
+                                                # true/false
+              expl = " -- #{opt.option_deprecated}"
             end
             Log::warn { "Deprecated option #{k}#{expl}" }
           end

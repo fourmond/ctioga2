@@ -70,6 +70,13 @@ module CTioga2
           type = CmdArg.new(type) unless type.respond_to? :string_to_type
           @attribute_types ||= {}
           @attribute_types[sym] = type
+          return type
+        end
+
+        # Adds a deprecated typed attribute
+        def self.deprecated_attribute(symbol, type, message = true)
+          type = self.typed_attribute(symbol, type)
+          type.option_deprecated = message
         end
 
         # Defines an accessor for an attribute which is a BasicStyle

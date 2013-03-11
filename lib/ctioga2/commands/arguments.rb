@@ -42,7 +42,10 @@ module CTioga2
       # name
       attr_accessor :option_target
 
-      # Whether or not the option is deprecated
+      # Whether or not the option is deprecated.
+      #
+      # If evaluates as true and different from _true_, is converted
+      # into a string used as an explanation to the user
       attr_accessor :option_deprecated
 
       # _type_ is a named CommandType
