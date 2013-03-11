@@ -74,6 +74,8 @@ module CTioga2
         def display_legend(t, container)
           items = container.legend_storage.harvest_contents
           t.context do 
+
+            ## @todo These two commands should join LegendStyle
             t.rescale(@legend_style.scale)
             t.rescale_text(@legend_style.text_scale)
 
@@ -82,8 +84,9 @@ module CTioga2
             ## \todo customize this !
             x, y = initial_xy(t, container)
 
-
             w,h = *size(t, container, false)
+
+
             @legend_style.frame.
               draw_box_around(t, x, y,
                               x + w, y - h, @legend_style.frame_padding)
@@ -103,25 +106,32 @@ module CTioga2
         # array in figure coordinates.
         #
         # It assumes that the scales are not setup yet, unless
-        # _resize_ is set to true.
+        # _resize_ is set to false.
         def size(t, container, resize = true)
           items = container.legend_storage.harvest_contents
           width, height = 0,0
-          t.context do 
-            if resize
-              t.rescale(@legend_style.scale)
-              t.rescale_text(@legend_style.text_scale)
-            end
-              
-            for item in items
-              w,h = item.size(t, @legend_style)
-              if w > width
-                width = w
-              end
-              
-              height += h
-            end
+
+          # We apparently can't use context here, for a reason that fails me...
+          if resize
+            t.rescale(@legend_style.scale)
+            t.rescale_text(@legend_style.text_scale)
           end
+          
+          for item in items
+            w,h = item.size(t, @legend_style)
+            
+            if w > width
+              width = w
+            end
+            
+            height += h
+          end
+          
+          if resize
+            t.rescale(1/@legend_style.scale)
+            t.rescale_text(1/@legend_style.text_scale)
+          end
+
           return [ width, height ]
         end
 

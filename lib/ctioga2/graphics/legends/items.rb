@@ -178,6 +178,11 @@ module CTioga2
           width, height = text_size(t, legend_style)
           width += legend_style.picto_width.to_figure(t) + 
             legend_style.picto_to_text.to_figure(t) 
+          lh = Types::Dimension.new(:dy, 1, :y).to_figure(t,:y)
+          if lh > height
+            height = lh
+          end
+            
           return [ width, height ]
         end
         
