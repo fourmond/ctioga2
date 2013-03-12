@@ -33,13 +33,13 @@ module CTioga2
         typed_attribute :vpadding, 'dimension'
 
         # The width of the legend pictogram, a Types::Dimension object.
-        attr_accessor :picto_width
+        typed_attribute :picto_width, 'dimension'
 
         # The height of the legend pictogram, a Types::Dimension object.
-        attr_accessor :picto_height
+        typed_attribute :picto_height, 'dimension'
 
         # The distance between the legend pictogram and the text
-        attr_accessor :picto_to_text
+        typed_attribute :picto_to_text, 'dimension'
 
         # The overall scale of the legend
         typed_attribute :scale, 'float'
