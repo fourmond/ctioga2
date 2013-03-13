@@ -118,6 +118,13 @@ module CTioga2
         end
       end
 
+      # Returns the stored dataset, either using its index in the
+      # stack, or its name in the dataset.
+      def stored_dataset(spec)
+        return dataset_xref(spec)[0]
+      end
+
+
       # Returns the [dataset, index, name] of the given dataset
       def dataset_xref(spec)
         ds = nil
