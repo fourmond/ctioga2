@@ -118,31 +118,50 @@ module CTioga2
         end
       end
 
-      # Returns the stored dataset, either using its index in the
-      # stack, or its name in the dataset.
-      def stored_dataset(spec)
+      # Returns the [dataset, index, name] of the given dataset
+      def dataset_xref(spec)
+        ds = nil
+        index = nil
+        name = nil
         if spec.is_a? Numeric or spec =~ /^\s*-?\d+\s*$/
           spec = spec.to_i
-          return @stack[spec]
+          index = spec
+          name = nil
+          ds = @stack[index]
+          for k,v in @named_datasets
+            if v == ds
+              name = k
+            end
+          end
         else
           if @named_datasets.key? spec
-            return @named_datasets[spec]
+            name = spec
+            ds = @named_datasets[spec]
+            i = 0
+            for d in @stack
+              if d == ds
+                index = i
+              end
+              i += 1
+            end
           else
             raise "Unkown named dataset from the stack: '#{spec}'"
           end
         end
+        return [ds, index, name]
       end
 
       # Gets a dataset from the given _options_ hash. If a 'which' key
       # is present, it is used as an argument for #stored_dataset;
       # else, -1 is used.
-      def specified_dataset(options)
+      def specified_dataset(options, full = false)
         spec = if options && options['which']
                  options['which']
                else
                  -1
                end
-        return stored_dataset(spec)
+        xr = dataset_xref(spec)
+        return (full ? xr : xr[0])
       end
 
       # Adds a Dataset object onto the stack, running hooks if
@@ -255,6 +274,20 @@ module CTioga2
         end
       end
 
+      # Drops the dataset corresponding to the given spec from the
+      # stack
+      def drop_from_stack(spec)
+        xr = dataset_xref(spec)
+        if xr[1]                # But that should always be the case ?
+          @stack.delete_at(xr[1])
+        else
+          warn { "For some reason, dataset '#{spec}' is not in the stack !"}
+        end
+        if xr[2]
+          @named_datasets.delete(xr[2])
+        end
+      end
+
       
     end
 
@@ -332,6 +365,23 @@ EOH
                               <<EOH, DataStackGroup)
 Prints to standard output data contained in the last dataset pushed
 onto the stack, or the given stored dataset if the which option is given.
+EOH
+
+
+    DropCommand =
+      Cmd.new("drop", nil, "--drop",
+              [CmdArg.new('stored-dataset')], { }) do |plotmaker,spec,opts|
+      plotmaker.data_stack.drop_from_stack(spec)
+    end
+    
+    DropCommand.describe("Drops the given dataset from the stack",
+                         <<EOH, DataStackGroup)
+Removes the given dataset from the stack. 
+
+Can become useful when dealing with large datasets, some of which are
+only used as intermediates for {command: apply-formula} or 
+{command: compute-contour}, for instance.
+
 EOH
 
     ConcatLastCommand = 
