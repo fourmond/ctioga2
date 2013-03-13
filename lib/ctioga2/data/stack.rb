@@ -250,7 +250,7 @@ module CTioga2
           
           pref = sprintf("#%-2d %-3d:", i, - @stack.size + i)
           
-          STDERR.puts " * #{pref} #{ds.name} -- #{ds.ys.size + 1} columns #{name}"
+          STDERR.puts " * #{pref} #{ds.name} -- #{ds.ys.size + 1} columns, #{ds.x.size} points #{name}"
           i += 1
         end
       end
@@ -409,8 +409,8 @@ default the one before the last) into the last one. Data points that
 have no corresponding X value in the current dataset are simply
 ignored.
 
-This can be used to build 3D datasets for {cmd: xyz-map} or 
-{cmd: xy-parametric}.
+This can be used to build 3D datasets for {command: xyz-map} or 
+{command: xy-parametric}.
 EOH
 
     XYReglinCommand = 
