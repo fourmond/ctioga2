@@ -231,8 +231,8 @@ EOD
                          [ 'point', 'point' ], 
                          Styles::ArrowStyle,
                          'arrow') do |t, tail, head, style, options|
-          style.draw_arrow(t, *tail.to_figure_xy(t),
-                           *head.to_figure_xy(t))
+          style.draw_arrow(t, *( tail.to_figure_xy(t) + 
+                           head.to_figure_xy(t) ))
         end
 
         styled_primitive("line", "line", 
@@ -240,8 +240,8 @@ EOD
                          Styles::StrokeStyle,
                          'line'
                   ) do |t, tail, head, style, options|
-          style.draw_line(t, *(tail.to_figure_xy(t)),
-                          *(head.to_figure_xy(t)))
+          style.draw_line(t, *( tail.to_figure_xy(t) + 
+                          head.to_figure_xy(t) ))
         end
 
         # Here, we need to add deprecated options for backward
