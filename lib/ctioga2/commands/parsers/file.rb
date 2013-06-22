@@ -1,5 +1,5 @@
-# file.rb: a file parser for ctioga2
-# copyright (c) 2009 by Vincent Fourmond
+# file.rb: new styke file parser for ctioga2
+# copyright (c) 2013 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,11 +11,12 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (in the COPYING file).
 
-require 'stringio'
+require 'shellwords'
 require 'ctioga2/utils'
 require 'ctioga2/log'
 require 'ctioga2/commands/commands'
 require 'ctioga2/commands/strings'
+require 'ctioga2/commands/parsers/old-file'
 
 module CTioga2
 
@@ -25,23 +26,12 @@ module CTioga2
 
     module Parsers
 
-      # Raised when EOF is encountered during a symbol parsing
-      class UnterminatedSymbol < Exception
-      end
-
-      # Unexepected character.
-      class UnexpectedCharacter < Exception
-      end
-
-      # Syntax error
-      class ParserSyntaxError < Exception
-      end
-
-      # This class is in charge of parsing a command-line against a list
-      # of known commands. 
+      # This class parses a "new style" command file, delegating
       class FileParser
 
         include Log
+
+        
 
         # Runs a command file targeting the given _interpreter_.
         def self.run_command_file(file, interpreter)
@@ -68,122 +58,115 @@ module CTioga2
         # Parses a given _io_ object, sending commands/variable
         # definitions to the given _interpreter_.
         def parse_io_object(io, interpreter)
-          # The process is simple: we look for symbols and
-          # corresponding syntax element: parentheses or assignments
 
-          ## @todo It would be really great if assignments could be
-          ## made conditional (a bit like in makefiles)
-          while(1)
-            symbol = up_to_next_symbol(io)
-            break if not symbol
+          # We first split everything into lines
+          lines = io.readlines
+          
+          # First, we look for old-style commands to see if we
+          # delegate to the other parser. In any case, we build up a
+          # list of "unsplit" lines (ie gather lines that end with \)
+
+          parsed_lines = []
+          cur = nil 
+
+          ## @todo line counting ?
+          for l in lines
+            # If we find something that looks like a command at the
+            # beginning of a line, we say this is an old style file.
+
+            ## @todo Find a way to disable this compatibility stuff --
+            ## or make it more accurate ? The problem is that in a
+            ## large command file, there may be things that look like
+            ## old style commands ?
             
-            while(1)
-              c = io.getc
-              if ! c              # EOF
-                raise ParserSyntaxError, "Expecting something after symbol #{symbol}"
-              end
-              ch = c.chr
-              if ch =~ /\s/      # blank...
-                next
-              elsif ch == '('    # beginning of a function call
-                # Parse string:
-                str = InterpreterString.parse_until_unquoted(io,")")
-                # Now, we need to split str.
-                args = str.expand_and_split(/\s*,\s*/, interpreter)
+            if l =~ /^([a-z0-9-]+)\s*\(/
+              info { "Found old style commands, using old style parser"}
+              return OldFileParser.new.
+                run_commands(lines.join(""), interpreter)
+            end
+            if cur
+              cur << l
+            else
+              cur = l
+            end
 
-                cmd = interpreter.get_command(symbol)
-                real_args = args.slice!(0, cmd.argument_number)
-                # And now the options:
-                options = {}
+            if cur =~ /\\$/ 
+              cur.gsub!(/\\$/,'')
+              cur = chomp(cur)
+            else
+              parsed_lines << cur
+              cur = nil
+            end
+            
+          end
 
-                # Problem: the space on the right of the = sign is
-                # *significant*. 
-                for o in args
-                  if o =~ /^\s*\/?([\w-]+)\s*=(.*)/
-                    if cmd.has_option? $1
-                      options[$1] = $2
-                    else
-                      error { 
-                        "Command #{cmd.name} does not take option #{$1}" 
-                      }
-                    end
+          # Flush any pending unfinished line
+          parsed_lines << cur if cur
+
+          # Now, we rearrange the lines...
+          for l in parsed_lines
+            if l =~ /^\s*([a-zA-Z0-9_-]+)\s*(=|:=)(.*)/
+              symbol = $1
+              value = $3
+              rec = (($2 == "=") ? nil : interpreter)
+                      
+              interpreter.variables.define_variable(symbol, str, rec)
+            elsif l =~ /^\s*#/
+                # comment...
+            else
+              # Something interesting
+              words = l.shellsplit
+              
+              symbol = words[0]
+              all_args = words[1..-1]
+              
+              cmd = interpreter.get_command(symbol)
+
+              args, opts = parse_args_and_opts(cmd, all_args)
+
+              interpreter.context.parsing_file(symbol, io) # Missing line number
+              interpreter.run_command(cmd, args, opts)
+            end
+          end
+        end
+          
+        protected
+        
+        # Parses the all_args into arguments and options.
+        def parse_args_and_opts(cmd, all_args)
+          
+          opts = {}
+          args = []
+          while all_args.size > 0
+            a = all_args.shift
+            if a =~ /^\/([a-zA-Z0-9_-]+)(=(.*))?$/
+              o = $1
+              if cmd.has_option?(o)
+                if $2
+                  if $3
+                    opts[o] = $3
+                  else
+                    opts[o] = all_args.shift
+                  end
+                else
+                  nxt = all_args.shift
+                  if nxt =~ /^\s*=\s*$/
+                    opts[o] = all_args.shift
+                  else
+                    opts[o] = nxt.gsub(/^\s*=/,'')
                   end
                 end
-
-                interpreter.context.parsing_file(symbol, io) # Missing line number
-                interpreter.run_command(cmd, real_args, options)
-                io.getc         # Slurp up the )
-                break
-              elsif ch == ':'   # Assignment
-                c = io.getc
-                if ! c          # EOF
-                  raise ParserSyntaxError, "Expecting = after :"
-                end
-                ch = c.chr
-                if ch != '='
-                  raise ParserSyntaxError, "Expecting = after :"
-                end
-                str = InterpreterString.parse_until_unquoted(io,"\n", false)
-                interpreter.variables.define_variable(symbol, str, 
-                                                      interpreter)
-                break
-              elsif ch == '='
-                str = InterpreterString.parse_until_unquoted(io,"\n", false)
-                interpreter.variables.define_variable(symbol, str, nil) 
-                break
               else
-                raise UnexpectedCharacter, "Did not expect #{ch} after #{symbol}"
-              end
-            end
-          end
-        end
-
-        protected
-
-        SYMBOL_CHAR_REGEX = /[a-zA-Z0-9_-]/
-        
-        # Parses the _io_ stream up to and including the next
-        # symbol. Only white space or comments may be found on the
-        # way. This function returns the symbol.
-        #
-        # Symbols are composed of the alphabet SYMBOL_CHAR_REGEX.
-        def up_to_next_symbol(io)
-
-          symbol = nil          # As long as no symbol as been started
-          # it will stay nil.
-          while(1)
-            c = io.getc
-            if ! c              # EOF
-              if symbol
-                raise UnterminatedSymbol, "EOF reached during symbol parsing"
-              else
-                # File is finished and we didn't meet any symbol.
-                # Nothing to do !
-                return nil
-              end
-            end
-            ch = c.chr
-            if symbol           # We have started
-              if ch =~ SYMBOL_CHAR_REGEX
-                symbol += ch
-              else
-                io.ungetc(c)
-                return symbol
+                warn { "#{o} looks like an option, but command #{cmd.name} does not have such an option" }
+                args << a
               end
             else
-              if ch =~ SYMBOL_CHAR_REGEX
-                symbol = ch
-              elsif ch =~ /\s/
-                # Nothing
-              elsif ch == '#'
-                io.gets
-              else
-                raise UnexpectedCharacter, "Unexpected character: #{ch}, when looking for a symbol"
-              end
+              args << a
             end
           end
-        end
 
+          return [args, opts]
+        end
       end
 
     end
