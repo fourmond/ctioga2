@@ -53,7 +53,7 @@
     (concat
      "\\<\\("
      (regexp-opt (ctioga2-command-list))
-     "\\)[[:blank:]]*(")
+     "\\)\\([[:blank:]]+\\|[[:blank:]]*(\\)")
     1 font-lock-function-name-face
     )
    '("\\$(\\([[:alnum:]_]+\\))"
