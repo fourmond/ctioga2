@@ -1,4 +1,4 @@
-# file.rb: new styke file parser for ctioga2
+# file.rb: new style file parser for ctioga2
 # copyright (c) 2013 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
@@ -11,7 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (in the COPYING file).
 
-require 'shellwords'
+
 require 'ctioga2/utils'
 require 'ctioga2/log'
 require 'ctioga2/commands/commands'
@@ -79,7 +79,7 @@ module CTioga2
             ## large command file, there may be things that look like
             ## old style commands ?
             
-            if l =~ /^([a-z0-9-]+)\s*\(/
+            if l =~ /^([a-z0-9-]+)\(/
               info { "Found old style commands, using old style parser"}
               return OldFileParser.new.
                 run_commands(lines.join(""), interpreter)
@@ -105,17 +105,18 @@ module CTioga2
 
           # Now, we rearrange the lines...
           for l in parsed_lines
-            if l =~ /^\s*([a-zA-Z0-9_-]+)\s*(=|:=)(.*)/
+            if l =~ /^\s*([a-zA-Z0-9_-]+)\s*(=|:=)\s*(.*)/
               symbol = $1
               value = $3
               rec = (($2 == "=") ? nil : interpreter)
                       
-              interpreter.variables.define_variable(symbol, str, rec)
+              interpreter.variables.define_variable(symbol, value, rec)
             elsif l =~ /^\s*#/
                 # comment...
             else
-              # Something interesting
-              words = l.shellsplit
+              l += "\n"
+              str = InterpreterString.parse_until_unquoted(StringIO.new(l),"\n")
+              words = str.expand_and_split(/\s+/, interpreter)
               
               symbol = words[0]
               all_args = words[1..-1]
@@ -131,6 +132,7 @@ module CTioga2
         end
           
         protected
+         
         
         # Parses the all_args into arguments and options.
         def parse_args_and_opts(cmd, all_args)
