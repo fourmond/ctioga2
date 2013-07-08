@@ -1,0 +1,5 @@
+var := "stuff"
+opts := /xrange=0:10 /samples=10
+math $(opts)
+plot sin(x) /legend="$(opts)"
+plot cos(x) /legend='$a$(opts)'

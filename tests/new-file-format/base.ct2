@@ -1,0 +1,2 @@
+math /xrange=0:10
+plot sin(x)
