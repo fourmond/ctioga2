@@ -107,7 +107,7 @@ module CTioga2
           for l in parsed_lines
             if l =~ /^\s*([a-zA-Z0-9_-]+)\s*(=|:=)\s*(.*)/
               symbol = $1
-              value = $3
+              value = InterpreterString.parse_until_unquoted(StringIO.new($3),"\n", false)
               rec = (($2 == "=") ? nil : interpreter)
                       
               interpreter.variables.define_variable(symbol, value, rec)
@@ -117,6 +117,12 @@ module CTioga2
               l += "\n"
               str = InterpreterString.parse_until_unquoted(StringIO.new(l),"\n")
               words = str.expand_and_split(/\s+/, interpreter)
+
+              # Take care of strings starting with spaces...
+              
+              if words.size == 0
+                next
+              end
               
               symbol = words[0]
               all_args = words[1..-1]
