@@ -92,7 +92,7 @@ module CTioga2
 
             if cur =~ /\\$/ 
               cur.gsub!(/\\$/,'')
-              cur = chomp(cur)
+              cur.chomp!
             else
               parsed_lines << cur
               cur = nil
