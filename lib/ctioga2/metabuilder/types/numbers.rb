@@ -58,7 +58,7 @@ module CTioga2
         type_name :float_range, 'range'
         
         def string_to_type_internal(str)
-          raise IncorrectInput, "#{str} is not a valid range" unless 
+          raise IncorrectInput, "'#{str}' is not a valid range" unless 
             str =~ RANGE_RE
           s,e = Float($1), Float($2)
           return Range.new(s,e)
@@ -79,7 +79,7 @@ module CTioga2
         type_name :partial_float_range, 'range'
         
         def string_to_type_internal(str)
-          raise IncorrectInput, "#{str} is not a valid range" unless 
+          raise IncorrectInput, "'#{str}' is not a valid range" unless 
             str =~ RANGE_RE
           s,e = ($1 ? Float($1) : nil), ($2 ? Float($2) : nil)
           return [s, e]

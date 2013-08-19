@@ -97,7 +97,7 @@ module CTioga2
           if @hash.has_key?(str.to_sym)
             return str.to_sym
           else
-            raise IncorrectInput, "Invalid input: #{str} should be one of " +
+            raise IncorrectInput, "Invalid input: '#{str}' should be one of " +
               @hash.keys.map {|s| s.to_s}.join(',')
           end
         end
@@ -130,7 +130,7 @@ module CTioga2
               return v
             end
           end
-          raise IncorrectInput, "Invalid input: #{str} should match " +
+          raise IncorrectInput, "Invalid input: '#{str}' should match " +
             @re_hash.keys.map {|s| s.to_s}.join(',')
         end
 
@@ -200,7 +200,7 @@ module CTioga2
             fact = if nb > 1
                      1.0/(nb - 1)     # The famous off-by one...
                    else
-                     warn { "Incorrect gradient number: #{nb}" }
+                     warn { "Incorrect gradient number: '#{nb}'" }
                      1.0
                    end
             array = []

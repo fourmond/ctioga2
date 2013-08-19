@@ -159,7 +159,7 @@ module CTioga2
                 return v
             end
           end
-          raise IncorrectInput, "Not an axis type: #{str}"
+          raise IncorrectInput, "Not an axis type: '#{str}'"
         end
       end
 
