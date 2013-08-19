@@ -204,7 +204,7 @@ module CTioga2
         set_vectors(new_vects)
       end
 
-      ColumnSpecsRE = /|min|max|err/i
+      ColumnSpecsRE = /|min|max|err|rerr/i
 
       # This function sets the value of the DataColumn object
       # according to a hash: _spec_ => _vector_.  _spec_ can be any of:
@@ -232,6 +232,9 @@ module CTioga2
           when /^err$/i
             @min_values = @values - s[key]
             @max_values = @values + s[key]
+          when /^rerr$/i
+            @min_values = @values *(1 - s[key])
+            @max_values = @values *(1 + s[key])
           else
             raise "Unkown key: #{key}"
           end
