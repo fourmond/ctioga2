@@ -256,7 +256,7 @@ module CTioga2
             cur_str += value
           when :unquoted
             tmp = value.split(re, -1)
-            cur_str += tmp[0]
+            cur_str += tmp[0] if tmp.size > 0
             # Push splitted stuff here:
             while tmp.size > 1
               retval << cur_str
