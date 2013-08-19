@@ -41,7 +41,15 @@ module CTioga2
         if @option
           "option #{@option} (##{@number})"
         else
-          "command #{@command} in file #{@file} line #{@number}"
+          file = @file.inspect
+          if @file.respond_to?(:path)
+            file = @file.path
+          end
+          if @command
+            "command #{@command} in file '#{file}' line #{@number}"
+          else
+            "line #{@number} in file '#{file}'"
+          end
         end
       end
 

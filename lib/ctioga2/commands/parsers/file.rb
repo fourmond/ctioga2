@@ -69,8 +69,13 @@ module CTioga2
           parsed_lines = []
           cur = nil 
 
+          lines_indices = []
+          idx = 0
+          
+
           ## @todo line counting ?
           for l in lines
+            idx += 1
             # If we find something that looks like a command at the
             # beginning of a line, we say this is an old style file.
 
@@ -95,6 +100,7 @@ module CTioga2
               cur.chomp!
             else
               parsed_lines << cur
+              lines_indices << idx
               cur = nil
             end
             
@@ -102,9 +108,13 @@ module CTioga2
 
           # Flush any pending unfinished line
           parsed_lines << cur if cur
+          lines_indices << idx if cur
 
           # Now, we rearrange the lines...
+          idx = -1
           for l in parsed_lines
+            idx += 1
+            interpreter.context.parsing_file(nil, io, lines_indices[idx])
             if l =~ /^\s*([a-zA-Z0-9_-]+)\s*(=|:=)\s*(.*)/
               symbol = $1
               value = InterpreterString.parse_until_unquoted(StringIO.new($3),"\n", false)
@@ -131,7 +141,7 @@ module CTioga2
 
               args, opts = parse_args_and_opts(cmd, all_args)
 
-              interpreter.context.parsing_file(symbol, io) # Missing line number
+              interpreter.context.parsing_file(symbol, io, lines_indices[idx]) # Missing line number
               interpreter.run_command(cmd, args, opts)
             end
           end
