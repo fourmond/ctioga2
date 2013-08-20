@@ -99,7 +99,8 @@ module CTioga2
               cur.gsub!(/\\$/,'')
               cur.chomp!
             else
-              parsed_lines << cur
+              # Strip all white space at the end of unfinished lines.
+              parsed_lines << cur.gsub(/\s+$/,"\n")
               lines_indices << idx
               cur = nil
             end
