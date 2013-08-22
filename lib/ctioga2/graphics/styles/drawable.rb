@@ -24,12 +24,8 @@ module CTioga2
     # All the styles
     module Styles
 
-      # This class represents all the stylistic information to stroke
-      # a Tioga path.
-      class StrokeStyle < BasicStyle
-        # The color
-        typed_attribute :color, 'color-or-false'
-        
+      # This class represents a plain line style.
+      class LineStyle < BasicStyle
         # The line style
         typed_attribute :style, 'line-style'
 
@@ -38,7 +34,6 @@ module CTioga2
 
         # Sets the stroke style to a FigureMaker object, _t_.
         def set_stroke_style(t)
-          t.stroke_color = @color if @color
           t.line_type = @style if @style
           t.line_width = @width if @width
         end
@@ -50,6 +45,20 @@ module CTioga2
             t.stroke_line(x1, y1, x2, y2)
           end
         end
+      end
+
+      # This class represents all the stylistic information to stroke
+      # a Tioga path.
+      class StrokeStyle < LineStyle
+        # The color
+        typed_attribute :color, 'color-or-false'
+        
+        # Sets the stroke style to a FigureMaker object, _t_.
+        def set_stroke_style(t)
+          t.stroke_color = @color if @color
+          super
+        end
+
       end
 
       # This class represents all the stylistic information to draw a
