@@ -44,6 +44,27 @@ module CTioga2
       # This class expands on the previous one to provide for
       # mechanisms to draw many related contour plots.
       class ContoursStyle < BaseContourStyle
+
+        typed_attribute :number, 'integer'
+
+        # Computes and plots the contours according to the style,
+        # using the given color map.
+        def plot_contours(t, table, zmin, zmax, color_map)
+          nb = @number || 20
+          
+          dz = (zmax - zmin)/nb
+
+          nb.times do |i|
+            lvl = zmin + (i + 0.5) * dz
+            t.context do
+              t.stroke_color = color_map.z_color(lvl, zmin, zmax)
+              contour = make_contour(table, lvl)
+              t.append_points_with_gaps_to_path(*contour)
+              t.stroke
+            end
+          end
+
+        end
       end
     end
   end

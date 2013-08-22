@@ -106,17 +106,12 @@ module CTioga2
 
             zmin = @table.table.min
             zmax = @table.table.max
-            dz = (zmax - zmin)/nb
 
-            nb.times do |i|
-              lvl = zmin + (i + 0.5) * dz
-              t.context do
-                @curve_style.line.set_stroke_style(t)
-                t.stroke_color = @curve_style.color_map.z_color(lvl, zmin, zmax)
-                contour = @curve_style.contour.make_contour(table, lvl)
-                t.append_points_with_gaps_to_path(*contour)
-                t.stroke
-              end
+            t.context do
+              @curve_style.line.set_stroke_style(t)
+              @curve_style.contour.plot_contours(t, table,
+                                                 zmin, zmax,
+                                                 @curve_style.color_map)
             end
 
           end

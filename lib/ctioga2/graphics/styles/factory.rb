@@ -384,6 +384,8 @@ module CTioga2
 
         simple_parameter 'contour_conrec', "use CONREC for contouring"
 
+        simple_parameter 'contour_number', "number of level lines"
+
 
         # And finally, we register all necessary commands...
         create_commands
