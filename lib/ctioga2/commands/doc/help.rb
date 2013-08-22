@@ -154,7 +154,7 @@ module CTioga2
           if cmd.has_options?
             op_start = '  options: '
             options = cmd.optional_arguments.
-              keys.sort.map { |x| "/#{x}"}.join(' ') 
+              keys.sort.map { |x| "/#{cmd.normalize_option_name(x)}"}.join(' ') 
             opts_lines = WordWrapper.wrap(options, size - op_start.size)
             str += "\n#{total_leading_spaces}#{style(op_start,'switch')}" + 
               style(opts_lines.join("\n#{total_leading_spaces}#{' ' * op_start.size}"), 'options')

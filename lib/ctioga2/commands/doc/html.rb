@@ -169,23 +169,23 @@ module CTioga2
           str << "<p class='synopsis'>\n<span class='bold'>Synopsis (file)</span>\n"
 
           str << "</p>\n<pre class='examples-cmdfile'>"
-          str << "<span class='cmd'>#{cmd.name}("
+          str << "<span class='cmd'>#{cmd.name} "
           str << cmd.arguments.map { |arg|
             "<a class='argument' href='#{@types_url}#type-#{arg.type.name}'>#{arg.displayed_name}</a>"
-          }.join(',')
+          }.join(' ')
           if cmd.has_options?
             if(cmd.arguments.size > 0)
-              str << ", "
+              str << " "
             end
-            str << "option=..."
+            str << "/option=..."
           end
-          str << ")</span>\n"
+          str << "</span>\n"
           str << "</pre>\n"
 
           # Command-line file synopsis
           str << "<p class='synopsis'>\n<span class='bold'>Synopsis  (command-line)</span>\n"
           args = cmd.arguments.map { |arg|
-            "<a class='argument' href='#{@types_url}#type-#{arg.type.name}'>#{arg.displayed_name.upcase}</a>"
+            "<a class='argument' href='#{@types_url}#type-#{arg.type.name}'>#{arg.displayed_name}</a>"
           }.join(' ')
           if cmd.has_options?
             args << " /option=..."
@@ -204,7 +204,7 @@ module CTioga2
           if cmd.has_options?
             str << "<p class='synopsis'><span class='bold'>Available options</span>:\n"
             opts = cmd.optional_arguments.sort.map do |k,arg|
-              "<a href='#{@types_url}#type-#{arg.type.name}'><code>#{k}</code></a>\n"
+              "<a href='#{@types_url}#type-#{arg.type.name}'><code>#{cmd.normalize_option_name(k)}</code></a>\n"
             end
             str << opts.join(' ')
             str << "</p>"
