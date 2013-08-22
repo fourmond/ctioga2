@@ -114,19 +114,51 @@ module CTioga2
         return @y_values.size
       end
 
-      # Returns a [xs, ys, gaps] triplet suitable for use with
-      # t.append_points_with_gaps_to_path to show the given level.
+      # Makes a contour using the given level.
       #
-      # @todo add algorithm choice too
-      def make_contour(level)
+      # Depending on the value of opts['ret'], what is returned is:
+      # * if 'xyg', [xs, ys, gaps] triplet suitable for use with
+      #   t.append_points_with_gaps_to_path to show the
+      #   given level (default)
+      # * if 'func', a single function with nans inserted
+      #   at the position of the gaps
+      # * if 'funcs', a function for each of the "continuous" segments
+      #
+      # Anything else in opts is given directly to make_contour
+      def make_contour(level, opts = {})
         gaps = []
         # Requires Tioga r598
-        xs, ys = *Tioga::FigureMaker.make_contour('data' => @table,
-                                                  'xs' => @x_values, 
-                                                  'ys' => @y_values,
-                                                  'gaps' => gaps,
-                                                  'level' => level)
-        return  [xs, ys, gaps]
+        opts = {'data' => @table,
+          'xs' => @x_values, 
+          'ys' => @y_values,
+          'gaps' => gaps,
+          'level' => level
+        }.update(opts)
+
+        ret = opts['ret'] || 'xyg'
+        
+        opts.delete('ret')
+        xs, ys = *Tioga::FigureMaker.make_contour(opts)
+
+        if ret == 'xyg'
+          return  [xs, ys, gaps]
+        end
+
+        gaps = opts['gaps'].dup
+
+        gaps -= [xs.size]
+        n = 0.0/0.0
+        gaps.sort.reverse.each do |i|
+          xs.insert(i,n)
+          ys.insert(i,n)
+        end
+
+        fnc = Dobjects::Function.new(xs,ys)
+        if ret == 'func'
+          return fnc
+        else
+          return fnc.split_on_nan(:x)
+        end
       end
 
     end

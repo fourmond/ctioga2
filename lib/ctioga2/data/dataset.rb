@@ -393,18 +393,8 @@ module CTioga2
       #
       # @todo add algorithm
       def make_contour(level)
-        dtable = indexed_table
-        x,y,gaps = *dtable.make_contour(level)
-
-        # We remove any gap corresponding to the element size,
-        # meaningless.
-        gaps -= [x.size]
-        n = 0.0/0.0
-        gaps.sort.reverse.each do |i|
-          x.insert(i,n)
-          y.insert(i,n)
-        end
-        return Dobjects::Function.new(x,y)
+        table = indexed_table
+        return table.make_contour(level, {'ret' => 'func'} )
       end
 
       # Smooths the data using a naive gaussian-like convolution (but
