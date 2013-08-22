@@ -85,7 +85,8 @@ module CTioga2
             ## old style commands ?
             
             if l =~ /^([a-z0-9-]+)\(/
-              warn { "Found old style (deprecated) commands in '#{io.path}', using old style parser"}
+              path = io.respond_to?(:path) ? io.path : io.to_s
+              warn { "Found old style (deprecated) commands in '#{path}', using old style parser"}
               return OldFileParser.new.
                 run_commands(lines.join(""), interpreter)
             end
