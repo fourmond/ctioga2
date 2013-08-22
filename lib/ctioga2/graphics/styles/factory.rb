@@ -62,7 +62,7 @@ module CTioga2
           def initialize(name, type, sets, description, 
                          short_option = nil, disable_cmds = false)
             @name = name
-            @type = Commands::CommandType.get_type(type)
+            @type = type 
             @sets = sets
             @description = description
             @short_option = short_option
@@ -146,7 +146,7 @@ module CTioga2
                         "Sets of {type: #{base_type.name}}")
           end
           param = 
-            CurveStyleFactoryParameter.new(name, type, sets, 
+            CurveStyleFactoryParameter.new(name, base_type, sets, 
                                            description, short_option, 
                                            disable_cmds)
           @parameters ||= {}
@@ -154,6 +154,13 @@ module CTioga2
 
           @name_to_target ||= {}
           @name_to_target[name] = target
+        end
+
+        # A simple parameter is something whose target defines all, ie
+        # only the name and a documentation text is necessary.
+        def self.simple_parameter(target, text, sets = nil)
+          name = target.gsub(/_/, '-')
+          define_parameter(target, name, nil, sets, text, nil)
         end
 
         # Returns the Hash containing the class parameters.
@@ -324,25 +331,21 @@ module CTioga2
         define_parameter 'line_color', 'color', 'color',
         Sets::ColorSets, "color", "-c"
 
-        define_parameter 'line_width', 'line-width', 'float',
-        Sets::LineWidthSets, "line width", nil
+        simple_parameter 'line_width', 'line width', Sets::LineWidthSets
 
-        define_parameter 'line_style', 'line-style', 'line-style',
-        Sets::LineStyleSets, "line style", nil
+        simple_parameter 'line_style', 'line style', Sets::LineStyleSets
 
         # Markers
         define_parameter 'marker_marker', 'marker', 'marker',
         Sets::MarkerSets, "marker", '-m'
 
-        define_parameter 'marker_color', 'marker-color', 'color',
-        Sets::ColorSets, "marker color", nil
+        simple_parameter 'marker_color', "marker color", Sets::ColorSets
 
-        define_parameter 'marker_scale', 'marker-scale', 'float',
-        Sets::LineWidthSets, "marker scale", nil
+        simple_parameter 'marker_scale', "marker scale", Sets::LineWidthSets
 
         # Error bars:
-        define_parameter 'error_bar_color', 'error-bar-color', 'color',
-        Sets::ColorSets, "error bar color", nil
+        simple_parameter 'error_bar_color', "error bar color", 
+        Sets::ColorSets
 
         # Location:
         define_parameter 'location_xaxis', 'xaxis', 'axis',
@@ -355,11 +358,9 @@ module CTioga2
         define_parameter 'fill_y0', 'fill', 'fill-until',
         {}, "Fill until", nil
 
-        define_parameter 'fill_color', 'fill-color', 'color',
-        Sets::ColorSets, "fill color", nil
+        simple_parameter 'fill_color', "fill color", Sets::ColorSets
 
-        define_parameter 'fill_transparency', 'fill-transparency', 'float',
-        {}, "Fill transparency", nil
+        simple_parameter 'fill_transparency', 'fill transparency', {}
 
         # Region handling
         define_parameter 'region_position', 'region-side', 'region-side',
@@ -370,25 +371,19 @@ module CTioga2
         {}, "Path style", nil
 
         # Only for xyz-maps or xy-parametric
-        define_parameter 'color_map', 'color-map', 'colormap',
-        nil, "Color map", nil
+        simple_parameter 'color_map', 'color map'
 
-
-        define_parameter 'zaxis', 'zaxis', 'text',
-        nil, "Name for the Z axis", nil
+        simple_parameter 'zaxis', "name for the Z axis"
 
         ## @todo For xy-parametric, there should be a way to specify
         ## to which z value the maps apply (ie lines = y2, marker =
         ## y3...). Although for readability, it is probably better
         ## to avoid that...
-        define_parameter 'marker_color_map', 'marker-color-map', 'colormap',
-        nil, "Marker color map", nil
+        simple_parameter 'marker_color_map', 'color map for markers'
 
-        define_parameter 'split_on_nan', 'split-on-nan', 'boolean',
-        nil, "Split on NaN", nil
+        simple_parameter 'split_on_nan', 'split on NaN'
 
-        define_parameter 'contour_conrec', 'contour-conrec', 'boolean',
-        nil, "Use CONREC for contouring", nil
+        simple_parameter 'contour_conrec', "use CONREC for contouring"
 
 
         # And finally, we register all necessary commands...
