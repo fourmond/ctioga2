@@ -382,6 +382,9 @@ module CTioga2
         define_parameter 'split_on_nan', 'split-on-nan', 'boolean',
         nil, "Split on NaN", nil
 
+        define_parameter 'contour_conrec', 'contour-conrec', 'boolean',
+        nil, "Use CONREC for contouring", nil
+
 
         # And finally, we register all necessary commands...
         create_commands

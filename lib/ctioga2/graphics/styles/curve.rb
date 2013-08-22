@@ -57,7 +57,7 @@ module CTioga2
 
         # A path style.
         #
-        # @todo Ideas for a path tyle include
+        # @todo Ideas for a path style include
         # - plain lines
         # - impulses ?
         # - splines
@@ -86,6 +86,10 @@ module CTioga2
         # The object attached to this style. It is set by
         # Generator#curve_from_dataset
         attr_accessor :target
+
+
+        # Style of contour plots
+        attr_accessor :contour
         
 
         # True if a line should be drawn.
@@ -121,6 +125,7 @@ module CTioga2
           @error_bar = ErrorBarStyle.from_hash(hash, 'error_bar_%s')
           @location = LocationStyle.from_hash(hash, 'location_%s')
           @fill = CurveFillStyle.from_hash(hash, 'fill_%s')
+          @contour = BaseContour.from_hash(hash, 'contour_%s')
 
           @region_position = hash['region_position']
 

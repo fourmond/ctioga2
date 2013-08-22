@@ -110,11 +110,13 @@ module CTioga2
 
             nb.times do |i|
               lvl = zmin + (i + 0.5) * dz
-              color = @curve_style.color_map.z_color(lvl, zmin, zmax)
-              @curve_style.line.set_stroke_style(t)
-              contour = table.make_contour(lvl)
-              t.append_points_with_gaps_to_path(*contour)
-              t.stroke
+              t.context do
+                @curve_style.line.set_stroke_style(t)
+                t.stroke_color = @curve_style.color_map.z_color(lvl, zmin, zmax)
+                contour = @curve_style.contour.make_contour(table, lvl)
+                t.append_points_with_gaps_to_path(*contour)
+                t.stroke
+              end
             end
 
           end

@@ -23,6 +23,7 @@ require 'ctioga2/graphics/styles/curve'
 
 require 'ctioga2/graphics/styles/gradients'
 require 'ctioga2/graphics/styles/colormap'
+require 'ctioga2/graphics/styles/contour'
 
 
 require 'ctioga2/graphics/styles/errorbar'
