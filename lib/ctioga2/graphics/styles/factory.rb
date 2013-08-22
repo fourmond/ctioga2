@@ -367,8 +367,7 @@ module CTioga2
         {"default" => [:above, :below]}, "region side", nil
 
 
-        define_parameter 'path_style', 'style', 'text',
-        {}, "Path style", nil
+        simple_parameter 'path_style', 'path style', {}
 
         # Only for xyz-maps or xy-parametric
         simple_parameter 'color_map', 'color map'
