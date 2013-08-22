@@ -108,11 +108,16 @@ module CTioga2
         #
         # \todo add a way to add some more text to the description;
         # possibly a self.describe_parameter function ?
+        #
+        # @todo Remove completely the 'type' argument
         def self.define_parameter(target, name, type, sets, description, 
                                   short_option = nil, disable_cmds = false)
           # We define two new types:
           # - first, the color-or-auto type:
-          base_type = Commands::CommandType.get_type(type)
+
+          
+          # base_type = Commands::CommandType.get_type(type)
+          base_type = CurveStyle.attribute_type(target)
 
           if ! Commands::Interpreter.type("#{base_type.name}-or-auto")
             mb_type = base_type.type.dup
@@ -361,7 +366,7 @@ module CTioga2
         {"default" => [:above, :below]}, "region side", nil
 
 
-        define_parameter 'style', 'style', 'text',
+        define_parameter 'path_style', 'style', 'text',
         {}, "Path style", nil
 
         # Only for xyz-maps or xy-parametric

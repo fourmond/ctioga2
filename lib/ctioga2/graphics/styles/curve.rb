@@ -61,7 +61,9 @@ module CTioga2
         # - impulses ?
         # - splines
         # See gnuplot help for "plot with" for inspiration.
-        attr_accessor :path_style
+        #
+        # For now completely useless !
+        typed_attribute :path_style, 'text'
 
         # A colormap for strokes (only for XYZ data)
         #

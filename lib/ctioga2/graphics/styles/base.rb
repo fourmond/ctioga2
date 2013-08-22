@@ -53,6 +53,19 @@ module CTioga2
             end
         end
 
+        # Returns the type of all attributes (chaining to the parent
+        # when applicable)
+        def self.attribute_types
+          return ( @attribute_types || {} ).
+            merge(
+                  if superclass.respond_to?(:attribute_types)
+                    superclass.attribute_types
+                  else
+                    {}
+                  end
+                  )
+        end
+
         # This function should be the main way now of declaring
         # attributes, as it allows one to automatically generate an
         # options hash for Command
@@ -71,6 +84,32 @@ module CTioga2
           @attribute_types ||= {}
           @attribute_types[sym] = type
           return type
+        end
+
+        # Returns the type of an attribute, or _nil_ if there is no
+        # attribute of that name. Handles sub-styles correctly.
+        def self.attribute_type(symbol, fmt = "%s")
+          name = symbol.to_s
+
+          for k,v in attribute_types
+            if (fmt % k.to_s) == name
+              if v.respond_to? :type
+                return v.type
+              else
+                return v
+              end
+            end
+          end
+
+          if @sub_styles        # Not always present too
+            for sub in @sub_styles
+              sym, cls, fmt2, fc = *sub
+              f = fmt % fmt2
+              ret = cls.attribute_type(symbol, f)
+              return ret if ret
+            end
+          end
+          return nil
         end
 
         # Adds a deprecated typed attribute
