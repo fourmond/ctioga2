@@ -11,6 +11,8 @@ if [ -d ../.git -o -d ../.svn ]; then
     revision=$($prefix svn info | grep Revision: | egrep -o '[0-9]+')
     revision=$(printf '%04d' $revision)
 
+    revision="$revision""$TEST_SUFFIX"
+
     echo "Generating images for revision $revision"
 fi
 

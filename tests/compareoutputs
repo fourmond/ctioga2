@@ -1,0 +1,30 @@
+#! /bin/bash
+
+# A script that compares two runs of test2montage.
+#
+# Takes two arguments: the prefixes of the first and second series of
+# file.
+
+pref1=$1
+pref2=$2
+
+nb=0
+for f in *.sh; do
+    base=${f%%.sh}
+    f1=outputs/${base}${pref1}.png
+    f2=outputs/${base}${pref2}.png
+    
+    echo "Comparing $f1 and $f2:"
+    if [ -r $f1 -a -r $f2 ]; then
+        if diff <(pngtopnm $f1) <(pngtopnm $f2) > /dev/null; then
+            echo ' -> identical'
+        else
+            echo ' -> different !'
+            nb=$(($nb+1))
+        fi
+    else
+        echo " -> impossible as both are not present"
+    fi
+done
+
+echo "Found $nb files that differ"
