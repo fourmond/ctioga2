@@ -46,8 +46,6 @@ module CTioga2
         sub_style :fill, CurveFillStyle
 
         # Details of the location of the curve, a LocationStyle object.
-        #
-        # The _true_ bit makes sure @location is always created.
         sub_style :location, LocationStyle, nil, true
 
         # Whether in a region plot, the curve should be above or below
@@ -86,7 +84,7 @@ module CTioga2
 
 
         # Style of contour plots
-        sub_style :contour, ContoursStyle
+        sub_style :contour, ContoursStyle, nil, true
 
         # The following attributes are not styles but here to help
 

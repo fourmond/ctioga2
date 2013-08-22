@@ -39,3 +39,9 @@ $ct --legend-inside tc /scale 1 \
     --xyz-map 3d-data.dat@1:2:3 /color-map '#fff--#22f' /zaxis zvalues \
     --label-style zvalues_label /text=machin
 
+$ct --legend-inside tc /scale 1 \
+    --legend-line "Neat 3d level plot, with a legend (at the top) -- and a crappy title !" \
+    --text --margin 0.03 --new-zaxis zvalues /location top \
+    --contour 3d-data.dat@1:2:3 /color-map '#000--#22f' /zaxis zvalues \
+    --label-style zvalues_label /text=Label
+
