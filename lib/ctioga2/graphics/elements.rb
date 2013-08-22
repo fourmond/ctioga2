@@ -22,6 +22,7 @@ require 'ctioga2/graphics/elements/gradient-region'
 require 'ctioga2/graphics/elements/curve2d'
 require 'ctioga2/graphics/elements/parametric2d'
 require 'ctioga2/graphics/elements/xyz-map'
+require 'ctioga2/graphics/elements/xyz-contour'
 require 'ctioga2/graphics/elements/primitive'
 
 require 'ctioga2/graphics/elements/tangent'

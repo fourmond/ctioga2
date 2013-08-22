@@ -119,6 +119,18 @@ module CTioga2
         return curve
       end
 
+      # XYZ maps
+      def xyz_contour(plot, dataset, options = {})
+        legend = @legend_provider.dataset_legend(dataset)
+        style = @style_factory.next(options)
+        style.legend ||= legend # The legend specified as option to
+                                # the --plot command has precedence
+                                # over the one specified by --legend.
+        style.legend = false    # No legend for XYZ maps
+        curve = Graphics::Elements::XYZContour.new(dataset, style)
+        return curve
+      end
+
 
       ## @}
       
@@ -142,6 +154,16 @@ module CTioga2
 Switch to XY parametric plots, that is standard XY plots whose appearance
 (such as color, marker color, and, potentially, marker kinds and more)
 are governed by one (or more ?) Z values.
+EOH
+
+    ContourPlotCommand = 
+      Cmd.new("contour",nil,"--contour") do |plotmaker|
+      plotmaker.curve_generator.current_curves = :xyz_contour
+    end
+    
+    ContourPlotCommand.describe('select contour plots', 
+                                     <<EOH, PlotTypesGroup)
+...
 EOH
 
     XYPlotCommand = 
