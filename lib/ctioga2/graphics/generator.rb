@@ -81,6 +81,9 @@ module CTioga2
       private
       
       ## \name Available kinds of curves
+      ##
+      ## @todo All these are completely identical, there probably
+      ## isn't need for separate code ?
       # 
       # @{
       # 

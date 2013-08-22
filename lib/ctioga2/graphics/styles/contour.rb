@@ -26,7 +26,7 @@ module CTioga2
 
 
       # The base for a contour plot
-      class BaseContour < BasicStyle
+      class BaseContourStyle < BasicStyle
         
         # Whether or not to use conrec for the contour computation
         typed_attribute :conrec, 'boolean'
@@ -38,6 +38,12 @@ module CTioga2
           return table.make_contour(level, opts)
         end
         
+      end
+
+
+      # This class expands on the previous one to provide for
+      # mechanisms to draw many related contour plots.
+      class ContoursStyle < BaseContourStyle
       end
     end
   end

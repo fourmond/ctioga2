@@ -28,32 +28,31 @@ module CTioga2
       # \todo maybe for objects different than Curve2D, a subclass of
       # CurveStyle could be used ? This way, we could have clearly
       # separated legends and the like ?
-      #
-      # @todo This should probably be a subclass of basicStyle, to
-      # handle style sheets.
-      class CurveStyle
+      class CurveStyle < BasicStyle
 
         # The style of the line that is drawn, as a StrokeStyle. 
-        attr_accessor :line
+        sub_style :line, StrokeStyle
 
         # The style of markers that should be drawn, as a MarkerStyle.
-        attr_accessor :marker
+        sub_style :marker, MarkerStyle
 
         # The text of the legend, if there is one.
-        attr_accessor :legend
+        typed_attribute :legend, 'text'
 
         # The style of the error bars when needed, as a ErrorBarStyle.
-        attr_accessor :error_bar
+        sub_style :error_bar, ErrorBarStyle
 
         # Filling of the curve, if applicable
-        attr_accessor :fill
+        sub_style :fill, CurveFillStyle
 
         # Details of the location of the curve, a LocationStyle object.
-        attr_accessor :location
+        #
+        # The _true_ bit makes sure @location is always created.
+        sub_style :location, LocationStyle, nil, true
 
         # Whether in a region plot, the curve should be above or below
         # the filled region.
-        attr_accessor :region_position
+        typed_attribute :region_position, "region-side"
 
         # A path style.
         #
@@ -69,28 +68,29 @@ module CTioga2
         # @todo There should be a very clear way to mark curve style
         # elements which are specific to certain kinds of plots (and
         # warn the user about misuses ?)
-        attr_accessor :color_map
+        typed_attribute :color_map, 'colormap'
 
         # The name of an axis to create to use for the display of the
         # Z scale.
         #
         # @todo specify the behaviour when the axis exists.
-        attr_accessor :zaxis
+        typed_attribute :zaxis, 'text'
 
         # A colormap for markers (only for XYZ data) 
-        attr_accessor :marker_color_map
+        typed_attribute :marker_color_map, 'colormap'
 
         # Whether the XY display should split on NaN values (wherever)
-        attr_accessor :split_on_nan
+        typed_attribute :split_on_nan, 'boolean'
+
+
+        # Style of contour plots
+        sub_style :contour, ContoursStyle
+
+        # The following attributes are not styles but here to help
 
         # The object attached to this style. It is set by
         # Generator#curve_from_dataset
         attr_accessor :target
-
-
-        # Style of contour plots
-        attr_accessor :contour
-        
 
         # True if a line should be drawn.
         def has_line?
@@ -106,52 +106,6 @@ module CTioga2
         def has_legend?
           return @legend
         end
-
-        # Sets the values of the different sub-objects from a 'flat'
-        # _hash_. Keys have the following meaning:
-        # * 'line_...': a StrokeStyle for the drawing the line
-        # * 'marker_...': a MarkerStyle for the drawing of markers
-        # * 'legend': the legend of the curve
-        # * '[xy]axis': the name of the axis the curve should be
-        #    plotted onto
-        #
-        # \todo make #legend another object derived from BasicStyle ?
-        #
-        # @todo This function should essentially disappear if we make
-        # this derive from BasicStyle.
-        def set_from_hash(hash)
-          @line = StrokeStyle.from_hash(hash, 'line_%s')
-          @marker = MarkerStyle.from_hash(hash, 'marker_%s')
-          @error_bar = ErrorBarStyle.from_hash(hash, 'error_bar_%s')
-          @location = LocationStyle.from_hash(hash, 'location_%s')
-          @fill = CurveFillStyle.from_hash(hash, 'fill_%s')
-          @contour = BaseContour.from_hash(hash, 'contour_%s')
-
-          @region_position = hash['region_position']
-
-          @legend = hash['legend']
-
-          @path_style = hash['style']
-
-          @color_map = hash['color_map']
-
-          @marker_color_map = hash['marker_color_map']
-
-          @split_on_nan = hash['split_on_nan']
-
-          @zaxis = hash['zaxis']
-
-          @target = nil
-        end
-
-        # Creates a CurveStyle object straight from a hash
-        # description. See #set_from_hash for more information.
-        def self.from_hash(hash)
-          a = CurveStyle.new
-          a.set_from_hash(hash)
-          return a
-        end
-
 
         # Draws a legend pictogram that fills up the whole current
         # frame.

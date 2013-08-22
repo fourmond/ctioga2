@@ -82,16 +82,19 @@ module CTioga2
         # Defines an accessor for an attribute which is a BasicStyle
         # subclass in itself.
         #
-        # _format_ is the thing fed to the subclass for the
+        # _fmt_ is the thing fed to the subclass for the
         # _from_hash_ function.
-        def self.sub_style(symbol, cls, fmt = nil)
+        #
+        # if _force_create_ is on, then the corresponding sub-object
+        # is created even if no property we set within. 
+        def self.sub_style(symbol, cls, fmt = nil, force_create = false)
           @sub_styles ||= []    # A list of [symbol, cls, fmt]
           
           if ! fmt
             fmt = "#{symbol.to_s}_%s"
           end
           
-          @sub_styles << [symbol, cls, fmt]
+          @sub_styles << [symbol, cls, fmt, force_create]
           # Define the accessor
           OldAttrAccessor.call(symbol)
         end
@@ -114,7 +117,7 @@ module CTioga2
             
           if @sub_styles        # Not always present too
             for sub in @sub_styles
-              sym, cls, fmt = *sub
+              sym, cls, fmt, fc = *sub
               fmt = key % fmt
               ret.merge!(cls.options_hash(fmt))
             end
@@ -153,7 +156,7 @@ module CTioga2
 
           if self.class.sub_styles
             for sub in self.class.sub_styles
-              sym, cls, fmt = *sub
+              sym, cls, fmt, fc = *sub
               cur_var = self.send(sym)
               if ! cur_var        # Create if not present
                 cur_var = cls.new
@@ -161,7 +164,10 @@ module CTioga2
               end
               fmt = name % fmt
               nb = cur_var.set_from_hash(hash, fmt)
-              if nb > 0 and set_after
+
+              # Here, this means that missing attributes do not get
+              # created.
+              if (nb > 0 or fc)  and set_after
                 self.send("#{sym}=", cur_var)
               end
               nb_set += nb

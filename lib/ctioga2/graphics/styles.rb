@@ -19,7 +19,6 @@ require 'ctioga2/graphics/styles/box'
 require 'ctioga2/graphics/styles/location'
 require 'ctioga2/graphics/styles/texts'
 require 'ctioga2/graphics/styles/carrays'
-require 'ctioga2/graphics/styles/curve'
 
 require 'ctioga2/graphics/styles/gradients'
 require 'ctioga2/graphics/styles/colormap'
@@ -37,6 +36,8 @@ require 'ctioga2/graphics/styles/plot'
 
 require 'ctioga2/graphics/styles/legend'
 
+
+require 'ctioga2/graphics/styles/curve'
 
 require 'ctioga2/graphics/styles/factory'
 
