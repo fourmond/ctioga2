@@ -210,15 +210,17 @@ module CTioga2
       # instance for the OptionParser with boolean options)
       def convert_options(options)
         target_options = {}
+        conv = target_option_names()
         for k,v in options
-          if ! @optional_arguments.key? k
+          kn = normalize_option_name(k)
+          if ! conv.key? kn
             raise CommandOptionUnkown, "Unkown option #{k} for command #{@name}"
           end
-          opt = @optional_arguments[k]
+          opt = @optional_arguments[conv[kn]]
           if v.is_a? String
             v = opt.type.string_to_type(v)
           end
-          target = opt.option_target || k
+          target = opt.option_target || conv[kn]
           if opt.option_deprecated
             expl = ""
             if opt.option_target
@@ -235,15 +237,25 @@ module CTioga2
         return target_options
       end
 
+      # Returns a hash "normalized option names" => 'real option name'
+      def target_option_names
+        return @tg_op_names if @tg_op_names
+
+        @tg_op_names = {}
+        for k in @optional_arguments.keys
+          @tg_op_names[normalize_option_name(k)] = k
+        end
+        return @tg_op_names
+      end
+
+      # Returns a lowercase 
+      def normalize_option_name(opt)
+        return opt.gsub(/_/,"-").downcase
+      end
+
       # Whether the Command accepts the named _option_.
-      #
-      # \todo Several conversions could be used, to facilitate the
-      # writing of options:
-      #
-      # * convert everything to lowercase .
-      # * ignore the difference between _ and - (a bit delicate).
       def has_option?(option)
-        return @optional_arguments.key? option
+        return target_option_names.key?(normalize_option_name(option))
       end
 
       # Whether the Command accepts any option at all ?
