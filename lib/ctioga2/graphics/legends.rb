@@ -121,7 +121,20 @@ EOH
 
     LegendMultiColCommand.describe("Lay out legends in several columns",
                                    <<EOH, LegendGroup)
-Following legends will be layed out in multiple columns.
+Following legends will be layed out in multiple columns, until a call
+to {command: legend-multicol-end}.
+EOH
+
+    LegendMultiColEndCommand = 
+      Cmd.new("legend-multicol-end", nil, "--legend-multicol-end",
+              [], {}) do |plotmaker, options|
+      plotmaker.root_object.current_plot.
+        enter_legend_subcontainer(nil)
+    end
+
+    LegendMultiColEndCommand.describe("End of multicolumn legends",
+                                   <<EOH, LegendGroup)
+Stop layout out legends in several columns
 EOH
 
 
