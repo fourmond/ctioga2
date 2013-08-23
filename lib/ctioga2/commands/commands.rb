@@ -90,6 +90,14 @@ module CTioga2
       # The context of definition [file, line]
       attr_accessor :context
 
+      # The context of the documentation
+      attr_accessor :documentation_context
+
+      def self.get_calling_context(id=2)
+        caller[id].gsub(/.*\/ctioga2\//, 'lib/ctioga2/') =~ /(.*):(\d+)/
+        return [$1, $2.to_i]
+      end
+
       # Creates a Command, with all attributes set up. The code can be
       # set using #set_code.
       #
@@ -109,8 +117,7 @@ module CTioga2
         @code = code
         self.describe(d_short, d_long, group)
 
-        caller[1].gsub(/.*\/ctioga2\//, 'lib/ctioga2/') =~ /(.*):(\d+)/
-        @context = [$1, $2.to_i]
+        @context = Command.get_calling_context
 
         # Registers automatically the command
         if register
@@ -132,11 +139,21 @@ module CTioga2
       # Sets the descriptions of the command. If the long description
       # is ommitted, the short is reused.
       def describe(short, long = nil, group = nil)
+        @documentation_context = Command.get_calling_context(1)
         @short_description = short
         @long_description = long || short
         if(group)
           @group = group
           group.commands << self
+        end
+      end
+
+      # Sets the long documentation of the given command
+      def self.document_command(cmd, desc)
+        tg = Commands::Interpreter.command(cmd)
+        if tg
+          tg.documentation_context = Command.get_calling_context(1)
+          tg.long_description = desc
         end
       end
 

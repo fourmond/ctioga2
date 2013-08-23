@@ -392,6 +392,10 @@ module CTioga2
         # And finally, we register all necessary commands...
         create_commands
 
+        c = Commands::Command
+
+        # c.document_command("fill", "biniou")
+        
         # A constant suitable for use as the optional arguments of the
         # plot command.
         PlotCommandOptions = plot_optional_arguments

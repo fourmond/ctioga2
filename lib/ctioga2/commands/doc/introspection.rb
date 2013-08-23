@@ -106,10 +106,11 @@ module CTioga2
         end
 
         # Lauches an editor to edit the given command:
-        def edit_command(cmd)
+        def edit_command(cmd, doc)
           cmd = Interpreter::command(cmd)
           if cmd
-            edit_file(*cmd.context)
+            cntx = doc ? cmd.documentation_context : cmd.context
+            edit_file(*cntx)
           end
         end
 
@@ -205,8 +206,9 @@ EOH
 
       EditCommandCmd = 
         Cmd.new('edit-command', nil, '--edit-command',
-                [ CmdArg.new('text')]) do |plotmaker, cmd|
-        Introspection.new.edit_command(cmd)
+                [ CmdArg.new('text')], 
+                {'doc' => CmdArg.new('boolean')}) do |plotmaker, cmd, opts|
+        Introspection.new.edit_command(cmd, opts['doc'])
       end
 
       EditCommandCmd.describe("Edit the command",
