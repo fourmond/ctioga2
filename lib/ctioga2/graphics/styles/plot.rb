@@ -471,7 +471,7 @@ EOH
       X2Command = 
         Cmd.new('x2', nil, '--x2', []) do |plotmaker|
         plotmaker.interpreter.
-          run_commands("xaxis(top)\naxis-style(top,decoration=full)")
+          run_commands("xaxis top\naxis-style top /decoration=full")
       end
 
       X2Command.describe("Switches to top axis for subsequent curves", 
@@ -479,14 +479,14 @@ EOH
 Switches to using the top axis for X axis for the subsequent curves,
 and turns on full decoration for the right axis. Shortcut for:
 
-# xaxis(top)
-# axis-style(top,decoration=full)
+# xaxis top
+# axis-style top /decoration=full
 EOH
 
       Y2Command = 
         Cmd.new('y2', nil, '--y2', []) do |plotmaker|
         plotmaker.interpreter.
-          run_commands("yaxis(right)\naxis-style(right,decoration=full)")
+          run_commands("yaxis right\naxis-style right /decoration=full")
       end
 
       Y2Command.describe("Switches to right axis for subsequent curves", 
@@ -494,8 +494,8 @@ EOH
 Switches to using the right axis for Y axis for the subsequent curves,
 and turns on full decoration for the right axis. Shortcut for:
 
-# yaxis(right)
-# axis-style(right,decoration=full)
+# yaxis right
+# axis-style right /decoration=full
 EOH
 
       NewZAxisCommand = 
@@ -529,14 +529,15 @@ EOH
       LabelStyleCommand.describe("Sets the style of the given label", 
                                  <<"EOH", AxisGroup)
 Sets the style of the given label (see the type {type: label} for more
-information).
+information). See {command: define-text-style} for detailed information 
+about the meaning of the options.
 
 The option text permits to also set the text of the label (does not
 work for ticks).
 
 For tick labels, setting the color option also sets the color for the
 lines of the corresponding axis. If you don't want that, you can 
-override the color using the /stroke_color option of 
+override the color using the @stroke-color@ option of 
 {command: axis-style}. This will only work with Tioga version 1.11 or 
 greater.
 EOH

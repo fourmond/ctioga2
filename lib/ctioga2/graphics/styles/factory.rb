@@ -327,7 +327,7 @@ module CTioga2
 
         # Lines:
         define_parameter 'line_color', 'color', 
-        Sets::ColorSets, "color", "-c"
+        Sets::ColorSets, "line color", "-c"
 
         simple_parameter 'line_width', 'line width', Sets::LineWidthSets
 
@@ -392,10 +392,6 @@ module CTioga2
         # And finally, we register all necessary commands...
         create_commands
 
-        c = Commands::Command
-
-        # c.document_command("fill", "biniou")
-        
         # A constant suitable for use as the optional arguments of the
         # plot command.
         PlotCommandOptions = plot_optional_arguments
@@ -472,6 +468,41 @@ module CTioga2
         end
       end
     end
+
+    # Now, we document some aspects of the above created commands
+    c = Commands::Command
+
+    c.document_command("color-map", <<EOD)
+Sets the color map for the subsequent curves, until cancelled by an
+@auto@ argument.
+
+Color maps are used for 3D plots, ie under the effet of 
+{command: contour}, {command: xyz-map} and {command: xy-parametric}. 
+EOD
+
+    c.document_command("contour-conrec", <<EOD)
+If on, the subsequent curves will use the CONREC algorithm for
+contouring. In the opposite case, the contouring algorithm of Gri is
+used.
+
+Only useful when {command: contour} is in effect.
+EOD
+
+    c.document_command("split-on-nan", <<EOD)
+In general, the NaN (not a number, ie invalid data points in the
+dataset) in a dataset are silently ignored. When this option is on,
+the lines of {command: xy-plot}-style plots are split upon
+encountering a NaN.
+EOD
+
+    c.document_command("zaxis", <<EOD)
+Sets the name of the zaxis for the subsequent curves. This must be an
+axis that has been previously created using {command: new-zaxis}. 
+
+This axis will be used to display the colormaps of the following
+curve. 
+EOD
+
   end
 end
 

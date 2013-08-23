@@ -243,12 +243,12 @@ the @/base-style@ option to the {command: draw-arrow} command.
 Meaning of the style parameters:
 
  * @color@, @style@ and @width@: same as in {command: define-line-style}
- * @head_marker@, @tail_marker@: a {type: marker} to be used for the head 
+ * @head-marker@, @tail-marker@: a {type: marker} to be used for the head 
    or for the tail
- * @head_scale@, @tail_scale@: scale of the head or tail markers
- * @head_angle@, @tail_angle@: rotate the head or the tail by that many
+ * @head-scale@, @tail-scale@: scale of the head or tail markers
+ * @head-angle@, @tail-angle@: rotate the head or the tail by that many
    degrees
- * @head_color@, @tail_color@: the {type: color} of the head or tail
+ * @head-color@, @tail-color@: the {type: color} of the head or tail
 EOD
 
       StyleSheetCommands['box'].long_description = <<EOD
@@ -259,8 +259,8 @@ the @/base-style@ option to the {command: draw-box} command.
 Meaning of the style parameters:
 
  * @color@, @style@ and @width@: same as in {command: define-line-style}
- * @fill_color@: fill color for the box
- * @fill_transparency@: the transparency for the fill, from 0 to 1
+ * @fill-color@: fill color for the box
+ * @fill-transparency@: the transparency for the fill, from 0 to 1
 EOD
 
       StyleSheetCommands['text'].long_description = <<EOD
@@ -304,12 +304,12 @@ Meaning of the style parameters:
 
  * @alignment@, @justification@, @angle@, @color@ and @scale@: 
    as in {command: define-text-style}
- * @fill_color@ and @stroke_color@: markers are both stroked and filled,
+ * @fill-color@ and @stroke_color@: markers are both stroked and filled,
    you can control all colors in one go using @color@ or specifying each
-   with @fill_color@ and @stroke_color@
+   with @fill-color@ and @stroke_color@
  * @font@: is a PDF font number (from 1 to 14), only used for marker
    strings
- * @horizontal_scale@, @vertical_scale@: scales the marker only
+ * @horizontal-scale@, @vertical-scale@: scales the marker only
    horizontally or vertically
 EOD
 
@@ -334,12 +334,12 @@ Sets the style for a whole axis. All axis styles descend from the
 
 Axis styles have lots of parameters:
 
- * @axis_label_@ and @tick_label_@ parameters are title style parameters
+ * @axis-label-@ and @tick-label-@ parameters are title style parameters
    whose meaning is given in {command: define-title-style}, that affect
    ticks and axis labels
  * @decoration@: a {type: axis-decoration} that specify which ticks and 
    tick labels to draw
- * @background_lines_@ parameters define the style of background lines, 
+ * @background-lines-@ parameters define the style of background lines, 
    as in {command: define-line-style}
 EOD
       

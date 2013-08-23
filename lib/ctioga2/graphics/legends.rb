@@ -53,6 +53,9 @@ EOH
     LegendLineCommand.describe("Adds a pure text line to the legend",
                                <<EOH, LegendGroup)
 Adds a line of text unrelated to any curve to the legend.
+
+The options controlling the aspect of the legend are documented in the 
+{command: define-text-style} command.
 EOH
 
     
@@ -83,9 +86,16 @@ EOH
                                 <<EOH, LegendGroup)
 Sets the various aspects of the style of the legends throught 
 its options:
- * @dy@: the spacing between consecutive lines
+ * @dy@: the spacing between the baseline of consecutive lines;
+   it is deprecated now in favor of @vpadding@;
+ * @vpadding@: the space left between the bottom of a line and the top of
+   the next one;
  * @scale@: the overall scale of the legends
- * @text_scale@: the scale of the text (and the markers) inside the legends
+ * @text-scale@: the scale of the text (and the markers) inside the legends
+
+The @frame-@ options control the drawing of a frame around the legend;
+they have the same meaning as corresponding ones of 
+{command: define-box-style} with the @frame-@ bit dropped.
 EOH
 
     LegendInsideCommand = 
