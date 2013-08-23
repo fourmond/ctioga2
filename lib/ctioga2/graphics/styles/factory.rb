@@ -1,5 +1,5 @@
 # factory.rb: an object in charge of generating the style for Curves
-# copyright (c) 2009 by Vincent Fourmond
+# copyright (c) 2009, 2013 by Vincent Fourmond
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -382,9 +382,13 @@ module CTioga2
 
         simple_parameter 'split_on_nan', 'split on NaN'
 
-        simple_parameter 'contour_conrec', "use CONREC for contouring"
 
-        simple_parameter 'contour_number', "number of level lines"
+        # Contour plot styles
+        simple_parameter 'contour_conrec', "use CONREC for contouring"
+        simple_parameter 'contour_number', "overall number of level lines"
+        simple_parameter 'contour_minor_number', "number of minor level lines between major ones (approx)"
+        simple_parameter 'contour_minor_scale', "relative scale of minor level lines"
+        simple_parameter 'contour_minor_style', "minor ticks line style"
 
 
         # And finally, we register all necessary commands...

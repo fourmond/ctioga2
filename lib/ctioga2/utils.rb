@@ -161,6 +161,30 @@ module CTioga2
       end
       return formula
     end
+
+    NaturalSubdivisions = [1.0, 2.0, 5.0, 10.0]
+
+    # Returns the closest element of the correct power of ten of
+    # NaturalSubdivisions above or below the given number
+    def self.closest_subdivision(x, below = true)
+      fact = 10**(Math.log10(x).floor)
+
+      normed_x = x/fact
+      (NaturalSubdivisions.size()-1).times do |i|
+        if normed_x == NaturalSubdivisions[i]
+          return x
+        end
+        if (normed_x > NaturalSubdivisions[i]) && 
+            (normed_x < NaturalSubdivisions[i+1])
+          if below
+            return NaturalSubdivisions[i]*fact
+          else
+            return NaturalSubdivisions[i+1]*fact
+          end
+        end
+      end
+      raise "Should not reach this !"
+    end
     
 
   end
