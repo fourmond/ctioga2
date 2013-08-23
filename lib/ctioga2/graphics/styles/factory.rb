@@ -110,12 +110,10 @@ module CTioga2
         # possibly a self.describe_parameter function ?
         #
         # @todo Remove completely the 'type' argument
-        def self.define_parameter(target, name, type, sets, description, 
+        def self.define_parameter(target, name, sets, description, 
                                   short_option = nil, disable_cmds = false)
           # We define two new types:
           # - first, the color-or-auto type:
-
-          
           # base_type = Commands::CommandType.get_type(type)
           base_type = CurveStyle.attribute_type(target)
 
@@ -160,7 +158,7 @@ module CTioga2
         # only the name and a documentation text is necessary.
         def self.simple_parameter(target, text, sets = nil)
           name = target.gsub(/_/, '-')
-          define_parameter(target, name, nil, sets, text, nil)
+          define_parameter(target, name, sets, text, nil)
         end
 
         # Returns the Hash containing the class parameters.
@@ -328,7 +326,7 @@ module CTioga2
         # Now, the parameters:
 
         # Lines:
-        define_parameter 'line_color', 'color', 'color',
+        define_parameter 'line_color', 'color', 
         Sets::ColorSets, "color", "-c"
 
         simple_parameter 'line_width', 'line width', Sets::LineWidthSets
@@ -336,7 +334,7 @@ module CTioga2
         simple_parameter 'line_style', 'line style', Sets::LineStyleSets
 
         # Markers
-        define_parameter 'marker_marker', 'marker', 'marker',
+        define_parameter 'marker_marker', 'marker', 
         Sets::MarkerSets, "marker", '-m'
 
         simple_parameter 'marker_color', "marker color", Sets::ColorSets
@@ -348,14 +346,14 @@ module CTioga2
         Sets::ColorSets
 
         # Location:
-        define_parameter 'location_xaxis', 'xaxis', 'axis',
+        define_parameter 'location_xaxis', 'xaxis', 
         nil, "X axis", nil, true
 
-        define_parameter 'location_yaxis', 'yaxis', 'axis',
+        define_parameter 'location_yaxis', 'yaxis', 
         nil, "Y axis", nil, true
 
         # Now, fill style
-        define_parameter 'fill_y0', 'fill', 'fill-until',
+        define_parameter 'fill_y0', 'fill', 
         {}, "Fill until", nil
 
         simple_parameter 'fill_color', "fill color", Sets::ColorSets
@@ -363,7 +361,7 @@ module CTioga2
         simple_parameter 'fill_transparency', 'fill transparency', {}
 
         # Region handling
-        define_parameter 'region_position', 'region-side', 'region-side',
+        define_parameter 'region_position', 'region-side', 
         {"default" => [:above, :below]}, "region side", nil
 
 
