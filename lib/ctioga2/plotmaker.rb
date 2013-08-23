@@ -354,6 +354,17 @@ module CTioga2
       end
       t.make_preview_pdf(t.figure_index(figname))
 
+      # We look for latex errors
+      if t.respond_to? :pdflatex_errors
+        errs = t.pdflatex_errors
+        if errs.size > 0
+          error { "pdflatex returned with #{errs.size} error lines"}
+          for l in errs
+            warn { "pdflatex error: #{l.chomp}" }
+          end
+        end
+      end
+
       file = t.save_dir ? File::join(t.save_dir, figname + ".pdf") : 
         figname + ".pdf"
 
