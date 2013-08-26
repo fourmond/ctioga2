@@ -17,7 +17,7 @@ and using command files (at the same time).
 It is based on Tioga (http://tioga.rubyforge.org).
 EOF
   s.homepage = 'http://ctioga2.rubyforge.org'
-  s.add_dependency 'tioga', '>= 1.15'
+  s.add_dependency 'tioga', '>= 1.16'
   s.author = "Vincent Fourmond <vincent.fourmond@9online.fr>"
   s.email = "vincent.fourmond@9online.fr"
   s.rubyforge_project = "ctioga2"
