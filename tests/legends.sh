@@ -57,6 +57,6 @@ $ct -t 'Large legends' -r 10cmx10cm \
     --legend-inside cc /scale 2 /vpadding=2mm /frame_color=Black \
     /frame_fill_color='White' /frame_fill_transparency=0.2 \
     /frame_width=0.5 \
-    -l '\LARGE $\displaystyle 2 \times \int_0^x x'\'' \matrm{d} x'\''$' 'x**2' \
+    -l '\LARGE $\displaystyle 2 \times \int_0^x x'\'' \mathrm{d} x'\''$' 'x**2' \
     -l '$5 x$' '5 * x' \
     -l '$2 x$' '2 * x'
