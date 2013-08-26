@@ -31,6 +31,11 @@ $ct -t 'With different colors for the axes' \
     --label-style yaxis /color Blue \
     --axis-style y /stroke_color Blue 
 
+# Various aspects of axis customization
+$ct -t 'Tweaking the aspect of labels ' \
+    -x '$x$ values' /shift=3 /scale=2 'sin(x)' \
+    -y '$y$ values' /shift=5mm /scale=5mm \
+    --label-style x /scale=7mm 
 
 
 # # Alternative axes
