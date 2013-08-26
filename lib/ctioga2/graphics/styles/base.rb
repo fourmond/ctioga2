@@ -30,6 +30,12 @@ module CTioga2
 
         OldAttrAccessor = method(:attr_accessor)
 
+        AllStyles = []
+
+        def self.inherited(cls)
+          AllStyles << cls
+        end
+
         # This redefinition of attr_accessor allows to track for the
         # names of the attributes, while still showing them up
         # properly documented in rdoc.
@@ -37,10 +43,6 @@ module CTioga2
           @attributes ||= []
           @attributes << symbol
           OldAttrAccessor.call(symbol)
-          # cl = caller()
-          # if not cl[0] =~ /typed_attribute/
-          #   puts "old-style attribute: #{cl[0]}"
-          # end
         end
 
         # Returns the list of attributes.

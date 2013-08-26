@@ -77,6 +77,12 @@ module CTioga2
           end
         end
 
+        # Return the value of the dimension in units of text height
+        def to_dy(t)
+          fig = to_figure(t, :y)
+          return fig/t.default_text_height_dy
+        end
+
         # Converts the Dimension to the *frame* coordinates of the
         # *current* frame in _t_.
         def to_frame(t, orientation = nil)

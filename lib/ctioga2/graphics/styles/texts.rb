@@ -36,11 +36,12 @@ module CTioga2
 
         # The 'shift' of the text. Only meaningful for axes and tick
         # labels, where the position of the text is specified using a
-        # side rather than a precise position. In frame coordinates ?
-        typed_attribute :shift, 'float'
+        # side rather than a precise position.
+        typed_attribute :shift, 'dimension'
 
-        # The scale of the text
-        typed_attribute :scale, 'float'
+        # The scale of the text. In text height by default, but you
+        # can specify a real size too
+        typed_attribute :scale, 'dimension'
 
         # The vertical alignment 
         typed_attribute :alignment, 'alignment'
@@ -53,17 +54,45 @@ module CTioga2
         # (see FigureMaker#show_text).
         def draw_text(t, text, x_or_loc, y = nil, measure = nil)
           t.context do
-            dict = prepare_show_text_dict(text, x_or_loc, y, measure)
+            dict = prepare_show_text_dict(t, text, x_or_loc, y, measure)
             t.show_text(dict)
           end
+        end
+
+        def shift_dy(t)
+          if @shift
+            return @shift.to_dy(t)
+          end
+          return nil
+        end
+
+        def scale_dy(t)
+          if @scale
+            return @scale.to_dy(t)
+          end
+          return nil
+        end
+
+        def hash_for_tioga(t)
+          dict = self.to_hash
+          if dict.key? 'shift'
+            dim = dict['shift']
+            dict['shift'] = dim.to_dy(t)
+          end
+          if dict.key? 'scale'
+            dim = dict['scale']
+            dict['scale'] = dim.to_dy(t)
+          end
+          return dict
         end
 
         protected
         
         # Prepares the dictionnary for use with show_text
-        def prepare_show_text_dict(text, x_or_loc, y = nil, measure = nil)
-          dict = self.to_hash
+        def prepare_show_text_dict(t, text, x_or_loc, y = nil, measure = nil)
+          dict = self.hash_for_tioga(t)
           dict['text'] = text
+
           if y
             dict['at'] = [x_or_loc, y]
           else
@@ -148,7 +177,7 @@ module CTioga2
         protected 
         
         def prepare_label_dict(t, default = nil, measure = nil)
-          dict = prepare_show_text_dict(@text, @loc, nil, measure)
+          dict = prepare_show_text_dict(t, @text, @loc, nil, measure)
           if default
             for attribute in %w(scale angle shift)
               if ! dict.key?(attribute)

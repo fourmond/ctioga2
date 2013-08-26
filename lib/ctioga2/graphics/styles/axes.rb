@@ -99,7 +99,7 @@ module CTioga2
         def draw_axis(t)
           spec = get_axis_specification(t)
           # Add tick label style:
-          spec.merge!(@tick_label_style.to_hash)
+          spec.merge!(@tick_label_style.hash_for_tioga(t))
 
           # Direct copy of attributes 
           for key in %w(stroke_color major_tick_length major_tick_width
@@ -218,8 +218,8 @@ minor_tick_length minor_tick_width)
         def get_ticks_parameters(t)
           i = t.axis_information({'location' => @location.tioga_location})
           retval = []
-          retval << (@tick_label_style.shift || i['shift'])
-          retval << (@tick_label_style.scale || i['scale'])
+          retval << (@tick_label_style.shift_dy(t) || i['shift'])
+          retval << (@tick_label_style.scale_dy(t) || i['scale'])
 
           retval[0] += 1
           return retval
