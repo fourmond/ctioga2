@@ -82,6 +82,7 @@ module CTioga2
           @decoration = decoration
 
           @tick_label_style = FullTextStyle.new
+          @tick_label_style.scale = Types::Dimension.new(:dy, 0.8)
           @axis_label = TextLabel.new(label)
           @log = false
           @ticks_side = {}
