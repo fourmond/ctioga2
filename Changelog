@@ -1,3 +1,19 @@
+ctioga2 (0.5)
+
+  * Choose the side of axis ticks 
+  * Multicolumn legends
+  * Much more control about the details of the legends
+  * A drop command to remove datasets from the stack
+  * A much simpler format for command files
+  * Improved error detection/report (including now LaTeX errors, with
+    Tioga version 1.16)
+  * Real contour plots
+  * Specify text size/shift with real dimensions
+  * Many bug fixes
+  * Default size of tick labels is now larger
+  
+ -- Vincent <vincent.fourmond@9online.fr>  Mon 26 Aug 22:04:05 CEST 2013
+
 ctioga2 (0.4)
 
   * Fixed a bug in /which (dataset) options
