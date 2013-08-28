@@ -64,7 +64,7 @@ EOD
             set = $1
             range = $2
           end          
-          name = "math: #{set}"
+          name = "#{set}"
           if set =~ /:/         # parametric
             if range
               set_param_from_string(:t_range, range)
