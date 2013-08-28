@@ -333,6 +333,7 @@ module CTioga2
       
       info { "Producing figure '#{figname}'" }
 
+
       t = create_figure_maker
       # If figname is clearly a path, we split it into directory/name
       # and set the output directory to directory.
@@ -349,10 +350,18 @@ module CTioga2
         t.save_dir = @output_directory
       end
 
-      t.def_figure(figname) do
+      effective_fig_name = figname.gsub(/[.\s]/) do |x|
+        "__#{x.ord}__"
+      end
+
+      if effective_fig_name != figname
+        debug { "Mangled name to '#{effective_fig_name}'"}
+      end
+
+      t.def_figure(effective_fig_name) do
         @root_object.draw_root_object(t)
       end
-      t.make_preview_pdf(t.figure_index(figname))
+      t.make_preview_pdf(t.figure_index(effective_fig_name))
 
       # We look for latex errors
       if t.respond_to? :pdflatex_errors
@@ -362,6 +371,13 @@ module CTioga2
           for l in errs
             warn { "pdflatex error: #{l.chomp}" }
           end
+        end
+      end
+
+      # We first rename the PDF file if it was mangled.
+      if effective_fig_name != figname
+        Dir.chdir(t.save_dir || ".") do
+          File::rename("#{effective_fig_name}.pdf", "#{figname}.pdf")
         end
       end
 
