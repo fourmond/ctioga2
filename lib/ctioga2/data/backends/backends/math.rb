@@ -65,7 +65,9 @@ EOD
             range = $2
           end          
           name = "#{set}"
-          if set =~ /:/         # parametric
+
+          
+          if set.split_at_toplevel(/:/).size > 1         # parametric
             if range
               set_param_from_string(:t_range, range)
             end

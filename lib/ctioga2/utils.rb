@@ -185,9 +185,8 @@ module CTioga2
       end
       raise "Should not reach this !"
     end
-    
-
   end
+    
 
   # This class implements a Hash whose values can also be retrieved by
   # pattern matching.
@@ -266,6 +265,45 @@ class Hash
 
 end
 
+
+class String
+  # Splits a string into substrings at the given regexp, but only if
+  # the splitting occurs at top-level with respect to parentheses.
+  def split_at_toplevel(regexp)
+    # Groups
+    grps = {} 
+    
+    sz = 0
+    s = self.dup
+    while true
+      s.gsub!(/\([^()]+\)/) do |x|
+        idx = grps.size
+        rep = "__#{idx}__"
+        grps[rep] = x
+        rep
+      end
+      if sz == grps.size
+        break
+      else
+        sz = grps.size
+      end
+    end
+    
+    splitted = s.split(regexp)
+    
+    while grps.size > 0
+      for s in splitted
+        s.gsub!(/__\d+__/) do |x|
+          rep = grps[x]
+          grps.delete(x)
+          rep
+        end
+      end
+    end
+    return splitted
+  end
+end
+
 begin
   # This is a dirty hack in order to ensure that the SVN revision
   # information is kept up-to-date even when using git-svn. This
@@ -273,3 +311,4 @@ begin
   require 'ctioga2/git-fools-svn'
 rescue LoadError => e
 end
+

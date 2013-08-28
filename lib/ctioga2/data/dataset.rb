@@ -87,7 +87,7 @@ module CTioga2
       def self.dataset_from_spec(name, spec)
         specs = []
         i = 0
-        for s in spec.split(/:/)
+        for s in spec.split_at_toplevel(/:/)
           if s =~ /^(x|y\d*|z)(#{DataColumn::ColumnSpecsRE})=(.*)/i
             which, mod, s = $1.downcase,($2 && $2.downcase) || "value",$3
             
