@@ -99,10 +99,16 @@ module CTioga2
 
           for func in @path_elements
             case @curve_style.path_style
-            when /splines/
+            when /^splines/
               for f in func.split_monotonic
                 new_f = f.bound_values(*bnds.extrema)
                 t.append_interpolant_to_path(new_f.make_interpolant)
+              end
+            when /^impulses/
+              # We draw lines from y = 0
+              for x,y in func
+                t.move_to_point(x, 0)
+                t.append_point_to_path(x, y)
               end
             else
               f = func.bound_values(*bnds.extrema)
