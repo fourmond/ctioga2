@@ -141,6 +141,20 @@ module CTioga2
       end
     end
 
+    # Quotes a string so it can be included directly within a
+    # \pdfinfo statement (for instance).
+    def self.tex_quote_string(str)
+      return str.gsub(/([%#])|([{}~_^])|\\/) do 
+        if $1
+          "\\#{$1}"
+        elsif $2
+          "\\string#{$2}"
+        else                      # Quoting \
+          "\\string\\\\"
+        end
+      end
+    end
+
     # Binomial coefficients (for the smooth filter)
     def self.cnk(n,k)
       res = 1.0
