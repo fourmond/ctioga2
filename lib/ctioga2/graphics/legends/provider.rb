@@ -45,7 +45,7 @@ module CTioga2
             @current_legend = nil
             return l
           elsif @auto_legend
-            return dataset.name
+            return "\\texttt{#{Utils::pdftex_quote_string(dataset.name)}}"
           else
             return nil
           end
