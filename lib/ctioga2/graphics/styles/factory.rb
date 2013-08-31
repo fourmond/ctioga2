@@ -353,7 +353,7 @@ module CTioga2
         nil, "Y axis", nil, true
 
         # Now, fill style
-        define_parameter 'fill_y0', 'fill', 
+        define_parameter 'fill_close_type', 'fill', 
         {}, "Fill until", nil
 
         simple_parameter 'fill_color', "fill color", Sets::ColorSets

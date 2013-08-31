@@ -17,6 +17,7 @@ require 'ctioga2/graphics/types/boundaries'
 require 'ctioga2/graphics/types/boxes'
 require 'ctioga2/graphics/types/bijection'
 require 'ctioga2/graphics/types/location'
+require 'ctioga2/graphics/types/fill'
 
 
 require 'ctioga2/graphics/types/grid'
@@ -65,22 +66,6 @@ EOD
 A {type: color}, or false to say that nothing should be drawn.
 EOD
 
-    CurveFillUntilType = CmdType.new('fill-until', {
-                                       :type => :float,
-                                       :shortcuts => {
-                                         /x?axis/i => 0.0,
-                                         /b(?:ot(?:tom)?)?/i => :bottom,
-                                         /t(?:op)?/i => :top,
-                                         /no(?:ne)?/i => false
-                                       }
-                                     }, <<EOD)
-The Y values until which a filled curve will be filled. Generally a number, 
-but it can also be:
- * @axis@ (or @xaxis@), which means 0
- * @bottom@, to fill until the bottom of the graph
- * @top@, to fill until the top 
- * @none@, meaning no fill
-EOD
 
     RegionSideType = 
       CmdType.new('region-side', {

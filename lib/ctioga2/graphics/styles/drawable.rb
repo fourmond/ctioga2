@@ -154,11 +154,7 @@ module CTioga2
       # how the fill should be applied to curves.
       class CurveFillStyle < FillStyle
 
-        # At which Y value we should draw the horizontal line for the
-        # fill ? A float, or:
-        # * :top, :bottom
-        # * false, nil to disable filling altogether
-        typed_attribute :y0, 'fill-until'
+        typed_attribute :close_type, 'fill-until'
         
       end
 

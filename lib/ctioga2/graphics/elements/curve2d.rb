@@ -125,10 +125,15 @@ module CTioga2
         # which is the same as the _y0_ attribute of a CurveFillStyle.
         #
         # It must not be _false_
-        def make_closed_path(t, fv)
-          y0 = fill_value_to_y(fv)
+        #
+        # @todo Make sure this is called only on sub-plots when
+        # splitting on NaN !
+        def make_closed_path(t)
           make_path(t)
-          close_path(t, y0)
+          bnds = parent.get_el_boundaries(self)
+          @curve_style.fill.close_type.
+            close_path(t, bnds, @function[0], 
+                       @function[@function.size - 1])
         end
 
         # Strokes the path.
@@ -151,14 +156,6 @@ module CTioga2
           end
         end
 
-        # A function to close the path created by make_path.
-        # Overridden in the histogram code.
-        def close_path(t, y0)
-          t.append_point_to_path(@function.x.last, y0)
-          t.append_point_to_path(@function.x.first, y0)
-          t.close_path
-        end
-
         # Returns the AxisSyle objects for the X and Y axes as an array.
         def get_axes
           return [ 
@@ -170,11 +167,13 @@ module CTioga2
         # Draws the filled region according to the :fill_type element
         # of the style pseudo-hash. It can be:
         def draw_fill(t)
-          return unless @curve_style.fill.y0
+          return unless (@curve_style.fill &&  
+                         @curve_style.fill.close_type &&
+                         @curve_style.fill.close_type.fill?)
           t.context do
             # Remember: first setup_fill, then draw path, then do_fill
             @curve_style.fill.setup_fill(t)
-            make_closed_path(t,@curve_style.fill.y0)
+            make_closed_path(t)
             @curve_style.fill.do_fill(t)
           end
         end
@@ -203,18 +202,6 @@ module CTioga2
           end
         end
 
-        protected 
-
-        # Converts the value of a fill value into a number (or nil)
-        def fill_value_to_y(fv)
-          return nil unless fv
-          case fv
-          when :bottom,:top
-            bnds = parent.get_el_boundaries(self)
-            return bnds.send(fv)
-          end
-          return fv
-        end
         
       end
     end
