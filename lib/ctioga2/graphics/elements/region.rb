@@ -122,14 +122,17 @@ module CTioga2
               :below => :bottom
             }
           end
+          closer = Types::FillUntil.new
           # We clip for the first ones...
           for c in @curves[0..-2]
-            c.make_closed_path(t, conversion[c.curve_style.region_position])
+            closer.type = conversion[c.curve_style.region_position]
+            c.make_closed_path(t, closer)
             t.clip
           end
           # We don't clip on the last one !
           c = @curves.last
-          c.make_closed_path(t, conversion[c.curve_style.region_position])
+          closer.type = conversion[c.curve_style.region_position]
+          c.make_closed_path(t, closer)
         end
 
       end

@@ -128,12 +128,12 @@ module CTioga2
         #
         # @todo Make sure this is called only on sub-plots when
         # splitting on NaN !
-        def make_closed_path(t)
+        def make_closed_path(t, close_type = nil)
           make_path(t)
+          close_type ||= @curve_style.fill.close_type
           bnds = parent.get_el_boundaries(self)
-          @curve_style.fill.close_type.
-            close_path(t, bnds, @function[0], 
-                       @function[@function.size - 1])
+          close_type.close_path(t, bnds, @function[0], 
+                                @function[@function.size - 1])
         end
 
         # Strokes the path.
