@@ -26,10 +26,8 @@ module CTioga2
       # curve.
       class FillUntil 
 
-        # The type of closing: :top, :bottom, :left, :right, :x, :y or
-        # :none
-        #
-        # @todo implement :xy
+        # The type of closing: :top, :bottom, :left, :right, :x, :y,
+        # :close, :xy or :none
         attr_accessor :type
         
         # An accessory value (when necessary)
@@ -52,6 +50,9 @@ module CTioga2
             ret.value = $2.to_f
           when /^\s*close\s*$/
             ret.type = :close
+          when /^\s*xy\s*[:=]\s*(.*)$/
+            ret.type = :xy
+            ret.value = Point.from_text($1)
           else
             ret.type = :y
             ret.value = str.to_f
@@ -87,16 +88,16 @@ module CTioga2
           when :x
             t.append_point_to_path(target, last[1])
             t.append_point_to_path(target, first[1])
-            t.close_path
           when :y
             t.append_point_to_path(last[0], target)
             t.append_point_to_path(first[0], target)
-            t.close_path
+          when :xy
+            t.append_point_to_path(* @value.to_figure_xy(t))
           when :close
-            t.close_path
           else
             raise "Should not be here"
           end
+          t.close_path
         end
 
       end
