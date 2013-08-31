@@ -30,6 +30,7 @@ module CTioga2
       end
     end
 
+
     # All files should use this function with the appropriate
     # arguments and have the Date and Revision svn:keyword:. Use this
     # way:
@@ -102,6 +103,16 @@ module CTioga2
       else
         return str
       end
+    end
+
+    # Converts a number to a float while trying to stay as lenient as
+    # possible
+    def self.txt_to_float(txt)
+      v = txt.to_f
+      if v == 0.0
+        return Float(txt)
+      end
+      return v
     end
 
     # Takes two arrays of the same size (vectors) and mix them
