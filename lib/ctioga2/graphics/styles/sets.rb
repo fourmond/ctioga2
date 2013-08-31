@@ -39,6 +39,8 @@ module CTioga2
           [DarkMagenta, DarkGreen, OrangeRed, DarkRed, DarkBlue ],
           "gradient2" => 
           [LightPlum, PaleGreen, Gold, RedBrown, SkyBlue ],
+          "gnuplot" => 
+          [Red, [0,1.0,0], Blue, Magenta, Cyan, Yellow, Black, Coral, Gray],
 
         }
 
