@@ -201,6 +201,9 @@ module CTioga2
     # Additional preamble for LaTeX output
     attr_accessor :latex_preamble
 
+    # Global font information
+    attr_accessor :latex_font
+
     # What happens to generated PDF files (a PostProcess object)
     attr_accessor :postprocess
 
@@ -240,6 +243,8 @@ module CTioga2
 
       # Original preamble
       @latex_preamble = ""
+
+      @latex_font = Graphics::Styles::FullLatexFont.new
 
       @postprocess = PostProcess.new
 
@@ -359,6 +364,7 @@ module CTioga2
       end
 
       t.def_figure(effective_fig_name) do
+        @latex_font.set_global_font(t)
         @root_object.draw_root_object(t)
       end
       t.make_preview_pdf(t.figure_index(effective_fig_name))
@@ -456,6 +462,7 @@ module CTioga2
       # applicable.
       t.tex_preamble += 
         "\n\\pdfinfo {\n#{title}/Creator(#{Utils::pdftex_quote_string("ctioga2 #{Version::version}")})\n}\n"
+
       return t
     end
 
@@ -558,6 +565,18 @@ the command {command: preamble} with the argument:
 
 @ \\usepackage[utf8]{inputenc}\\usepackage[T1]{fontenc}
 
+EOD
+
+    LatexFontCommand = 
+      Cmd.new("set-global-font",nil,"--set-global-font", 
+              [], Graphics::Styles::FullLatexFont.options_hash) do |plotmaker, opts|
+      plotmaker.latex_font.set_from_hash(opts)
+    end
+
+    LatexFontCommand.describe('Set global font details',
+                              <<EOD, LaTeXGroup)
+Set global font. Sets the size of everything, including that of text
+that has already been used.
 EOD
 
 

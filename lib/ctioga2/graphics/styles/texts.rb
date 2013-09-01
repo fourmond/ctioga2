@@ -259,11 +259,14 @@ module CTioga2
           return (@vertical_scale || 1.0) * (@scale || 1.0)
         end
       end
-      
+
+
       # A LaTeX font. It should be applied to text using the function
       # #fontify.
       #
       # \todo add real font attributes (family, and so on...)
+      #
+      # @todo Deprecate in favor of the latter class
       class LaTeXFont
         # The font command (bf, sf...). Naive but effective !
         attr_accessor :font_command
@@ -288,6 +291,42 @@ module CTioga2
           return txt
         end
         
+      end
+
+      # Full font information
+      class FullLatexFont < BasicStyle
+        
+        # The size of the text
+        typed_attribute :size, 'float'
+
+        # I remove those since they don't work for the time being
+
+        # # Font family
+        # typed_attribute :family, 'text'
+
+        # # Font series
+        # typed_attribute :series, 'text'
+
+        # # Font shape
+        # typed_attribute :shape, 'text'
+        
+
+        # Set global font information based on this style
+        #
+        # This only works from within a figure !
+        def set_global_font(t)
+          # for a in %w(family series shape)
+          #   v = self.send(a)
+          #   t.send("tex_font#{a}=", v) if v
+          # end
+
+
+          if @size
+            fact = @size/t.default_font_size
+            t.rescale_text(fact)
+          end
+        end
+
       end
       
 
