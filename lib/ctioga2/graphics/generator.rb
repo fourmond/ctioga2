@@ -165,8 +165,9 @@ EOH
     end
     
     ContourPlotCommand.describe('select contour plots', 
-                                     <<EOH, PlotTypesGroup)
-...
+                                <<EOH, PlotTypesGroup)
+Switch to contour plots for later curves. Contour plots need three
+columns (X,Y,Z). They have major and minor lines.
 EOH
 
     XYPlotCommand = 
