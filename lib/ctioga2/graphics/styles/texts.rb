@@ -294,6 +294,9 @@ module CTioga2
       end
 
       # Full font information
+      #
+      # @todo There is a whole bunch of work to be done on the Tioga
+      # side to make sure that things work.
       class FullLatexFont < BasicStyle
         
         # The size of the text

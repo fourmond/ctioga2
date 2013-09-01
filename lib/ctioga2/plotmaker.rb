@@ -246,6 +246,8 @@ module CTioga2
 
       @latex_font = Graphics::Styles::FullLatexFont.new
 
+      @latex_font.size = 15
+
       @postprocess = PostProcess.new
 
       # Make sure it is registered
