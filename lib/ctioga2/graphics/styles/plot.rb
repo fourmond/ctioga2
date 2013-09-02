@@ -368,7 +368,47 @@ EOH
                  <<"EOH", AxisGroup)
 This command can be used to set various aspects of the style of the 
 given axis, through its various options, which are documented in more details 
-in the {command: define-axis-style} command.
+in the {command: define-axis-style} command -- excepted for the @ticks@ bit
+which are documented in the {command: ticks} command.
+EOH
+
+      
+      TicksCommand = 
+          Cmd.new("ticks",nil,"--ticks", 
+                  [
+                   CmdArg.new('axis'),
+                  ], Styles::AxisTicks.options_hash) do |plotmaker, which, opts|
+        style = AxisStyle.current_axis_style(plotmaker, which)
+        style.ticks.set_from_hash(opts)
+      end
+      AxisStyleCommand.
+        describe("Sets the ticks of the given axis", 
+                 <<"EOH", AxisGroup)
+
+This command can be used to control the location of major and minor
+ticks and the text of their labels for the given axis. Options
+available:
+
+ * @format@ the format of the tick labels, using a @sprintf@-like
+   syntax (see below)
+ * @format-last@ the format of the last of the tick labels (useful to
+   include an overall "power-of-ten" factor
+ * @major@ a space or comma-separated list of the positions of the
+   major (labeled) ticks
+ * @minor@ same for the minor ticks
+ * @label@ a comma-separated list of the tick labels (must be the same
+   number of elements as that of the @major@ list). If you must
+   include a comma inside, then use @||@ as a separator.
+
+Format is a normal @sprintf@ format, with the following additional
+special codes:
+
+ * @%p@ the "common power of 10": if you divide the tick values by 10
+   to the power @%p@, the smallest absolute value will be between 1
+   and 10 (excluding 0 of course)
+ * @%b...@ is the tick value divided by this common power of 10. You
+   *must* follow this spec by a usual @sprintf@ format: @%b.3g@ would
+   get you a number with 3 significant digits
 EOH
 
       BackgroundLinesCommand = 
