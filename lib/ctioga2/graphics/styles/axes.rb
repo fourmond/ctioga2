@@ -56,6 +56,9 @@ module CTioga2
         # The label of the axis, if there is one
         sub_style :axis_label, TextLabel
 
+        # The axis ticks and labels
+        sub_style :ticks, AxisTicks
+
         # Whether the axis should be log scale or not
         typed_attribute :log, 'boolean'
 
@@ -86,6 +89,7 @@ module CTioga2
           @axis_label = TextLabel.new(label)
           @log = false
           @ticks_side = {}
+          @ticks = AxisTicks.new
         end
 
         # Draws the axis within the current plot. Boundaries are the
@@ -99,6 +103,12 @@ module CTioga2
         #   a transformation)
         def draw_axis(t)
           spec = get_axis_specification(t)
+
+          info = t.axis_information(spec)
+
+          # Merge in the specs
+          spec.merge!(@ticks.ticks_specs(t, info, @transform))
+          
           # Add tick label style:
           spec.merge!(@tick_label_style.hash_for_tioga(t))
 
@@ -143,6 +153,8 @@ minor_tick_length minor_tick_width)
           if @background_lines
             # First, getting major ticks location from tioga
             info = t.axis_information(get_axis_specification(t))
+            
+            tick_info = @ticks.ticks_specs(t, info, @transform)
 
             if info['vertical']
               x0 = t.bounds_left

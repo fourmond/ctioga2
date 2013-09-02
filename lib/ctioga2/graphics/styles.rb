@@ -28,6 +28,7 @@ require 'ctioga2/graphics/styles/contour'
 require 'ctioga2/graphics/styles/errorbar'
 
 require 'ctioga2/graphics/styles/sets'
+require 'ctioga2/graphics/styles/ticks'
 
 require 'ctioga2/graphics/styles/axes'
 require 'ctioga2/graphics/styles/map-axes'
