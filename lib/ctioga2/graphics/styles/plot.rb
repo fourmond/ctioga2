@@ -372,6 +372,21 @@ in the {command: define-axis-style} command -- excepted for the @ticks@ bit
 which are documented in the {command: ticks} command.
 EOH
 
+      ClearAxesCommand = 
+          Cmd.new("clear-axes",nil,"--clear-axes"
+                  ) do |plotmaker, opts|
+        [:left, :right, :top, :bottom].each do |loc|
+          style = AxisStyle.current_axis_style(plotmaker, loc)
+          style.decoration = Tioga::FigureConstants::AXIS_HIDDEN
+          style.axis_label.text = ""
+        end
+      end
+      ClearAxesCommand.
+        describe("Clear all axes",
+                 <<"EOH", AxisGroup)
+Removes all the axes and their associated labels
+EOH
+
       
       TicksCommand = 
           Cmd.new("ticks",nil,"--ticks", 
