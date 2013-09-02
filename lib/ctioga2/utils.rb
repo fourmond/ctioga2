@@ -210,6 +210,21 @@ module CTioga2
       end
       raise "Should not reach this !"
     end
+
+
+    # Returns the smallest power of 10 within the given buffer
+    # (excluding 0 or anything really close). That is, if you multiply
+    # by 10 to the power what is returned, the smallest will be in the
+    # range 1-10.
+    def self.common_pow10(vect, method = :floor, tolerance = 1e-8)
+      a = vect.abs
+      a.sort!
+      while (a.size > 1) && (a.first < tolerance * a.last)
+        a.shift
+      end
+
+      return Math.log10(a.first).send(method)
+    end
   end
     
 

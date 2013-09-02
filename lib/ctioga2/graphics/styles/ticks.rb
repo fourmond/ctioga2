@@ -32,10 +32,18 @@ module CTioga2
 
         include Log
 
-        # The format of the tick labels
+        # The format of the tick labels.
         #
-        # @todo should be extended
+        # It is either a standard sprintf format or composed of one or
+        # more of the following:
+        # 
+        # * %b followed by any usual format specifier: the tick value
+        #   divided by the common power of 10
+        # * %p the power of 10
         typed_attribute :format, "text"
+
+        # The format of the last of the tick labels
+        typed_attribute :format_last, "text"
 
         # The list of the position of major ticks
         #
@@ -45,10 +53,13 @@ module CTioga2
         # The list of the position of minor ticks
         typed_attribute :minor, 'float-list'
         
-
         # The list of labels
         typed_attribute :labels, 'text-list'
-        
+
+        def self.tweak_format_string(str)
+          return str.gsub("%b", "%2$").gsub("%p", "%3$d")
+        end
+
         # Returns the specifications that should be added to the
         # information
         def ticks_specs(t, info, transform)
@@ -66,20 +77,27 @@ module CTioga2
             ret['minor_ticks'] = Dobjects::Dvector.new
             ret['major_ticks'] = Dobjects::Dvector.new(@major)
 
-            # We need to rewrite the format.
-            fmt = "%.3g"
+            fmt ||= "$%g$"
           end
 
           if @minor
             ret['minor_ticks'] = Dobjects::Dvector.new(@minor)
           end
 
+          fmt_last = @format_last || fmt
+
           if @labels
             ret['labels'] = @labels
           elsif fmt
             ret['labels'] = []
+            fmt = AxisTicks.tweak_format_string(fmt)
+            fmt_last = AxisTicks.tweak_format_string(fmt_last)
+            i = ret['major_ticks'].size
+            common = Utils::common_pow10(ret['major_ticks'])
+            fact = 10**(-common)
             for v in ret['major_ticks']
-              ret['labels'] << fmt % v
+              i -= 1
+              ret['labels'] << (i > 0 ? fmt : fmt_last) % [v, v*fact, common]
             end
           end
           return ret
