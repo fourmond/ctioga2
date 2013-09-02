@@ -381,7 +381,7 @@ EOH
         style = AxisStyle.current_axis_style(plotmaker, which)
         style.ticks.set_from_hash(opts)
       end
-      AxisStyleCommand.
+      TicksCommand.
         describe("Sets the ticks of the given axis", 
                  <<"EOH", AxisGroup)
 
