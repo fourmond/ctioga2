@@ -150,6 +150,7 @@ module CTioga2
           subtype = type[:subtype] || {:type => :string}
           @subtype = Type.get_type(subtype)
           @separator = type[:separator] || /\s*,\s*/
+          @alternative_separator = type[:alternative_separator] || nil
           @separator_out = type[:separator_out] || ','
         end
 
@@ -158,7 +159,11 @@ module CTioga2
         end
 
         def string_to_type_internal(str)
-          ary = str.split(@separator)
+          if @alternative_separator && str =~ @alternative_separator
+            ary = str.split(@alternative_separator)
+          else
+            ary = str.split(@separator)
+          end
           return ary.map do |a|
             @subtype.string_to_type(a)
           end
@@ -167,6 +172,7 @@ module CTioga2
         def type_to_string_internal(val)
           return val.map do |a|
             @subtype.type_to_string(a)
+            # Won't alway work !
           end.join(@separator_out)
         end
       end

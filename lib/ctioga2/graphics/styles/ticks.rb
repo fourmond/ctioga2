@@ -46,6 +46,9 @@ module CTioga2
         typed_attribute :minor, 'float-list'
         
 
+        # The list of labels
+        typed_attribute :labels, 'text-list'
+        
         # Returns the specifications that should be added to the
         # information
         def ticks_specs(t, info, transform)
@@ -71,7 +74,9 @@ module CTioga2
             ret['minor_ticks'] = Dobjects::Dvector.new(@minor)
           end
 
-          if fmt
+          if @labels
+            ret['labels'] = @labels
+          elsif fmt
             ret['labels'] = []
             for v in ret['major_ticks']
               ret['labels'] << fmt % v

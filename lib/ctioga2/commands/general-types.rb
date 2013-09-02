@@ -61,6 +61,18 @@ EOD
 A list of space-separated or comma-separated floating point numbers.
 EOD
 
+    TextList = CmdType.new('text-list', 
+                            {
+                              :type => :array,
+                              :subtype => :string,
+                              :separator => /\s*,\s*/,
+                              :alternative_separator => /\s*\|\|\s*/,
+                              :separator_out => ","
+                            }, <<EOD)
+A list of comma-separated texts. If you must include a comma inside the
+texts, then use @||@ as a separator.
+EOD
+
     IntegerType = CmdType.new('integer', :integer, <<EOD)
 An integer.
 EOD
