@@ -77,6 +77,12 @@ module CTioga2
 
         typed_attribute :ticks_side, 'ticks-side'
 
+        # @todo Add a 'slave' attribute: axes would be created as
+        # slaves to another one until:
+        # * a curve is added to it
+        # * a transform is set
+        # * ticks are set
+
 
         # Creates a new AxisStyle object at the given location with
         # the given style.
@@ -165,7 +171,7 @@ minor_tick_length minor_tick_width)
             end
             t.context do
               @background_lines.set_stroke_style(t)
-              values = info['major_ticks'] || info['major']
+              values = tick_info['major_ticks']
               for val in values
                 if info['vertical']
                   t.stroke_line(x0, val, x1, val)

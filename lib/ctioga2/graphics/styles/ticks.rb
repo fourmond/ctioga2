@@ -33,7 +33,18 @@ module CTioga2
         include Log
 
         # The format of the tick labels
+        #
+        # @todo should be extended
         typed_attribute :format, "text"
+
+        # The list of the position of major ticks
+        #
+        # @todo make it possible to provide a function to generate that ?
+        typed_attribute :major, 'float-list'
+
+        # The list of the position of minor ticks
+        typed_attribute :minor, 'float-list'
+        
 
         # Returns the specifications that should be added to the
         # information
@@ -46,10 +57,24 @@ module CTioga2
             ret['minor_ticks'] = info['minor']
             ret['major_ticks'] = info['major']
           end
-          if @format
+          fmt = @format
+
+          if @major
+            ret['minor_ticks'] = Dobjects::Dvector.new
+            ret['major_ticks'] = Dobjects::Dvector.new(@major)
+
+            # We need to rewrite the format.
+            fmt = "%.3g"
+          end
+
+          if @minor
+            ret['minor_ticks'] = Dobjects::Dvector.new(@minor)
+          end
+
+          if fmt
             ret['labels'] = []
             for v in ret['major_ticks']
-              ret['labels'] << @format % v
+              ret['labels'] << fmt % v
             end
           end
           return ret

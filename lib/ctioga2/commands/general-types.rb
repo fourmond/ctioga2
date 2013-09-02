@@ -50,6 +50,17 @@ EOD
 A floating-point number.
 EOD
 
+
+    FloatList = CmdType.new('float-list', 
+                            {
+                              :type => :array,
+                              :subtype => :float,
+                              :separator => /\s+|\s*,\s*/,
+                              :separator_out => " "
+                            }, <<EOD)
+A list of space-separated or comma-separated floating point numbers.
+EOD
+
     IntegerType = CmdType.new('integer', :integer, <<EOD)
 An integer.
 EOD

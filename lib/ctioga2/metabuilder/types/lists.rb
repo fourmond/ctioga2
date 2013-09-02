@@ -149,8 +149,8 @@ module CTioga2
           # We make a copy for our own purposes.
           subtype = type[:subtype] || {:type => :string}
           @subtype = Type.get_type(subtype)
-          @separator = /\s*,\s*/
-          @separator_out = ','
+          @separator = type[:separator] || /\s*,\s*/
+          @separator_out = type[:separator_out] || ','
         end
 
         def type_name
