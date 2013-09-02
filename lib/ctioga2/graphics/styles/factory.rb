@@ -105,16 +105,10 @@ module CTioga2
 
 
         # Creates a new parameter for the style factory.
-        #
-        # \todo add a way to add some more text to the description;
-        # possibly a self.describe_parameter function ?
-        #
-        # @todo Remove completely the 'type' argument
         def self.define_parameter(target, name, sets, description, 
                                   short_option = nil, disable_cmds = false)
           # We define two new types:
           # - first, the color-or-auto type:
-          # base_type = Commands::CommandType.get_type(type)
           base_type = CurveStyle.attribute_type(target)
 
           if ! Commands::Interpreter.type("#{base_type.name}-or-auto")
@@ -251,7 +245,8 @@ module CTioga2
           @override_parameters = {
             'line_style' => LineStyles::Solid,
             'marker_marker' => false,
-            'marker_scale' => 0.5 
+            'marker_scale' => 0.5,
+            'fill_color' => '=color'.to_sym
           }
           @parameters_carrays = {}
           for target, param in self.class.parameters
@@ -454,6 +449,9 @@ module CTioga2
             for k,v in h
               v.to_s =~ /^(?:=|->)(\S+)/
               target = $1
+              if CurveStyleFactory.name_to_target[target]
+                target = CurveStyleFactory.name_to_target[target]
+              end
               if tv.key? target
                 tv[k] = tv[target]
                 h.delete(k)
