@@ -210,7 +210,12 @@ module CTioga2
         if ! @plotmaker_target.figure_name
           @plotmaker_target.figure_name = file.gsub(/\.[^.]+$/,'')
         end
-        @file_parser.run_command_file(file, self)
+        dir = File::dirname(file)
+        base = File::basename(file)
+        
+        Dir::chdir(dir) do
+          @file_parser.run_command_file(base, self)
+        end
       end
 
       # Parses and runs the given string.
