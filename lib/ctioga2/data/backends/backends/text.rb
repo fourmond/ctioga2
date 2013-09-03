@@ -183,10 +183,8 @@ EOD
                 return IO.popen(method % file)
               end
             end
-            return File::open(file)
           end
-          error { "Could not open #{file}" }
-          return nil
+          return File::open(file)
         end
 
         # A line is invalid if it is blank or starts
