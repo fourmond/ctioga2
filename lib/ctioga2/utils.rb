@@ -285,6 +285,20 @@ module CTioga2
 
 end
 
+######################################################################
+# Now come a few functions that add to ruby's standard classes or
+# modules
+
+module Math
+
+  # The absolute value, but in a more easy to use way
+  def abs(x)
+    return x.abs
+  end
+end
+
+
+
 # Here, we define an additional function in the Hash class: without
 class Hash
 
