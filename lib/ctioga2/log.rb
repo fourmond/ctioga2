@@ -70,6 +70,25 @@ module CTioga2
       @@logger.level = Logger::WARN # Warnings and more only by default
     end
 
+
+    # Logs to the target file, and fall back onto stderr should
+    # opening fail.
+    def self.log_to(target_file, message = nil)
+      if target_file.is_a? String
+        begin
+          target_file = File.open(target_file, "w")
+          if message
+            target_file.puts message
+          end
+        rescue
+          target_file = STDERR
+        end
+      end
+      old = @@logger
+      @@logger = Logger.new(target_file)
+      @@logger.level = old.level
+    end
+
     # Simple accessor for the @@log class variable.
     def self.logger
       return @@logger

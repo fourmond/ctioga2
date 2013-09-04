@@ -57,13 +57,23 @@ EOH
     # Includes a file
     RunCommandFile = 
       Cmd.new("include", '-f', "--file", 
-              [ CmdArg.new('file'), ]) do |plotmaker, file|
+              [ CmdArg.new('file')], 
+              {'log' => CmdArg.new('boolean') }
+              ) do |plotmaker, file, opts|
+      if opts['log']
+        tg = file.sub(/(\.ct2)?$/, '-log.txt')
+        Log::log_to(tg, "ctioga2 version '#{CTioga2::Version::version}' starting at #{Time.now} to process file: #{file}")
+      end
       plotmaker.interpreter.run_command_file(file)
     end
     
     RunCommandFile.describe("Runs given command file", <<EOH, GeneralGroup)
 Reads the file and runs commands found in them, using the ctioga language.
+
 > ctioga2 -f my_file.ct2
+
+If the @/log@ is on, then all messages are written to a -log.txt file
+instead of to the terminal.
 EOH
 
     # Evaluate a series of commands.
