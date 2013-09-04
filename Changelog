@@ -1,3 +1,20 @@
+ctioga2 (0.6)
+
+  * Fix various problems related to file names and directories
+  * Using command files, path of data files are now taken to be relative
+    to the directory in which the command file is located
+  * It is now possible to use the ruby construct ( ? : ) in datasets/text
+    files
+  * Implement the impulses path style
+  * Greater control on how to close paths for filling
+  * Increase the default size of the text significantly + a
+    --set-global-font command to change the default text size
+  * Control the position of ticks and the text of tick labels
+  * It is now possible to use abs(x) in formulas, rather than the old
+    x.abs version (which is still usable !)
+
+ -- Vincent <vincent.fourmond@9online.fr>  Wed  4 Sep 22:18:46 CEST 2013
+
 ctioga2 (0.5)
 
   * Choose the side of axis ticks 
