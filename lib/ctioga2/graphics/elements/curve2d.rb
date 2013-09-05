@@ -111,7 +111,17 @@ module CTioga2
                 t.append_point_to_path(x, y)
               end
             else
+
+              # Hmmmm. This may get the wrong thing if you happen to
+              # draw something completely outside.
               f = func.bound_values(*bnds.extrema)
+
+              # If for some reason, there is no point left, we plot
+              # the original function.
+              if f.size < 2
+                f = func
+              end
+              
               t.move_to_point(f.x.first, f.y.first)
               t.append_points_to_path(f.x[1..-1], f.y[1..-1])
             end
