@@ -1,3 +1,10 @@
+ctioga2 (0.6.1)
+
+  * Fix crash when a curve has no points within the plot boundaries
+  * Work around encoding problems arising on windows
+
+ -- Vincent <vincent.fourmond@9online.fr>  Mon  9 Sep 22:19:01 CEST 2013
+
 ctioga2 (0.6)
 
   * Fix various problems related to file names and directories
