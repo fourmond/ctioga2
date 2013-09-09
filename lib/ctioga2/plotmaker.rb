@@ -106,6 +106,9 @@ CTioga2::Log::init_logger
 
 require 'shellwords'
 
+# Path name mangling
+require 'pathname'
+
 # Maybe, maybe, maybe... We need tioga ?
 require 'Tioga/FigureMaker'
 
@@ -342,55 +345,50 @@ module CTioga2
 
 
       t = create_figure_maker
-      # If figname is clearly a path, we split it into directory/name
-      # and set the output directory to directory.
-      if File::basename(figname) != figname
-        dir = File::dirname(figname)
-        # If path is relative and output_directory is specified, we make
-        # the path relative to output_dir
-        if @output_directory && dir =~ /^[^\/~]/
-          dir = File::join(@output_directory, dir)
+
+      path = Pathname.new(figname)
+      if @output_directory
+        out = Pathname.new(@output_directory)
+        path = out + path
+      end
+
+      # We always cd into the target directory for creading the
+      Dir.chdir(path.dirname) do
+        fn = path.basename.to_s
+
+        efn = fn.gsub(/[.\s]/) do |x|
+          "__#{x.ord}__"
         end
-        t.save_dir = dir
-        figname = File::basename(figname)
-      elsif @output_directory
-        t.save_dir = @output_directory
-      end
 
-      effective_fig_name = figname.gsub(/[.\s]/) do |x|
-        "__#{x.ord}__"
-      end
+        if efn != fn
+          debug { "Mangled name to '#{fn}'"}
+        end
 
-      if effective_fig_name != figname
-        debug { "Mangled name to '#{effective_fig_name}'"}
-      end
+        t.def_figure(efn) do
+          @latex_font.set_global_font(t)
+          @root_object.draw_root_object(t)
+        end
+        t.make_preview_pdf(t.figure_index(efn))
 
-      t.def_figure(effective_fig_name) do
-        @latex_font.set_global_font(t)
-        @root_object.draw_root_object(t)
-      end
-      t.make_preview_pdf(t.figure_index(effective_fig_name))
-
-      # We look for latex errors
-      if t.respond_to? :pdflatex_errors
-        errs = t.pdflatex_errors
-        if errs.size > 0
-          error { "pdflatex returned with #{errs.size} error lines"}
-          for l in errs
-            warn { "pdflatex error: #{l.chomp}" }
+        # We look for latex errors
+        if t.respond_to? :pdflatex_errors
+          errs = t.pdflatex_errors
+          if errs.size > 0
+            error { "pdflatex returned with #{errs.size} error lines"}
+            for l in errs
+              warn { "pdflatex error: #{l.chomp}" }
+            end
           end
         end
-      end
 
-      # We first rename the PDF file if it was mangled.
-      if effective_fig_name != figname
-        Dir.chdir(t.save_dir || ".") do
-          File::rename("#{effective_fig_name}.pdf", "#{figname}.pdf")
+        # We first rename the PDF file if it was mangled.
+        if efn != fn
+          File::rename("#{efn}.pdf", "#{fn}.pdf")
         end
+
       end
 
-      file = t.save_dir ? File::join(t.save_dir, figname + ".pdf") : 
-        figname + ".pdf"
+      file = path.to_s + ".pdf"
 
       # Feed it
       @postprocess.process_file(file, last)

@@ -225,6 +225,35 @@ module CTioga2
 
       return Math.log10(a.first).send(method)
     end
+
+
+    # Transcodes the given string from all encodings into the target
+    # encoding until an encoding is found in which the named file
+    # exists.
+    #
+    # Works around encoding problems on windows.
+    def self.transcode_until_found(file)
+      if File.exists? file
+        return file
+      end
+      begin                     # We wrap in a begin/rescue block for
+                                # Ruby 1.8
+        for e in Encoding::constants
+          e = Encoding.const_get(e)
+          if e.is_a? Encoding
+            begin
+              ts = file.encode(Encoding::default_external, e)
+              if File.exists? ts
+                return ts
+              end
+            rescue
+            end
+          end
+        end
+      rescue
+      end
+      return file               # But that will fail later on.
+    end
   end
     
 

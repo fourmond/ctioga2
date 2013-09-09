@@ -60,6 +60,9 @@ EOH
               [ CmdArg.new('file')], 
               {'log' => CmdArg.new('boolean') }
               ) do |plotmaker, file, opts|
+      # Work around bug on windows !
+      file = Utils::transcode_until_found(file)
+
       if opts['log']
         tg = file.sub(/(\.ct2)?$/, '-log.txt')
         Log::log_to(tg, "ctioga2 version '#{CTioga2::Version::version}' starting at #{Time.now} to process file: #{file}")
