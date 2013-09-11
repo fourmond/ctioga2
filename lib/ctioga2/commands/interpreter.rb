@@ -208,7 +208,8 @@ module CTioga2
       # specified.
       def run_command_file(file)
         if ! @plotmaker_target.figure_name
-          @plotmaker_target.figure_name = file.gsub(/\.[^.]+$/,'')
+          @plotmaker_target.figure_name = file.gsub(/\.[^.]+$/,'').
+            gsub(/%/, '%%')
         end
 
         dir = File::dirname(file)
