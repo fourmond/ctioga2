@@ -79,6 +79,11 @@ module CTioga2
         # A colormap for markers (only for XYZ data) 
         typed_attribute :marker_color_map, 'colormap'
 
+        # If this is specified when choosing the marker scale as a
+        # function of a given Z value, then the original Z segment is
+        # mapped to min_scale -> scale.
+        typed_attribute :marker_min_scale, 'float-or-false'
+
         # Whether the XY display should split on NaN values (wherever)
         typed_attribute :split_on_nan, 'boolean'
 

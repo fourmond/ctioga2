@@ -81,14 +81,23 @@ EOD
               ## then the scale will be constrained between the min
               ## and max. For now, it is simply proportionnal to the
               ## absolute value of the largest.
-              min_scale = nil 
+              min_scale = curve_style.marker_min_scale
+
+              zm = zmin[idx]
+              zM = zmax[idx] 
               
-              mm = zmax[idx].abs
-              m2 = zmin[idx].abs
+              mm = zM.abs
+              m2 = zm.abs
               mm = m2 if m2 > mm
 
-              style.scale = zvalue[idx].abs/mm * max_scale
-              
+              z = zvalue[idx]
+
+              style.scale = if min_scale
+                              min_scale + (max_scale - min_scale) * 
+                                (z - zm)/(zM - zm)
+                            else
+                              zvalue[idx].abs/mm * max_scale
+                            end
             end
 
           end

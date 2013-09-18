@@ -336,6 +336,8 @@ module CTioga2
 
         simple_parameter 'marker_scale', "marker scale", Sets::LineWidthSets
 
+        simple_parameter 'marker_min_scale', "marker scale", nil
+
         # Error bars:
         simple_parameter 'error_bar_color', "error bar color", 
         Sets::ColorSets

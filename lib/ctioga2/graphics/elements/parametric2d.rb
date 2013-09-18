@@ -95,6 +95,7 @@ module CTioga2
           @zmin = []
           @zmax = []
 
+          ## @todo This should rather use Z axes in the end ?
           (@dataset.ys.size - 1).times do |i|
             @zmin << @dataset.ys[i+1].values.min
             @zmax << @dataset.ys[i+1].values.max

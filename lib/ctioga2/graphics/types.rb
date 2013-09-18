@@ -63,7 +63,7 @@ EOD
                     :type => :tioga_color,
                     :shortcuts => {'none' => false }
                   }, <<EOD)
-A {type: color}, or false to say that nothing should be drawn.
+A {type: color}, or none to say that nothing should be drawn.
 EOD
 
 

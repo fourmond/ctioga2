@@ -50,6 +50,13 @@ EOD
 A floating-point number.
 EOD
 
+    FloatType = CmdType.new('float-or-false', {
+                              :type => :float,
+                              :shortcuts => {'none' => false }}, 
+                              <<EOD)
+A floating-point number, or @none@.
+EOD
+
 
     FloatList = CmdType.new('float-list', 
                             {

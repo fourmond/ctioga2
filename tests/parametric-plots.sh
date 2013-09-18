@@ -17,8 +17,14 @@ $ct -t "Info through size" --marker auto \
     --line-style no\
     3d-data.dat@1:2:3
 
-$ct -t "Both size and colod" --marker auto \
+$ct -t "Mapped size" --marker auto \
+    --text --margin 0.03 --xy-parametric /z1=marker_scale \
+    --line-style no \
+    3d-data.dat@1:2:3 /marker_min_scale=0.2
+
+$ct -t "Both size and color" --marker auto \
     --text --margin 0.03 --xy-parametric /z1=marker_scale /z2=marker_color \
     --line-style no \
     3d-data.dat@1:2:3:3
+
 
