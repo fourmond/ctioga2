@@ -60,15 +60,21 @@ module CTioga2
         # A hash Z value -> corresponding XY functions.
         attr_accessor :planes
 
+        # A ParametricPlotStyle object handling the correspondance
+        # between Z axis and stylistic aspects
+        attr_accessor :parametric_style
+
 
 
         undef :location=, :location
         
         # Creates a new Curve2D object with the given _dataset_ and
         # _style_.
-        def initialize(dataset, style = nil)
+        def initialize(dataset, style = nil, parametric_plot_style = nil)
           @dataset = dataset
           @curve_style = style
+          
+          @parametric_style = parametric_plot_style
           prepare_data
         end
 
@@ -83,6 +89,15 @@ module CTioga2
             @planes[zs[0]] ||= Function.new(Dvector.new, Dvector.new)
             @planes[zs[0]].x << x
             @planes[zs[0]].y << y
+          end
+
+          
+          @zmin = []
+          @zmax = []
+
+          (@dataset.ys.size - 1).times do |i|
+            @zmin << @dataset.ys[i+1].values.min
+            @zmax << @dataset.ys[i+1].values.max
           end
         end
         
@@ -99,7 +114,7 @@ module CTioga2
           return Types::Boundaries.bounds(@function.x, @function.y)
         end
 
-        # Draws the markers, if applicable.
+        # Draws the path lines, if applicable.
         def draw_path(t)
           min = @dataset.z.values.min
           max = @dataset.z.values.max
@@ -125,19 +140,16 @@ module CTioga2
 
         # Draws the markers, if applicable.
         def draw_markers(t)
-          min = @dataset.z.values.min
-          max = @dataset.z.values.max
+          @parametric_style.prepare
           if @curve_style.has_marker?
             # We use a default color map for the markers
             @curve_style.marker_color_map ||= 
               Styles::ColorMap.from_text("Red--Green")
-            cmap = @curve_style.marker_color_map
-            for zs in @planes.keys.sort ## \todo have the sort
-                                        ## direction configurable.
-              f = @planes[zs]
-              color = cmap.z_color(zs, min, max)
-              @curve_style.marker.draw_markers_at(t, f.x, f.y, 
-                                                  { 'color' => color})
+
+            @dataset.each_values do |i,x,y,*z|
+              ms = @parametric_style.marker_style(@curve_style, 
+                                                  z, @zmin, @zmax)
+              ms.draw_markers_at(t, x, y)
             end
           end
         end

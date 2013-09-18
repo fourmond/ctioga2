@@ -16,6 +16,9 @@ require 'ctioga2/log'
 
 require 'ctioga2/graphics/coordinates'
 
+require 'ctioga2/graphics/styles/base'
+require 'ctioga2/graphics/styles/plot-types'
+
 module CTioga2
 
   Version::register_svn_info('$Revision$', '$Date$')
@@ -41,11 +44,22 @@ module CTioga2
       # The current kind of generated. It is a symbol
       attr_accessor :current_curves
 
+      # Information used for the various curve types. They are not
+      # strictly speaking curve styles or would simply clutter the
+      # overall curve styles with many meaningless
+      # parameters/options. They therefore belong here.
+
+      # A ParametricPlotStyle object handling the style of the
+      # parametric plots.
+      attr_accessor :xy_parametric_parameters
+
       # Creates a CurveGenerator object.
       def initialize
         @legend_provider = Legends::LegendProvider.new
         @style_factory = Styles::CurveStyleFactory.new
         @current_curves = :xy_plot
+
+        @xy_parametric_parameters = Styles::ParametricPlotStyle.new
       end
 
       PlotOptions = { 
@@ -105,8 +119,8 @@ module CTioga2
         style.legend ||= legend # The legend specified as option to
                                 # the --plot command has precedence
                                 # over the one specified by --legend.
-        curve = Graphics::Elements::Parametric2D.new(dataset, style)
-        style
+        curve = Graphics::Elements::Parametric2D.
+          new(dataset, style, @xy_parametric_parameters.dup)
         return curve
       end
 
@@ -148,8 +162,11 @@ module CTioga2
     
 
     XYParametricPlotCommand = 
-      Cmd.new("xy-parametric",nil,"--xy-parametric") do |plotmaker|
+      Cmd.new("xy-parametric",nil,"--xy-parametric", 
+              [], Styles::ParametricPlotStyle.options_hash) do |plotmaker, opts|
       plotmaker.curve_generator.current_curves = :xy_parametric
+      plotmaker.curve_generator.
+        xy_parametric_parameters.set_from_hash(opts)
     end
     
     XYParametricPlotCommand.describe('select XY parametric plots', 
