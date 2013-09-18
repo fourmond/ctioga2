@@ -246,7 +246,8 @@ module CTioga2
             'line_style' => LineStyles::Solid,
             'marker_marker' => false,
             'marker_scale' => 0.5,
-            'fill_color' => '=color'.to_sym
+            'fill_color' => '=color'.to_sym,
+            'error_bar_color' => '=marker_color'.to_sym
           }
           @parameters_carrays = {}
           for target, param in self.class.parameters
