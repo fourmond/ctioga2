@@ -72,6 +72,20 @@ module CTioga2
 
         # Defaults to the 'text' backend
         @backend_factory = Data::Backends::BackendFactory.new('text')
+
+        # Probably a bit out of place...
+        csv = 
+          Cmd.new('csv', nil, '--csv', []) do |plotmaker|
+          plotmaker.interpreter.
+            run_commands("text /separator=/[,;]/")
+        end
+        
+        csv.describe("reads CSV files", 
+                            <<"EOH", "backend-text")
+Now parse the following data files as CSV.
+
+# text /separator=/[,;]/
+EOH
       end
 
       # Performs expansion on the given _set_ with the current
@@ -547,7 +561,8 @@ EOH
 Adds the given commands to the dataset hook. See {command: dataset-hook} 
 for more information about the dataset hook.
 EOH
-
+  
+  
   end
 
 end

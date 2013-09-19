@@ -143,6 +143,7 @@ module CTioga2
         @short_description = short
         @long_description = long || short
         if(group)
+          group = Interpreter::group(group) if group.is_a? String
           @group = group
           group.commands << self
         end
