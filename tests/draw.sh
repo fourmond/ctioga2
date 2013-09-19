@@ -21,7 +21,9 @@ $ct -t 'Boxes' -r 10cmx10cm \
     'sin(x)' \
     --draw-box -2,0.2 2,-0.2 /color=Blue /width=2 \
     --draw-box -5,0.8 -3,-0.4 /fill-color=Pink /color=Black \
-    --draw-box 3,0.8 7,0 /fill-color=Pink /fill-transparency=0.7
+    --draw-box 3,0.8 7,0 /fill-color=Pink /fill-transparency=0.7 \
+    --draw-box -2,0.2 2,-0.2 /color=Red /width=1 /style=Dashes /shape=round /radius=0.8 \
+    --draw-box -2,0.2 2,-0.2 /color=Purple /width=1 /style=Dots /shape=round /radius=1.4
 
 $ct -t 'Styled lines and text' -r 10cmx10cm --math-xrange -3:3 \
     'sin(x)' \
