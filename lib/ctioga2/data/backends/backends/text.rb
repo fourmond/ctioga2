@@ -380,7 +380,11 @@ EOD
                                            @current_data,
                                            @included_modules)
           else
-            return @current_data[column.to_i].dup
+            if @current_data[column.to_i]
+              return @current_data[column.to_i].dup
+            else
+              raise "Cannot find column number #{column.to_i} -- maybe you got the column separator wrong ?"
+            end
           end
         end
 
