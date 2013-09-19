@@ -50,7 +50,7 @@ EOD
 A floating-point number.
 EOD
 
-    FloatType = CmdType.new('float-or-false', {
+    FloatOrFalseType = CmdType.new('float-or-false', {
                               :type => :float,
                               :shortcuts => {'none' => false }}, 
                               <<EOD)
