@@ -355,13 +355,27 @@ EOH
 
       end
 
+      asco = AxisStyleOptions.dup
+      asco['also-axes'] = CmdArg.new('axis')
+
       AxisStyleCommand = 
           Cmd.new("axis-style",nil,"--axis-style", 
                   [
                    CmdArg.new('axis'),
-                  ], AxisStyleOptions) do |plotmaker, which, opts|
-        style = AxisStyle.current_axis_style(plotmaker, which)
-        style.set_from_hash(opts)
+                  ], asco) do |plotmaker, which, opts|
+        axes = [which]
+        if opts['also-axes']
+          axes += opts['also-axes'].split(/\s*,\s*/)
+        end
+
+        for w in axes
+          begin
+            style = AxisStyle.current_axis_style(plotmaker, w)
+            style.set_from_hash(opts)
+          rescue Exception => e
+            error {"Error while setting style of axis: #{w} -- #{e}"}
+          end
+        end
       end
       AxisStyleCommand.
         describe("Sets the style of the given axis", 
@@ -370,6 +384,10 @@ This command can be used to set various aspects of the style of the
 given axis, through its various options, which are documented in more details 
 in the {command: define-axis-style} command -- excepted for the @ticks@ bit
 which are documented in the {command: ticks} command.
+
+If the option @also-axes@ is specified, the style is also applied to
+the comma-separated list of axes it contains.
+
 EOH
 
       ClearAxesCommand = 
