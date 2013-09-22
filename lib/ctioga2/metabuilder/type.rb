@@ -104,6 +104,13 @@ module CTioga2
       # passed through without further modification.
       attr_accessor :passthrough
 
+      # An array of module whose constants can be used "as such"
+      attr_accessor :namespace
+
+      # When a :namespace option is provided, this hash provides a
+      # lookup 'lowercase name' => constant value.
+      attr_accessor :namespace_lookup
+
       # A default constructor. It should be safe to use it directly for
       # children, unless something more specific is needed. Any descendent
       # should *always* register _type_ as @type - or, even better, call
@@ -127,6 +134,7 @@ module CTioga2
         end
 
       end
+
 
       # This class function actually registers the current type
       # to the Type ancestor. _name_ should be a symbol.
@@ -200,11 +208,12 @@ module CTioga2
             end
           end
         end
+
         # Then, constants lookup.
         if @type.key?(:namespace)
           begin
             return stt_run_hook(lookup_const(string))
-          rescue Exception
+          rescue IncorrectInput
           end
         end
         return stt_run_hook(string_to_type_internal(string))
@@ -276,17 +285,32 @@ module CTioga2
       
       protected
 
+      def build_namespace_lookup
+        if @type[:namespace]
+          @namespace = [@type[:namespace]].flatten
+
+          @namespace_lookup = {}
+          for m in @namespace
+            for c in m.constants
+              @namespace_lookup[c.to_s.downcase] = m.const_get(c)
+            end
+          end
+        end
+
+      end
+
       # Looks for the value as a constant specified in the :namespace
       # modules. Raises IncorrectInput if not found.
       def lookup_const(str)
-        for mod in [@type[:namespace]].flatten
-          begin
-            return mod.const_get(str)
-          rescue
-            # Nothing, we still look up
-          end
+        str = str.downcase
+        if @type[:namespace] && (! @namespace_lookup)
+          build_namespace_lookup
         end
-        raise IncorrectInput, "Constant #{str} not found"
+        if @namespace_lookup.key? str
+          return @namespace_lookup[str]
+        else
+          raise IncorrectInput, "Constant #{str} not found"
+        end
       end
       
       # The internal function for converting type to a string. Used by
