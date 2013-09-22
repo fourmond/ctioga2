@@ -700,12 +700,18 @@ EOH
     
     XpdfViewerCommand = 
       Cmd.new("xpdf",'-X',"--xpdf", [ ]) do |plotmaker|
-      plotmaker.postprocess.viewer = "xpdf -z page"
+      plotmaker.postprocess.viewer = :auto
     end
 
     XpdfViewerCommand.describe('Uses xpdf to view the produced PDF files', 
                               <<EOH, OutputSetupGroup)
 Uses xpdf to view the PDF files produced by ctioga2.
+
+If xpdf is not found, then it tries to guess which viewers are available:
+ * on windows, it uses the system file associations to open the PDF file
+ * on mac, it uses the open command
+ * on linux, it tries, mime-open, and if that is missing, falls back to
+   commonly available PDF viewers.
 EOH
 
     OpenViewerCommand = 

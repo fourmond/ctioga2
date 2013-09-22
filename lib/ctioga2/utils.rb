@@ -11,6 +11,9 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details (in the COPYING file).
 
+# For platform detection
+require 'rbconfig'
+
 module CTioga2
 
   # An exception to raise upon to-be-implemented-one-day features
@@ -254,6 +257,49 @@ module CTioga2
       end
       return file               # But that will fail later on.
     end
+
+
+
+    # Cross-platform way of finding an executable in the $PATH.
+    #
+    # This is adapted from
+    # http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
+    def self.which(cmd)
+      exts = ['']
+      if ENV['PATHEXT']
+        exts += ENV['PATHEXT'].split(';')
+      end
+
+      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        exts.each { |ext|
+          exe = File.join(path, "#{cmd}#{ext}")
+          return exe if File.executable? exe
+        }
+      end
+      return nil
+    end
+
+
+    # Reliable OS detection, coming from:
+    #
+    # http://stackoverflow.com/questions/11784109/detecting-operating-systems-in-ruby
+    def self.os
+      host_os = RbConfig::CONFIG['host_os']
+      case host_os
+      when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+        :windows
+      when /darwin|mac os/
+        :macosx
+      when /linux/
+        :linux
+      when /solaris|bsd/
+        :unix
+      else
+        warn {"Unknown os: #{host_os.inspect}"}
+        :unknown
+      end
+    end
+
   end
     
 

@@ -69,6 +69,33 @@ module CTioga2
     end
 
 
+    # Try to open the file with xpdf, or fallback to system defaults
+    def view_pdf(pdf)
+      if Utils.which("xpdf")
+        spawn(["xpdf", "-z", "page", pdf])
+      else
+        case Utils.os
+        when :windows
+          # Use start
+          spawn(["start", "/B", pdf])
+        when :macosx
+          spawn(["open", pdf])
+        else
+          for w in %w{evince gv mimeopen}
+            if Utils.which(w)
+              if w == "mimeopen"
+                spawn(["mimeopen", "-n", pdf])
+              else
+                spawn([w, pdf])
+              end
+              break
+            end
+          end
+        end
+      end
+    end
+
+
     # Process the given _file_. If _last_ is true, things that should
     # only happen last happen.
     def process_file(file, last = false)
@@ -96,15 +123,19 @@ module CTioga2
 
       # View produced PDF or PNG files...
       if (last || @view_all) && @viewer
-        if @png_res
-          cmd = "display #{target}"
-        elsif @viewer =~ /%s/
-          cmd = @viewer % file
+        if @viewer == :auto
+          view_pdf(file)
         else
-          cmd = "#{@viewer} #{file}"
+          if @png_res
+            cmd = "display #{target}"
+          elsif @viewer =~ /%s/
+            cmd = @viewer % file
+          else
+            cmd = "#{@viewer} #{file}"
+          end
+          info { "Spawning the viewer as requested for #{file}" }
+          spawn(cmd)
         end
-        info { "Spawning the viewer as requested for #{file}" }
-        spawn(cmd)
       end
     end
 
