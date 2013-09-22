@@ -150,7 +150,12 @@ EOD
             end
             return ret
           else
-            return super
+            m = Dir::glob(spec)
+            if m.size > 0
+              return m
+            else
+              return super
+            end
           end
         end
 
