@@ -300,6 +300,35 @@ module CTioga2
       end
     end
 
+
+    # Cluster a series of objects by the values returned by the given
+    # funcall. It returns an array of arrays where the elements are in
+    # the same order, and in each sub-array, the functions all return
+    # the same value
+    #
+    # @todo with block too ?
+    def self.cluster_by_value(list, funcall)
+      if list.size == 0
+        return []
+      end
+      ret = [ [list[0]] ]
+      cur = ret[0]
+      last = cur.first.send(funcall)
+
+      for o in list[1..-1]
+        val = o.send(funcall)
+        if last == val
+          cur << o
+        else
+          cur = [o]
+          ret << cur
+          last = val
+        end
+      end
+
+      return ret
+     end
+
   end
     
 
