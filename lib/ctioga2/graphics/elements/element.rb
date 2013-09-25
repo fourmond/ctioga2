@@ -38,6 +38,12 @@ module CTioga2
         # LocationStyle object
         attr_writer :location
 
+        attr_accessor :clipped
+
+        def initialize()
+          @clipped = true
+        end
+
         # Makes sure there is a location when one asks for it.
         def location
           @location ||= Styles::LocationStyle.new

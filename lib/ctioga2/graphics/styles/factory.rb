@@ -356,6 +356,8 @@ module CTioga2
 
         simple_parameter 'fill_color', "fill color", Sets::ColorSets
 
+        simple_parameter 'clipped', "clipped", nil
+
         simple_parameter 'fill_transparency', 'fill transparency', {}
 
         # Region handling

@@ -53,6 +53,7 @@ module CTioga2
 
         # Creates an empty new Container with the given _parent_.
         def initialize(parent = nil, root = nil)
+          super()
           @parent = parent
           
           # elements to be given to tioga

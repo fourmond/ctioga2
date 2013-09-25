@@ -158,13 +158,21 @@ module CTioga2
               @style.background.draw_background(t)
 
               @style.draw_all_background_lines(t)
-              i = 0
-              for element in @elements 
-                t.context do 
-                  t.set_bounds(get_el_boundaries(element).to_a)
-                  element.do(t)
+            end
+            
+            clusters = Utils::cluster_by_value(@elements, :clipped)
+
+            for clst in clusters
+              t.context do
+                if clst[0].clipped
+                  t.clip_to_frame
                 end
-                i += 1
+                for element in clst 
+                  t.context do 
+                    t.set_bounds(get_el_boundaries(element).to_a)
+                    element.do(t)
+                  end
+                end
               end
             end
             @style.draw_all_axes(t, @computed_boundaries)

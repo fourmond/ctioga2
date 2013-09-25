@@ -83,6 +83,16 @@ module CTioga2
           @options = options
         end
 
+        undef :clipped, :clipped=
+
+        def clipped
+          if @options.key? 'clipped'
+            return @options['clipped']
+          else
+            return true         # Defaults to clipped
+          end
+        end
+
         @known_primitives = {}
 
         PrimitiveCommands = {}
@@ -111,7 +121,8 @@ module CTioga2
                             CmdArg.new(v)
                           end
           end
-          
+
+          cmd_opts['clipped'] = CmdArg.new('boolean')
           cmd = Cmd.new("draw-#{name}",nil,"--draw-#{name}", 
                         cmd_args, cmd_opts) do |plotmaker, *rest|
             options = rest.pop

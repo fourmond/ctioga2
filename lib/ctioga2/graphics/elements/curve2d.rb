@@ -84,6 +84,12 @@ module CTioga2
           return @curve_style.location
         end
 
+        undef :clipped, :clipped=
+
+        def clipped
+          return @curve_style.clipped
+        end
+
         # Returns the Types::Boundaries of this curve.
         def get_boundaries
           return Types::Boundaries.bounds(@function.x, @function.y)
@@ -101,7 +107,11 @@ module CTioga2
             case @curve_style.path_style
             when /^splines/
               for f in func.split_monotonic
-                new_f = f.bound_values(*bnds.extrema)
+                new_f = if @curve_style.clipped 
+                          f.bound_values(*bnds.extrema)
+                        else
+                          f.dup
+                        end
                 t.append_interpolant_to_path(new_f.make_interpolant)
               end
             when /^impulses/
@@ -114,8 +124,11 @@ module CTioga2
 
               # Hmmmm. This may get the wrong thing if you happen to
               # draw something completely outside.
-              f = func.bound_values(*bnds.extrema)
-
+              if @curve_style.clipped 
+                f = func.bound_values(*bnds.extrema)
+              else
+                f = func
+              end
               # If for some reason, there is no point left, we plot
               # the original function.
               if f.size < 2

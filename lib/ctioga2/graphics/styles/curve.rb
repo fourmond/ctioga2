@@ -52,6 +52,9 @@ module CTioga2
         # the filled region.
         typed_attribute :region_position, "region-side"
 
+        # Wether that element is clipper or not.
+        typed_attribute :clipped, 'boolean'
+
         # A path style.
         #
         # @todo Ideas for a path style include
@@ -96,6 +99,10 @@ module CTioga2
         # The object attached to this style. It is set by
         # Generator#curve_from_dataset
         attr_accessor :target
+
+        def initialize()
+          @clipped = true
+        end
 
         # True if a line should be drawn.
         def has_line?
