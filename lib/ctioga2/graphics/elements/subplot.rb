@@ -132,6 +132,24 @@ module CTioga2
         end
 
 
+        def clip_and_plot(t, elements)
+          clusters = Utils::cluster_by_value(elements, :clipped)
+          
+          for clst in clusters
+            t.context do
+              if clst[0].clipped
+                t.clip_to_frame
+              end
+              for element in clst 
+                t.context do 
+                  t.set_bounds(get_el_boundaries(element).to_a)
+                  element.do(t)
+                end
+              end
+            end
+          end
+        end
+
 
         # Plots all the objects inside the plot.
         def real_do(t)
@@ -159,22 +177,9 @@ module CTioga2
 
               @style.draw_all_background_lines(t)
             end
-            
-            clusters = Utils::cluster_by_value(@elements, :clipped)
 
-            for clst in clusters
-              t.context do
-                if clst[0].clipped
-                  t.clip_to_frame
-                end
-                for element in clst 
-                  t.context do 
-                    t.set_bounds(get_el_boundaries(element).to_a)
-                    element.do(t)
-                  end
-                end
-              end
-            end
+            clip_and_plot(t, @elements)
+
             @style.draw_all_axes(t, @computed_boundaries)
 
             # Now drawing legends:

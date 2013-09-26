@@ -40,8 +40,14 @@ module CTioga2
 
         attr_accessor :clipped
 
+        
+        # Depth
+        attr_accessor :depth
+
         def initialize()
           @clipped = true
+
+          @depth = 50           # Hey, like xfig
         end
 
         # Makes sure there is a location when one asks for it.

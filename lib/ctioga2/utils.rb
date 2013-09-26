@@ -329,6 +329,20 @@ module CTioga2
       return ret
      end
 
+
+    # Returns a hash value -> [elements] in which the elements are in
+    # the same order
+    def self.sort_by_value(list, funcall)
+      ret = {}
+      
+      for el in list
+        val = el.send(funcall)
+        ret[val] ||= []
+
+        ret[val] << el
+      end
+      return ret
+    end
   end
     
 
