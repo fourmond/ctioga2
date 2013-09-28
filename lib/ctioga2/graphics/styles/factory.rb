@@ -358,6 +358,8 @@ module CTioga2
 
         simple_parameter 'clipped', "clipped", nil
 
+        simple_parameter 'depth', "depth", nil
+
         simple_parameter 'fill_transparency', 'fill transparency', {}
 
         # Region handling

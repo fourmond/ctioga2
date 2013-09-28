@@ -42,12 +42,16 @@ module CTioga2
 
         
         # Depth
-        attr_accessor :depth
+        attr_writer :depth
 
         def initialize()
           @clipped = true
 
           @depth = 50           # Hey, like xfig
+        end
+
+        def depth
+          @depth || 50
         end
 
         # Makes sure there is a location when one asks for it.

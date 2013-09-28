@@ -93,6 +93,12 @@ module CTioga2
           end
         end
 
+        undef :depth, :depth=
+          
+        def depth
+          @options['depth'] || 50
+        end
+
         @known_primitives = {}
 
         PrimitiveCommands = {}
@@ -123,6 +129,7 @@ module CTioga2
           end
 
           cmd_opts['clipped'] = CmdArg.new('boolean')
+          cmd_opts['depth'] = CmdArg.new('integer')
           cmd = Cmd.new("draw-#{name}",nil,"--draw-#{name}", 
                         cmd_args, cmd_opts) do |plotmaker, *rest|
             options = rest.pop

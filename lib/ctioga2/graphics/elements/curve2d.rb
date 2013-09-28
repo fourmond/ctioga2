@@ -57,6 +57,7 @@ module CTioga2
         # Creates a new Curve2D object with the given _dataset_ and
         # _style_.
         def initialize(dataset, style = nil)
+          super()
           @dataset = dataset
           if @dataset.size > 2
             warn { "Columns Y2 and further were ignored for set #{dataset.name}" }
@@ -88,6 +89,12 @@ module CTioga2
 
         def clipped
           return @curve_style.clipped
+        end
+
+        undef :depth, :depth=
+
+        def depth
+          return @curve_style.depth
         end
 
         # Returns the Types::Boundaries of this curve.

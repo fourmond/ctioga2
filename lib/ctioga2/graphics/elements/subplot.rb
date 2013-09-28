@@ -169,7 +169,31 @@ module CTioga2
             # Manually creating the plot:
             t.set_bounds(real_boundaries.to_a)
 
+            # First, gather up all elements by depth
+
+            els_by_depth = Utils::sort_by_value(@elements, :depth)
+
+            background = []
+            mid = []
+            fore = []
+
+            # Organize by depth
+            for depth in els_by_depth.keys.sort.reverse
+              v = els_by_depth[depth]
+              p depth
+              if depth && (depth >= 90)
+                background += v
+              elsif depth && depth <= 10
+                fore += v
+              else
+                mid += v
+              end
+            end
+
             # Drawing the background elements:
+
+            clip_and_plot(t, background)
+
             t.context do
               t.clip_to_frame
 
@@ -178,9 +202,11 @@ module CTioga2
               @style.draw_all_background_lines(t)
             end
 
-            clip_and_plot(t, @elements)
+            clip_and_plot(t, mid)
 
             @style.draw_all_axes(t, @computed_boundaries)
+
+            clip_and_plot(t, fore)
 
             # Now drawing legends:
             if @legend_area

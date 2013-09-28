@@ -52,8 +52,11 @@ module CTioga2
         # the filled region.
         typed_attribute :region_position, "region-side"
 
-        # Wether that element is clipper or not.
+        # Wether that element is clipped or not.
         typed_attribute :clipped, 'boolean'
+
+        # The depth. 
+        typed_attribute :depth, 'integer'
 
         # A path style.
         #
@@ -102,6 +105,7 @@ module CTioga2
 
         def initialize()
           @clipped = true
+          @depth = 50
         end
 
         # True if a line should be drawn.
