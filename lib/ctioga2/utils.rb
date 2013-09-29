@@ -265,6 +265,7 @@ module CTioga2
     # This is adapted from
     # http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
     def self.which(cmd)
+      return nil unless cmd
       exts = ['']
       if ENV['PATHEXT']
         exts += ENV['PATHEXT'].split(';')

@@ -99,14 +99,24 @@ module CTioga2
             @color = false
           end
 
+          should_close = false
+          output = $stdout
+
           if @to_tty and @to_pager
             # We pass -R as default value...
             ENV['LESS'] = 'R'
-            output = IO::popen("pager", "w")
-            pager = true
-          else
-            output = $stdout
-            pager = false
+            pager = 'pager'
+            for w in [ENV['PAGER'], 'less', 'pager' ]
+              if Utils::which(w)
+                pager = w
+                break
+              end
+            end
+            begin
+              output = IO::popen(pager, "w")
+              should_close = true
+            rescue
+            end
           end
           
           for group in groups
@@ -123,7 +133,7 @@ module CTioga2
               output.puts format_one_entry(cmd)
             end
           end
-          output.close
+          output.close if should_close
         end
 
         protected
