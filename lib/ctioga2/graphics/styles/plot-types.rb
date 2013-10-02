@@ -25,8 +25,8 @@ module CTioga2
     module Styles
 
       StyleAspectRE = {
-        /^marker_color$/i => :marker_color,
-        /^marker_(size|scale)$/i => :marker_scale,
+        /^marker[_-]color$/i => :marker_color,
+        /^marker[_-](size|scale)$/i => :marker_scale,
       }
 
       StyleAspect = 
