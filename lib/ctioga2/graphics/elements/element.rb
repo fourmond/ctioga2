@@ -93,24 +93,43 @@ module CTioga2
           raise "Should be reimplemented by children"
         end
       end 
-      
 
-#       # A unique method call to a FigureMaker object.
-#       class TiogaFuncall < TiogaElement
 
-#         # _symbol_ is the symbol to be called, and the remainder will
-#         # be used as arguments for the call.
-#         def initialize(symbol, *args)
-#           @symbol = symbol
-#           @args = args
-#         end
+      # The base class for all dataset-based elements
+      class PlotBasedElement < TiogaElement
 
-#         protected
-        
-#         def real_do(f)
-#           f.send(@symbol, *@args)
-#         end
-#       end
+        # The Data::Dataset object that should get plotted.
+        attr_accessor :dataset
+
+        # A Styles::CurveStyle object saying how the curve should be
+        # drawn.
+        attr_accessor :curve_style
+
+        undef :location=, :location
+
+        # Returns the LocationStyle object of the curve. Returns the
+        # one from #curve_style.
+        def location
+          return @curve_style.location
+        end
+
+        undef :clipped, :clipped=
+
+        def clipped
+          return @curve_style.clipped
+        end
+
+        undef :depth, :depth=
+
+        def depth
+          return @curve_style.depth
+        end
+
+        def initialize()
+          super()
+        end
+      end
+
     end
   end
 end

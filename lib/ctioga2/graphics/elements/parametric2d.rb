@@ -40,19 +40,10 @@ module CTioga2
       # factory, I think. Color maps can be used for colors, but for
       # the rest, things will have to be implemented as parameters to
       # the curve generator, or even separated commands.
-      class Parametric2D  < TiogaElement
+      class Parametric2D  < PlotBasedElement
 
         include Log
         include Dobjects
-
-        # The Data::Dataset object that should get plotted.
-        attr_accessor :dataset
-
-        # A Styles::CurveStyle object saying how the curve should be
-        # drawn.
-        #
-        # Some of the elements will be overridden.
-        attr_accessor :curve_style
 
         # For convenience only: xy functions
         attr_accessor :function
@@ -64,10 +55,6 @@ module CTioga2
         # between Z axis and stylistic aspects
         attr_accessor :parametric_style
 
-
-
-        undef :location=, :location
-        
         # Creates a new Curve2D object with the given _dataset_ and
         # _style_.
         def initialize(dataset, style = nil, parametric_plot_style = nil)
@@ -103,12 +90,6 @@ module CTioga2
         end
         
         protected :prepare_data
-
-        # Returns the LocationStyle object of the curve. Returns the
-        # one from #curve_style.
-        def location
-          return @curve_style.location
-        end
 
         # Returns the Types::Boundaries of this curve.
         def get_boundaries

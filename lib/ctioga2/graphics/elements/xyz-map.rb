@@ -30,26 +30,15 @@ module CTioga2
       #
       # @todo There should be a way to automatically display level
       # lines, and possibly only that.
-      class XYZMap  < TiogaElement
+      class XYZMap  < PlotBasedElement
 
         include Log
         include Dobjects
-
-        # The Data::Dataset object that should get plotted.
-        attr_accessor :dataset
-
-        # A Styles::CurveStyle object saying how the curve should be
-        # drawn.
-        #
-        # Some of the elements will be overridden.
-        attr_accessor :curve_style
 
         # The IndexedTable object representing the underlying data
         attr_accessor :table
 
 
-        undef :location=, :location
-        
         # Creates a new XYZMap object with the given _dataset_ and
         # _style_.
         def initialize(dataset, style = nil)
@@ -64,12 +53,6 @@ module CTioga2
         end
         
         protected :prepare_data
-
-        # Returns the LocationStyle object of the curve. Returns the
-        # one from #curve_style.
-        def location
-          return @curve_style.location
-        end
 
         # Returns the Types::Boundaries of this curve.
         def get_boundaries

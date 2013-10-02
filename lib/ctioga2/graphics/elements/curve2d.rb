@@ -33,7 +33,7 @@ module CTioga2
       #
       # * transparency
       # * drawing order
-      class Curve2D  < TiogaElement
+      class Curve2D  < PlotBasedElement
 
         include Log
         include Dobjects
@@ -45,15 +45,7 @@ module CTioga2
         # Elements of the path, when there are more than one:
         attr_accessor :path_elements
 
-        # The Data::Dataset object that should get plotted.
-        attr_accessor :dataset
 
-        # A Styles::CurveStyle object saying how the curve should be
-        # drawn.
-        attr_accessor :curve_style
-
-        undef :location=, :location
-        
         # Creates a new Curve2D object with the given _dataset_ and
         # _style_.
         def initialize(dataset, style = nil)
@@ -77,24 +69,6 @@ module CTioga2
           end
           @function.strip_nan
 
-        end
-
-        # Returns the LocationStyle object of the curve. Returns the
-        # one from #curve_style.
-        def location
-          return @curve_style.location
-        end
-
-        undef :clipped, :clipped=
-
-        def clipped
-          return @curve_style.clipped
-        end
-
-        undef :depth, :depth=
-
-        def depth
-          return @curve_style.depth
         end
 
         # Returns the Types::Boundaries of this curve.

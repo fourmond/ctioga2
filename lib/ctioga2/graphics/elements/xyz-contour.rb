@@ -26,13 +26,10 @@ module CTioga2
     module Elements
 
       # This class displays a XYZ element using contour lines.
-      class XYZContour  < TiogaElement
+      class XYZContour  < PlotBasedElement
 
         include Log
         include Dobjects
-
-        # The Data::Dataset object that should get plotted.
-        attr_accessor :dataset
 
         # A Styles::CurveStyle object saying how the curve should be
         # drawn.
@@ -44,7 +41,6 @@ module CTioga2
         attr_accessor :table
 
 
-        undef :location=, :location
         
         # Creates a new XYZContour object with the given _dataset_ and
         # _style_.
@@ -63,11 +59,6 @@ module CTioga2
         
         protected :prepare_data
 
-        # Returns the LocationStyle object of the curve. Returns the
-        # one from #curve_style.
-        def location
-          return @curve_style.location
-        end
 
         # Returns the Types::Boundaries of this curve.
         def get_boundaries
