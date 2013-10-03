@@ -180,7 +180,6 @@ module CTioga2
             # Organize by depth
             for depth in els_by_depth.keys.sort.reverse
               v = els_by_depth[depth]
-              p depth
               if depth && (depth >= 90)
                 background += v
               elsif depth && depth <= 10
