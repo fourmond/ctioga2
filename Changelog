@@ -1,3 +1,15 @@
+ctioga2 (0.7)
+
+  * It is now possible to index marker size index on Z values for
+    parametric plots
+  * --csv shortcut to read CSV files
+  * Round boxes (for the draw-box command and for the legends too)
+  * Make -X smarter about which viewer to use
+  * Unclipped plot elements + full control of depth
+  * Small bug fixes
+
+ -- Vincent <vincent.fourmond@9online.fr>  Thu  3 Oct 22:53:25 CEST 2013
+
 ctioga2 (0.6.1)
 
   * Fix crash when a curve has no points within the plot boundaries

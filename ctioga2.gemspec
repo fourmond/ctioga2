@@ -7,7 +7,7 @@ spec = Gem::Specification.new do |s|
   s.bindir = 'bin'
   s.executables =  ['ctioga2']
   s.name = 'ctioga2'
-  s.version = '0.6.1'
+  s.version = '0.7'
   s.summary = 'ctioga2 - the polymorphic plotting program'
   s.description = <<EOF
 ctioga2 is a command-driven plotting program that produces
