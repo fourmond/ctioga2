@@ -357,11 +357,11 @@ module CTioga2
         fn = path.basename.to_s
 
         efn = fn.gsub(/[.\s]/) do |x|
-          "__#{x.ord}__"
+          "__#{x[0].ord}__"
         end
 
         if efn != fn
-          debug { "Mangled name to '#{fn}'"}
+          debug { "Mangled name to '#{efn}'"}
         end
 
         t.def_figure(efn) do
