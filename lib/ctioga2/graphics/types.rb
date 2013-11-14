@@ -96,7 +96,9 @@ EOD
                       /no(ne)?|off/i => false,
                     }
                   }, <<EOD)
-A line style, or @no@, @none@ or @off@ to mean no line.
+A line style, which is one of @solid@, @dots@, @dashes@, @small_dots@,
+a series of comma-separated numbers which are the length of the
+strokes and gaps, or @no@, @none@ or @off@ to mean no line.
 EOD
 
     MarkerType = 
@@ -109,7 +111,14 @@ EOD
                       'none' => 'None',
                       'off' => 'None', 
                     },}, <<EOD)
-A Tioga Marker.
+A Tioga Marker, ie either a name from the list at {url:
+http://tioga.rubyforge.org/doc/Tioga/MarkerConstants.html}, such as
+@Box@, @Star@, @Spade@ or two or three comma-separated numbers,
+_font_, _number_ and _width_. _font_ defines the font (standard PDF
+fonts, from 1 to 14), _number_ the number of the character within the
+font (between 0 and 255), and if _width_ is specified, the marker is
+stroked and not filled, and the number is the line width for the
+stroke.
 EOD
 
     PointType = 
