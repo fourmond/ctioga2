@@ -122,7 +122,6 @@ module CTioga2
 
         # Draws the markers, if applicable.
         def draw_markers(t)
-          @parametric_style.prepare
           if @curve_style.has_marker?
             # We use a default color map for the markers
             @curve_style.marker_color_map ||= 
@@ -148,6 +147,13 @@ module CTioga2
 
             # draw_fill(t)
             # draw_errorbars(t)
+
+            @parametric_style.prepare
+            if @dataset.z_columns < @parametric_style.z_columns_needed
+              error { "Need #{@parametric_style.z_columns_needed} Z columns, but have only #{@dataset.z_columns} for dataset #{@dataset.name}" }
+              return
+            end
+              
             draw_path(t)
             draw_markers(t)
 

@@ -1,5 +1,5 @@
 # text.sh: test for the text backend
-# Copyright 2009 by Vincent Fourmond 
+# Copyright 2009 by Vincent Fourmond
 # This file is provided as an example of how to use ctioga2. As such,
 # you can do whatever you wish with this file.
 
@@ -10,7 +10,10 @@ ruby ./generate-data.rb
 
 $ct -t "Parametric plot" --marker auto \
     --text --margin 0.03 --xy-parametric --line-style no\
+    3d-data.dat@1:2 \
     3d-data.dat@1:2:3
+
+exit
 
 $ct -t "Info through size" --marker auto \
     --text --margin 0.03 --xy-parametric /z1=marker_scale \

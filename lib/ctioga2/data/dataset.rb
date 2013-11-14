@@ -172,6 +172,11 @@ module CTioga2
         return 1 + @ys.size
       end
 
+      # The number of Z columns
+      def z_columns
+        return @ys.size - 1
+      end
+
       # Concatenates another Dataset to this one
       def <<(dataset)
         if dataset.size != self.size

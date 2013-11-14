@@ -56,13 +56,19 @@ EOD
 
         def prepare
           @reversed = {}
-          
+
           2.times do |i|
             val = self.send("z#{i+1}")
             if val
               @reversed[val] = i
+              @needed = i+1
             end
           end
+        end
+
+        # The number of Z columns needed for the style. 
+        def z_columns_needed
+          return @needed || 0
         end
 
         # Returns the marker style for the given Z values.
