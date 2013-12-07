@@ -92,7 +92,7 @@ EOH
       # backend, retrieves corresponding Dataset objects, pushes them
       # onto the stack and returns them.
       def get_datasets(set, options = {})
-        backend = @backend_factory.current
+        backend = @backend_factory.specified_backend(options)
         sets = backend.expand_sets(set)
         datasets = []
         for s in sets
@@ -319,6 +319,7 @@ EOH
 
     LoadDatasetOptions = { 
       'name' => CmdArg.new('text'),
+      'as' => CmdArg.new('text'),
       'where' => CmdArg.new('text'),
       'ignore_hooks' => CmdArg.new('boolean')
     }

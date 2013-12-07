@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
 require 'ctioga2/utils'
+require 'ctioga2/log'
 require 'ctioga2/data/backends/backend'
 
 module CTioga2
@@ -29,6 +30,8 @@ module CTioga2
       # This class holds an instance of all the different Backend
       # available, and features a 'current backend'.
       class BackendFactory
+
+        include Log
 
         # A hash name (as in Description#name) -> Backend
         attr_accessor :backends
@@ -56,6 +59,21 @@ module CTioga2
         # Selects the current backend
         def set_current_backend(backend)
           @current = @backends[backend]
+        end
+
+        # Returns the backend named in the 'as' key of options, or the
+        # current backend if there isn't
+        def specified_backend(options = {})
+          if options.key? 'as'
+            k = options['as']
+            if @backends.key? k
+              return @backends[k]
+            else
+              error { "No such backend: #{k}, ignoring" }
+            end
+          else
+            return @current
+          end
         end
 
         
