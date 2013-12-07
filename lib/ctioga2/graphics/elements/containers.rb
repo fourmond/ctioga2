@@ -51,6 +51,9 @@ module CTioga2
         # Defaults to the #legend_storage, but it can be changed
         attr_accessor :legend_item_target
 
+        # @todo Add an iterator over all leaf elements (including
+        # children or not ?)
+
         # Creates an empty new Container with the given _parent_.
         def initialize(parent = nil, root = nil)
           super()
