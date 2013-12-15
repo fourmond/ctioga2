@@ -39,6 +39,52 @@ module CTioga2
         #
         # For that, one needs an iterator overall all leaf elements in
         # a container.
+        
+        def initialize(dataset, style)
+          super(dataset, style)
+        end
+
+        def get_boundaries
+          bnds =  Types::Boundaries.bounds(@function.x, @function.y)
+          base = get_base()
+
+          nb = bnds.dup
+          nb.bottom = base
+          nb.top = base
+          bnds.extend(nb)
+          return bnds
+        end
+
+
+        # First, a very naive way.
+
+        def make_path(t)
+          base = get_base()
+
+          x0 = @function.x[0]
+          xn = @function.x.last
+
+          # Fixed width
+          w = (xn - x0).abs/@function.size
+
+          for x,y in @function
+            xl = x - 0.5 * w
+            xr = x + 0.5 * w
+            t.move_to_point(xl, base)
+            t.append_point_to_path(xl, y)
+            t.append_point_to_path(xr, y)
+            t.append_point_to_path(xr, base)
+            # We close this path.
+            t.move_to_point(xl, base)
+          end
+        end
+
+        protected
+
+        def get_base
+          return 0              # @todo from histogram options -- or from fill-
+          # until ?
+        end
 
       end
     end

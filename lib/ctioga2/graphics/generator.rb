@@ -112,6 +112,11 @@ module CTioga2
         return Graphics::Elements::Curve2D.new(dataset, style)
       end
 
+      # The "classical" 2D plots.
+      def histogram(dataset, style)
+        return Graphics::Elements::Histogram.new(dataset, style)
+      end
+
       # XYZ plots formerly known as "parametric plots"
       def xy_parametric(dataset, style)
         return Graphics::Elements::Parametric2D.
@@ -156,6 +161,17 @@ module CTioga2
 Switch to XY parametric plots, that is standard XY plots whose appearance
 (such as color, marker color, and, potentially, marker kinds and more)
 are governed by one (or more ?) Z values.
+EOH
+
+    HistogramPlotCommand = 
+      Cmd.new("histogram",nil,"--histogram", 
+              [], {} ) do |plotmaker, opts|
+      plotmaker.curve_generator.current_curves = :histogram
+    end
+    
+    HistogramPlotCommand.describe('select histogram plots', 
+                                  <<EOH, PlotTypesGroup)
+Switch to drawing histograms.
 EOH
 
     ContourPlotCommand = 
