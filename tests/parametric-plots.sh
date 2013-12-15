@@ -13,8 +13,6 @@ $ct -t "Parametric plot" --marker auto \
     3d-data.dat@1:2 \
     3d-data.dat@1:2:3
 
-exit
-
 $ct -t "Info through size" --marker auto \
     --text --margin 0.03 --xy-parametric /z1=marker_scale \
     --line-style no\

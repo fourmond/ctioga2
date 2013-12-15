@@ -87,8 +87,16 @@ module CTioga2
           CurveStyleFactory::PlotCommandOptions.key?(k)
         }
 
-        curve = send(@current_curves, plot, dataset, options)
-        curve.curve_style.target = curve
+        begin
+          legend = @legend_provider.dataset_legend(dataset)
+          style = @style_factory.next(options)
+          style.legend ||= legend # The legend specified as option to
+                                  # the --plot command has precedence
+                                  # over the one specified by
+                                  # --legend.
+          curve = send(@current_curves, dataset, style)
+          curve.curve_style.target = curve
+        end
         return curve
       end
 
@@ -96,56 +104,30 @@ module CTioga2
       
       ## \name Available kinds of curves
       ##
-      ## @todo All these are completely identical, there probably
-      ## isn't need for separate code ?
-      # 
-      # @{
-      # 
+      ## @{
+
+
       # The "classical" 2D plots.
-      def xy_plot(plot, dataset, options = {})
-        legend = @legend_provider.dataset_legend(dataset)
-        style = @style_factory.next(options)
-        style.legend ||= legend # The legend specified as option to
-                                # the --plot command has precedence
-                                # over the one specified by --legend.
-        curve = Graphics::Elements::Curve2D.new(dataset, style)
-        return curve
+      def xy_plot(dataset, style)
+        return Graphics::Elements::Curve2D.new(dataset, style)
       end
 
       # XYZ plots formerly known as "parametric plots"
-      def xy_parametric(plot, dataset, options = {})
-        legend = @legend_provider.dataset_legend(dataset)
-        style = @style_factory.next(options)
-        style.legend ||= legend # The legend specified as option to
-                                # the --plot command has precedence
-                                # over the one specified by --legend.
-        curve = Graphics::Elements::Parametric2D.
+      def xy_parametric(dataset, style)
+        return Graphics::Elements::Parametric2D.
           new(dataset, style, @xy_parametric_parameters.dup)
-        return curve
       end
 
       # XYZ maps
-      def xyz_map(plot, dataset, options = {})
-        legend = @legend_provider.dataset_legend(dataset)
-        style = @style_factory.next(options)
-        style.legend ||= legend # The legend specified as option to
-                                # the --plot command has precedence
-                                # over the one specified by --legend.
+      def xyz_map(dataset, style)
         style.legend = false    # No legend for XYZ maps
-        curve = Graphics::Elements::XYZMap.new(dataset, style)
-        return curve
+        return Graphics::Elements::XYZMap.new(dataset, style)
       end
 
       # XYZ maps
-      def xyz_contour(plot, dataset, options = {})
-        legend = @legend_provider.dataset_legend(dataset)
-        style = @style_factory.next(options)
-        style.legend ||= legend # The legend specified as option to
-                                # the --plot command has precedence
-                                # over the one specified by --legend.
-        style.legend = false    # No legend for XYZ maps
-        curve = Graphics::Elements::XYZContour.new(dataset, style)
-        return curve
+      def xyz_contour(dataset, style)
+        style.legend = false    # No legend for XYZ contours
+        return Graphics::Elements::XYZContour.new(dataset, style)
       end
 
 
