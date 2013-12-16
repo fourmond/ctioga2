@@ -51,6 +51,13 @@ module CTioga2
         # Defaults to the #legend_storage, but it can be changed
         attr_accessor :legend_item_target
 
+        # A general-purpose cache that objects may use.
+        #
+        # It is a hash, and its contents are reset at the beginning of
+        # each invocation of #do.
+        attr_accessor :gp_cache
+
+
         # @todo Add an iterator over all leaf elements (including
         # children or not ?)
 
@@ -73,6 +80,12 @@ module CTioga2
 
           # By default, don't display legends.
           @legend_area = nil
+        end
+
+        def do(t)
+          # reset the cache
+          @gp_cache = {}
+          super
         end
 
         # Returns the number of child elements
@@ -123,6 +136,22 @@ module CTioga2
             @legend_item_target = sub
           else
             @legend_item_target = @legend_storage
+          end
+        end
+
+        def each_item(leaf_only = true, recursive = false, tl = true, &blk)
+          if (!recursive && !tl)
+            return              # We're at the bottom level
+          end
+          for el in @elements
+            if el.respond_to? :each_item
+              if ! leaf_only
+                blk.call(el)
+              end
+              el.each_item(leaf_only, recursive, false, &blk)
+            else
+              blk.call(el)
+            end
           end
         end
 

@@ -46,6 +46,25 @@ module CTioga2
           return parent.legend_area = l
         end
 
+        undef :gp_cache, :gp_cache=
+        
+        def gp_cache
+          return parent.gp_cache
+        end
+
+        def gp_cache=(c)
+          return parent.gp_cache = c
+        end
+
+        def each_item(leaf_only = true, recursive = false, tl = true, &blk)
+          if tl
+            parent.each_item(leaf_only, recursive, tl, &blk)
+          else
+            super.each_item(leaf_only, recursive, true, &blk)
+          end
+        end
+
+
       end
     end
   end

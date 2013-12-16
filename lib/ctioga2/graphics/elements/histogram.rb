@@ -15,6 +15,8 @@ require 'ctioga2/utils'
 require 'ctioga2/log'
 require 'ctioga2/graphics/elements/curve2d'
 
+require 'set'
+
 require 'Dobjects/Function'
 
 
@@ -51,6 +53,10 @@ module CTioga2
           nb = bnds.dup
           nb.bottom = base
           nb.top = base
+
+          # include the width ?
+          
+
           bnds.extend(nb)
           return bnds
         end
@@ -61,15 +67,11 @@ module CTioga2
         def make_path(t)
           base = get_base()
 
-          x0 = @function.x[0]
-          xn = @function.x.last
-
-          # Fixed width
-          w = (xn - x0).abs/@function.size
+          w, o = *get_properties(t)
 
           for x,y in @function
-            xl = x - 0.5 * w
-            xr = x + 0.5 * w
+            xl = x + o
+            xr = xl + w
             t.move_to_point(xl, base)
             t.append_point_to_path(xl, y)
             t.append_point_to_path(xr, y)
@@ -81,7 +83,66 @@ module CTioga2
 
         protected
 
+        # Returns the cached metrics of all the histograms,
+        # recomputing it in the process.
+        def get_cached_metrics(t)
+          if ! parent.gp_cache.key?(:histograms)
+            cache = {} 
+            parent.gp_cache[:histograms] = cache
+
+            x_values = Set.new
+
+            hists = []
+
+            parent.each_item do |el|
+              if el.is_a?(Histogram)
+                hists << el
+                x_values.merge(el.function.x.to_a)
+              end
+            end
+
+            # OK, now we have all the values. For now, we assume more
+            # or less that they are evenly spaced.
+            #
+            # Later, we'll have to use a conversion function for X
+            # values (which means in particular that they won't be
+            # positioned at the exact X value, but that's already the
+            # case anyway).
+            width = (x_values.max - x_values.min)/x_values.size
+
+            iw = width/hists.size
+            offset = -0.5 * width
+
+            # @todo Add padding between the hists and around the
+            # groups of histograms.
+            
+            for h in hists
+              c = {}
+              cache[h] ||= c
+              c[:width] = iw
+              c[:offset] = offset
+              offset += iw
+            end
+          end
+          return parent.gp_cache[:histograms]
+        end
+
+        # Computes the horizontal offset and the width of the
+        # histogram. Relies on a cache installed onto the parent.
+        def get_properties(t)
+          cache = get_cached_metrics(t)
+          s = cache[self]
+          return [s[:width], s[:offset]]
+        end
+
         def get_base
+
+          # @todo Use fill, and make the difference between horizontal
+          # and vertical histograms, based on the fill-until spec ?
+          #
+          # This in particular means that we can't mix horiz and
+          # vertical histograms ?
+
           return 0              # @todo from histogram options -- or from fill-
           # until ?
         end

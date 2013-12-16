@@ -38,6 +38,7 @@ module CTioga2
         # LocationStyle object
         attr_writer :location
 
+        # Whether the object is clipped by default or not.
         attr_accessor :clipped
 
         
@@ -48,6 +49,8 @@ module CTioga2
           @clipped = true
 
           @depth = 50           # Hey, like xfig
+          
+          @gp_cache = {}
         end
 
         def depth
@@ -66,6 +69,7 @@ module CTioga2
         # redefine _do_ too if you need another debugging output.
         def do(f)
           debug { "plotting #{self.inspect}" }
+          @gp_cache = {}
           real_do(f)
         end
 
