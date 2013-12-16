@@ -66,33 +66,47 @@ module CTioga2
           return @type != :none
         end
 
+        # Wether we are closing by a vertical line
+        def vertical?
+          return (@type == :x || @type == :left || @type = :right)
+        end
+
+        # Wether we are closing with a horizontal line
+        def horizontal?
+          return (@type == :y || @type == :bottom || @type = :top)
+        end
+
+        # Returns the effective value of the 
+        def effective_value(bounds)
+          case @type
+          when :bottom, :top
+            return bounds.send(@type)
+          when :left, :right
+            return bounds.send(@type)
+          else
+            return @value
+          end
+        end
+
         # Closes the current path according to the current style, based on:
         #  * _bounds_, the boundaries of the plot
         #  * _first_, the first point ([x, y])
         #  * _last_, the last point
         def close_path(t, bounds, first, last)
           tp = @type
-          target = @value
+          target = effective_value(bounds)
+
           case tp
           when :none
             raise "Close the path !"
-          when :bottom, :top
-            target = bounds.send(tp)
-            tp = :y
-          when :left, :right
-            target = bounds.send(tp)
-            tp = :x
-          end
-
-          case tp
-          when :x
+          when :x, :left, :right
             t.append_point_to_path(target, last[1])
             t.append_point_to_path(target, first[1])
-          when :y
+          when :y, :bottom, :top
             t.append_point_to_path(last[0], target)
             t.append_point_to_path(first[0], target)
           when :xy
-            t.append_point_to_path(* @value.to_figure_xy(t))
+            t.append_point_to_path(* target.to_figure_xy(t))
           when :close
           else
             raise "Should not be here"

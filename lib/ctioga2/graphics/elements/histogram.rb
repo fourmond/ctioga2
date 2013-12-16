@@ -48,16 +48,18 @@ module CTioga2
 
         def get_boundaries
           bnds =  Types::Boundaries.bounds(@function.x, @function.y)
-          base = get_base()
+          if ! @within_gb
+            base = get_base
 
-          nb = bnds.dup
-          nb.bottom = base
-          nb.top = base
+            nb = bnds.dup
+            nb.bottom = base
+            nb.top = base
 
           # include the width ?
           
 
-          bnds.extend(nb)
+            bnds.extend(nb)
+          end
           return bnds
         end
 
@@ -65,7 +67,7 @@ module CTioga2
         # First, a very naive way.
 
         def make_path(t)
-          base = get_base()
+          base = get_base
 
           w, o = *get_properties(t)
 
@@ -77,7 +79,7 @@ module CTioga2
             t.append_point_to_path(xr, y)
             t.append_point_to_path(xr, base)
             # We close this path.
-            t.move_to_point(xl, base)
+            # t.move_to_point(xl, base)
           end
         end
 
@@ -136,15 +138,26 @@ module CTioga2
         end
 
         def get_base
+          ct = @curve_style.fill.close_type
+          if ct
+            if ! ct.horizontal?
+              warning { "Cannot use fill types other than horizontal for histograms: #{ct.type}. Using default value" }
+              return 0
+            end
+            
+            @within_gb = true
+            bnds = parent.get_el_boundaries(self)
+            @within_gb = false
 
-          # @todo Use fill, and make the difference between horizontal
-          # and vertical histograms, based on the fill-until spec ?
-          #
-          # This in particular means that we can't mix horiz and
-          # vertical histograms ?
+            begin 
+              return ct.effective_value(bnds)
+            rescue 
+              return @function.y.min          # default value. Make sense ?
+            end
+          end
 
-          return 0              # @todo from histogram options -- or from fill-
-          # until ?
+          # @todo Horizontal histograms ?? 
+          return 0
         end
 
       end

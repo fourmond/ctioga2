@@ -12,6 +12,10 @@ $ct --margin 0.03 --math /samples=20 -t 'Two histograms' \
     --histogram 'x' /fill 0 /fill-color='Red!10' \
     ' -x' /fill-color='Green!20' /fill 0 \
 
+$ct --margin 0.03 --math /samples=20 -t 'Using fill styles' \
+    --histogram 'x+30' /fill top /fill-color='Red!10' \
+    ' -x + 20' /fill-color='Green!20' /fill 23 \
+
 $ct --margin 0.03 --math /samples=20 -t 'Mixing normal curves and histograms' \
     --histogram 'x' /fill 0 /fill-color='Red!10' \
     ' -x' /fill-color='Green!20' /fill 0 \

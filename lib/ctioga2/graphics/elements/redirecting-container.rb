@@ -60,7 +60,9 @@ module CTioga2
           if tl
             parent.each_item(leaf_only, recursive, tl, &blk)
           else
-            super.each_item(leaf_only, recursive, true, &blk)
+            if @elements
+              super(leaf_only, recursive, true, &blk)
+            end
           end
         end
 
