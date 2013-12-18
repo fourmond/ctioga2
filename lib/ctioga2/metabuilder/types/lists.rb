@@ -213,6 +213,31 @@ module CTioga2
             nb.times do |i|
               array << Utils::mix_objects(e,s, i * fact)
             end
+          elsif str =~ /(.*)!(\d+)(?:!(.*))?\s*$/
+            # We have a mixing
+            nb = $2.to_i
+            fact = nb*0.01
+            if fact > 1.0 || fact < 0.0
+              error { "Invalid number for mixing: #{nb}, using 50"}
+              fact = 0.5
+            end
+            st1 = $1
+            st2 = $3 || 'White' # default to colors !
+
+            ar1 = string_to_type(st1)
+            ar2 = string_to_type(st2)
+            
+            # Make all the sequential combinations until we fall back
+            # on the first one.
+            ts = ar1.size.lcm(ar2.size)
+            ar1 *= ts/ar1.size
+            ar2 *= ts/ar2.size
+
+            arf = []
+            ar1.each_index do |i|
+              arf << Utils::mix_objects(ar1[i], ar2[i], fact)
+            end
+            return arf
           else
             array = super
           end
