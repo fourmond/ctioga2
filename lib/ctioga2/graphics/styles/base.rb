@@ -40,6 +40,10 @@ module CTioga2
         # names of the attributes, while still showing them up
         # properly documented in rdoc.
         def self.attr_accessor(symbol)
+          cal = caller
+          # if ! (caller[0] =~ /typed_attribute/)
+          #   puts "Deprecated use at #{caller[0]}"
+          # end
           @attributes ||= []
           @attributes << symbol
           OldAttrAccessor.call(symbol)

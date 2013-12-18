@@ -122,6 +122,20 @@ EOD
         end
 
       end
+
+
+      # This class defines various informations about the look of
+      # histograms.
+      class HistogramStyle < BasicStyle 
+
+        # Separation between the histograms inside a group of histogram
+        typed_attribute :intra_sep, 'dimension'
+
+        # Separation between the histograms of different groups
+        typed_attribute :inter_sep, 'dimension'
+
+
+      end
     end
 
   end

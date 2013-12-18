@@ -53,6 +53,11 @@ module CTioga2
       # parametric plots.
       attr_accessor :xy_parametric_parameters
 
+
+      # Style of histograms
+      attr_accessor :histogram_parameters
+
+
       # Creates a CurveGenerator object.
       def initialize
         @legend_provider = Legends::LegendProvider.new
@@ -60,6 +65,7 @@ module CTioga2
         @current_curves = :xy_plot
 
         @xy_parametric_parameters = Styles::ParametricPlotStyle.new
+        @histogram_parameters = Styles::HistogramStyle.new
       end
 
       PlotOptions = { 
@@ -114,7 +120,8 @@ module CTioga2
 
       # The "classical" 2D plots.
       def histogram(dataset, style)
-        return Graphics::Elements::Histogram.new(dataset, style)
+        return Graphics::Elements::Histogram.new(dataset, style, 
+                                                 @histogram_parameters.dup)
       end
 
       # XYZ plots formerly known as "parametric plots"
@@ -165,8 +172,10 @@ EOH
 
     HistogramPlotCommand = 
       Cmd.new("histogram",nil,"--histogram", 
-              [], {} ) do |plotmaker, opts|
+              [], Styles::HistogramStyle.options_hash) do |plotmaker, opts|
       plotmaker.curve_generator.current_curves = :histogram
+      plotmaker.curve_generator.
+        histogram_parameters.set_from_hash(opts)
     end
     
     HistogramPlotCommand.describe('select histogram plots', 

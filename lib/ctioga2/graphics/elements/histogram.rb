@@ -35,15 +35,14 @@ module CTioga2
         include Log
         include Dobjects
 
-        # The drawing code will have to depend both on the current
-        # "histogram style" (just like the xy-parametric style) and the
-        # overall number of histograms in the parent container.
-        #
-        # For that, one needs an iterator overall all leaf elements in
-        # a container.
-        
-        def initialize(dataset, style)
+        # The histogram style at the moment of the creation of the
+        # object.
+        attr_accessor :histogram_style
+
+
+        def initialize(dataset, style, hstyle)
           super(dataset, style)
+          @histogram_style = hstyle
         end
 
         def get_boundaries
@@ -55,7 +54,7 @@ module CTioga2
             nb.bottom = base
             nb.top = base
 
-          # include the width ?
+            # include the width ?
           
 
             bnds.extend(nb)
@@ -103,6 +102,22 @@ module CTioga2
               end
             end
 
+            # Overall size of intra seps, in figure coordinates
+            intra_sep = 0
+            hists[0..-2].each do |hist|
+              if hist.histogram_style.intra_sep
+                intra_sep += hist.histogram_style.intra_sep.to_figure(t, :x)
+              end
+            end
+
+            inter_sep = if @histogram_style.inter_sep
+                          @histogram_style.inter_sep.to_figure(t, :x)
+                        elsif @histogram_style.intra_sep
+                          @histogram_style.intra_sep.to_figure(t, :x)
+                        else
+                          0
+                        end
+
             # OK, now we have all the values. For now, we assume more
             # or less that they are evenly spaced.
             #
@@ -110,10 +125,17 @@ module CTioga2
             # values (which means in particular that they won't be
             # positioned at the exact X value, but that's already the
             # case anyway).
-            width = (x_values.max - x_values.min)/x_values.size
+            width = (x_values.max - x_values.min)/(x_values.size - 1)
 
-            iw = width/hists.size
-            offset = -0.5 * width
+            # Available width
+            aw = width - intra_sep - inter_sep
+            if aw < 0
+              error { "Too much padding around the histograms leading to negative size. Try using smaller intra-sep or inter-sep. Ignoring them for now" }  
+              aw = width
+            end
+
+            iw = aw/hists.size
+            offset = -0.5 * (width - inter_sep)
 
             # @todo Add padding between the hists and around the
             # groups of histograms.
@@ -124,6 +146,10 @@ module CTioga2
               c[:width] = iw
               c[:offset] = offset
               offset += iw
+              if h.histogram_style.intra_sep
+                offset += h.histogram_style.intra_sep.to_figure(t, :x)
+              end
+
             end
           end
           return parent.gp_cache[:histograms]
