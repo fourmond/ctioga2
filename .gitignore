@@ -1,0 +1,17 @@
+# -*- mode: conf; -*-
+
+.config
+
+# temporary files
+*~
+*.dat
+
+# generated files
+*.pdf
+tests/outputs
+*.bz2
+*.gem
+man/ctioga2.1
+doc/
+dox/
+InstalledFiles
