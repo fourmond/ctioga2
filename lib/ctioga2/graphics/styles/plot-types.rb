@@ -123,6 +123,16 @@ EOD
 
       end
 
+      CumulativeHistogramsType = 
+        CmdType.new('cumulative-histograms',
+                    {
+                      :type => :integer,
+                      :shortcuts => {
+                        /next/i => :next,
+                        /no|false/i => false
+                      }
+                    })
+
 
       # This class defines various informations about the look of
       # histograms.
@@ -133,6 +143,9 @@ EOD
 
         # Separation between the histograms of different groups
         typed_attribute :inter_sep, 'dimension'
+
+        # Specs for cumulative 
+        typed_attribute :cumulative, 'cumulative-histograms'
 
 
       end

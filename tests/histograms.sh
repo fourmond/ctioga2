@@ -21,3 +21,13 @@ $ct --margin 0.03 --math /samples=20 -t 'Mixing normal curves and histograms' \
     ' -x' /fill-color='Green!20' /fill 0 \
     '0.1 * x**2' /fill-color='Blue!20' /fill 0 \
     --xy-plot '0.1*x**2'
+
+$ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms' \
+    --histogram /cumulative=0 'x' /fill 0 /fill-color='Red!10' \
+    '1-x' /fill 0 /fill-color='Green!10'
+
+$ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms, mixed with usual ones' \
+    --histogram /cumulative=0 'x' /fill 0 /fill-color='Red!10' \
+    '1-x' /fill 0 /fill-color='Green!10' \
+    --histogram /cumulative=no \
+    '2*x' /fill 0 /fill-color='Blue!10'

@@ -68,32 +68,57 @@ module CTioga2
         def make_path(t)
           base = get_base
 
-          w, o = *get_properties(t)
+          w, ho, yo = *get_properties(t)
+
+          org = get_cached_organization
+          h_o = org[:has_offsets][self]
 
           for x,y in @function
-            xl = x + o
+            xl = x + ho
             xr = xl + w
-            t.move_to_point(xl, base)
-            t.append_point_to_path(xl, y)
-            t.append_point_to_path(xr, y)
-            t.append_point_to_path(xr, base)
-            # We close this path.
-            # t.move_to_point(xl, base)
+            b = yo[x]
+            t.move_to_point(xl, base+b)
+            t.append_point_to_path(xl, y+b)
+            t.append_point_to_path(xr, y+b)
+            t.append_point_to_path(xr, base+b)
+            if h_o               # close !
+              t.move_to_point(xl, base+b)
+            end
+          end
+        end
+
+        # The algorithms for closing the path just look ugly for
+        # histograms that are offset from something. The reasoning
+        # does not apply here.
+        def make_closed_path(t, close_type = nil)
+          org = get_cached_organization
+          if org[:has_offsets][self]
+            super
+          else
+            make_path(t)
           end
         end
 
         protected
 
-        # Returns the cached metrics of all the histograms,
-        # recomputing it in the process.
-        def get_cached_metrics(t)
+        # The cache is setup in two bits:
+        # * one fully metric-independent (i.e. that does not need the
+        #   FigureMaker object)
+        # * the metric cache, holding information about widths and the
+        #   likes, that builds upon the first
+
+
+        # This first cache is the organization of the whole
+        # histograms. It is independent of the metrics.
+        def get_cached_organization
           if ! parent.gp_cache.key?(:histograms)
             cache = {} 
             parent.gp_cache[:histograms] = cache
 
-            x_values = Set.new
 
             hists = []
+
+            x_values = Set.new
 
             parent.each_item do |el|
               if el.is_a?(Histogram)
@@ -102,11 +127,76 @@ module CTioga2
               end
             end
 
-            # Overall size of intra seps, in figure coordinates
+            cache[:list] = hists
+            cache[:xvalues] = x_values
+
+            # First, we must split the histograms in columns, based on
+            # the :cumulative attribute. If positive or null, then the
+            # index is that. If false, then, the next available index.
+            # if negative, then the next available index, unless it exists
+            # the index conversion here.
+            index_cnv = {}
+
+            columns = []
+            cache[:indices] = {}
+            for h in hists
+              cm = h.histogram_style.cumulative
+              if ! cm 
+                cm = columns.size
+              elsif cm < 0
+                if ! index_cnv.key?(cm)
+                  index_cnv[cm] = columns.size
+                end
+                cm = index_cnv[cm]
+              end
+              columns[cm] ||= []
+              columns[cm] << h
+              cache[:indices][h] = cm
+            end
+            cache[:columns] = columns
+
+            offsets = {}
+            isoff = {}
+            for ar in columns
+              base = {}
+              for x in x_values
+                base[x] = 0.0
+              end
+              next unless ar
+              index = 0
+              for h in ar
+                offsets[h] = base.dup
+                isoff[h] = index == 0
+                for x,y in h.function
+                  base[x] += y
+                end
+                index += 1
+              end
+            end
+            cache[:y_offsets] = offsets
+            cache[:has_offsets] = isoff
+
+          end
+          return parent.gp_cache[:histograms]
+        end
+
+        # Returns the cached metrics of all the histograms,
+        # recomputing it in the process.
+        def get_cached_metrics(t)
+          if ! parent.gp_cache.key?(:histogram_metrics)
+            cache = {} 
+            parent.gp_cache[:histogram_metrics] = cache
+
+            org = get_cached_organization
+            cols = org[:columns]
+            x_values = org[:xvalues]
+
+            # Overall size of intra seps, in figure coordinates. Only
+            # intra sep of the first element in a column counts !
             intra_sep = 0
-            hists[0..-2].each do |hist|
-              if hist.histogram_style.intra_sep
-                intra_sep += hist.histogram_style.intra_sep.to_figure(t, :x)
+            cols[0..-2].each do |col|
+              if col && col.first.histogram_style.intra_sep
+                intra_sep += col.first.histogram_style.intra_sep.to_figure(t, :x)
               end
             end
 
@@ -134,33 +224,36 @@ module CTioga2
               aw = width
             end
 
-            iw = aw/hists.size
+            iw = aw/cols.size
             offset = -0.5 * (width - inter_sep)
 
             # @todo Add padding between the hists and around the
             # groups of histograms.
             
-            for h in hists
+            for col in cols
               c = {}
-              cache[h] ||= c
               c[:width] = iw
-              c[:offset] = offset
+              c[:x_offset] = offset
               offset += iw
-              if h.histogram_style.intra_sep
+              next unless col
+              if col.first.histogram_style.intra_sep
                 offset += h.histogram_style.intra_sep.to_figure(t, :x)
               end
-
+              for h in col
+                cache[h] = c
+              end
             end
           end
-          return parent.gp_cache[:histograms]
+          return parent.gp_cache[:histogram_metrics]
         end
 
         # Computes the horizontal offset and the width of the
         # histogram. Relies on a cache installed onto the parent.
         def get_properties(t)
-          cache = get_cached_metrics(t)
-          s = cache[self]
-          return [s[:width], s[:offset]]
+          metrics = get_cached_metrics(t)
+          s = metrics[self]
+          org = get_cached_organization
+          return [s[:width], s[:x_offset], org[:y_offsets][self] ]
         end
 
         def get_base
