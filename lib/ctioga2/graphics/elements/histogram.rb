@@ -46,7 +46,8 @@ module CTioga2
         end
 
         def get_boundaries
-          bnds =  Types::Boundaries.bounds(@function.x, @function.y)
+          ry = modified_yvalues
+          bnds =  Types::Boundaries.bounds(@function.x, ry)
           if ! @within_gb
             base = get_base
 
@@ -93,13 +94,27 @@ module CTioga2
         def make_closed_path(t, close_type = nil)
           org = get_cached_organization
           if org[:has_offsets][self]
-            super
-          else
             make_path(t)
+          else
+            super
           end
         end
 
         protected
+
+        def modified_yvalues
+          org = get_cached_organization
+          if org[:has_offsets][self]
+            vo = org[:y_offsets][self]
+            vc = @function.y.dup
+            vc.size.times do |i|
+              vc[i] += vo[@function.x[i]]
+            end
+            return vc
+          else
+            return @function.y
+          end
+        end
 
         # The cache is setup in two bits:
         # * one fully metric-independent (i.e. that does not need the
@@ -166,7 +181,7 @@ module CTioga2
               index = 0
               for h in ar
                 offsets[h] = base.dup
-                isoff[h] = index == 0
+                isoff[h] = (index > 0)
                 for x,y in h.function
                   base[x] += y
                 end

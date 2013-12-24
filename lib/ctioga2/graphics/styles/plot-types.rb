@@ -147,6 +147,17 @@ EOD
         # Specs for cumulative 
         typed_attribute :cumulative, 'cumulative-histograms'
 
+        def set_from_hash(hash, name = "%s")
+          super
+
+          if @cumulative == :next
+            @last_neg ||= 0
+            @last_neg -= 1
+            @cumulative = @last_neg
+          end
+            
+        end
+
 
       end
     end
