@@ -23,7 +23,7 @@ $ct --margin 0.03 --math /samples=20 -t 'Mixing normal curves and histograms' \
     --xy-plot '0.1*x**2'
 
 $ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms' \
-    --histogram /cumulative=0 /inter-sep 1mm 'x' /fill 0 /fill-color='Red!10' \
+    --histogram /cumulative=0 /gap 1mm 'x' /fill 0 /fill-color='Red!10' \
     '1-x' /fill 0 /fill-color='Green!10'
 
 $ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms, mixed with usual ones' \
@@ -34,7 +34,7 @@ $ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms, mixe
 
 $ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms' \
     --fill-color-set 'default!10' --fill 0\
-    --histogram /cumulative=next /inter-sep 1mm \
+    --histogram /cumulative=next /gap 1mm \
     'x' '1-x' \
     --histogram /cumulative=next \
     '0.5*x' 'x' --name a

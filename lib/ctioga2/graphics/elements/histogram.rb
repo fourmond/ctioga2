@@ -213,8 +213,8 @@ module CTioga2
               end
             end
 
-            inter_sep = if @histogram_style.inter_sep
-                          @histogram_style.inter_sep.to_figure(t, :x)
+            inter_sep = if @histogram_style.gap
+                          @histogram_style.gap.to_figure(t, :x)
                         elsif @histogram_style.intra_sep
                           @histogram_style.intra_sep.to_figure(t, :x)
                         else

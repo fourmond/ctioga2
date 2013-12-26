@@ -146,7 +146,7 @@ EOD
         typed_attribute :intra_sep, 'dimension'
 
         # Separation between the histograms of different groups
-        typed_attribute :inter_sep, 'dimension'
+        typed_attribute :gap, 'dimension'
 
         # Specs for cumulative 
         typed_attribute :cumulative, 'cumulative-histograms'
