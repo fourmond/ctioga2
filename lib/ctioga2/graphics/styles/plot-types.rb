@@ -131,7 +131,13 @@ EOD
                         /next/i => :next,
                         /no|false/i => false
                       }
-                    })
+                    }, <<EOD)
+How to specify that histograms should be stacked. Can be:
+ * a positive number, in which case the following histograms
+   will be added to the numbered one (0 is the first)
+ * no/false, in which case the following histograms are not stacked
+ * next, in which case the following histograms get stacked on a new slot
+EOD
 
 
       # This class defines various informations about the look of
