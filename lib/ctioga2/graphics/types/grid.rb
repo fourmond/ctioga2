@@ -19,8 +19,6 @@ require 'ctioga2/graphics/types/boxes'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Graphics
 
     module Types

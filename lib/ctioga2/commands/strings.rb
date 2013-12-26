@@ -16,8 +16,6 @@ require 'stringio'              # For debugging purposes
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Commands
 
     class UnterminatedString < Exception

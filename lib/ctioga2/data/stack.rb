@@ -25,9 +25,6 @@ require 'ctioga2/data/filters'
 # This module contains all the classes used by ctioga
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
-
   module Data
 
     # This is the central class for acquisition and handling of

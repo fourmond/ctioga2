@@ -21,9 +21,6 @@ require 'ctioga2/data/backends/description'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-  
-
   module Data
 
     # The Backends are in charge of acquiring DataSet from various

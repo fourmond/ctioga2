@@ -21,8 +21,6 @@ require 'ctioga2/graphics/subplot-commands'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   # This module contains all graphical elements of CTioga2
   module Graphics
 

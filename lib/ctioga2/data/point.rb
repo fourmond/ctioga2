@@ -17,9 +17,6 @@ require 'ctioga2/data/dataset'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
-
   module Data
 
     # This class represents a datapoint, ie. an index in a given

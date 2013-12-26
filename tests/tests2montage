@@ -4,13 +4,8 @@ if [ -z $OUTPUTS ]; then
     OUTPUTS=outputs
 fi
 
-if [ -d ../.git -o -d ../.svn ]; then
-    if [ -d ../.git ]; then
-	prefix="git "
-    fi
-    revision=$($prefix svn info | grep Revision: | egrep -o '[0-9]+')
-    revision=$(printf '%04d' $revision)
-
+if [ -d ../.git ]; then
+    revision=$(git describe --tags)
     revision="$revision""$TEST_SUFFIX"
 
     echo "Generating images for revision $revision"

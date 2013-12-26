@@ -26,8 +26,6 @@ require 'ctioga2/graphics/types/grid'
 # This module contains all the classes used by ctioga
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Graphics
 
     # A small convenience module for line styles

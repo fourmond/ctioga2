@@ -14,6 +14,10 @@
 # For platform detection
 require 'rbconfig'
 
+# The version
+require 'ctioga2/version'
+
+
 module CTioga2
 
   # An exception to raise upon to-be-implemented-one-day features
@@ -26,69 +30,14 @@ module CTioga2
 
     # The current version of the program.
     def self.version
-      if CTIOGA_VERSION =~ /SVN/
-        return "SVN, revision #{SVN_INFO['revision']}#{SVN_INFO['suffix']}, #{SVN_INFO['date']}"
-      else
-        return CTIOGA_VERSION
-      end
+      return GIT_VERSION
     end
 
-
-    # All files should use this function with the appropriate
-    # arguments and have the Date and Revision svn:keyword:. Use this
-    # way:
-    #
-    #  Version::register_svn_info('$Revision$', '$Date$')
-    #
-    # To set the correct properties, the following command-line can be
-    # used:
-    #
-    #  svn propset svn:keywords 'Date Revision'
-    def self.register_svn_info(rev_str, date_str)
-      if rev_str =~ /(\d+)/
-        rev = $1
-        str = 'Date'
-        date = date_str.gsub(/\$#{str}:\s*(.*)\$/) { $1 }
-        if SVN_INFO['revision'] < rev.to_i
-          SVN_INFO['revision'] = rev.to_i
-          SVN_INFO['date'] = date
-        end
-        # Hmmm, we want to see how many revisions is git ahead of SVN
-        if rev_str =~ /(\+git\d+)/
-          SVN_INFO['suffix'] = $1
-        end
-      end
-    end
 
     # Returns the date ctioga2 was last modified.
     def self.last_modified_date
-      SVN_INFO['date'] =~ /([\d-]+)/
-      return $1
+      return GIT_DATE
     end
-
-
-    # The constants are moved here, as they disturb rdoc parsing.
-
-
-    # Informations collected about subversion revisions
-    SVN_INFO = { 
-      'revision' => 0,
-      'date' => "old",
-      'suffix' => ''
-    }
-
-    # The position of the URL, used for getting the version
-    SVN_URL = '$HeadURL$'
-    
-    # The version of ctioga2
-    CTIOGA_VERSION = if SVN_URL =~ /releases\/ctioga2-([^\/]+)/
-                       $1
-                     else
-                       "SVN version"
-                     end
-
-    register_svn_info('$Revision$', '$Date$')
-
   end
 
   # Various utilities
@@ -477,11 +426,4 @@ class String
   end
 end
 
-begin
-  # This is a dirty hack in order to ensure that the SVN revision
-  # information is kept up-to-date even when using git-svn. This
-  # file is not present in standard installations.
-  require 'ctioga2/git-fools-svn'
-rescue LoadError => e
-end
 

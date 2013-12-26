@@ -158,8 +158,6 @@ require 'ctioga2/postprocess'
 # displays of rate constants vs potentials)
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   # This class is the core of ctioga. It parses the command-line arguments,
   # reads all necessary files and plots graphs. Most of its functionality
   # is delegated into classes.

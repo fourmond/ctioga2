@@ -21,8 +21,6 @@ require 'ctioga2/metabuilder/type'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Data
 
     module Backends

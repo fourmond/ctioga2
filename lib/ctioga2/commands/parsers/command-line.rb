@@ -17,8 +17,6 @@ require 'ctioga2/commands/commands'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Commands
 
     # In this modules are classes that parse a source of commands, and

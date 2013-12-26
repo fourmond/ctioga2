@@ -18,8 +18,6 @@ require 'ctioga2/graphics/styles'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Graphics
 
     module Legends

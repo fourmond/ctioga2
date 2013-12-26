@@ -18,8 +18,6 @@ require 'ctioga2/commands/doc/wordwrap'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Commands
 
     module Documentation

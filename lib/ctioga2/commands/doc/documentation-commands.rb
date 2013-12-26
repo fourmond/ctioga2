@@ -20,8 +20,6 @@ require 'ctioga2/commands/doc/markup'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Commands
 
     # The base of the 'self-documentation' of CTioga2

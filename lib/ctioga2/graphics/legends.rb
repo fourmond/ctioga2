@@ -20,8 +20,6 @@ require 'ctioga2/graphics/legends/multicols'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Graphics
 
     # Now, various commands pertaining to legends

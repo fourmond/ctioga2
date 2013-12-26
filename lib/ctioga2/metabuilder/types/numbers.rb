@@ -20,8 +20,6 @@ require 'ctioga2/utils'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module MetaBuilder
 
     # The module Types should be used for all subclasses of

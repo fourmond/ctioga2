@@ -22,9 +22,6 @@ require 'ctioga2/commands/groups'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-  
-
   module Data
 
     module Backends

@@ -16,8 +16,6 @@ require 'logger'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   # This module should be included (or extended) by every class that
   # need logging/debugging facilities.
   #

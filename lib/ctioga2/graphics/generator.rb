@@ -21,8 +21,6 @@ require 'ctioga2/graphics/styles/plot-types'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Graphics
 
 

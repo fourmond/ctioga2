@@ -21,8 +21,6 @@ require 'ctioga2/commands/doc/doc'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   # This module contains the real core of ctioga2: a set of classes
   # that implement the concept of commands. Each command translates
   # into an action (of any kind).

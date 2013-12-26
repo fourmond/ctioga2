@@ -17,8 +17,6 @@ require 'ctioga2/utils'
 # This module contains all the classes used by ctioga
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Data
 
     # This class holds one column, possibly with error bars.

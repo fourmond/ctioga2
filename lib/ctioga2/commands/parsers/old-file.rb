@@ -19,8 +19,6 @@ require 'ctioga2/commands/strings'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Commands
 
     module Parsers

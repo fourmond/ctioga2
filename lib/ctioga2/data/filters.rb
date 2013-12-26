@@ -19,9 +19,6 @@ require 'ctioga2/data/backends/factory'
 # This module contains all the classes used by ctioga
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
-
   module Data
 
     # A series of commands that can be used as "filters", as they act

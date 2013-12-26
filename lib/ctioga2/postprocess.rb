@@ -17,8 +17,6 @@ require 'ctioga2/log'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   # What happens to generated PDF files ?
   #
   # \todo

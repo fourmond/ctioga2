@@ -18,9 +18,6 @@ require 'ctioga2/data/indexed-dtable'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
-
   # \todo now, port the backend infrastructure...
 
   # This module holds all the code that deals with manipulation and

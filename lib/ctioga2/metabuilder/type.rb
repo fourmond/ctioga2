@@ -19,8 +19,6 @@
 require 'ctioga2/utils'
 
 module CTioga2
-
-  Version::register_svn_info('$Revision$', '$Date$')
   
 
   # The MetaBuilder module contains a framework to perform

@@ -18,8 +18,6 @@ require 'ctioga2/commands/parsers/command-line'
 
 module CTioga2
 
-  Version::register_svn_info('$Revision$', '$Date$')
-
   module Commands
 
     module Documentation
