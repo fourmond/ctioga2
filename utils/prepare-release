@@ -4,27 +4,28 @@
 
 version="$1"
 
-rep=svn+ssh://rubyforge.org/var/svn/ctioga2/
-
-base=ctioga2-$version
-tg=$rep/releases/$base
-
-echo "Looking for relase $version"
-if svn ls $tg 2>/dev/null >/dev/null; then
-    echo "Release number $version already exists, aborting"
-    exit 1
-fi
-
-echo "Tagging relese $version"
-svn copy -m "[ctioga2] tagging release $version" "$rep/trunk/ctioga2" "$tg"
-
 tmpdir=$(mktemp -d)
 curdir=`pwd`
+base=ctioga2-$version
 cd $tmpdir
 echo "Exporting tagged version"
-svn export "$tg" "$base"
-tar cvjf "$base".tar.bz2 "$base"
+git clone $curdir "$base"
 cd "$base"
+git checkout $version || exit 1
+cat <<EOF > lib/ctioga2/version.rb
+# Automatically generated file.
+module CTioga2
+
+  module Version
+EOF
+echo "GIT_VERSION = '$version'" >> lib/ctioga2/version.rb
+echo "GIT_DATE = '$(date)'" >> lib/ctioga2/version.rb
+cat <<EOF >> lib/ctioga2/version.rb
+  end
+end
+EOF
+rm -rf .git
+(cd ..; tar cvjf "$base".tar.bz2 "$base" ) 
 gem build ctioga2.gemspec
 cd $curdir
 cp -v $tmpdir/"$base".tar.bz2 $tmpdir/"$base"/"$base".gem .
