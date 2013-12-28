@@ -394,7 +394,7 @@ EOH
         [:left, :right, :top, :bottom].each do |loc|
           style = AxisStyle.current_axis_style(plotmaker, loc)
           style.decoration = Tioga::FigureConstants::AXIS_HIDDEN
-          style.axis_label.text = ""
+          style.axis_label.text = false
         end
       end
       ClearAxesCommand.
