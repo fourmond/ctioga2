@@ -87,6 +87,18 @@ EOH
 Runs the given strings as commands, as if given from a command file.
 EOH
 
+    # Evaluate a series of commands.
+    SetCommand =  Cmd.new("set", nil, "--set", 
+                          [ CmdArg.new('text'), 
+                            CmdArg.new('text') ]) do |plotmaker, variable, value|
+      plotmaker.interpreter.variables.define_variable(variable, value)
+    end
+    
+    SetCommand.describe("Sets the value of a variable", <<EOH, GeneralGroup)
+Sets the value of the variable (first argument) to the given second argument.
+No parsing is done.
+EOH
+
     # Increases verbosity
     VerboseLogging = 
       Cmd.new("verbose", '-v',  "--verbose", [ ]) do |plotmaker|
