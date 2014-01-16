@@ -25,17 +25,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 # # We'll be wanting to make pipelines
 require 'open3'
-require "fileutils"
+require 'fileutils'
+require 'optparse'
 
 # Path to ctioga2 executable
 ct2 = "ctioga2"
 
-file = ARGV.shift
-target = file.sub(/(\.ct2)?$/, ".avi")
-args = ARGV.dup
 
 tmpdir = "tmp"
-FileUtils::mkpath(tmpdir)
+target = nil
 
 # The target resolution
 res = [600,600]
@@ -43,6 +41,26 @@ res = [600,600]
 conv = 250.0
 # The oversampling factor (to get something smooth in the end)
 oversampling = 2
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #$0 [options] file.ct2 arguments..."
+
+  opts.on("-t", "--target FILE", "Target video file") do |t|
+    target = t
+  end
+
+  opts.on(nil, "--dir DIR", "Temporary directory for storage") do |t|
+    tmpdir = t
+  end
+end.parse!
+
+file = ARGV.shift
+target ||= file.sub(/(\.ct2)?$/, ".avi")
+args = ARGV.dup
+
+
+
+FileUtils::mkpath(tmpdir)
 
 # Now, we compute the ctioga2 real size 
 
