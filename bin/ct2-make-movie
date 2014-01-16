@@ -1,0 +1,86 @@
+#!/usr/bin/env ruby
+
+=begin rdoc
+
+This program is copyright 2014 by Vincent Fourmond.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+=end
+
+
+# This program is a wrapper around ctioga2 to make it easy to make
+# movies.
+
+# # We'll be wanting to make pipelines
+require 'open3'
+require "fileutils"
+
+# Path to ctioga2 executable
+ct2 = "ctioga2"
+
+file = ARGV.shift
+target = file.sub(/(\.ct2)?$/, ".avi")
+args = ARGV.dup
+
+tmpdir = "tmp"
+FileUtils::mkpath(tmpdir)
+
+# The target resolution
+res = [600,600]
+# The conversion factor (between points and inches)
+conv = 250.0
+# The oversampling factor (to get something smooth in the end)
+oversampling = 2
+
+# Now, we compute the ctioga2 real size 
+
+# @todo Make it possible to specify the real size, and deduce conv,
+# and adjust res
+
+ct2_page_size = res.map { |x| "#{x/conv}in"}.join("x")
+size = res.map { |x| "#{x}"}.join("x")
+
+# p ct2_page_size
+
+# @todo Use other encoding programs !
+# @todo bitrate control
+encoder = IO::popen(["ffmpeg", '-y', "-f", "rawvideo", 
+                     "-r", "25", "-s", size, "-i", "-",
+                     target], "wb")
+
+
+index = 0
+for f in args
+  # @todo write separate files on demand
+  name = "#{tmpdir}/file-%04d" % index
+
+  ct2_cmdline = [ct2, "--set", "arg", f, 
+                "-f", file, "--name", name, "-r", ct2_page_size]
+  p ct2_cmdline
+  system(*ct2_cmdline)
+  
+  # @todo use other conversion programs !
+  b, s = Open3.capture2("convert",
+                        "-density", "#{(conv*2).to_i}",
+                        "#{name}.pdf",
+                        "-alpha", "Remove",
+                        "-resize", size,
+                        "-depth", "8", "YUV:-",
+                        :stdin_data=>"", :binmode=>true)
+  encoder.write(b)
+  index += 1
+end
+encoder.close
+Process.wait
