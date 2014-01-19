@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # This program is a wrapper around ctioga2 to make it easy to make
 # movies.
 
-# # We'll be wanting to make pipelines
 require 'open3'
 require 'fileutils'
 require 'optparse'
@@ -35,42 +34,121 @@ ct2 = "ctioga2"
 tmpdir = "tmp"
 target = nil
 
+DimensionConversion = {
+  "pt" => (72.0/72.27),
+  "bp" => 1.0,
+  "in" => 72.0,
+  "cm" => (72.0/2.54),
+  "mm" => (72.0/25.4),
+}
+
+def dim_to_points(dim)
+  if dim =~ /^\s*(\d+(\.\d*)?)\s*(pt|bp|cm|in|mm)\s*$/i
+    return $1.to_f * DimensionConversion[$3.downcase]
+  else
+    raise "Invalid dimension: #{dim}"
+  end
+end
+
+# Converts the given "real-size" resolution into postscript points
+def page_size_to_points(spec)
+  if spec =~ /(.*)x(.*)/i
+    return [dim_to_points($1), dim_to_points($2)]
+  else
+    raise "Invalid page size: #{spec}"
+  end
+end
+
+# @todo Build a movie from a list of PDF files. Maybe less error
+# checking than directly.
+
 # The target resolution
 res = [600,600]
+
+# The target page size (in bp)
+ct2_size = nil
+
+# The corresponding number of points
+
 # The conversion factor (between points and inches)
 conv = 250.0
+
 # The oversampling factor (to get something smooth in the end)
 oversampling = 2
 
-OptionParser.new do |opts|
+# Whether we keep all intermediate PDF files, or we reuse the same
+# file over and over again.
+store_all = true
+
+opts = OptionParser.new do |opts|
   opts.banner = "Usage: #$0 [options] file.ct2 arguments..."
 
   opts.on("-t", "--target FILE", "Target video file") do |t|
     target = t
   end
 
-  opts.on(nil, "--dir DIR", "Temporary directory for storage") do |t|
+  opts.on("", "--dir DIR", "Temporary directory for storage") do |t|
     tmpdir = t
   end
-end.parse!
+
+  opts.on("", "--page-size SIZE", 
+          "Set ctioga2 page size (in TeX dimensions)") do |v|
+    ct2_size = page_size_to_points(v)
+  end
+
+  opts.on("", "--resolution RES",
+          "Set target resolution (overridden to some extent by page-size)") do |r|
+    r =~ /(\d+)x(\d+)/
+    res = [$1.to_f, $2.to_f]
+  end
+
+  opts.on("", "--[no-]store", "To store all or not..") do |v|
+    store_all = v
+  end
+
+end
+
+opts.parse!(ARGV)
+
+# First, we choose the target page size and resolution. 
+
+if ct2_size
+  ct2_page_size = ct2_size.map { |x| "#{x}bp" }.join("x") 
+  # maintain aspect ratio
+  res[1] = res[0] * ct2_size[1]/ct2_size[0]
+  conv = res[0]/ct2_size[0] * 72.27
+else
+  ct2_page_size = res.map { |x| "#{x/conv}in"}.join("x")
+end
+
+size = res.map { |x| "#{x.to_i}"}.join("x")
+
+puts "Producing #{ct2_page_size} PDF and converting to #{size} for the video"
+
 
 file = ARGV.shift
 target ||= file.sub(/(\.ct2)?$/, ".avi")
-args = ARGV.dup
+args = []
 
+for a in ARGV
+  # Expansion !
+  if a =~ /^(.*)\.\.(.*):(\d+)\s*$/
+    s = $1.to_f
+    e = $2.to_f
+    nb = $3.to_i
+    nb.times do |i|
+      args << "#{s + (e-s)*i/(nb-1.0)}"
+    end
+  else
+    args << a
+  end
+end
 
 
 FileUtils::mkpath(tmpdir)
 
 # Now, we compute the ctioga2 real size 
 
-# @todo Make it possible to specify the real size, and deduce conv,
-# and adjust res
-
-ct2_page_size = res.map { |x| "#{x/conv}in"}.join("x")
-size = res.map { |x| "#{x}"}.join("x")
-
-# p ct2_page_size
 
 # @todo Use other encoding programs !
 # @todo bitrate control
@@ -78,27 +156,37 @@ encoder = IO::popen(["ffmpeg", '-y', "-f", "rawvideo",
                      "-r", "25", "-s", size, "-i", "-",
                      target], "wb")
 
+format = if store_all 
+           "#{tmpdir}/file-%04d"
+         else
+           "#{tmpdir}/file"
+         end
+
 
 index = 0
 for f in args
-  # @todo write separate files on demand
-  name = "#{tmpdir}/file-%04d" % index
+  name = format % index
 
-  ct2_cmdline = [ct2, "--set", "arg", f, 
+  ct2_cmdline = [ct2, 
+                 "--set", "arg", f, 
+                 "--set", "index", index, 
                 "-f", file, "--name", name, "-r", ct2_page_size]
-  p ct2_cmdline
+  puts "Running: #{ct2_cmdline.join(" ")}"
   system(*ct2_cmdline)
   
   # @todo use other conversion programs !
   b, s = Open3.capture2("convert",
-                        "-density", "#{(conv*2).to_i}",
+                        "-density", "#{(conv*oversampling).to_i}",
                         "#{name}.pdf",
                         "-alpha", "Remove",
                         "-resize", size,
                         "-depth", "8", "YUV:-",
                         :stdin_data=>"", :binmode=>true)
+
+  # Use pdftoppm followed by convert, much much faster than just
+  # convert (gs takes too much time)
   encoder.write(b)
   index += 1
 end
+
 encoder.close
-Process.wait
