@@ -752,6 +752,7 @@ EOH
               {
                 'oversampling' => CmdArg.new('float'),
                 'scale' => CmdArg.new('float'),
+                'pdftoppm' => CmdArg.new('boolean'),
               }) do |plotmaker,res, opts|
       if res =~ /^\s*(\d+)\s*x\s*(\d+)\s*$/
         size = [$1.to_i, $2.to_i]
@@ -761,6 +762,7 @@ EOH
         end
         scale = opts['scale'] || 1
         plotmaker.postprocess.png_scale = scale
+        plotmaker.postprocess.png_pdftoppm = opts['pdftoppm']
         page_size = size.map { |n| (n/(1.0 *scale)).to_s + "bp" }.join('x')
         plotmaker.root_object.set_page_size(page_size)
       else

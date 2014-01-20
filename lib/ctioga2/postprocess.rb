@@ -43,6 +43,13 @@ module CTioga2
     # Are we converting to EPS using pdftops ? 
     attr_accessor :eps
 
+
+    # @todo Maybe all the PNG stuff should be it is own class ?
+
+    # If on, we use pdftoppm rather than imagemagick (gs, used by
+    # pdftoppm is much slower than pdftoppm)
+    attr_accessor :png_pdftoppm
+
     # PNG resolution
     attr_accessor :png_res
 
@@ -62,6 +69,7 @@ module CTioga2
       @png_res = nil 
       @png_oversampling = 2
       @png_scale = 1
+      @png_pdftoppm = false
 
       @processed_files = []
     end
@@ -114,9 +122,14 @@ module CTioga2
 
       # Converts to PNG if applicable
       if @png_res
-        target = file.sub(/(\.pdf)?$/,'.png')
+        tbase = file.sub(/(\.pdf)?$/,'')
         info { "Converting #{file} to PNG" }
-        spawn "convert -density #{(@png_oversampling * @png_scale * 72).to_i} #{file} -resize #{@png_res.join('x')} #{target}"
+        
+        if @png_pdftoppm
+          spawn "pdftoppm -singlefile -png -r #{(@png_scale * 72).to_i} #{file} #{tbase}"
+        else
+          spawn "convert -density #{(@png_oversampling * @png_scale * 72).to_i} #{file} -resize #{@png_res.join('x')} #{tbase}.png"
+        end
       end
 
       # View produced PDF or PNG files...
