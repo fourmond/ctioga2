@@ -76,6 +76,10 @@ conv = 250.0
 # The oversampling factor (to get something smooth in the end)
 oversampling = 2
 
+# Whether we use pdftoppm or not for the conversion. Much faster than
+# convert
+use_pdftoppm = false
+
 # Whether we keep all intermediate PDF files, or we reuse the same
 # file over and over again.
 store_all = true
@@ -89,6 +93,10 @@ opts = OptionParser.new do |opts|
 
   opts.on("", "--dir DIR", "Temporary directory for storage") do |t|
     tmpdir = t
+  end
+
+  opts.on("-p", "--[no-]pdftoppm", "Whether or not to use pdftoppm") do |t|
+    use_pdftoppm = t
   end
 
   opts.on("", "--page-size SIZE", 
@@ -169,22 +177,39 @@ for f in args
 
   ct2_cmdline = [ct2, 
                  "--set", "arg", f, 
-                 "--set", "index", index, 
+                 "--set", "index", "#{index}", 
                 "-f", file, "--name", name, "-r", ct2_page_size]
   puts "Running: #{ct2_cmdline.join(" ")}"
   system(*ct2_cmdline)
-  
-  # @todo use other conversion programs !
-  b, s = Open3.capture2("convert",
-                        "-density", "#{(conv*oversampling).to_i}",
-                        "#{name}.pdf",
-                        "-alpha", "Remove",
-                        "-resize", size,
-                        "-depth", "8", "YUV:-",
-                        :stdin_data=>"", :binmode=>true)
 
-  # Use pdftoppm followed by convert, much much faster than just
-  # convert (gs takes too much time)
+  if use_pdftoppm
+    # @todo use other conversion programs !
+    b1, s = Open3.capture2(
+                          "pdftoppm",
+                          "-r",
+                          "#{(conv*oversampling).to_i}",
+                           "#{name}.pdf",
+                          :stdin_data=>"", :binmode=>true)
+    # @todo use other conversion programs !
+    b, s = Open3.capture2("convert",
+                          "PPM:-",
+                          "-resize", size,
+                          "-depth", "8", "YUV:-",
+                          :stdin_data=>b1, :binmode=>true)
+  else
+    
+    # @todo use other conversion programs !
+    b, s = Open3.capture2("convert",
+                          "-density", "#{(conv*oversampling).to_i}",
+                          "#{name}.pdf",
+                          "-alpha", "Remove",
+                          "-resize", size,
+                          "-depth", "8", "YUV:-",
+                          :stdin_data=>"", :binmode=>true)
+    
+    # Use pdftoppm followed by convert, much much faster than just
+    # convert (gs takes too much time)
+  end
   encoder.write(b)
   index += 1
 end
