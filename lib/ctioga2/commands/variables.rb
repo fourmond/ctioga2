@@ -59,7 +59,11 @@ module CTioga2
       # expanded at the time of the definition, (immediate variable),
       # whereas if it stays _nil_, the variable is defined as a
       # recursively defined variable.
-      def define_variable(name, value, interpreter = nil)
+      def define_variable(name, value, interpreter = nil, override = true)
+        if (!override) && @variables.key?(name)
+          # Not redefining an already defined variable.
+          return
+        end
         if value.respond_to? :expand_to_string
           if interpreter
             value = value.expand_to_string(interpreter)

@@ -1,5 +1,5 @@
 # file.rb: new style file parser for ctioga2
-# copyright (c) 2013 by Vincent Fourmond
+# copyright (c) 2013, 2014 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -115,12 +115,14 @@ module CTioga2
           for l in parsed_lines
             idx += 1
             interpreter.context.parsing_file(nil, io, lines_indices[idx])
-            if l =~ /^\s*([a-zA-Z0-9_-]+)\s*(=|:=)\s*(.*)/
+            if l =~ /^\s*([a-zA-Z0-9_-]+)\s*(\??)(=|:=)\s*(.*)/
               symbol = $1
-              value = InterpreterString.parse_until_unquoted(StringIO.new($3),"\n", false)
-              rec = (($2 == "=") ? nil : interpreter)
+              value = InterpreterString.parse_until_unquoted(StringIO.new($4),"\n", false)
+              override = !($2 == '?')
+              rec = (($3 == "=") ? nil : interpreter)
+              
                       
-              interpreter.variables.define_variable(symbol, value, rec)
+              interpreter.variables.define_variable(symbol, value, rec, override)
             elsif l =~ /^\s*#/
                 # comment...
             else
