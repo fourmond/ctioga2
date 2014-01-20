@@ -174,6 +174,9 @@ module CTioga2
       while (a.size > 1) && (a.first < tolerance * a.last)
         a.shift
       end
+      if a.first == 0
+        return 0
+      end
 
       return Math.log10(a.first).send(method)
     end
@@ -205,6 +208,23 @@ module CTioga2
       rescue
       end
       return file               # But that will fail later on.
+    end
+
+    # Returns the biggest vector of multiples of delta contained
+    # within bot and top
+    def self.integer_subdivisions(bot, top, delta)
+      if bot > top
+        bot, top = top, bot
+      end
+      tn = (top/delta).floor
+      bn = (bot/delta).ceil
+      ret = Dobjects::Dvector.new()
+      nb = (tn - bn).to_i + 1
+
+      nb.times do |i|
+        ret << (bn + i) * delta
+      end
+      return ret
     end
 
 

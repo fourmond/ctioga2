@@ -48,8 +48,14 @@ module CTioga2
         # @todo make it possible to provide a function to generate that ?
         typed_attribute :major, 'float-list'
 
+        # Separation between major ticks. Overriden by the major list
+        typed_attribute :major_delta, "float"
+
         # The list of the position of minor ticks
         typed_attribute :minor, 'float-list'
+
+        # Separation between minor ticks
+        typed_attribute :minor_delta, "float"
         
         # The list of labels
         typed_attribute :labels, 'text-list'
@@ -71,15 +77,33 @@ module CTioga2
           end
           fmt = @format
 
+          # beginning or end of the axis. Not specifically x
+          xl, xr = * (if info['vertical']
+                        [info['y0'], info['y1']]
+                      else
+                        [info['x0'], info['x1']]
+                      end)
+
+          if xl > xr
+            xl, xr = xr, xl
+          end
+
           if @major
             ret['minor_ticks'] = Dobjects::Dvector.new
             ret['major_ticks'] = Dobjects::Dvector.new(@major)
 
             fmt ||= "$%g$"
+          elsif @major_delta
+            ret['major_ticks'] = Utils::integer_subdivisions(xl, xr, 
+                                                             @major_delta)
+            fmt ||= "$%g$"
           end
 
           if @minor
             ret['minor_ticks'] = Dobjects::Dvector.new(@minor)
+          elsif @minor_delta
+            ret['minor_ticks'] = Utils::integer_subdivisions(xl, xr, 
+                                                             @minor_delta)
           end
 
           fmt_last = @format_last || fmt
