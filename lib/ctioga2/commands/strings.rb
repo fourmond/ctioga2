@@ -137,6 +137,17 @@ module CTioga2
               if ch == ")"
                 push_current_element
                 @state = (@state == :var ? :top : :double)
+              elsif ch =~ /\s/
+                # We don't have a variable, but a function...
+                @accessory = InterpreterString.parse_until_unquoted(@io, ")", true)
+                ch = @io.getc   # Slurp the closing )
+                ns = (@state == :var ? :top : :double)
+                @state = (:var ? :funcall : :dq_funcall)
+                push_current_element
+                @state = ns
+                ## @todo Optional: instead of having a space, use a ,
+                ## or . or # to signify different separators ? (but
+                ## quoting makes this more-or-less unnecessary, hey ?)
               else
                 @current_string += ch
               end
@@ -186,6 +197,10 @@ module CTioga2
             @parsed << [:unquoted_variable, @current_string]
           when :dq_var
             @parsed << [:quoted_variable, @current_string]
+          when :funcall
+            @parsed << [:unquoted_funcall, @current_string, @accessory]
+          when :dq_funcall
+            @parsed << [:quoted_funcall, @current_string, @accessory]
           when :dollar
             @parsed << [:unquoted, @current_string + '$']
           when :dq_dollar
@@ -272,12 +287,12 @@ module CTioga2
 
       protected
 
-      # Returns a new InterpreterString object with all variables
-      # expanded. _interpreter_ is the Interpreter in which the
-      # expansion takes place.
+      # Returns a new InterpreterString object with all variables and
+      # function calls expanded. _interpreter_ is the Interpreter in
+      # which the expansion takes place.
       def expand_all_variables(interpreter)
         c = []
-        for type, value in @contents
+        for type, value, args in @contents
           case type
           when :quoted_variable
             c << [:quoted, interpreter.variables.
@@ -285,6 +300,12 @@ module CTioga2
           when :unquoted_variable
             c << [:unquoted, interpreter.variables.
                   expand_variable(value, interpreter)]
+          when :quoted_funcall
+            c << [:quoted, interpreter.
+                  call_function(value, args)]
+          when :unquoted_funcall
+            c << [:unquoted, interpreter.
+                  call_function(value, args)]
           else
             c << [type, value]
           end

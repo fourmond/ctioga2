@@ -16,6 +16,8 @@ require 'ctioga2/commands/commands'
 require 'ctioga2/commands/context'
 require 'ctioga2/commands/variables'
 require 'ctioga2/commands/strings'
+require 'ctioga2/commands/function'
+require 'ctioga2/commands/general-functions'
 require 'ctioga2/commands/parsers/command-line'
 require 'ctioga2/commands/doc/doc'
 
@@ -190,6 +192,15 @@ module CTioga2
 
         @file_parser = Parsers::FileParser.new
         @context = ParsingContext.new
+      end
+
+      # Calls the given function and returns the result
+      def call_function(name, args)
+        func = Function.named_function(name)
+        if ! func
+          raise "Unkown function #{name}"
+        end
+        return func.expand(args, self)
       end
 
 
