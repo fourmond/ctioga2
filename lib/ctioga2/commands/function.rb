@@ -32,14 +32,25 @@ module CTioga2
       # The name of the function. Probably better lowercase ?
       attr_accessor :name
 
+      # A short description
+      attr_accessor :short_description
+
+      # Long description, ie a help text like the rest
+      attr_accessor :description
+
       # Registers a function.
       #
       # @todo Have self-documenting capacities !
-      def initialize(name, &blk)
+      def initialize(name, short_desc, &blk)
         @code = blk
         @name = name
+        @short_description = short_desc
         
         Function.register(self)
+      end
+
+      def describe(txt)
+        @description = txt
       end
 
       # Expands the function, and returns the corresponding string.
@@ -49,7 +60,7 @@ module CTioga2
         else
           args = string.expand_and_split(/\s+/, interpreter)
         end
-        if args.size != (@code.arity - 1)
+        if (@code.arity > 0) and (args.size != (@code.arity - 1))
           raise "Function #{@name} expects #{@code.arity} arguments, but was given #{args.size}"
         end
         return @code.call(interpreter.plotmaker_target, *args).to_s

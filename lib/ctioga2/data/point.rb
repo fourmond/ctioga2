@@ -40,7 +40,7 @@ module CTioga2
       # accesses the data stack.
       #
       # Specification: ({_dataset_})?(_relative_|@_index_)
-      def self.from_text(plotmaker, text)
+      def self.from_text(plotmaker, text, dataset = nil)
         if text =~ /^(?:\s*\{([^}]+)\})?\s*(?:([.\d]+)|@(\d+))\s*$/
           which = $1 || -1
           if $2
@@ -48,7 +48,7 @@ module CTioga2
           else
             idx = $3.to_i
           end
-          dataset = plotmaker.data_stack.stored_dataset(which)
+          dataset ||= plotmaker.data_stack.stored_dataset(which)
           
           if ! dataset
             raise "Invalid or empty dataset: #{which}"
@@ -62,9 +62,17 @@ module CTioga2
         end
       end
 
-      # @todo functions returning xy values + slope for the given
-      # datapoint. For each, possibility to average over several points.
+      def x
+        return @dataset.x.values[@index]
+      end
 
+      def y
+        return @dataset.y.values[@index]
+      end
+
+      def point
+        return [self.x, self.y]
+      end
 
       # Returns the averaged X value around the datapoint
       def x_val(navg = 3)
