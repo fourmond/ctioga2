@@ -102,16 +102,21 @@ EOD
     # afterwards, actually, since an access to a plotmaker object is
     # necessary.
     DataPointType = CmdType.new('data-point', :data_point, <<EOD)
-A point from a Dataset.
+A point from an already-loaded Dataset. You have two ways to choose the point:
 
-\todo document ;-)...
+ * @@13@ takes the 13th point in the last dataset;
+ * @0.2@ takes the point the closest to 20% of the dataset.
+
+If you need another dataset than the last one, give its number or
+named within brackets: @{-2}0.2@ is the point closest to the 20% of
+the one-before-last dataset.
 EOD
 
     # A LaTeX font
     LaTeXFontType = CmdType.new('latex-font', :latex_font, <<EOD)
 A LaTeX font.
 
-\todo document !
+@todo document !
 EOD
 
     # A color map

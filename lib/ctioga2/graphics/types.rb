@@ -176,7 +176,27 @@ EOD
     AlignedPointType = 
       CmdType.new('aligned-point', {:type => :aligned_point, 
                     :default => :frame}, <<EOD)
-A point together with alignment specifications.
+A point together with alignment specifications, used to place some 
+elements such as legends for instance, that require alignment information. 
+
+The first two letters represent the alignment:
+
+ * @t@ for top
+ * @b@ for bottom
+ * @c@ for center
+ * @l@ for left and
+ * @r@ for right
+
+These letters can optionally be followed by the exact location of the
+point in frame coordinates. If not provided, a reasonable default
+value is chosen.
+
+Examples:
+
+ * @tl@ is a point at the top left of the frame aligned to the top
+   and left;
+ * @cl:0.1,0.6@ is vertically centered and aligned to the left, and
+   positioned 10% from the left and 60% from the bottom.
 EOD
 
     FrameMarginsType = 
@@ -250,10 +270,16 @@ EOD
 
     BoxType = 
       CmdType.new('box', :box, <<EOD)
-The specification for a box, such as an inset. Specifications vary for
-now... 
+The specification for a box, such as an inset. It can be a grid
+specification, such as @grid:0,1@. For this to work, a grid must have
+been setup beforehand using {command: setup-grid}.
 
-@todo to be written later on.
+It can also be an {type: aligned-point} together with a width and
+optionally a height in frame coordinates, such as:
+
+ * @cc:0.3@: a box in the center of size 30% width and 30% height;
+ * @bl:0.1,0.2:0.7,0.2@ a box starting from the point at 10% from the left
+   and 20% from the bottom, with a width of 70% and a height of 20%.
 EOD
 
     # Coordinate transformations
