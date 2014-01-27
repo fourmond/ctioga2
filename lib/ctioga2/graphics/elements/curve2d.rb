@@ -74,6 +74,17 @@ module CTioga2
           return Types::Boundaries.bounds(@function.x, @function.y)
         end
 
+        def can_clip?
+          if @curve_style.clipped or 
+              ( @curve_style.fill && @curve_style.fill.fill?) or
+              ( parent.is_a?(Region))
+            return false
+          else
+            return true
+          end
+        end
+          
+
         # Creates a path for the given curve. This should be defined
         # with care, as it will be used for instance for region
         # coloring and stroking. The function should only append to
@@ -86,7 +97,7 @@ module CTioga2
             case @curve_style.path_style
             when /^splines/
               for f in func.split_monotonic
-                new_f = if @curve_style.clipped 
+                new_f = if can_clip?
                           f.bound_values(*bnds.extrema)
                         else
                           f.dup
@@ -103,7 +114,7 @@ module CTioga2
 
               # Hmmmm. This may get the wrong thing if you happen to
               # draw something completely outside.
-              if @curve_style.clipped 
+              if can_clip? 
                 f = func.bound_values(*bnds.extrema)
               else
                 f = func
