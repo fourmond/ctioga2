@@ -49,12 +49,15 @@ module CTioga2
 Writes a manual page based on a template
 EOH
 
+      WriteHTMLOptions = {
+        'page-menu' => CmdArg.new('text')
+      }
 
       WriteHTMLCommands = 
         Cmd.new("write-html-commands", nil, "--write-html-commands", 
-                []) do |plotmaker|
+                [], WriteHTMLOptions) do |plotmaker, opts|
         html = HTML.new(plotmaker.interpreter.doc)
-        html.write_commands()
+        html.write_commands(opts)
       end
       
       WriteHTMLCommands.describe("HTML documentation for group and commands",
@@ -64,9 +67,9 @@ EOH
 
       WriteHTMLTypes = 
         Cmd.new("write-html-types", nil, "--write-html-types", 
-                []) do |plotmaker|
+                [], WriteHTMLOptions) do |plotmaker, opts|
         html = HTML.new(plotmaker.interpreter.doc)
-        html.write_types()
+        html.write_types(opts)
       end
       
       WriteHTMLTypes.describe("HTML documentation for types",
@@ -76,9 +79,9 @@ EOH
 
       WriteHTMLBackends = 
         Cmd.new("write-html-backends", nil, "--write-html-backends", 
-                []) do |plotmaker|
+                [], WriteHTMLOptions) do |plotmaker, opts|
         html = HTML.new(plotmaker.interpreter.doc)
-        html.write_backends()
+        html.write_backends(opts)
       end
       
       WriteHTMLBackends.describe("HTML documentation for backends",
@@ -89,9 +92,9 @@ EOH
 
       WriteHTMLCommandLineOptions = 
         Cmd.new("write-html-commandline", nil, "--write-html-commandline", 
-                []) do |plotmaker|
+                [], WriteHTMLOptions) do |plotmaker, opts|
         html = HTML.new(plotmaker.interpreter.doc)
-        html.write_command_line_options()
+        html.write_command_line_options(opts)
       end
       
       WriteHTMLCommandLineOptions.describe("HTML documentation for types",

@@ -48,44 +48,60 @@ module CTioga2
           @backends_url = "backends.html"
         end
 
+        def write_page_menu(opts, out)
+          if !opts['page-menu'] or opts['page-menu'] =~ /menu|full/i
+            yield out
+          end
+        end
+
+        def write_page(opts, out)
+          if !opts['page-menu'] or opts['page-menu'] =~ /page|full/i
+            yield out
+          end
+        end
+
         # Ouputs HTML code to document all groups and commands 
-        def write_commands(out = STDOUT)
+        def write_commands(opts, out = STDOUT)
           cmds, groups = @doc.documented_commands
 
-          out.puts "<div class='quick-jump'>"
-          out.puts "Quick jump to a specific group of commands:\n"
-          out.puts "<ul>\n"
-          for g in groups
-            out.puts "<li><a href='#group-#{g.id}'>#{g.name}</a></li>\n"
+          write_page_menu(opts, out) do |out|
+            out.puts "<div class='quick-jump'>"
+            out.puts "<h3>Quick jump</h3>"
+            out.puts "<ul>\n"
+            for g in groups
+              out.puts "<li><a href='#group-#{g.id}'>#{g.name}</a></li>\n"
+            end
+            out.puts "</ul>\n"
+            out.puts "</div>"
           end
-          out.puts "</ul>\n"
-          out.puts "</div>"
           
-          for g in groups
-            out.puts 
-            out.puts "<h3 class='group' id='group-#{g.id}'>#{g.name}</h3>"
-            out.puts markup_to_html(g.description)
-
-            commands = cmds[g].sort {|a,b|
-              a.name <=> b.name
-            }
-            
-            out.puts "<p>"
-            out.puts "<span class='bold'>Available commands:</span>\n"
-            out.puts commands.map {|c|
-              "<a href='#command-#{c.name}'><code>#{c.name}</code></a>"
-            }.join(' ')
-            out.puts "</p>"
-
-            for cmd in commands
-              out.puts
-              out.puts command_documentation(cmd)
+          write_page(opts, out) do |out|
+            for g in groups
+              out.puts 
+              out.puts "<h3 class='group' id='group-#{g.id}'>#{g.name}</h3>"
+              out.puts markup_to_html(g.description)
+              
+              commands = cmds[g].sort {|a,b|
+                a.name <=> b.name
+              }
+              
+              out.puts "<p>"
+              out.puts "<span class='bold'>Available commands:</span>\n"
+              out.puts commands.map {|c|
+                "<a href='#command-#{c.name}'><code>#{c.name}</code></a>"
+              }.join(' ')
+              out.puts "</p>"
+              
+              for cmd in commands
+                out.puts
+                out.puts command_documentation(cmd)
+              end
             end
           end
         end
 
         # Write a HTML table documenting all command-line options.
-        def write_command_line_options(out = STDOUT)
+        def write_command_line_options(opts, out = STDOUT)
           cmds, groups = @doc.documented_commands
 
           out.puts "<table>"
@@ -108,52 +124,60 @@ module CTioga2
 
 
         # Ouputs HTML code to document all types
-        def write_types(out = STDOUT)
+        def write_types(opts, out = STDOUT)
           types = @doc.types.sort.map { |d| d[1]}
 
 
-          out.puts "<div class='quick-jump'>"
-          out.puts "Quick jump to a specific type:\n"
-          out.puts "<ul>\n"
-          for t in types
-            out.puts "<li><a href='#type-#{t.name}'>#{t.name}</a></li>\n"
+          write_page_menu(opts, out) do |out|
+            out.puts "<div class='quick-jump'>"
+            out.puts "<h3>Quick jump</h3>"
+            out.puts "<ul>\n"
+            for t in types
+              out.puts "<li><a href='#type-#{t.name}'>#{t.name}</a></li>\n"
+            end
+            out.puts "</ul>\n"
+            out.puts "</div>"
           end
-          out.puts "</ul>\n"
-          out.puts "</div>"
  
-          for t in types
-            out.puts
-            out.puts "<h4 id='type-#{t.name}' class='type'>#{t.name}</h4>\n"
-            out.puts markup_to_html(t.description)
-            out.puts            # There is no need to wrap the markup
-            # in a paragraph.
+          write_page(opts, out) do |out|
+            for t in types
+              out.puts
+              out.puts "<h4 id='type-#{t.name}' class='type'>#{t.name}</h4>\n"
+              out.puts markup_to_html(t.description)
+              out.puts            # There is no need to wrap the markup
+              # in a paragraph.
+            end
           end
         end
         
 
         # Ouputs HTML code to all backends
-        def write_backends(out = STDOUT)
+        def write_backends(opts, out = STDOUT)
           backends = @doc.backends.sort.map { |d| d[1]}
 
 
-          out.puts "<div class='quick-jump'>"
-          out.puts "Quick jump to a specific backend:\n"
-          out.puts "<ul>\n"
-          for b in backends
-            out.puts "<li><a href='#backend-#{b.name}'>#{b.name}</a></li>\n"
+          write_page_menu(opts, out) do |out|
+            out.puts "<div class='quick-jump'>"
+            out.puts "<h3>Quick jump</h3>"
+            out.puts "<ul>\n"
+            for b in backends
+              out.puts "<li><a href='#backend-#{b.name}'>#{b.name}</a></li>\n"
+            end
+            out.puts "</ul>\n"
+            out.puts "</div>"
           end
-          out.puts "</ul>\n"
-          out.puts "</div>"
- 
-          for b in backends
-            out.puts
-            out.puts "<h3 id='backend-#{b.name}' class='backend'><code>#{b.name}</code>: #{b.long_name}</h3>\n"
-            out.puts markup_to_html(b.description)
-            out.puts
-            for param in b.param_list
-              out.puts "<h4 id='backend-#{b.name}-#{param.name}'>Parameter: #{param.name}</h4>"
-              out.puts "<p><code>/#{param.name}=<a href='#{@types_url}#type-#{param.type.name}'>#{param.type.name}</a></p>"
-              out.puts markup_to_html(param.description)
+          
+          write_page(opts, out) do |out|
+            for b in backends
+              out.puts
+              out.puts "<h3 id='backend-#{b.name}' class='backend'><code>#{b.name}</code>: #{b.long_name}</h3>\n"
+              out.puts markup_to_html(b.description)
+              out.puts
+              for param in b.param_list
+                out.puts "<h4 id='backend-#{b.name}-#{param.name}'>Parameter: #{param.name}</h4>"
+                out.puts "<p><code>/#{param.name}=<a href='#{@types_url}#type-#{param.type.name}'>#{param.type.name}</a></code></p>"
+                out.puts markup_to_html(param.description)
+              end
             end
           end
         end
