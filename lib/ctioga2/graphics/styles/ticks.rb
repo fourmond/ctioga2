@@ -51,11 +51,19 @@ module CTioga2
         # Separation between major ticks. Overriden by the major list
         typed_attribute :major_delta, "float"
 
+        # Approximate number of major ticks
+        typed_attribute :major_number, "integer"
+
         # The list of the position of minor ticks
         typed_attribute :minor, 'float-list'
 
         # Separation between minor ticks
         typed_attribute :minor_delta, "float"
+
+        # Number of minor ticks between major ticks
+        typed_attribute :minor_number, "integer"
+
+
         
         # The list of labels
         typed_attribute :labels, 'text-list'
@@ -93,17 +101,19 @@ module CTioga2
             ret['major_ticks'] = Dobjects::Dvector.new(@major)
 
             fmt ||= "$%g$"
-          elsif @major_delta
+          elsif @major_delta || @major_number
+            delta = @major_delta || Utils::closest_subdivision(( (xr - xl)/@major_number))
             ret['major_ticks'] = Utils::integer_subdivisions(xl, xr, 
-                                                             @major_delta)
+                                                             delta)
             fmt ||= "$%g$"
           end
 
           if @minor
             ret['minor_ticks'] = Dobjects::Dvector.new(@minor)
-          elsif @minor_delta
+          elsif @minor_delta || delta
+            dt = @minor_delta || delta/((@minor_number || 3)+1)
             ret['minor_ticks'] = Utils::integer_subdivisions(xl, xr, 
-                                                             @minor_delta)
+                                                             dt)
           end
 
           fmt_last = @format_last || fmt
