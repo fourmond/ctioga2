@@ -77,6 +77,11 @@ module CTioga2
       def self.named_function(name)
         return @functions[name]
       end
+
+      # Returns the functions hash
+      def self.functions
+        return @functions
+      end
       
     end
   end

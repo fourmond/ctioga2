@@ -108,7 +108,7 @@ module CTioga2
           attr_accessor :target
           
           # _target_ is the name of the target, which can be of _type_
-          # 'group', 'command', 'backend', 'type' and 'url'
+          # 'group', 'command', 'backend', 'type', 'function' and 'url'
           def initialize(doc, target, type)
             super(doc)
             if type =~ /url/
@@ -279,7 +279,7 @@ module CTioga2
         protected 
 
         # A few constants to help writing out the paragraph markup
-        LinkRE = /\{(group|type|command|backend|url):\s*([^}]+?)\s*\}/
+        LinkRE = /\{(group|type|command|backend|url|function):\s*([^}]+?)\s*\}/
 
         MarkOnceRE = /@([^@]+)@/
         

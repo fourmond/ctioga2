@@ -44,6 +44,9 @@ module CTioga2
         # Wether or not to ignore blacklisted commands
         attr_accessor :ignore_blacklisted
 
+        # The functions
+        attr_accessor :functions
+
         # Create a Doc object caring about the current state of
         # registered commands and such.
         def initialize
@@ -51,6 +54,7 @@ module CTioga2
           @groups = Interpreter::groups
           @types = Interpreter::types
           @backends = Data::Backends::Backend::list_backends
+          @functions = Function::functions
 
           @ignore_blacklisted = ! (ENV.key?("CT2_DEV") && 
                                    ! ENV["CT2_DEV"].empty?)

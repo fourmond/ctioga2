@@ -23,10 +23,33 @@ module CTioga2
     end
 
     FuncEval.describe <<EOD
+Evaluate its argument as Ruby code
 
+# a := $(eval 2 + 2)
+# # a is now 4
+
+Keep in mind that variables in @ctioga2@ work by plain text replacement. 
+They have no type. In particular, while this will work:
+
+# a := 3
+# b := $(eval $(a) * 3)
+# # b is now 9
+
+Doing the same kind of things with text will be somewhat not satisfying:
+
+# a := "two words"
+# b := $(eval $(a).split(/ /).first)
+
+Running this will give the following syntax error:
+
+@ [FATAL] (eval):1: syntax error, unexpected $end, expecting ')'
+@ two words.split(/ /
+@                    ^ while processing line 2 in file 'c.ct2'
+
+Doing it right would require the use of a decent amount of quotes.
 EOD
 
-    FuncPoint = Function.new("point", "Get dataset information") do |pm, what, spec, *rest|
+    FuncPoint = Function.new("point", "Get dataset point information") do |pm, what, spec, *rest|
       dataset = if rest.first
                   pm.data_stack.stored_dataset(rest.first)
                 else
@@ -49,6 +72,32 @@ EOD
       end
 
     end
+
+    FuncPoint.describe <<EOD
+
+Returns the requested information about the given point in a
+dataset. Run this way:
+
+# $(point x @234)
+
+The first argument, here @x@ tells what we want to know about the
+given point: its @x@ value (passing @x@), its @y@ value (passing @y@),
+both its @x@ and @y@ ready to be used as coordinates for drawing
+commands using @xy@. For instance, to draw a circle marker right in
+the middle of the last dataset plotted, just run
+
+# draw-marker $(point xy 0.5) Circle
+
+The second argument specifies a dataset point, just like for 
+{type: data-point}.
+
+An optional third argument specifies the dataset from which one wants
+the point information. Note that the dataset can also be specified
+within the second argument, but it may be more readable to do it as an
+optional third. It is parsed as {type: stored-dataset}
+
+
+EOD
 
 
     

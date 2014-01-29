@@ -46,6 +46,7 @@ module CTioga2
           @types_url = "types.html"
           @commands_url = "commands.html"
           @backends_url = "backends.html"
+          @functions_url = "functions.html"
         end
 
         def write_page_menu(opts, out)
@@ -57,6 +58,30 @@ module CTioga2
         def write_page(opts, out)
           if !opts['page-menu'] or opts['page-menu'] =~ /page|full/i
             yield out
+          end
+        end
+
+        def write_functions(opts, out = STDOUT)
+          funcs = @doc.functions
+          names = funcs.keys.sort
+          
+          write_page_menu(opts, out) do |out|
+            out.puts "<div class='quick-jump'>"
+            out.puts "<h3>Quick jump</h3>"
+            out.puts "<ul>\n"
+            for n in names
+              out.puts "<li><a href='#func-#{n}'>#{n}</a></li>\n"
+            end
+            out.puts "</ul>\n"
+            out.puts "</div>"
+          end
+          write_page(opts, out) do |out|
+            for n in names
+              f = funcs[n]
+              out.puts 
+              out.puts "<h3 class='function' id='func-#{n}'>#{n} - #{f.short_description}</h3>"
+              out.puts markup_to_html(f.description)
+            end
           end
         end
 
@@ -267,6 +292,8 @@ module CTioga2
               case it.target
               when Command
                 link = "#{@commands_url}#command-#{it.target.name}"
+              when Function
+                link = "#{@functions_url}#func-#{it.target.name}"
               when CommandGroup
                 link = "#{@commands_url}#group-#{it.target.id}"
               when CommandType

@@ -65,6 +65,18 @@ EOH
 Prints the HTML documentation for group and commands to standard output.
 EOH
 
+      WriteHTMLFunctions = 
+        Cmd.new("write-html-functions", nil, "--write-html-functions", 
+                [], WriteHTMLOptions) do |plotmaker, opts|
+        html = HTML.new(plotmaker.interpreter.doc)
+        html.write_functions(opts)
+      end
+      
+      WriteHTMLFunctions.describe("HTML documentation for functions",
+                                 <<EOH, DocumentationGenerationGroup)
+Prints the HTML documentation for functions.
+EOH
+
       WriteHTMLTypes = 
         Cmd.new("write-html-types", nil, "--write-html-types", 
                 [], WriteHTMLOptions) do |plotmaker, opts|
