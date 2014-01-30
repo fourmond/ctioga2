@@ -27,6 +27,8 @@ require 'open3'
 require 'fileutils'
 require 'optparse'
 
+require 'shellwords'
+
 # Path to ctioga2 executable
 ct2 = "ctioga2"
 
@@ -84,6 +86,13 @@ use_pdftoppm = false
 # file over and over again.
 store_all = true
 
+# Codec for ffmpeg
+codec = nil
+
+# Bitrate for ffmpeg
+bitrate = nil
+
+fargs = []
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #$0 [options] file.ct2 arguments..."
 
@@ -112,6 +121,18 @@ opts = OptionParser.new do |opts|
 
   opts.on("", "--[no-]store", "To store all or not..") do |v|
     store_all = v
+  end
+
+  opts.on("-b", "--bitrate RATE", "Bitrate (indicative)") do |v|
+    bitrate = v
+  end
+
+  opts.on("", "--codec CODEC", "Target codec") do |v|
+    codec = v
+  end
+
+  opts.on("", "--ffmpeg-args ARGS", "Extra ffmpeg args") do |v|
+    fargs += Shellwords.split(v)
   end
 
 end
@@ -160,9 +181,20 @@ FileUtils::mkpath(tmpdir)
 
 # @todo Use other encoding programs !
 # @todo bitrate control
-encoder = IO::popen(["ffmpeg", '-y', "-f", "rawvideo", 
-                     "-r", "25", "-s", size, "-i", "-",
-                     target], "wb")
+
+ffmpeg_args = ["ffmpeg", '-y', "-f", "rawvideo", 
+        "-r", "25", "-s", size, "-i", "-"]
+if bitrate
+  ffmpeg_args << "-b" << bitrate
+end
+if codec
+  ffmpeg_args << "-vcodec" << codec
+end
+
+ffmpeg_args += fargs
+ffmpeg_args << target
+
+encoder = IO::popen(ffmpeg_args, "wb")
 
 format = if store_all 
            "#{tmpdir}/file-%04d"
