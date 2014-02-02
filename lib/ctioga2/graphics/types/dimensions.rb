@@ -81,6 +81,13 @@ module CTioga2
           return fig/t.default_text_height_dy
         end
 
+        # Converts the dimension into big points
+        def to_bp(t, orientation = nil)
+          orientation ||= @orientation
+          return t.send("convert_figure_to_output_d#{orientation}", 
+                        to_figure(t, orientation)) / 10.0
+        end
+
         # Converts the Dimension to the *frame* coordinates of the
         # *current* frame in _t_.
         def to_frame(t, orientation = nil)

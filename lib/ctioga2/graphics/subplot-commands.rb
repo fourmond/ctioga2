@@ -57,6 +57,22 @@ When the {command: frame-margins} is set to automatic, ctioga2 leaves
 that much space around the plot on the sides where there are no labels.
 EOH
 
+    TAACommand = 
+      Cmd.new("text-auto-adjust",nil,"--text-auto-adjust", 
+              [
+               CmdArg.new('boolean'),
+              ]) do |plotmaker, tf|
+      
+      Styles::PlotStyle.current_plot_style(plotmaker).text_auto_adjust = tf
+    end
+
+    TAACommand.describe('Enables or disables the automatic detection of text size',
+                            <<EOH, SubplotsGroup)
+When this is on (the default), @ctioga2@ tries to be smart about the
+size of the text bits around the plot. However, this can be bothersome
+at times, so you can disable that with this command.
+EOH
+
 
     InsetCommand =         
       Cmd.new("inset",nil,"--inset", 

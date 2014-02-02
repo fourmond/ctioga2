@@ -94,10 +94,7 @@ module CTioga2
             return @subframe
           else
             if @prev_subframe
-              a = @style.compute_margins(t, @prev_subframe)
-              # p [a.to_frame_margins(t), @prev_subframe.to_frame_margins(t)]
-              # @prev_subframe
-              a
+              @style.compute_margins(t, @prev_subframe)
             else
               @prev_subframe = @style.estimate_margins(t)
               return @prev_subframe
