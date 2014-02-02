@@ -400,7 +400,9 @@ module CTioga2
     # coordinates.
     #
     # Padding in big points
-    def update_margins(t, margins, padding = 2)
+    #
+    # Min is the minimum size, also in big points. 
+    def update_margins(t, margins, padding = 2, min = 4)
       compute_bb(t)
       left, top, right, bottom = *margins.to_frame_coordinates(t)
       
@@ -408,34 +410,19 @@ module CTioga2
       xr = 0.1 * t.convert_page_to_output_x(t.convert_frame_to_page_x(right))
       yt = 0.1 * t.convert_page_to_output_y(t.convert_frame_to_page_y(top))
       yb = 0.1 * t.convert_page_to_output_y(t.convert_frame_to_page_y(bottom))
-      
-      dxl = ( 
-             xl > @bb[0] ? 
-             Graphics::Types::Dimension.new(:bp, xl - @bb[0] + padding) : 
-             Graphics::Types::Dimension.new(:bp, 0)
-            )
 
-      dxr = ( 
-             xr < @bb[2] ? 
-             Graphics::Types::Dimension.new(:bp, @bb[2] - xr  + padding) : 
-             Graphics::Types::Dimension.new(:bp, 0)
-            )
-
-      dyb = ( 
-             yb > @bb[1] ? 
-             Graphics::Types::Dimension.new(:bp, yb - @bb[1] + padding) : 
-             Graphics::Types::Dimension.new(:bp, 0)
-            )
-
-      dyt = ( 
-             yt < @bb[3] ? 
-             Graphics::Types::Dimension.new(:bp, @bb[3] - yt + padding) : 
-             Graphics::Types::Dimension.new(:bp, 0)
-            )
-
+      vals = [ xl - @bb[0], @bb[2] - xr, @bb[3] - yt, yb - @bb[1]].map do |x|
+        x += padding
+        x = if x > min
+              x
+            else
+              min
+            end
+        Graphics::Types::Dimension.new(:bp, x)
+      end
 
       return Graphics::Types::MarginsBox.
-        new(dxl, dxr, dyt, dyb)
+        new(*vals)
     end
 
 
