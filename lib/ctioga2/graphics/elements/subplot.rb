@@ -54,9 +54,12 @@ module CTioga2
 
           @subframe = nil       # Automatic by default.
 
+          @prev_subframe = nil
+
           @style = style || Styles::PlotStyle.new
 
           @user_boundaries = {}
+
         end
 
         # Returns the boundaries that apply for the given _curve_ --
@@ -87,7 +90,19 @@ module CTioga2
         end
 
         def actual_subframe(t)
-          return @subframe || @style.estimate_margins(t)
+          if @subframe
+            return @subframe
+          else
+            if @prev_subframe
+              a = @style.compute_margins(t, @prev_subframe)
+              # p [a.to_frame_margins(t), @prev_subframe.to_frame_margins(t)]
+              @prev_subframe
+              # a
+            else
+              @prev_subframe = @style.estimate_margins(t)
+              return @prev_subframe
+            end
+          end
         end
 
         # In general, subplot's boundaries do not count for the parent

@@ -76,6 +76,9 @@ module CTioga2
         # mode. A Dimension.
         attr_accessor :padding
 
+
+        @@current_index = 0
+
         def initialize
           # Default style for the plots.
           @axes = {}
@@ -112,6 +115,16 @@ module CTioga2
 
           # A padding of 4bp ? Why ?? Why not ?
           @padding = Types::Dimension.new(:bp, 4)
+
+
+          
+          @text_size_index = @@current_index
+          @@current_index += 1
+
+          # Inside stuff
+          @text_sizes = TextSizeWatcher.new
+          @text_sizes.watch("title-#{@text_size_index}")
+
         end
 
         # Apply (destructively) the current transformations to the
@@ -119,7 +132,6 @@ module CTioga2
         def apply_transforms!(dataset)
           @transforms.transform_2d!(dataset)
         end
-
 
         # Whether to use log scale for the given axis.
         #
@@ -235,7 +247,7 @@ module CTioga2
             t.context do
               begin
                 axis.set_bounds_for_axis(t, bounds[which])
-                axis.draw_axis(t)
+                axis.draw_axis(t, @text_sizes)
               rescue Exception => e
                 error { "Impossible to draw axis #{which}: #{e.message}" }
                 debug { "Full message: #{e.inspect}\n#{e.backtrace.join("\n")}" }
@@ -243,7 +255,7 @@ module CTioga2
             end
           end
           # We draw the title last
-          title.draw(t, 'title')
+          title.draw(t, 'title', "title-#{@text_size_index}")
         end
 
         # Draws all axes background lines for the plot.
@@ -300,6 +312,14 @@ module CTioga2
             end
           end
           return box
+        end
+
+        # Computes the margins based on the text information.
+        #
+        # This is very different from the one above, since this one
+        # relies on measured texts to get it right !
+        def compute_margins(t, prev_margins)
+          return @text_sizes.update_margins(t, prev_margins)
         end
 
         protected

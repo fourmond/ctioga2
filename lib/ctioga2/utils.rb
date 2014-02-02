@@ -17,6 +17,8 @@ require 'rbconfig'
 # The version
 require 'ctioga2/version'
 
+require 'set'
+
 
 module CTioga2
 
@@ -313,6 +315,7 @@ module CTioga2
       end
       return ret
     end
+
   end
     
 
@@ -369,6 +372,112 @@ module CTioga2
       return ret
     end
 
+  end
+
+
+  # This class watches over a list of named texts and can be queried
+  # for size/position information.
+  class TextSizeWatcher
+
+    # Watched text names
+    attr_accessor :watched_names
+
+    # A left, bottom, right, up bounding box (in output coordinates
+    # divided by 10)
+    attr_accessor :bb
+
+    def initialize
+      @watched_names = Set.new
+    end
+
+    def watch(*names)
+      @watched_names += names
+    end
+
+    # Given the MarginsBox with which the text was drawn, returns
+    # another MarginsBox item that specifies how much the text extends
+    # from the previous box. Works using the current frame
+    # coordinates.
+    #
+    # Padding in big points
+    def update_margins(t, margins, padding = 2)
+      compute_bb(t)
+      left, top, right, bottom = *margins.to_frame_coordinates(t)
+      
+      xl = 0.1 * t.convert_page_to_output_x(t.convert_frame_to_page_x(left))
+      xr = 0.1 * t.convert_page_to_output_x(t.convert_frame_to_page_x(right))
+      yt = 0.1 * t.convert_page_to_output_y(t.convert_frame_to_page_y(top))
+      yb = 0.1 * t.convert_page_to_output_y(t.convert_frame_to_page_y(bottom))
+      
+      dxl = ( 
+             xl > @bb[0] ? 
+             Graphics::Types::Dimension.new(:bp, xl - @bb[0] + padding) : 
+             Graphics::Types::Dimension.new(:bp, 0)
+            )
+
+      dxr = ( 
+             xr < @bb[2] ? 
+             Graphics::Types::Dimension.new(:bp, @bb[2] - xr  + padding) : 
+             Graphics::Types::Dimension.new(:bp, 0)
+            )
+
+      dyb = ( 
+             yb > @bb[1] ? 
+             Graphics::Types::Dimension.new(:bp, yb - @bb[1] + padding) : 
+             Graphics::Types::Dimension.new(:bp, 0)
+            )
+
+      dyt = ( 
+             yt < @bb[3] ? 
+             Graphics::Types::Dimension.new(:bp, @bb[3] - yt + padding) : 
+             Graphics::Types::Dimension.new(:bp, 0)
+            )
+
+
+      return Graphics::Types::MarginsBox.
+        new(dxl, dxr, dyt, dyb)
+    end
+
+
+    def compute_bb(t)
+
+      @bb = nil
+
+      for w in @watched_names
+        info = t.get_text_size(w)
+        if info.key? 'points'
+          # We need to take every single point, since for rotated
+          # text, potentially all coordinates are different
+          for p in info['points']
+            update_bb(*p)
+          end
+        end
+      end
+    end
+
+
+    protected
+    
+    # update the current bounding box to take into account the given point
+    def update_bb(x, y)
+      if ! @bb
+        @bb = [x,y,x,y]
+      else
+        if x < @bb[0]
+          @bb[0] = x
+        elsif x > @bb[2]
+          @bb[2] = x
+        end
+        if y < @bb[1]
+          @bb[1] = y
+        elsif y > @bb[3]
+          @bb[3] = y
+        end
+      end
+    end
+
+    
+    
   end
 
 end

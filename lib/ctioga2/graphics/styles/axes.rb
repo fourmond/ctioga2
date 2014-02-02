@@ -81,6 +81,7 @@ module CTioga2
         # * a transform is set
         # * ticks are set
 
+        @@text_size_index = 0
 
         # Creates a new AxisStyle object at the given location with
         # the given style.
@@ -94,6 +95,9 @@ module CTioga2
           @log = false
           @ticks_side = {}
           @ticks = AxisTicks.new
+
+          @index = @@text_size_index
+          @@text_size_index += 1
         end
 
         # Draws the axis within the current plot. Boundaries are the
@@ -105,7 +109,9 @@ module CTioga2
         #   where it should be...
         # * non-linear axes (or linear, for that matter, but with
         #   a transformation)
-        def draw_axis(t)
+        #
+        # _watcher_ is a TextSizeWatcher object.
+        def draw_axis(t, watcher = nil)
           spec = get_axis_specification(t)
 
           info = t.axis_information(spec)
@@ -129,7 +135,11 @@ minor_tick_length minor_tick_width)
           t.show_axis(spec)
           @axis_label.loc = @location
           default = vertical? ? 'ylabel' : 'xlabel'
-          @axis_label.draw(t, default)
+          nm = "axis-label#{@index}"
+          @axis_label.draw(t, default, nm)
+          if watcher
+            watcher.watch(nm)
+          end
         end
 
         # Sets the current boundaries of the _t_ object to the _range_
