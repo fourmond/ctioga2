@@ -57,10 +57,29 @@ When the {command: frame-margins} is set to automatic, ctioga2 leaves
 that much space around the plot on the sides where there are no labels.
 EOH
 
+    
+    TARE = {
+      /^\s*old/i => :old,
+      /^\s*both/i => :both,
+      /^\s*measure/i => :measure,
+    }
+
+    TEType = 
+      CmdType.new('text-adjust-mode', 
+                  {:type => :re_list,
+                    :list => TARE}, <<EOD)
+Mode for text size adjustment
+ * @old@ for the old style heuristics
+ * @both@ for both the old style heuristics and the measures, taking
+   whichever of those is the biggest
+ * @measure@ for only measured text size (but watch out for axis ticks !)
+EOD
+
+
     TAACommand = 
-      Cmd.new("text-auto-adjust",nil,"--text-auto-adjust", 
+      Cmd.new("text-adjust-mode",nil,"--text-adjust-mode", 
               [
-               CmdArg.new('boolean'),
+               CmdArg.new('text-adjust-mode'),
               ]) do |plotmaker, tf|
       
       Styles::PlotStyle.current_plot_style(plotmaker).text_auto_adjust = tf

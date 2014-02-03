@@ -76,7 +76,7 @@ module CTioga2
         # mode. A Dimension.
         attr_accessor :padding
 
-        # If false, disables the accurate detection of text size
+        # Mode for auto-adjust
         attr_accessor :text_auto_adjust
 
 
@@ -128,7 +128,7 @@ module CTioga2
           @text_sizes = TextSizeWatcher.new
           @text_sizes.watch("title-#{@text_size_index}")
 
-          @text_auto_adjust = true
+          @text_auto_adjust = :both
 
         end
 
@@ -324,15 +324,22 @@ module CTioga2
         # This is very different from the one above, since this one
         # relies on measured texts to get it right !
         def compute_margins(t, prev_margins)
-          if ! @text_auto_adjust
-            return estimate_margins(t)
+          margins = estimate_margins(t)
+          if @text_auto_adjust == :old
+            return margins
           else
             pad = if @padding
                     @padding.to_bp(t)
                   else
                     4
                   end
-            return @text_sizes.update_margins(t, prev_margins, pad)
+            nm =  @text_sizes.update_margins(t, prev_margins, pad)
+
+            # We include the old margins
+            if @text_auto_adjust != :measure
+              nm.expand_to!(t, margins)
+            end
+            return nm
           end
         end
 

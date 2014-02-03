@@ -91,6 +91,19 @@ module CTioga2
           return [@left, @right, @top, @bottom]
         end
 
+        # Augments the margins so that they also encompass those given
+        # in other. Based on the current interpretation of the
+        # measures as bp.
+        def expand_to!(t, other)
+          for w in %w(left right top bottom)
+            mine = self.send(w)
+            theirs = other.send(w)
+            if mine.to_bp(t) < theirs.to_bp(t)
+              self.send("#{w}=", theirs)
+            end
+          end
+        end
+
       end
 
       # A box defined by an AlignedPoint and two dimensions
