@@ -104,6 +104,10 @@ opts = OptionParser.new do |opts|
     tmpdir = t
   end
 
+  opts.on("", "--version", "Prints version string") do 
+    puts "0.0"
+  end
+
   opts.on("-p", "--[no-]pdftoppm", "Whether or not to use pdftoppm") do |t|
     use_pdftoppm = t
   end

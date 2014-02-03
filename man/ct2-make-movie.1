@@ -1,0 +1,113 @@
+.TH CT2-MAKE-MOVIE "1" "February 2014" "ct2-make-movie 0.0" "User Commands"
+.SH NAME
+ct2-make-movie \- manual page for ct2-make-movie 
+.SH SYNOPSIS
+.B ct2-make-movie
+[\fIoptions\fR] \fIfile.ct2 arguments\fR...
+
+.SH DESCRIPTION
+
+Automates the creation of movies from a single 
+.B ctioga2
+command file.
+
+Running 
+.I ct2-make-movie plot.ct2 file1.dat file2.dat file3.dat ...
+runs 
+.B ctioga2 
+repeatedly with the value of the variable
+.I $(arg)
+taking the arguments given on the command-line, ie.
+.I file1.dat\fR,
+then 
+.I file2.dat\fR,
+and so on.
+
+It is also possible to have 
+.B ct2-make-movie
+generate its arguments itself:
+.I ct2-make-movie plot.ct2 0..10:101
+will have 
+.I $(arg)
+going from 0 to 10 through 101 steps.
+
+In each case, the variable
+.I $(index)
+is set to the current number of the frame being drawn, starting from
+0. For instance, in the above example, it would range from 0 to 100.
+
+
+The PDF files produced by 
+.B ctioga2
+are converted by ImageMagick's
+.B convert
+and fed to a
+.B ffmpeg
+encoding pipe.
+
+
+.SH OPTIONS
+.TP
+\fB\-t\fR, \fB\-\-target\fR FILE
+Target video file. Defaults to the 
+.B ctioga2
+file name given, with the suffix 
+.I .ct2
+replaced by
+.I .avi\fR.
+.TP
+\fB\-\-dir\fR DIR
+Temporary directory for storage
+.TP
+\fB\-\-version\fR
+Prints the version of
+.B ct2-make-movie\fR.
+.TP
+\fB\-p\fR, \fB\-\-[no\-]pdftoppm\fR
+Using
+.B pdftoppm
+to rasterize the PDF file rather than 
+.B convert
+can lead to very significant speed improvements, depending on your
+version of
+.B gs\fR.
+Using this option enables the use of
+.B pdftoppm\fR.
+.B convert
+remains necessary for the processing, though.
+.TP
+\fB\-\-page\-size\fR SIZE
+All
+.I page-size
+instructions in the 
+.B ctioga2
+command file are ignored. Using this option allow you to set the
+target page size (in TeX dimensions).
+.TP
+\fB\-\-resolution\fR RES
+Set target resolution (overridden to some extent by page\-size)
+.TP
+\fB\-\-[no\-]store\fR
+When on (by default), 
+.B ct2-make-movie
+gives a different name to all the generated PDF files, which can be
+handy to see what has happened, but can take up quite a lot of disk
+space too. When this option is disabled, the same PDF file is
+rewritten over and over again.
+.TP
+\fB\-b\fR, \fB\-\-bitrate\fR RATE
+Bitrate (indicative). Passed directly to
+.BR ffmpeg .
+.TP
+\fB\-\-codec\fR CODEC
+Target codec.
+.TP
+\fB\-\-ffmpeg\-args\fR ARGS
+Extra ffmpeg args.
+
+.SH "SEE ALSO"
+.BR convert (1),
+.BR pdftoppm (1),
+.BR ffmpeg (1),
+.BR ctioga2 (1)
+
