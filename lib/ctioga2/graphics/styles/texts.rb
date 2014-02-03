@@ -1,5 +1,5 @@
 # texts.rb: style for textual objects
-# copyright (c) 2009 by Vincent Fourmond
+# copyright (c) 2009, 2010, 2012, 2013, 2014 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,6 +47,9 @@ module CTioga2
         # The horizontal alignment
         typed_attribute :justification, 'justification'
 
+        # A text width
+        typed_attribute :text_width, "text"
+
         # Draw the _text_ at the given location with the given style.
         # If _y_ is _nil_, then _x_or_loc_ is taken to be a location
         # (see FigureMaker#show_text).
@@ -81,6 +84,7 @@ module CTioga2
             dim = dict['scale']
             dict['scale'] = dim.to_dy(t)
           end
+          dict.delete('text_width')
           return dict
         end
 
@@ -89,6 +93,10 @@ module CTioga2
         # Prepares the dictionnary for use with show_text
         def prepare_show_text_dict(t, text, x_or_loc, y = nil, measure = nil)
           dict = self.hash_for_tioga(t)
+          if @text_width
+            text = "\\parbox{#{@text_width}}{#{text}}"
+          end
+
           dict['text'] = text
 
           if y
