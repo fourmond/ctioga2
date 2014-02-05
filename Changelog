@@ -1,3 +1,17 @@
+ctioga2 (0.9)
+
+  * A --set command to set variable values from the command-line
+  * A basic ct2-make-movie script to facilitate the construction of movies
+    from a ctioga2 plot
+  * Definition of variables using ?= and ?:= that do not erase the
+    contents of variables if they already exist
+  * Makefile-like functions: eval and point
+  * More control on the position of major and minor ticks
+  * Automatic detection of text size for titles, labels and the like
+  * Minor bug fixes and documentation updates
+
+ -- Vincent <vincent.fourmond@9online.fr>  Wed  5 Feb 23:12:22 CET 2014
+
 ctioga2 (0.8)
 
   * New plot type for making histograms (including cumulative histograms)

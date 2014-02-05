@@ -335,7 +335,8 @@ module CTioga2
                   end
             nm =  @text_sizes.update_margins(t, prev_margins, pad)
 
-            # We include the old margins
+            # We include the old margins, unless we have the :measure
+            # text adjust mode
             if @text_auto_adjust != :measure
               nm.expand_to!(t, margins)
             end
