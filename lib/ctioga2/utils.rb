@@ -404,6 +404,10 @@ module CTioga2
     # Min is the minimum size, also in big points. 
     def update_margins(t, margins, padding = 2, min = 4)
       compute_bb(t)
+      if ! @bb
+        # Don't change anything if the bounding box does not exist
+        return margins
+      end
       left, top, right, bottom = *margins.to_frame_coordinates(t)
       
       xl = 0.1 * t.convert_page_to_output_x(t.convert_frame_to_page_x(left))

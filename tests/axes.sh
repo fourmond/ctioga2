@@ -37,6 +37,12 @@ $ct -t 'Tweaking the aspect of labels ' \
     -y '$y$ values' /shift=5mm /scale=5mm \
     --label-style x /scale=7mm 
 
+# Multiline labels
+$ct -t 'A very long title about quite uninteresting things ' \
+    /text-width=6cm /alignment=bottom \
+    -x '$x$ values'  'sin(x)' \
+    -y '$y$ values'
+
 
 # # Alternative axes
 # $ct 'sin(x)' --x2 --y2 'x**2' --yrange -20:50 'cos(x)' /yaxis left \
