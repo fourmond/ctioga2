@@ -9,8 +9,9 @@ ctioga2 (0.9)
   * More control on the position of major and minor ticks
   * Automatic detection of text size for titles, labels and the like
   * Minor bug fixes and documentation updates
+  * Now default to 6bp padding
 
- -- Vincent <vincent.fourmond@9online.fr>  Wed  5 Feb 23:12:22 CET 2014
+ -- Vincent <vincent.fourmond@9online.fr>  Thu  6 Feb 21:19:34 CET 2014
 
 ctioga2 (0.8)
 

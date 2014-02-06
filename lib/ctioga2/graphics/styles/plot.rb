@@ -116,8 +116,8 @@ module CTioga2
           @background = 
             StyleSheet.style_for(BackgroundStyle, 'background')
 
-          # A padding of 4bp ? Why ?? Why not ?
-          @padding = Types::Dimension.new(:bp, 4)
+          # A padding of 6bp ? Why ?? Why not ?
+          @padding = Types::Dimension.new(:bp, 6)
 
 
           
