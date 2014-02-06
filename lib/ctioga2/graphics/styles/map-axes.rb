@@ -67,7 +67,7 @@ module CTioga2
 
         end
 
-        def draw_axis(t)
+        def draw_axis(t, watcher = nil)
           # Not beautiful at all
           size = Types::Dimension.new(:dy, extension(t), 
                                       @location.orientation)
