@@ -307,7 +307,7 @@ module CTioga2
               exts << @title.label_extension(t, 'title', @title.loc) * 
                 (@text_scale || 1)
             end
-            Types::Dimension.new(:dy, exts.max)
+            Types::Dimension.new(:dy, exts.max || 0)
           end
 
           box = Types::MarginsBox.new(*margins)

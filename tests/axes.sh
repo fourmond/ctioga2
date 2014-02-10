@@ -22,6 +22,13 @@ $ct -t 'See how to specify the second Y label' \
 # @todo this shows it is cumbersome to change all the colors in one go:
 # providing a --axis-color that just works would be great.
 
+$ct -t 'At origins' \
+    --axis-style left /location=x0 \
+    --top none --right none \
+    -x '$x$ values' '2*sin(x)+1' -y '$y$ values' \
+
+
+
 # See how the meaning of y and yaxis is dependent on the default axis.
 $ct -t 'With different colors for the axes' \
     -x '$x$ values' 'sin(x)' -y '$y_1$ values' /color Red \

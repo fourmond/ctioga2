@@ -197,8 +197,17 @@ module CTioga2
         #
         # So far, no real parsing
         def self.from_text(str)
-          str = str.gsub(/-/,"_") # Avoid problems with frozen strings
-          return PlotLocation.new(str.to_sym)
+          loc = nil
+          case str
+          when /^\s*(left|right|top|bottom|at_y_origin|at_x_origin)\s*$/i
+            loc = $1.downcase.to_sym
+          when /^s*(x|y)0\s*$/i
+            loc = "at_#{$1}_origin".downcase.to_sym
+          end
+          if ! loc
+            raise "Unkown spec for axis location: '#{str}'"
+          end
+          return PlotLocation.new(loc)
         end
 
         
@@ -213,6 +222,8 @@ A position on the plot, referenced with respect to the sides. Can be:
  * @right@
  * @top@
  * @bottom@
+ * @x0@, for the @x = 0@ position
+ * @y0@, for the @y = 0@ position
 
 In addition, there will one day be the possibility to specify an 
 offset from these locations. But that is still something to do.

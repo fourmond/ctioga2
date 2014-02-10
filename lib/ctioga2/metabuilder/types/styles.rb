@@ -141,7 +141,7 @@ module CTioga2
         include Tioga::FigureConstants
 
         ValidTypes = {
-          /hidden|off/i => AXIS_HIDDEN,
+          /hidden|off|no|none/i => AXIS_HIDDEN,
           /line/i => AXIS_LINE_ONLY, 
           /ticks/i => AXIS_WITH_TICKS_ONLY,
           /major/i => AXIS_WITH_MAJOR_TICKS_ONLY, 
@@ -157,7 +157,7 @@ module CTioga2
                 return v
             end
           end
-          raise IncorrectInput, "Not an axis type: '#{str}'"
+          raise IncorrectInput, "Not an axis decoration: '#{str}'"
         end
       end
 
