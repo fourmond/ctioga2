@@ -114,7 +114,11 @@ module CTioga2
           
           # Now, create the command
           cmd_args = comp.map do |x|
-            CmdArg.new(x)
+            if x.respond_to?(:type)
+              x
+            else
+              CmdArg.new(x)
+            end
           end
 
           cmd_opts = {}
@@ -258,6 +262,68 @@ EOD
                   ) do |t, tail, head, style, options|
           style.draw_line(t, *( tail.to_figure_xy(t) + 
                           head.to_figure_xy(t) ))
+        end
+
+        AspectRatioRE = {
+          /ignore/i => :ignore,
+          /expand/i => :expand,
+          /contract/i => :contract,
+        }
+        
+        AspectRatioType = 
+          CmdType.new('aspect-ratio', 
+                      {:type => :re_list,
+                        :list => AspectRatioRE}, <<EOD)
+How the {command: draw-image} command respects the original image
+aspect ratio:
+ * @ignore@ (the default) ignores the original aspect ratio
+ * @expand@ expand the original box to respect aspect ratio
+ * @contract@ contract the original box to respect aspect ratio
+EOD
+        
+
+        ImageOptions = {
+          'aspect-ratio' => 'aspect-ratio',
+          'transparency' => 'float'
+        }
+
+        # @todo Make it styled ?
+        # @todo Use aspect-ratio, transparency, auto-turn, and so
+        # on...
+        primitive("image", "image", 
+                  [ CmdArg.new('text', 'file'), 
+                    CmdArg.new('point', 'top-left'), 
+                    CmdArg.new('point', 'bottom-right')
+                  ], 
+                  ImageOptions) do |t, file, tl, br, options|
+          info = t.jpg_info(file)
+          if ! info
+            error { "Could not read JPG file #{file}" }
+          else
+            ul = tl.to_figure_xy(t)
+            lr = br.to_figure_xy(t)
+
+            # Here, we swap coords to have the ul and lr always the
+            # right way...
+            if ul[0] > lr[0]
+              ul[0], lr[0] = lr[0], ul[0]
+            end
+            if ul[1] < lr[1]
+              ul[1], lr[1] = lr[1], ul[1]
+            end
+
+            ll = [ul[0], lr[1]]
+
+            dict = {
+              'ul' => ul,
+              'll' => ll,
+              'lr' => lr,
+              'jpg' => file,
+              'width' => info['width'],
+              'height' => info['height']
+            }
+            t.show_image(dict)
+          end
         end
 
         # Here, we need to add deprecated options for backward
