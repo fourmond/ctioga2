@@ -113,6 +113,26 @@ module CTioga2
         end
       end
 
+      class Rect 
+        attr_accessor :tl
+        attr_accessor :br
+
+        def initialize(tl, br)
+          @tl = tl
+          @br = br
+        end
+
+        # Returns the [height, width] of the rectangle in postscript points
+        def dimensions(t)
+          xl, yt = @tl.to_figure_xy(t)
+          xr, yb = @br.to_figure_xy(t)
+
+          return [t.convert_figure_to_output_dx(xr - xl) * 10,
+                  t.convert_figure_to_output_dy(yb - yt) * 10]
+        end
+
+      end
+
       # A Point, but with alignment facilities.
       class AlignedPoint < Point
         # Vertical alignement (:top, :center, :bottom)
