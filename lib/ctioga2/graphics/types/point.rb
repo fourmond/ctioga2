@@ -131,6 +131,72 @@ module CTioga2
                   t.convert_figure_to_output_dy(yb - yt) * 10]
         end
 
+        # Returns an array of [ul, ll, lr] coordinates. If an aspect
+        # ratio is specified, the coordinates will be expanded or
+        # contracted to fit the aspect ratio (keeping the center
+        # identical).
+        def make_corners(t, swap = false, ratio_pol = :ignore, 
+                         ratio = nil)
+          
+          ul = @tl.to_figure_xy(t)
+          lr = @br.to_figure_xy(t)
+
+          width, height = *dimensions(t)
+
+          # First, swap the coords
+          if swap
+            if width < 0
+              ul[0], lr[0] = lr[0], ul[0]
+            end
+            if height > 0
+              ul[1], lr[1] = lr[1], ul[1]
+            end
+          end
+
+          # Now, we take the aspect ratio into account
+          if ratio && ratio_pol != :ignore
+
+            xc = 0.5 * (ul[0] + lr[0])
+            yc = 0.5 * (ul[1] + lr[1])
+            dx = lr[0] - ul[0]
+            dy = lr[1] - ul[1]
+
+            fact = ((width/height) / ratio).abs
+
+            what = nil
+
+            if ratio_pol == :expand
+              if fact > 1       # must increase height
+                what = :y
+              else
+                fact = 1/fact
+                what = :x
+              end
+            elsif ratio_pol == :contract
+              if fact > 1       # must decrease width
+                what = :x
+                fact = 1/fact
+              else
+                what = :y
+              end
+            else
+              raise "Unkown aspect ratio policy: #{ratio_pol}"
+            end
+
+            if what == :y
+              lr[1] = yc + fact * 0.5 * dy
+              ul[1] = yc - fact * 0.5 * dy
+            else
+              lr[0] = xc + fact * 0.5 * dx
+              ul[0] = xc - fact * 0.5 * dx
+            end
+          end
+
+          ll = [ul[0], lr[1]]
+
+          return [ul, ll, lr]
+        end
+
       end
 
       # A Point, but with alignment facilities.
