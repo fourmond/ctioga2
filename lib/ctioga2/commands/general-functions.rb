@@ -65,6 +65,8 @@ EOD
         point.y.to_s
       when "xy", "XY"
         "%g,%g" % point.point
+      when "index", "idx"
+        point.index
       else
         # The \ are not strictly speaking necessary, but they make
         # ruby-mode happier
@@ -82,6 +84,7 @@ dataset. Run this way:
 
 The first argument, here @x@ tells what we want to know about the
 given point: its @x@ value (passing @x@), its @y@ value (passing @y@),
+its @index@ (by passing @index@ or @idx@)
 both its @x@ and @y@ ready to be used as coordinates for drawing
 commands using @xy@. For instance, to draw a circle marker right in
 the middle of the last dataset plotted, just run
