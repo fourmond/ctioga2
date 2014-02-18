@@ -173,11 +173,26 @@ module CTioga2
           # We wrap the call within a subplot
           t.subplot(frames.to_frame_margins(t)) do
 
+
             # Setup various aspects of the figure maker object.
             @style.setup_figure_maker(t)
             
-            # Manually creating the plot:
-            t.set_bounds(real_boundaries.to_a)
+            # 
+            if @style.frame_real_size
+              t.set_bounds([0.0, 1.0, 0.0, 1.0])
+              dx = t.convert_figure_to_output_dx(1.0)
+              dy = t.convert_figure_to_output_dy(1.0)
+              
+              frm = [0.0, dx/@style.frame_real_size, 
+                     -dy/@style.frame_real_size, 0.0]
+              @computed_boundaries = {
+                :bottom => Types::SimpleRange.new(frm[0], frm[1]),
+                :left => Types::SimpleRange.new(frm[2], frm[3]),
+              }                
+              t.set_bounds(frm)
+            else
+              t.set_bounds(real_boundaries.to_a)
+            end
 
             # First, gather up all elements by depth
 

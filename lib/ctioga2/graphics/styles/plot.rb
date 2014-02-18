@@ -79,6 +79,11 @@ module CTioga2
         # Mode for auto-adjust
         attr_accessor :text_auto_adjust
 
+        # If not nil, then the boundaries are computed from the real
+        # dimensions of the plot frame, using the given number as a
+        # conversion factor from the output dimensions.
+        attr_accessor :frame_real_size
+
 
         @@current_index = 0
 
@@ -319,6 +324,15 @@ module CTioga2
           return box
         end
 
+        # Clear all axes
+        def clear_axes()
+          [:left, :right, :top, :bottom].each do |loc|
+            style = get_axis_style(loc)
+            style.decoration = Tioga::FigureConstants::AXIS_HIDDEN
+            style.axis_label.text = false
+          end
+        end
+
         # Computes the margins based on the text information.
         #
         # This is very different from the one above, since this one
@@ -433,16 +447,28 @@ EOH
       ClearAxesCommand = 
           Cmd.new("clear-axes",nil,"--clear-axes"
                   ) do |plotmaker, opts|
-        [:left, :right, :top, :bottom].each do |loc|
-          style = AxisStyle.current_axis_style(plotmaker, loc)
-          style.decoration = Tioga::FigureConstants::AXIS_HIDDEN
-          style.axis_label.text = false
-        end
+        PlotStyle.current_plot_style(plotmaker).clear_axes
       end
       ClearAxesCommand.
         describe("Clear all axes",
                  <<"EOH", AxisGroup)
 Removes all the axes and their associated labels
+EOH
+
+
+      DrawingFrameCommand = 
+          Cmd.new("drawing-frame",nil,"--drawing-frame"
+                  ) do |plotmaker, opts|
+        style = PlotStyle.current_plot_style(plotmaker)
+        style.clear_axes
+        style.padding = nil
+        style.frame_real_size = 720.0/2.54 # 1 cm ?
+      end
+      DrawingFrameCommand.
+        describe("Setup a drawing frame",
+                 <<"EOH", AxisGroup)
+Setup a drawing frame, ie a frame in which the top-left point is at 0,0,
+with X and Y values positive over the whole frame, and counted in centimeters.
 EOH
 
       
