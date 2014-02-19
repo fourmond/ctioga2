@@ -54,7 +54,7 @@ module CTioga2
             raise "Invalid or empty dataset: #{which}"
           end
           if rel
-            idx = (rel * dataset.x.values.size).to_i
+            idx = (rel * (dataset.x.values.size - 1)).to_i
           end
           return DataPoint.new(dataset, idx)
         else
