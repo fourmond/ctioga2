@@ -147,8 +147,70 @@ module CTioga2
               l += 1
             end
           end
-            
+        end
+
+
+        TiogaPrimitiveCall.
+          primitive("line-style-list", 
+                    "the list of all named line styles", 
+                    [ 'point', 'dimension' ],
+                    ListCommonOptions) do |t, point, width, options|
+
+          cols = options['columns'] || 3
+
+          ox, oy = point.to_figure_xy(t)
+
+          # There's going to be a lot of common code here
+          padding = options['padding'] || 
+            Types::Dimension.from_text("5bp", :x)
+          pad_dx = padding.to_figure(t, :x)
+          col_dx = width.to_figure(t, :x)/cols
+          col_w = col_dx - pad_dx * (cols - 1)/cols
           
+
+          # Colors by alphabetic name...
+          colors = Graphics::LineStyles::constants.sort
+          colors -= Tioga::FigureConstants::constants
+          l = 0
+          cc = 0
+
+          scale = options['scale'] || 0.8
+
+          txt_dy = -Types::Dimension::from_text("1.2dy", :y).to_figure(t, :y) * scale
+          box_dy = -Types::Dimension::from_text("1.1dy", :y).to_figure(t, :y)
+
+          tdy = txt_dy + box_dy
+
+          for c in colors
+            color = Graphics::LineStyles::const_get(c)
+            next unless color.is_a? Array
+            
+            xb = ox + cc * col_dx 
+            yt = oy + l * tdy
+            ym = yt + txt_dy
+            t.show_text({
+                          'x' => xb + 0.5 * col_dx,
+                          'y' => 0.8*ym +0.2*yt,
+                          'text' => c.to_s.gsub(/_/, '\_'),
+                          'scale' => scale
+                        })
+
+            t.context do 
+              t.line_type = color
+              t.move_to_point(xb + 1.5 * pad_dx,
+                                     ym+box_dy*0.5)
+              t.append_point_to_path(xb +col_dx- 1.5 * pad_dx,
+                                     ym+box_dy*0.5)
+              t.stroke
+            end
+
+
+            cc += 1
+            if cc >= cols
+              cc = 0
+              l += 1
+            end
+          end
         end
       end
       
