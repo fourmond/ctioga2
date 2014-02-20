@@ -240,20 +240,20 @@ larger than the other ones, while the second row is four times larger
 than the first.
 EOH
 
-    ZoomCommand =         
-      Cmd.new("zoom-inset",nil,"--zoom-inset", 
-              [
-               CmdArg.new('box'),
-              ]) do |plotmaker, box|
-      subplot = plotmaker.root_object.subplot
-      subplot.subframe = box
-      raise YetUnimplemented.new("zooms are not yet implemented !")
-    end
+#     ZoomCommand =         
+#       Cmd.new("zoom-inset",nil,"--zoom-inset", 
+#               [
+#                CmdArg.new('box'),
+#               ]) do |plotmaker, box|
+#       subplot = plotmaker.root_object.subplot
+#       subplot.subframe = box
+#       raise YetUnimplemented.new("zooms are not yet implemented !")
+#     end
     
-    ZoomCommand.describe('Starts an inset ',
-                          <<EOD, SubplotsGroup)
-Zooms are currently not implemented yet.
-EOD
+#     ZoomCommand.describe('Starts an inset ',
+#                           <<EOD, SubplotsGroup)
+# Zooms are currently not implemented yet.
+# EOD
 
 
   end
