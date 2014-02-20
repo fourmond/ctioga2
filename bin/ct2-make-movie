@@ -139,6 +139,8 @@ encoders = [ EncodingJob.new ]
 cur_enc = encoders.first
 
 
+ct2_extra_args = []
+
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #$0 [options] file.ct2 arguments..."
 
@@ -194,6 +196,20 @@ opts = OptionParser.new do |opts|
 
   opts.on("", "--[no-]store", "To store all or not..") do |v|
     store_all = v
+  end
+
+
+  opts.on("", "--ctioga2-args ARGS", "Extra args for ctioga2") do |v|
+    ct2_extra_args += Shellwords.split(v)
+  end
+
+  opts.on("-s", "--set EXPR", "Sets the given variable") do |t|
+    l = t.split(/\s*=\s*/, 2)
+    if l.size != 2
+      puts "The argument of --set must be in the form 'variable=value'"
+      exit 1
+    end
+    ct2_extra_args += ['--set', *l]
   end
 
 
@@ -260,6 +276,7 @@ for f in args
   name = format % index
 
   ct2_cmdline = [ct2, 
+                 *ct2_extra_args,
                  "--set", "arg", f, 
                  "--set", "index", "#{index}", 
                 "-f", file, "--name", name, "-r", ct2_page_size]
