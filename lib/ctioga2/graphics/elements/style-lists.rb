@@ -61,7 +61,6 @@ module CTioga2
 
           tdy = txt_dy + box_dy
 
-          p colors
           for c in colors
             color = Tioga::ColorConstants::const_get(c)
             
@@ -88,7 +87,67 @@ module CTioga2
               l += 1
             end
           end
+        end
+
+        TiogaPrimitiveCall.
+          primitive("marker-list", 
+                    "the list of all named markers", 
+                    [ 'point', 'dimension' ],
+                    ListCommonOptions) do |t, point, width, options|
+
+          cols = options['columns'] || 3
+
+          ox, oy = point.to_figure_xy(t)
+
+          # There's going to be a lot of common code here
+          padding = options['padding'] || 
+            Types::Dimension.from_text("5bp", :x)
+          pad_dx = padding.to_figure(t, :x)
+          col_dx = width.to_figure(t, :x)/cols
+          col_w = col_dx - pad_dx * (cols - 1)/cols
           
+
+          # Colors by alphabetic name...
+          colors = Tioga::MarkerConstants::constants.sort
+          l = 0
+          cc = 0
+
+          scale = options['scale'] || 0.8
+
+          dy = -Types::Dimension::from_text("1.3dy", :y).to_figure(t, :y) * scale
+
+          m_dx = Types::Dimension::from_text("1.2dy", :x).to_figure(t, :x) * scale
+
+          for c in colors
+            mk = Tioga::MarkerConstants::const_get(c)
+            next unless mk.is_a? Array
+            
+            xb = ox + cc * col_dx 
+            yt = oy + (l+0.5) * dy
+            t.show_text({
+                          'x' => xb + m_dx,
+                          'y' => yt,
+                          'text' => c.to_s,
+                          'scale' => scale,
+                          'justification' => Tioga::FigureConstants::LEFT_JUSTIFIED,
+                          'alignment' => Tioga::FigureConstants::ALIGNED_AT_MIDHEIGHT
+                        })
+
+            t.show_marker({
+                            'x' => xb + m_dx*0.5,
+                            'y' => yt,
+                            'marker' => mk,
+                            'scale' => scale * 1.1,
+                            'alignment' => Tioga::FigureConstants::ALIGNED_AT_MIDHEIGHT
+                          })
+                            
+            cc += 1
+            if cc >= cols
+              cc = 0
+              l += 1
+            end
+          end
+            
           
         end
       end

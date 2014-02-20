@@ -475,8 +475,11 @@ EOH
       DrawingFrameCommand.
         describe("Setup a drawing frame",
                  <<"EOH", AxisGroup)
-Setup a drawing frame, ie a frame in which the top-left point is at 0,0,
-with X and Y values positive over the whole frame, and counted in centimeters.
+Setup a drawing frame, ie a frame in which the top-left point is at
+0,0, with X and Y values positive over the whole frame, and counted in
+centimeters (or with the unit given using the @/units@ option, ie
+@/units=mm@ expressed in millimeters or @/units=12pt@ expressed in
+multiple of 12 TeX points).
 EOH
 
       
