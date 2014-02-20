@@ -455,14 +455,22 @@ EOH
 Removes all the axes and their associated labels
 EOH
 
-
       DrawingFrameCommand = 
-          Cmd.new("drawing-frame",nil,"--drawing-frame"
-                  ) do |plotmaker, opts|
+        Cmd.new("drawing-frame",nil,"--drawing-frame", [],
+                { 'units' => CmdArg.new('text') 
+                }) do |plotmaker, opts|
         style = PlotStyle.current_plot_style(plotmaker)
         style.clear_axes
         style.padding = nil
-        style.frame_real_size = 720.0/2.54 # 1 cm ?
+        u = opts['units'] || 'cm'
+        if u =~ /([\d.]+)?\s*(cm|in|bp|pt|mm)/
+          nb = $1 ? $1.to_f : 1.0
+          un = $2
+          style.frame_real_size = 10 * nb * 
+            Types::Dimension::DimensionConversion.fetch(un)
+        else
+          raise 'Invalid unit'
+        end
       end
       DrawingFrameCommand.
         describe("Setup a drawing frame",
