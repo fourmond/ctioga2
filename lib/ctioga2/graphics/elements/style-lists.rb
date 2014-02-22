@@ -66,7 +66,6 @@ module CTioga2
             
             xb = ox + cc * col_dx 
             yt = oy + l * tdy
-            p 
             ym = yt + txt_dy
             t.show_text({
                           'x' => xb + 0.5 * col_dx,
@@ -212,8 +211,126 @@ module CTioga2
             end
           end
         end
-      end
+
+
+
+        # Now, a list of color sets
+        TiogaPrimitiveCall.
+          primitive("color-set-list", 
+                    "the list of all color sets", 
+                    [ 'point', 'dimension' ], 
+                    {}) do |t, point, width, options|
+
+          ox, oy = point.to_figure_xy(t)
+
+          col_dx = width.to_figure(t, :x)
+          
+
+          
+          scale = options['scale'] || 0.8
+          txt_dy = -Types::Dimension::from_text("1.3dy", :y).to_figure(t, :y) * scale
+          box_dy = -Types::Dimension::from_text("1.1dy", :y).to_figure(t, :y)
+
+          tdy = txt_dy + box_dy
+
+          sets = Styles::CurveStyleFactory::parameters['line_color'].sets
+          
+          set_names = sets.keys.sort
+
+          xl = ox
+          yt = oy
+
+          p_dx = Types::Dimension::from_text("2bp", :x).to_figure(t, :x)
+
+          for s in set_names
+            cs = sets[s]
+            ym = yt + txt_dy
+            nb = cs.size
+            t.show_text({
+                          'x' => xl + 0.5 * col_dx,
+                          'y' => 0.8*ym +0.2*yt,
+                          'text' => "\\texttt{#{s}}: #{nb} colors",
+                          'scale' => scale
+                        })
+
+            dx = col_dx/nb
+            
+            idx = 0
+            t.context do
+              for c in cs
+                t.fill_color = c
+                t.line_width = 0.7
+                t.append_rect_to_path(xl + 0.5 * p_dx + idx * dx,
+                                      ym, dx - p_dx, box_dy)
+                t.fill_and_stroke
+                idx += 1
+              end
+            end
+            
+            yt += tdy
+          end
+        end
+
+        # Now, a list of color sets
+        TiogaPrimitiveCall.
+          primitive("marker-set-list", 
+                    "the list of all marker sets", 
+                    [ 'point', 'dimension' ], 
+                    {}) do |t, point, width, options|
+
+          ox, oy = point.to_figure_xy(t)
+          col_dx = width.to_figure(t, :x)
+          
+
+          
+          scale = options['scale'] || 0.8
+          txt_dy = -Types::Dimension::from_text("1.3dy", :y).to_figure(t, :y) * scale
+          box_dy = -Types::Dimension::from_text("1.1dy", :y).to_figure(t, :y)
+
+          tdy = txt_dy + box_dy
+
+          sets = Styles::CurveStyleFactory::parameters['marker_marker'].sets
+          
+          set_names = sets.keys.sort
+
+          xl = ox
+          yt = oy
+
+          p_dx = Types::Dimension::from_text("2bp", :x).to_figure(t, :x)
+
+          mdx = Types::Dimension::from_text("1.1dy", :x).to_figure(t, :x)
+
+          for s in set_names
+            cs = sets[s]
+            ym = yt + txt_dy
+            nb = cs.size
+            t.show_text({
+                          'x' => xl + 0.5 * col_dx,
+                          'y' => 0.8*ym +0.2*yt,
+                          'text' => "\\texttt{#{s}}: #{nb} markers",
+                          'scale' => scale
+                        })
+
+            dx = col_dx/nb
+            
+            idx = 0
+            for c in cs
+              t.show_marker({
+                              'x' => xl + mdx * (idx + 0.5),
+                              'y' => ym,
+                              'marker' => c,
+                              'scale' => scale * 1.1,
+                              'alignment' => Tioga::FigureConstants::ALIGNED_AT_TOP
+                            })
+
+              idx += 1
+            end
+            
+            yt += tdy
+          end
+        end
       
+      end
     end
   end
 end
