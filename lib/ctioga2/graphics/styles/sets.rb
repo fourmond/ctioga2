@@ -1,5 +1,5 @@
-# carrays.rb: 'circular arrays'
-# copyright (c) 2009 by Vincent Fourmond
+# sets.rb: sets
+# copyright (c) 2009, 2014 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,15 +39,43 @@ module CTioga2
           [LightPlum, PaleGreen, Gold, RedBrown, SkyBlue ],
           "gnuplot" => 
           [Red, [0,1.0,0], Blue, Magenta, Cyan, Yellow, Black, Coral, Gray],
-
         }
+        
+        begin
+          t = Tioga::FigureMaker.new
+          lst = []
+          10.times do |i|
+            lst << t.hls_to_rgb([36*i, 0.5, 1.0])
+          end
+          ColorSets['wheel10'] = lst
+
+          lst = []
+          20.times do |i|
+            lst << t.hls_to_rgb([18*i, 0.5, 1.0])
+          end
+          ColorSets['wheel20'] = lst
+        end
 
         MarkerSets = { 
           "default" => 
-          [Bullet, TriangleUp, Square, Plus, Times],
+          [Bullet, TriangleUp, Square, Plus, Times, Diamond, TriangleDown],
           "open" => 
-          [BulletOpen, TriangleUpOpen, SquareOpen, PlusOpen, TimesOpen],
+          [BulletOpen, TriangleUpOpen, SquareOpen, PlusOpen, TimesOpen, 
+           DiamondOpen, TriangleDownOpen],
         }
+
+        for k, b in { 
+            'number1' => 171, 
+            'number2' => 181, 
+            'number3' => 191, 
+            'number4' => 201
+          }
+          lst = []
+          1.upto(10) do |i|
+            lst << [14, b + i]
+          end
+          MarkerSets[k] = lst
+        end
 
         LineWidthSets = {
           'default' => [1.0]
