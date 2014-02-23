@@ -61,29 +61,32 @@ module CTioga2
 
           tdy = txt_dy + box_dy
 
-          for c in colors
-            color = Tioga::ColorConstants::const_get(c)
-            
-            xb = ox + cc * col_dx 
-            yt = oy + l * tdy
-            ym = yt + txt_dy
-            t.show_text({
-                          'x' => xb + 0.5 * col_dx,
-                          'y' => 0.8*ym +0.2*yt,
-                          'text' => c.to_s,
-                          'scale' => scale
-                        })
-
-            t.fill_color = color
-            t.append_rect_to_path(xb + 0.5 * pad_dx,
-                                  ym, col_w, box_dy)
-            t.fill_and_stroke
-
-
-            cc += 1
-            if cc >= cols
-              cc = 0
-              l += 1
+          t.context do 
+            for c in colors
+              color = Tioga::ColorConstants::const_get(c)
+              
+              xb = ox + cc * col_dx 
+              yt = oy + l * tdy
+              ym = yt + txt_dy
+              t.show_text({
+                            'x' => xb + 0.5 * col_dx,
+                            'y' => 0.8*ym +0.2*yt,
+                            'text' => c.to_s,
+                            'scale' => scale
+                          })
+              
+              t.fill_color = color
+              t.line_width = 0.7
+              t.append_rect_to_path(xb + 0.5 * pad_dx,
+                                    ym, col_w, box_dy)
+              t.fill_and_stroke
+              
+              
+              cc += 1
+              if cc >= cols
+                cc = 0
+                l += 1
+              end
             end
           end
         end
@@ -213,13 +216,16 @@ module CTioga2
         end
 
 
+        SetOptions = {
+          'scale' => 'float'
+        }
 
         # Now, a list of color sets
         TiogaPrimitiveCall.
           primitive("color-set-list", 
                     "the list of all color sets", 
                     [ 'point', 'dimension' ], 
-                    {}) do |t, point, width, options|
+                    SetOptions) do |t, point, width, options|
 
           ox, oy = point.to_figure_xy(t)
 
@@ -248,7 +254,7 @@ module CTioga2
             nb = cs.size
             t.show_text({
                           'x' => xl + 0.5 * col_dx,
-                          'y' => 0.8*ym +0.2*yt,
+                          'y' => 0.7*ym +0.3*yt,
                           'text' => "\\texttt{#{s}}: #{nb} colors",
                           'scale' => scale
                         })
@@ -275,8 +281,8 @@ module CTioga2
         TiogaPrimitiveCall.
           primitive("marker-set-list", 
                     "the list of all marker sets", 
-                    [ 'point', 'dimension' ], 
-                    {}) do |t, point, width, options|
+                    [ 'point', 'dimension' ], SetOptions
+                    ) do |t, point, width, options|
 
           ox, oy = point.to_figure_xy(t)
           col_dx = width.to_figure(t, :x)
@@ -306,7 +312,7 @@ module CTioga2
             nb = cs.size
             t.show_text({
                           'x' => xl + 0.5 * col_dx,
-                          'y' => 0.8*ym +0.2*yt,
+                          'y' => 0.7*ym +0.3*yt,
                           'text' => "\\texttt{#{s}}: #{nb} markers",
                           'scale' => scale
                         })
