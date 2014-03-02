@@ -56,23 +56,19 @@ EOD
         def draw_image(t, file, tl, br)
           info = t.jpg_info(file)
           if ! info
-            # Or raise ?
-            error { "Could not read JPG file #{file}" }
-            return
+            info = t.load_png(file)
           end
 
           r = Types::Rect.new(tl, br)
           ul, ll, lr = r.make_corners(t, (@auto_rotate == nil ? true : @auto_rotate), @aspect_ratio || :ignore,
                                       info['width']/info['height'])
-          dict = {
-            'ul' => ul,
-            'll' => ll,
-            'lr' => lr,
-            'jpg' => file,
-            'width' => info['width'],
-            'height' => info['height']
-          }
+
+          dict = info.dup
+          dict.merge!('ul' => ul,
+                      'll' => ll,
+                      'lr' => lr,)
           
+          # @todo provide a way to reuse images ?
           t.context do
             if @transparency
               t.fill_opacity = 1 - @transparency
