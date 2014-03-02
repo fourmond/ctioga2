@@ -106,11 +106,15 @@ module CTioga2
         class MarkupLink < MarkupItem
           # The object target of the link
           attr_accessor :target
+
+          # For error reporting
+          attr_reader :dbg
           
           # _target_ is the name of the target, which can be of _type_
           # 'group', 'command', 'backend', 'type', 'function' and 'url'
           def initialize(doc, target, type)
             super(doc)
+            @dbg = [target, type]
             if type =~ /url/
               @target = target
             else

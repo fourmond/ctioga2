@@ -303,7 +303,7 @@ module CTioga2
               when String       # plain URL target
                 link = "#{it.target}"
               else
-                raise "The link target should be either a group, a command or a type, but is a #{it.target.class}"
+                raise "The link target should be either a group, a command or a type, but is a #{it.target.class} (#{it.dbg.inspect})"
               end
               str << "<a href='#{link}'>#{it.to_s}</a>"
             when MarkedUpText::MarkupItemize

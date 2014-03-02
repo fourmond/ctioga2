@@ -183,6 +183,7 @@ EOD
                ['marker', MarkerStringStyle, 'marker'],
                ['box', BoxStyle, 'boxes'],
                ['arrow', ArrowStyle, 'arrows'],
+               ['image', ImageStyle, 'image'],
                ['line', StrokeStyle, 'lines']
               ]
 
