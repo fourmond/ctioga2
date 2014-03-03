@@ -90,6 +90,19 @@ module CTioga2
           return type
         end
 
+        # Define an attribute to be the alias for something else.
+        def self.alias_for(symbol, target)
+          target = target.to_sym
+          if ! @attribute_types[target]
+            raise "Declaring alias #{symbol} for unexisting target #{target}"
+          end
+          symbol = symbol.to_sym
+          @attribute_types[symbol] = @attribute_types[target]
+          @attributes << symbol
+          alias_method symbol, target
+          alias_method "#{symbol}=".to_sym, "#{target}=".to_sym
+        end
+
         # Returns the type of an attribute, or _nil_ if there is no
         # attribute of that name. Handles sub-styles correctly.
         def self.attribute_type(symbol, fmt = "%s")
