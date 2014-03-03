@@ -87,6 +87,25 @@ EOH
 Runs the given strings as commands, as if given from a command file.
 EOH
 
+
+    # Runs a ruby file
+    RunRubyFile = 
+      Cmd.new("ruby-run", nil, "--ruby-run", 
+              [ CmdArg.new('file')], 
+              {}
+              ) do |plotmaker, file, opts|
+      # Work around bug on windows !
+      file = Utils::transcode_until_found(file)
+      Ruby::run_file(file)
+    end
+    
+    RunRubyFile.describe("Run as Ruby code", <<EOH, GeneralGroup)
+Reads the file and runs the Ruby code found inside, a bit like
+Ruby would do with the @require@ command, excepted that @ctioga2@
+does not follow Ruby's file searching rules: you have to specify the
+full path.
+EOH
+
     # Evaluate a series of commands.
     SetCommand =  Cmd.new("set", nil, "--set", 
                           [ CmdArg.new('text'), 

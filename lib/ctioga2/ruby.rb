@@ -32,6 +32,12 @@ module CTioga2
     def self.run_code(str)
       @module.send(:module_eval,str)
     end
+
+    def self.run_file(file)
+      File.open(file) do |f|
+        run_code(f.read)
+      end
+    end
     
     def self.compute_formula(col, vals, mods = [])
       return Dobjects::Dvector.compute_formula(col, vals, [@module] + mods)
