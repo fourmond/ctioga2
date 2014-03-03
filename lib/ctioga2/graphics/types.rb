@@ -292,7 +292,7 @@ EOD
     DimensionOrNoType = 
       CmdType.new('dimension-or-no', { :type => :dimension, 
                     :default => :dy,
-                    :shortcut => {
+                    :shortcuts => {
                       NoRE => false
                     }
                   }, <<EOD)

@@ -152,6 +152,15 @@ module CTioga2
         def self.current_sheet()
           return @sheet
         end
+
+
+        # Updates the style sheet concerning the _what_ of class _cls_
+        # with the given values
+        def self.update_style(cls, what, values)
+          StyleSheet.current_sheet.own_styles[cls] ||= {}
+          StyleSheet.current_sheet.own_styles[cls][what] ||= {}
+          StyleSheet.current_sheet.own_styles[cls][what].merge!(values)
+        end
         
       end
 
@@ -201,9 +210,7 @@ EOD
                   ], 
                   cls.options_hash
                   ) do |plotmaker, what, opts|
-          StyleSheet.current_sheet.own_styles[cls] ||= {}
-          StyleSheet.current_sheet.own_styles[cls][what] ||= {}
-          StyleSheet.current_sheet.own_styles[cls][what].merge!(opts)
+          StyleSheet.update_style(cls, what, opts)
         end
         StyleSheetCommands[name].
           describe("Sets the default style for the given #{desc}.", 
@@ -341,7 +348,14 @@ Axis styles have lots of parameters:
  * @background-lines-@ parameters define the style of background lines, 
    as in {command: define-line-style}
 EOD
+
+
+      # Here, a few defaults styles
       
+      StyleSheet.update_style(TextLabel, 'title', {
+                                'text_width' => 
+                                Types::Dimension.new(:frame, 1.0, :x)
+                              })
     end
   end
 end

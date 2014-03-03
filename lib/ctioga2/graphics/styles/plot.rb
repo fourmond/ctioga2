@@ -113,7 +113,6 @@ module CTioga2
             StyleSheet.style_for(TextLabel, 'title',
                                  nil, 
                                  Types::PlotLocation.new(:top))
-
           @plot_margin = nil
 
           @transforms = CoordinateTransforms.new
