@@ -52,3 +52,17 @@ $ct -t 'Styled markers' -r 10cmx10cm --math-xrange -3:3 \
     /vertical_scale=0.5 /color=Green \
     --draw-string-marker '0,-0.2' TriangleUp /base-style=marker-string \
     /horizontal_scale=1 /color=Blue
+
+# Now, we need to create a PNG and a JPEG file
+
+echo "Creating necessary JPEG and PNG files"
+convert -size 320x85 xc:white -pointsize 72 -fill Red -draw "text 25,60 'JPEG'" t1.jpeg
+convert -size 320x85 xc:white -pointsize 72 -fill Red -draw "text 25,60 'PNG'" -stroke black -draw 'rectangle 230,10 280,60' t1.png
+
+$ct --drawing-frame /units=1cm \
+    -t 'PNG and JPEG images' -r 10cmx10cm \
+    --draw-image t1.jpeg 1,1 3,3 \
+    --draw-image t1.png 1,4 3,6 \
+    --draw-image t1.png 4,4 6,6 /aspect-ratio=contract  \
+    --draw-image t1.png 4,7 6,9 /aspect-ratio=expand \
+    --draw-image t1.jpeg 1.5,1.5 3.5,3.5 /transparency=0.5
