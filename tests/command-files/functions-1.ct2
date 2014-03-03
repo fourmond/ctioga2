@@ -1,0 +1,4 @@
+coeff = $(eval 2*2)
+math 
+plot sin(x)
+plot sin($(coeff)*x)

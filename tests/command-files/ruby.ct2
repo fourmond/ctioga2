@@ -1,0 +1,11 @@
+ruby
+def f(x,a)
+  return sin(x)*cos(a*x)
+end
+ruby end
+math /samples=1000
+auto-legend true
+plot f(x,0) 
+plot f(x,1)
+plot f(x,2)
+

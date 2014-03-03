@@ -1,0 +1,3 @@
+math 
+plot sin(x)
+draw-marker $(point xy 0.3) Circle 
