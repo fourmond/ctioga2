@@ -13,7 +13,11 @@ $ct -t 'Text drawing' -r 10cmx10cm \
     --draw-line 0,-1 0,1 /color Blue /style Dashes \
     --draw-text 0,-0.3 'left plus bottom' /justification left \
     /color Orange /scale 1.2  /alignment bottom \
-    --draw-line -6,-0.3 6,-0.3 /color Green /style Dots 
+    --draw-line -6,-0.3 6,-0.3 /color Green /style Dots \
+    --draw-text 0,0.6 'right top (h/v)' /halign right \
+    /color Orange /scale 1.2  /valign top \
+    --draw-line -6,0.6 6,0.6 /color Green /style Dots 
+
 
 
 
