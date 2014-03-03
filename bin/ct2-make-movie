@@ -34,7 +34,56 @@ ct2 = "ctioga2"
 
 
 tmpdir = "tmp"
-target = nil
+targets = nil
+
+
+# The class in charge of running ffmpeg
+class EncodingJob
+
+  # Target file
+  attr_accessor :target
+
+  # Bitrate
+  attr_accessor :bitrate
+
+  # Video codec
+  attr_accessor :codec
+
+  # Extra arguments
+  attr_accessor :extra_args
+
+  # Writes the given frame for encoding
+  def write_frame(data)
+    @encoder.write(data)
+  end
+
+  def add_args(args)
+    @extra_args ||= []
+    @extra_args += args
+  end
+
+  # Start job
+  def start_job(size)
+    ffmpeg_args = ["ffmpeg", '-y', "-f", "rawvideo", 
+                   "-r", "25", "-s", size, "-i", "-"]
+    if @bitrate
+      ffmpeg_args << "-b" << @bitrate
+    end
+    if @codec
+      ffmpeg_args << "-vcodec" << @codec
+    end
+
+    ffmpeg_args += @extra_args if @extra_args
+    ffmpeg_args << @target
+    p ffmpeg_args
+    @encoder = IO::popen(ffmpeg_args, "wb")
+  end
+
+  def close()
+    @encoder.close
+  end
+end
+
 
 DimensionConversion = {
   "pt" => (72.0/72.27),
@@ -86,26 +135,46 @@ use_pdftoppm = false
 # file over and over again.
 store_all = true
 
-# Codec for ffmpeg
-codec = nil
 
-# Bitrate for ffmpeg
-bitrate = nil
+encoders = [ EncodingJob.new ]
+cur_enc = encoders.first
 
-fargs = []
+
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #$0 [options] file.ct2 arguments..."
 
+  ##################################################
+  # Encoding-related options
   opts.on("-t", "--target FILE", "Target video file") do |t|
-    target = t
+    if cur_enc.target
+      cur_enc = EncodingJob.new
+      encoders << cur_enc
+    end
+    cur_enc.target = t
   end
+
+  opts.on("-b", "--bitrate RATE", "Bitrate (indicative)") do |v|
+    cur_enc.bitrate = v
+  end
+
+  opts.on("", "--codec CODEC", "Target codec") do |v|
+    cur_enc.codec = v
+  end
+
+  opts.on("", "--ffmpeg-args ARGS", "Extra ffmpeg args") do |v|
+     cur_enc.add_args(Shellwords.split(v))
+  end
+
+
+  ##################################################
+  # 
 
   opts.on("", "--dir DIR", "Temporary directory for storage") do |t|
     tmpdir = t
   end
 
   opts.on("", "--version", "Prints version string") do 
-    puts "0.0"
+    puts "0.1"
   end
 
   opts.on("-p", "--[no-]pdftoppm", "Whether or not to use pdftoppm") do |t|
@@ -127,17 +196,6 @@ opts = OptionParser.new do |opts|
     store_all = v
   end
 
-  opts.on("-b", "--bitrate RATE", "Bitrate (indicative)") do |v|
-    bitrate = v
-  end
-
-  opts.on("", "--codec CODEC", "Target codec") do |v|
-    codec = v
-  end
-
-  opts.on("", "--ffmpeg-args ARGS", "Extra ffmpeg args") do |v|
-    fargs += Shellwords.split(v)
-  end
 
 end
 
@@ -160,7 +218,7 @@ puts "Producing #{ct2_page_size} PDF and converting to #{size} for the video"
 
 
 file = ARGV.shift
-target ||= file.sub(/(\.ct2)?$/, ".avi")
+cur_enc.target ||= file.sub(/(\.ct2)?$/, ".avi")
 args = []
 
 for a in ARGV
@@ -184,21 +242,11 @@ FileUtils::mkpath(tmpdir)
 
 
 # @todo Use other encoding programs !
-# @todo bitrate control
 
-ffmpeg_args = ["ffmpeg", '-y', "-f", "rawvideo", 
-        "-r", "25", "-s", size, "-i", "-"]
-if bitrate
-  ffmpeg_args << "-b" << bitrate
+# Start all encoders
+for enc in encoders
+  enc.start_job(size)
 end
-if codec
-  ffmpeg_args << "-vcodec" << codec
-end
-
-ffmpeg_args += fargs
-ffmpeg_args << target
-
-encoder = IO::popen(ffmpeg_args, "wb")
 
 format = if store_all 
            "#{tmpdir}/file-%04d"
@@ -217,6 +265,8 @@ for f in args
                 "-f", file, "--name", name, "-r", ct2_page_size]
   puts "Running: #{ct2_cmdline.join(" ")}"
   system(*ct2_cmdline)
+
+  b = nil
 
   if use_pdftoppm
     # @todo use other conversion programs !
@@ -246,8 +296,12 @@ for f in args
     # Use pdftoppm followed by convert, much much faster than just
     # convert (gs takes too much time)
   end
-  encoder.write(b)
+  for enc in encoders
+    enc.write_frame(b)
+  end
   index += 1
 end
 
-encoder.close
+for enc in encoders
+  enc.close
+end
