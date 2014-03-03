@@ -52,7 +52,11 @@ module CTioga2
         alias_for :halign, :justification
 
         # A text width
-        typed_attribute :text_width, "dimension"
+        typed_attribute :text_width, "dimension-or-no"
+
+        # A text alignment within the box, only useful if text_width
+        # is specified.
+        typed_attribute :text_align, 'text-align'
 
         # Draw the _text_ at the given location with the given style.
         # If _y_ is _nil_, then _x_or_loc_ is taken to be a location
@@ -129,7 +133,20 @@ module CTioga2
             dir = (vertical?(loc) ? :y : :x)
             dim = @text_width.to_bp(t, dir)
             dim /= t.default_text_scale
-            text = "\\parbox{#{dim}bp}{#{text}}"
+
+            aln = @text_align || @alignment || Tioga::FigureConstants::CENTERED
+            cmd = 
+              case aln
+              when Tioga::FigureConstants::CENTERED
+                '\centering{}'
+              when Tioga::FigureConstants::LEFT_JUSTIFIED
+                '\raggedright{}'
+              when Tioga::FigureConstants::RIGHT_JUSTIFIED
+                '\raggedleft{}'
+              else
+                ''
+              end
+            text = "\\parbox{#{dim}bp}{#{cmd}#{text}}"
           end
 
           dict['text'] = text

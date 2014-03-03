@@ -43,7 +43,8 @@ module CTioga2
       Dot_Long_Dash = Line_Type_Dot_Long_Dash
       Dash_Dot_Dot = Line_Type_Dash_Dot_Dot
     end
-
+    
+    NoRE = /no(ne)?|off/i
 
     ColorType = CmdType.new('color', {
                               :type => :tioga_color,
@@ -61,7 +62,9 @@ EOD
       CmdType.new('color-or-false', {
                     :type => :tioga_color,
                     :namespace => Tioga::ColorConstants,
-                    :shortcuts => {'none' => false }
+                    :shortcuts => { 
+                      NoRE => false 
+                    }
                   }, <<EOD)
 A {type: color}, or none to say that nothing should be drawn.
 EOD
@@ -91,7 +94,7 @@ EOD
                     :type => :tioga_line_style,
                     :namespace => LineStyles,
                     :shortcuts => {
-                      /no(ne)?|off/i => false,
+                      NoRE => false,
                     }
                   }, <<EOD)
 A line style, which is one of @solid@, @dots@, @dashes@, @small_dots@,
@@ -104,11 +107,9 @@ EOD
                     :type => :tioga_marker,
                     :namespace => Tioga::MarkerConstants,
                     :shortcuts => {
-                      'None' => 'None',
-                      'no' => 'None',
-                      'none' => 'None',
-                      'off' => 'None', 
-                    },}, <<EOD)
+                      NoRE  => 'None' 
+                    }
+                  }, <<EOD)
 A Tioga Marker, ie either a name from the list at {url:
 http://tioga.rubyforge.org/doc/Tioga/MarkerConstants.html}, such as
 @Box@, @Star@, @Spade@ or two or three comma-separated numbers,
@@ -140,10 +141,28 @@ EOD
     JustificationType = 
       CmdType.new('justification', {:type => :re_list,
                     :list => JustificationRE}, <<EOD)
-Horizontal aligment for text. Can be one of:
+Horizontal aligment of the (with respect to its location). Can be one of:
  * @l@ or @left@
  * @c@, @center@
  * @r@, @right@
+EOD
+
+    TextAlignType = 
+      CmdType.new('text-align', 
+                  {:type => :re_list,
+                    :list => JustificationRE,
+                    :shortcut => {
+                      NoRE => :no
+                    }
+                  }, <<EOD)
+Horizontal aligment for text within its box. Only of use
+for texts with a given text width.
+Can be one of:
+ * @l@ or @left@
+ * @c@, @center@
+ * @r@, @right@
+ * @no@ or @none@ to not issue aligning commands, in which case you get 
+full LaTeX-justified paragraphs (probably with a lot of hyphens).
 EOD
 
    # Regular expression for vertical alignment
@@ -269,6 +288,16 @@ It can also be @auto@, which is 1.0 in frame units (ie the width or
 the height of the current plot).
 EOD
 
+
+    DimensionOrNoType = 
+      CmdType.new('dimension-or-no', { :type => :dimension, 
+                    :default => :dy,
+                    :shortcut => {
+                      NoRE => false
+                    }
+                  }, <<EOD)
+A {type: dimension}, or @no@ or @none@.
+EOD
     # Boxes
 
     BoxType = 
