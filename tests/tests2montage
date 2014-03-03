@@ -29,6 +29,11 @@ for f in "$@"; do
     if [ -r ${basepdf}-000.pdf ]; then
 	echo "PDF files were generated"
 	echo " -> producing montage outputs"
+
+        for f in ${basepdf}-*.pdf; do
+            pp=${f%%.pdf}.ppm
+            pdftoppm $f > $pp
+        done
     
 	if [ -z $BIG ]; then
 	    geometry=340x340+4+4
@@ -38,10 +43,11 @@ for f in "$@"; do
 	    density=250
 	fi
 	montage -label %f -frame 5 -background '#336699' \
-	    -geometry $geometry -density $density ${basepdf}-*.pdf ${output}.png
+	    -geometry $geometry -density $density ${basepdf}-*.ppm ${output}.png
 	if [ -z $KEEP ]; then
 	    echo " -> removing PDF files"
 	    rm -f ${basepdf}-*.pdf
+	    rm -f ${basepdf}-*.ppm
 	fi
 	display ${output}.png &
     fi
