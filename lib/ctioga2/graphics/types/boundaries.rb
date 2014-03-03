@@ -69,13 +69,14 @@ module CTioga2
         # Actually, it even works with normal Range elements !
         def extend(range)
           # Left/right
+          
           if (! @first.is_a? Float) or @first.nan? or
-              (@first > range.first)
+              (range.first && @first > range.first)
             @first = range.first
           end
 
           if (! @last.is_a? Float) or @last.nan? or
-              (@last < range.last)
+              (range.last && @last < range.last)
             @last = range.last
           end
 

@@ -125,6 +125,11 @@ module CTioga2
                 f = func
               end
               
+              if f.size < 1
+                warn { "Empty curve for dataset '#{@dataset.name}'" }
+                return 
+              end
+              
               t.move_to_point(f.x.first, f.y.first)
               t.append_points_to_path(f.x[1..-1], f.y[1..-1])
             end
