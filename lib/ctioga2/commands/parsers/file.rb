@@ -71,6 +71,7 @@ module CTioga2
           idx = 0
           
 
+          has_ruby = false
           ## @todo line counting ?
           for l in lines
             idx += 1
@@ -81,8 +82,10 @@ module CTioga2
             ## or make it more accurate ? The problem is that in a
             ## large command file, there may be things that look like
             ## old style commands ?
-            
-            if l =~ /^([a-z0-9-]+)\(/
+
+            if l =~ /^\s*ruby\s*$/
+              has_ruby = true
+            elsif l =~ /^([a-z0-9-]+)\(/ && (!has_ruby)
               path = io.respond_to?(:path) ? io.path : io.to_s
               warn { "Found old style (deprecated) commands in '#{path}', using old style parser"}
               return OldFileParser.new.
@@ -112,10 +115,24 @@ module CTioga2
 
           # Now, we rearrange the lines...
           idx = -1
+          ruby = false
           for l in parsed_lines
             idx += 1
             interpreter.context.parsing_file(nil, io, lines_indices[idx])
-            if l =~ /^\s*([a-zA-Z0-9_-]+)\s*(\??)(=|:=)\s*(.*)/
+            if l =~ /^\s*ruby\s*$/
+              ruby = ""
+            elsif ruby
+              if l =~ /^\s*ruby\s+end\s*$/
+                begin
+                  Ruby.run_code(ruby)
+                  ruby = false
+                rescue Exception => e
+                  fatal { "Error #{e.inspect} running inline Ruby code at #{interpreter.context}" }
+                end
+              else
+                ruby << l
+              end
+            elsif l =~ /^\s*([a-zA-Z0-9_-]+)\s*(\??)(=|:=)\s*(.*)/
               symbol = $1
               value = InterpreterString.parse_until_unquoted(StringIO.new($4),"\n", false)
               override = !($2 == '?')

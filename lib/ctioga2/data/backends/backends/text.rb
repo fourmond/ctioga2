@@ -378,9 +378,9 @@ EOD
           if compute_formulas
             formula = Utils::parse_formula(column, parameters, header)
             debug { "Using formula #{formula} for column spec: #{column}" }
-            return Dvector.compute_formula(formula, 
-                                           @current_data,
-                                           @included_modules)
+            return Ruby.compute_formula(formula, 
+                                        @current_data,
+                                        @included_modules)
           else
             if @current_data[column.to_i]
               return @current_data[column.to_i].dup

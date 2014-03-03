@@ -112,6 +112,9 @@ require 'pathname'
 # Maybe, maybe, maybe... We need tioga ?
 require 'Tioga/FigureMaker'
 
+# Interaction with Ruby code
+require 'ctioga2/ruby'
+
 
 # Command interpreter
 require 'ctioga2/commands/interpreter'

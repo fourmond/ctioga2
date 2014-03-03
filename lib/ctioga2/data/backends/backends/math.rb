@@ -111,7 +111,7 @@ EOD
         # Uses compute_formula to get data from 
         def get_data_column(column, variable, values)
           column.gsub!(/\b#{variable}\b/, "(column[0])")
-          Dvector.compute_formula(column, [values])
+          return Ruby.compute_formula(column, [values])
         end
 
 
