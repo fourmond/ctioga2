@@ -34,7 +34,6 @@ ct2 = "ctioga2"
 
 
 tmpdir = "tmp"
-targets = nil
 
 
 # The class in charge of running ffmpeg
@@ -181,9 +180,10 @@ opts = OptionParser.new do |opts|
     use_pdftoppm = t
   end
 
-  opts.on("", "--page-size SIZE", 
+  opts.on("-r", "--page-size SIZE", 
           "Set ctioga2 page size (in TeX dimensions)") do |v|
     ct2_size = page_size_to_points(v)
+    p ct2_size
   end
 
   opts.on("", "--resolution RES",
@@ -269,32 +269,25 @@ for f in args
   b = nil
 
   if use_pdftoppm
-    # @todo use other conversion programs !
     b1, s = Open3.capture2(
                           "pdftoppm",
                           "-r",
                           "#{(conv*oversampling).to_i}",
                            "#{name}.pdf",
                           :stdin_data=>"", :binmode=>true)
-    # @todo use other conversion programs !
     b, s = Open3.capture2("convert",
                           "PPM:-",
-                          "-resize", size,
+                          "-resize", "#{size}!",
                           "-depth", "8", "YUV:-",
                           :stdin_data=>b1, :binmode=>true)
   else
-    
-    # @todo use other conversion programs !
     b, s = Open3.capture2("convert",
                           "-density", "#{(conv*oversampling).to_i}",
                           "#{name}.pdf",
                           "-alpha", "Remove",
-                          "-resize", size,
+                          "-resize", "#{size}!",
                           "-depth", "8", "YUV:-",
                           :stdin_data=>"", :binmode=>true)
-    
-    # Use pdftoppm followed by convert, much much faster than just
-    # convert (gs takes too much time)
   end
   for enc in encoders
     enc.write_frame(b)
