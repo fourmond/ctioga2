@@ -46,9 +46,9 @@ $ct -t 'Tweaking the aspect of labels ' \
 
 # Multiline labels
 $ct -t 'A very long title about quite uninteresting things ' \
-    /text-width=6cm /alignment=bottom \
-    -x '$x$ values'  'sin(x)' \
-    -y '$y$ values'
+    /text-width=6cm /alignment=bottom -r 8cmx12cm \
+    -x 'A long label for the $x$ axis demonstrating auto width' /text-width=auto  'sin(x)' \
+    -y 'An even longer label for the $y$ axis in order to demonstrate that the auto width works also vertically' /text-width=auto
 
 
 # # Alternative axes

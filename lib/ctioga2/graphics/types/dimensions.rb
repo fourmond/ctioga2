@@ -137,7 +137,10 @@ module CTioga2
         # _default_ parameter.
         def self.from_text(text, orientation, default = :figure)
           # Absolute or :dy dimension
-          if text =~ DimensionRegexp
+
+          if text =~ /^\s*auto\s*$/i
+            Dimension.new(:frame, 1.0, orientation)
+          elsif text =~ DimensionRegexp
             value = Utils::txt_to_float($1)
             unit = $2
             if ! unit

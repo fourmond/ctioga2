@@ -48,7 +48,7 @@ module CTioga2
         typed_attribute :justification, 'justification'
 
         # A text width
-        typed_attribute :text_width, "text"
+        typed_attribute :text_width, "dimension"
 
         # Draw the _text_ at the given location with the given style.
         # If _y_ is _nil_, then _x_or_loc_ is taken to be a location
@@ -88,17 +88,22 @@ module CTioga2
           return dict
         end
 
+        def vertical?(loc)
+          if loc
+            return Types::PlotLocation.new(loc).vertical?
+          else
+            ang = angle || 0
+            return Math.sin(ang*3.14/180)**2 > 0.5
+          end
+        end
+
         protected
         
         # Prepares the dictionnary for use with show_text
         def prepare_show_text_dict(t, text, x_or_loc, y = nil, measure = nil)
           dict = self.hash_for_tioga(t)
-          if @text_width
-            text = "\\parbox{#{@text_width}}{#{text}}"
-          end
 
-          dict['text'] = text
-
+          loc = nil
           if y
             dict['at'] = [x_or_loc, y]
           else
@@ -107,6 +112,7 @@ module CTioga2
             when Symbol, Types::PlotLocation
               ## @todo It won't be easy to implement shifts for this,
               ## though it may be useful eventually.
+              loc = x_or_loc
               x_or_loc = Types::PlotLocation.new(x_or_loc).tioga_location
             end
             dict['loc'] = x_or_loc
@@ -114,6 +120,16 @@ module CTioga2
           if measure
             dict['measure'] = measure
           end
+
+          if @text_width
+            dir = (vertical?(loc) ? :y : :x)
+            dim = @text_width.to_bp(t, dir)
+            dim /= t.default_text_scale
+            text = "\\parbox{#{dim}bp}{#{text}}"
+          end
+
+          dict['text'] = text
+
           return dict
         end
       end

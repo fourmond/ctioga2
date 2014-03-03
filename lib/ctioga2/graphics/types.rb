@@ -264,6 +264,9 @@ where @value@ is a number and unit can be one of @pt@,
 line), @figure@ or @f@ (for figure coordinates, i.e. the coordinates of the
 plot), @frame@ or @F@ (@1.0 frame@ is the full size of the current subplot) and
 @page@ or @p@ (@1.0 page@ is the whole height/width of the output file).
+
+It can also be @auto@, which is 1.0 in frame units (ie the width or
+the height of the current plot).
 EOD
 
     # Boxes
