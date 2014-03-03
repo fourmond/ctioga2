@@ -61,7 +61,7 @@ EOD
 
           r = Types::Rect.new(tl, br)
           ul, ll, lr = r.make_corners(t, (@auto_rotate == nil ? true : @auto_rotate), @aspect_ratio || :ignore,
-                                      info['width']/info['height'])
+                                      info['width']*1.0/info['height'])
 
           dict = info.dup
           dict.merge!('ul' => ul,
