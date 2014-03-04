@@ -217,7 +217,9 @@ module CTioga2
 
 
         SetOptions = {
-          'scale' => 'float'
+          'scale' => 'float',
+          'include' => 'regexp',
+          'exclude' => 'regexp'
         }
 
         # Now, a list of color sets
@@ -243,6 +245,15 @@ module CTioga2
           
           set_names = sets.keys.sort
 
+          if options['include']
+            set_names = set_names.select do |x|
+              x =~ options['include']
+            end
+          elsif options['exclude']
+            set_names = set_names.select do |x|
+              x !~ options['exclude']
+            end
+          end
           xl = ox
           yt = oy
 
