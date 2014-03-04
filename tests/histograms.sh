@@ -37,4 +37,4 @@ $ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms' \
     --histogram /cumulative=next /gap 1mm \
     'x' '1-x' \
     --histogram /cumulative=next \
-    '0.5*x' 'x' --name a
+    '0.5*x' 'x' 

@@ -45,3 +45,8 @@ $ct --legend-inside tc /scale 1 \
     --contour 3d-data.dat@1:2:3 /color-map '#000--#22f' /zaxis zvalues \
     --label-style zvalues_label /text=Label
 
+$ct -t "3d map with ugly but evenly spaced colors, with a legend (on the right)" \
+    --text --margin 0.03 --new-zaxis zvalues /location right \
+    --xyz-map 3d-data.dat@1:2:3 /color-map 'Red--Green--Blue--Pink--Purple' /zaxis zvalues \
+    --label-style zvalues_label /text="Z values"
+

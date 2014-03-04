@@ -253,9 +253,8 @@ module CTioga2
               if last_value + 1 < i
                 (last_value+1).upto(i - 1) do |j|
                   frac = (j - last_value)/(i - last_value + 1.0)
-                  # p [last_value, j, i, frac]
-                  z_values[j] = z_values[last_value] * frac + 
-                    z_values[i] * (1 - frac)
+                  z_values[j] = z_values[last_value] * (1 - frac) + 
+                    z_values[i] * frac
                 end
               end
               last_value = i
