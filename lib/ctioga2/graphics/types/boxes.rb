@@ -84,6 +84,19 @@ module CTioga2
                   1 - @right.to_frame(t), @bottom.to_frame(t)]
         end
 
+        # Converts to output coordinates
+        def to_output(t, fact = 1.0)
+          a = to_frame_coordinates(t)
+          4.times do |i|
+            a[i] = if (i % 2 == 0) 
+                     fact * t.convert_page_to_output_x(t.convert_frame_to_page_x(a[i]))
+                   else
+                     fact * t.convert_page_to_output_y(t.convert_frame_to_page_y(a[i]))
+                   end
+          end
+          return a
+        end
+
         # Returns the dimensions composing the MarginsBox, in the
         # order _left_, _right_, _top_, _bottom_, suitable for feeding
         # to MarginsBox.new.

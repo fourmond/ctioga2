@@ -20,6 +20,8 @@ for f in *.sh; do
             echo ' -> identical'
         else
             echo ' -> different !'
+            convert $f1 $f2 -append a.ppm
+            display a.ppm
             nb=$(($nb+1))
         fi
     else
