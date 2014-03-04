@@ -162,6 +162,9 @@ minor_tick_length minor_tick_width)
               pos = spec['major_ticks'][i]
               label = spec['labels'][i]
               pos = t.send(fnc, pos)
+              
+              next unless label
+
 
               nm = "axis-tick#{@index}-#{i}"
 
