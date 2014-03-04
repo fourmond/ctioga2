@@ -50,3 +50,19 @@ $ct -t "3d map with ugly but evenly spaced colors, with a legend (on the right)"
     --xyz-map 3d-data.dat@1:2:3 /color-map 'Red--Green--Blue--Pink--Purple' /zaxis zvalues \
     --label-style zvalues_label /text="Z values"
 
+$ct -t "3d map with color maps from color sets" \
+    --text --margin 0.03 --new-zaxis zvalues /location right \
+    --xyz-map 3d-data.dat@1:2:3 /color-map 'pastel1' /zaxis zvalues \
+    --label-style zvalues_label /text="Z values"
+
+
+$ct -t "3d map with color maps from color sets (and HLS variation)" \
+    --text --margin 0.03 --new-zaxis zvalues /location right \
+    --xyz-map 3d-data.dat@1:2:3 /color-map 'hls:pastel1' /zaxis zvalues \
+    --label-style zvalues_label /text="Z values"
+
+$ct -t "3d map with color maps from complicated color sets" \
+    --text --margin 0.03 --new-zaxis zvalues /location right \
+    --xyz-map 3d-data.dat@1:2:3 /color-map 'gnuplot!30' /zaxis zvalues \
+    --label-style zvalues_label /text="Z values"
+

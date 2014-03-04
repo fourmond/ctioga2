@@ -77,10 +77,22 @@ module CTioga2
         def self.from_text(str)
           str = str.dup
           hls = false
-          re = /natural:?/i     # Not too bad ?
+          re = /(natural|hls):?/i     # Not too bad ?
           if str =~ re
             str.sub!(re,'')
             hls = true
+          end
+
+          # We first try to see if it could be a color set ?
+          colorsettype = Commands::CommandType.get_type('color-set')
+
+          begin 
+            set = colorsettype.string_to_type(str)
+            cm = ColorMap.new([nil] * set.size, set)
+            cm.rgb = ! hls
+            return cm
+          rescue
+            # This is not a color set
           end
 
           l = str.split(/::/)
