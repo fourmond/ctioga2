@@ -91,6 +91,7 @@ module CTioga2
 
           @tick_label_style = FullTextStyle.new
           @tick_label_style.scale = Types::Dimension.new(:dy, 0.8)
+
           @axis_label = TextLabel.new(label)
           @log = false
           @ticks_side = {}
@@ -132,7 +133,46 @@ minor_tick_length minor_tick_width)
           end
 
           spec.update(@ticks_side)
+
+          # We don't allow Tioga to draw tick labels by itself
+          type = spec['type']
+          spec['type'] = case spec['type']
+                         when Tioga::FigureConstants::AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS
+                           Tioga::FigureConstants::AXIS_WITH_MAJOR_TICKS_ONLY
+                         when Tioga::FigureConstants::AXIS_WITH_TICKS_AND_NUMERIC_LABELS
+                           Tioga::FigureConstants::AXIS_WITH_TICKS_ONLY
+                         else
+                           spec['type']
+                         end
           t.show_axis(spec)
+          # Now, we draw axis ticks
+          if type == Tioga::FigureConstants::AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS || type == Tioga::FigureConstants::AXIS_WITH_TICKS_AND_NUMERIC_LABELS
+
+            fnc = info['vertical'] ? :convert_figure_to_frame_y : :convert_figure_to_frame_x
+            stl = @tick_label_style.dup
+            stl.shift ||= Types::Dimension.new(:dy, 0.3 + info['shift'])
+
+            stl.valign ||= ( 
+                            @location.base_location == :bottom ||
+                            @location.base_location == :at_y_origin ||
+                            @location.base_location == :right 
+                            ) ? Tioga::FigureConstants::ALIGNED_AT_TOP : Tioga::FigureConstants::ALIGNED_AT_BOTTOM
+            
+            spec['labels'].size.times do |i|
+              pos = spec['major_ticks'][i]
+              label = spec['labels'][i]
+              pos = t.send(fnc, pos)
+
+              nm = "axis-tick#{@index}-#{i}"
+
+              stl.draw_text(t, label, spec['location'], 
+                            [:pos, pos], nm)
+              if watcher
+                watcher.watch(nm)
+              end
+            end
+          end
+
           @axis_label.loc = @location
           default = vertical? ? 'ylabel' : 'xlabel'
           nm = "axis-label#{@index}"

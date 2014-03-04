@@ -59,8 +59,8 @@ module CTioga2
         typed_attribute :text_align, 'text-align'
 
         # Draw the _text_ at the given location with the given style.
-        # If _y_ is _nil_, then _x_or_loc_ is taken to be a location
-        # (see FigureMaker#show_text).
+        # If _y_ is _nil_, or [:pos, _value_] then _x_or_loc_ is taken
+        # to be a location (see FigureMaker#show_text).
         def draw_text(t, text, x_or_loc, y = nil, measure = nil)
           t.context do
             dict = prepare_show_text_dict(t, text, x_or_loc, y, measure)
@@ -112,7 +112,8 @@ module CTioga2
           dict = self.hash_for_tioga(t)
 
           loc = nil
-          if y
+
+          if y && (! y.is_a?(Array))
             dict['at'] = [x_or_loc, y]
           else
             # Perform automatic conversion on the location
@@ -124,6 +125,9 @@ module CTioga2
               x_or_loc = Types::PlotLocation.new(x_or_loc).tioga_location
             end
             dict['loc'] = x_or_loc
+            if y
+              dict['position'] = y[1]
+            end
           end
           if measure
             dict['measure'] = measure
