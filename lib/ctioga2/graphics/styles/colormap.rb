@@ -91,7 +91,7 @@ module CTioga2
             cm = ColorMap.new([nil] * set.size, set)
             cm.rgb = ! hls
             return cm
-          rescue
+          rescue Exception => e
             # This is not a color set
           end
 
