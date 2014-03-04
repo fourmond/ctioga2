@@ -1,0 +1,12 @@
+Most files present in the ctioga2 distribution are copyright 2009-2014
+by Vincent Fourmond, and released under the GNU General Public License
+version 2.0 or later (see the COPYING file).
+
+The files in the tests directory (and subdirectoriesà can be used for
+whichever purpose you see fit.
+
+A notable exception in the copyright is the file
+lib/ctioga2/graphics/styles/colorbrewer.rb that contains color sets
+developed by Cynthia Brewer and Copyright (c) 2002 Cynthia Brewer,
+Mark Harrower, and The Pennsylvania State University. The full license
+can be found there: http://colorbrewer2.org/export/LICENSE.txt

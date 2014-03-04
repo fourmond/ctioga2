@@ -14,6 +14,8 @@
 require 'ctioga2/utils'
 require 'ctioga2/log'
 
+require 'ctioga2/graphics/styles/colorbrewer'
+
 # This module contains all the classes used by ctioga
 module CTioga2
 
@@ -54,6 +56,18 @@ module CTioga2
             lst << t.hls_to_rgb([18*i, 0.5, 1.0])
           end
           ColorSets['wheel20'] = lst
+
+          colortype = Commands::CommandType.get_type('color')
+          for k,v in ColorBrewerSets
+            for n, a in v
+              if n > 4
+                ColorSets["cb-#{k.downcase}-#{n}"] = a.map do |c|
+                  colortype.string_to_type(c)
+                end
+              end
+            end
+          end
+          
         end
 
         MarkerSets = { 
