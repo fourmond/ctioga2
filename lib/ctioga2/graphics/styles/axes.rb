@@ -150,7 +150,10 @@ minor_tick_length minor_tick_width)
 
             fnc = info['vertical'] ? :convert_figure_to_frame_y : :convert_figure_to_frame_x
             stl = @tick_label_style.dup
-            stl.shift ||= Types::Dimension.new(:dy, 0.3 + info['shift'])
+            
+            
+            stl.shift ||= Types::Dimension.new(:dy, info['shift'])
+            stl.shift = Types::Dimension.new(:dy, stl.shift.to_dy(t) + 0.5)
 
             stl.valign ||= ( 
                             @location.base_location == :bottom ||
