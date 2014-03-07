@@ -138,7 +138,7 @@ module CTioga2
             dim = @text_width.to_bp(t, dir)
             dim /= t.default_text_scale
 
-            aln = @text_align || @alignment || Tioga::FigureConstants::CENTERED
+            aln = @text_align || @justification || Tioga::FigureConstants::CENTERED
             cmd = 
               case aln
               when Tioga::FigureConstants::CENTERED

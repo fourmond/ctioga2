@@ -182,7 +182,16 @@ minor_tick_length minor_tick_width)
           @axis_label.loc = @location
           default = vertical? ? 'ylabel' : 'xlabel'
           nm = "axis-label#{@index}"
-          @axis_label.draw(t, default, nm)
+
+          stl = @axis_label.dup
+          # Default to aligning the label where it counts.
+          stl.valign ||= ( 
+                          @location.base_location == :bottom ||
+                          @location.base_location == :at_y_origin ||
+                          @location.base_location == :right 
+                          ) ? Tioga::FigureConstants::ALIGNED_AT_MIDHEIGHT : Tioga::FigureConstants::ALIGNED_AT_BOTTOM
+
+          stl.draw(t, default, nm)
           if watcher
             watcher.watch(nm)
           end

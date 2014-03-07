@@ -25,6 +25,12 @@ $ct -t 'A quite long title '  -r 8cmx12cm /count-legend=true \
     'sin(x+2)' /legend "First+2" \
     'sin(x+3)' /legend "First+3"
 
+$ct -t 'Title with extremely exagerately immense words '  -r 6.5cmx8cm /count-legend=true \
+    'sin(x)' /legend "First" \
+    'sin(x+1)' /legend "First+1" \
+    'sin(x+2)' /legend "First+2" \
+    'sin(x+3)' /legend "First+3"
+
 
 
 # # Alternative axes
