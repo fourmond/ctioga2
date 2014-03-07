@@ -7,7 +7,7 @@ spec = Gem::Specification.new do |s|
   s.bindir = 'bin'
   s.executables =  ['ctioga2']
   s.name = 'ctioga2'
-  s.version = '0.9'
+  s.version = '0.10'
   s.summary = 'ctioga2 - the polymorphic plotting program'
   s.description = <<EOF
 ctioga2 is a command-driven plotting program that produces
@@ -17,7 +17,7 @@ and using command files (at the same time).
 It is based on Tioga (http://tioga.rubyforge.org).
 EOF
   s.homepage = 'http://ctioga2.sourceforge.net'
-  s.add_dependency 'tioga', '>= 1.17'
+  s.add_dependency 'tioga', '>= 1.18'
   s.author = "Vincent Fourmond <vincent.fourmond@9online.fr>"
   s.email = "vincent.fourmond@9online.fr"
 end
