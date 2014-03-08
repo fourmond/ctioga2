@@ -153,7 +153,15 @@ minor_tick_length minor_tick_width)
             
             
             stl.shift ||= Types::Dimension.new(:dy, info['shift'])
-            stl.shift = Types::Dimension.new(:dy, stl.shift.to_dy(t) + 0.5)
+
+
+            # @todo integrate to the 
+            shift_def = ( 
+                         @location.base_location == :bottom ||
+                         @location.base_location == :at_y_origin ||
+                         @location.base_location == :right 
+                         ) ? 0.3 : 0.4
+            stl.shift = Types::Dimension.new(:dy, stl.shift.to_dy(t) + shift_def)
 
             stl.valign ||= ( 
                             @location.base_location == :bottom ||
@@ -183,15 +191,15 @@ minor_tick_length minor_tick_width)
           default = vertical? ? 'ylabel' : 'xlabel'
           nm = "axis-label#{@index}"
 
-          stl = @axis_label.dup
-          # Default to aligning the label where it counts.
-          stl.valign ||= ( 
-                          @location.base_location == :bottom ||
-                          @location.base_location == :at_y_origin ||
-                          @location.base_location == :right 
-                          ) ? Tioga::FigureConstants::ALIGNED_AT_MIDHEIGHT : Tioga::FigureConstants::ALIGNED_AT_BOTTOM
+          # stl = @axis_label.dup
+          # # Default to aligning the label where it counts.
+          # stl.valign ||= ( 
+          #                 @location.base_location == :bottom ||
+          #                 @location.base_location == :at_y_origin ||
+          #                 @location.base_location == :right 
+          #                 ) ? Tioga::FigureConstants::ALIGNED_AT_MIDHEIGHT : Tioga::FigureConstants::ALIGNED_AT_BOTTOM
 
-          stl.draw(t, default, nm)
+          @axis_label.draw(t, default, nm)
           if watcher
             watcher.watch(nm)
           end
