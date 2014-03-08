@@ -128,6 +128,47 @@ module CTioga2
           end
         end
 
+        # Lists all the stylistic things, and in particular the names
+        # of color sets, marker sets and the like.
+        #
+        # This function will hold more data with time.
+        def list_styles
+
+          puts "Available color sets:"
+          sets = Graphics::Styles::CurveStyleFactory::parameters['line_color'].sets
+          set_names = sets.keys.sort
+
+          sets_by_prefix = Utils.group_by_prefix(set_names, /(.*?)\d+$/)
+
+
+          for pref in sets_by_prefix.keys.sort
+            vals = Utils.suffix_numeric_sort(sets_by_prefix[pref])
+            puts " * #{vals.join(", ")} "
+          end
+
+          puts "\nAvailable marker sets:"
+          sets = Graphics::Styles::CurveStyleFactory::parameters['marker_marker'].sets
+          set_names = sets.keys.sort
+
+          sets_by_prefix = Utils.group_by_prefix(set_names, /(.*?)\d+$/)
+          for pref in sets_by_prefix.keys.sort
+            vals = Utils.suffix_numeric_sort(sets_by_prefix[pref])
+            puts " * #{vals.join(", ")} "
+          end
+
+          puts "\nAvailable line style sets:"
+          sets = Graphics::Styles::CurveStyleFactory::parameters['line_style'].sets
+          set_names = sets.keys.sort
+
+          sets_by_prefix = Utils.group_by_prefix(set_names, /(.*?)\d+$/)
+          for pref in sets_by_prefix.keys.sort
+            vals = Utils.suffix_numeric_sort(sets_by_prefix[pref])
+            puts " * #{vals.join(", ")} "
+          end
+
+
+        end
+
 
         protected 
 
@@ -200,6 +241,17 @@ EOH
       ListTypesCmd.describe("List known types",
                              <<EOH, IntrospectionGroup)
 List all types known to ctioga2
+EOH
+
+      ListStylesCmd = 
+        Cmd.new('list-styles', nil, '--list-styles',
+                [], RawOption) do |p, opts|
+        Introspection.new.list_styles()
+      end
+
+      ListStylesCmd.describe("List stylistic information",
+                             <<EOH, IntrospectionGroup)
+Lists all available color sets, marker sets and the like.
 EOH
 
       EditCommandCmd = 

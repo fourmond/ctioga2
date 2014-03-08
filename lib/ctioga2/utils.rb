@@ -141,6 +141,40 @@ module CTioga2
       return formula
     end
 
+
+    def self.suffix_numeric_sort(strings)
+      strings.sort do |a,b|
+        a =~ /.*?(\d+)$/
+        a_i = $1 ? $1.to_i : nil
+        b =~ /.*?(\d+)$/
+        b_i = $1 ? $1.to_i : nil
+        
+        if a_i && b_i
+          a_i <=> b_i
+        else
+          a <=> b
+        end
+      end
+    end
+
+
+    # Groups the given strings by prefixes
+
+    def self.group_by_prefix(strings, pref_re)
+      sets_by_prefix = {}
+      for s in strings
+        pref = s
+        if s =~ pref_re
+          pref = $1
+        end
+        sets_by_prefix[pref] ||= []
+        sets_by_prefix[pref] << s
+      end
+      return sets_by_prefix
+    end
+
+
+
     NaturalSubdivisions = [1.0, 2.0, 5.0, 10.0]
 
     # Returns the closest element of the correct power of ten of
