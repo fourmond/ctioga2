@@ -49,16 +49,22 @@ module CTioga2
         # @todo These are currently not implemented.
         attr_accessor :below, :above
 
-        # Whether the map follows RGB (true) or HLS (false). On by
-        # default.
+        # Whether the map is interpolated in the RGB (true) or HLS
+        # (false) color space. On by default.
         #
         # It does not change anything with respect to how the colors
         # are interpreted: whatever happens, the values are RGB.
         attr_accessor :rgb
 
+        # Whether or not the map should be considered symmetric around
+        # a given value.
+        attr_accessor :symmetry_center
+
         def initialize(values = [], colors = [])
           @values = values.dup
           @colors = colors.dup
+
+          @symmetry_center = nil
 
           @rgb = true
         end
@@ -83,6 +89,14 @@ module CTioga2
             hls = true
           end
 
+          sym = nil
+
+          re = /:(?:sym|around):(.*)$/i
+          if str =~ re
+            sym = $1.to_f
+            str.sub!(re,'')
+          end
+
           # We first try to see if it could be a color set ?
           colorsettype = Commands::CommandType.get_type('color-set')
 
@@ -90,6 +104,7 @@ module CTioga2
             set = colorsettype.string_to_type(str)
             cm = ColorMap.new([nil] * set.size, set)
             cm.rgb = ! hls
+            cm.symmetry_center = sym
             return cm
           rescue Exception => e
             # This is not a color set
@@ -153,6 +168,7 @@ module CTioga2
           cm.above = above
           cm.below = below
           cm.rgb = ! hls
+          cm.symmetry_center = sym
           return cm
         end
 
@@ -253,6 +269,19 @@ module CTioga2
         def z_values(zmin, zmax)
           # Real Z values.
           z_values = @values.dup
+
+          # We tweak the zmin and zmax to be symmetric around the
+          # symmetry_center should that be needed.
+          if @symmetry_center
+            dmin = (zmin - @symmetry_center).abs
+            dmax = (zmax - @symmetry_center).abs
+            
+            dfin = [dmin, dmax].max
+            zmin = @symmetry_center - dfin
+            zmax = @symmetry_center + dfin
+            
+          end
+
           z_values[0] ||= zmin
           z_values[-1] ||= zmax
 
