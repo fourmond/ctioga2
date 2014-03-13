@@ -20,6 +20,8 @@ module CTioga2
     # Module where all instance methods declared become immediately
     # class methods.
     class MetaModule < Module
+
+      include Math
       
       def method_added(meth)
         module_function meth

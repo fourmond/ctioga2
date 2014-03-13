@@ -19,7 +19,7 @@ module CTioga2
   module Commands
 
     FuncEval = Function.new("eval", "Evaluate Ruby code") do |pm, code|
-      eval(code)
+      Ruby::run_code(code)
     end
 
     FuncEval.describe <<EOD
@@ -34,6 +34,10 @@ They have no type. In particular, while this will work:
 # a := 3
 # b := $(eval $(a) * 3)
 # # b is now 9
+
+However, you need to use quotes if you must call functions:
+
+# b := $(eval sqrt(2))
 
 Doing the same kind of things with text will be somewhat not satisfying:
 
