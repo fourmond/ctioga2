@@ -234,19 +234,6 @@ EOD
         end
 
 
-        # options for arrows (and therefore tangents)
-        ArrowOptions = {
-          'color' => 'color',
-          'head_scale' => 'float',
-          'head_marker' => 'marker',
-          'head_color' => 'color',
-          'tail_scale' => 'float',
-          'tail_marker' => 'marker',
-          'tail_color' => 'color',
-          'line_width' => 'float',
-          'line_style' => 'line-style',
-        }
-
         styled_primitive("arrow", "arrow", 
                          [ 'point', 'point' ], 
                          Styles::ArrowStyle,

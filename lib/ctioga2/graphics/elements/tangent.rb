@@ -22,7 +22,6 @@ module CTioga2
     module Elements
 
       module Tangents
-
         TangentOptions = {
           'xfrom'   => 'float',
           'xto'     => 'float',
@@ -30,9 +29,10 @@ module CTioga2
           'yto'     => 'float',
           'xextent' => 'float',
           'yextent' => 'float',
-          'nbavg'  =>  'integer'
-        }.update(TiogaPrimitiveCall::ArrowOptions)
-      
+          'nbavg'  =>  'integer',
+          'base-style' => 'text'
+        }.update(Styles::ArrowStyle::options_hash)
+
         TiogaPrimitiveCall.
           primitive("tangent", "tangent", [ 'data-point'],
                     TangentOptions) do |t, point,options|
@@ -49,8 +49,8 @@ module CTioga2
           elsif d = options['yextent']
             options['tail'] = [x, y]
             options['head'] = [x+d/slope, y + d]
-          elsif options['xfrom'] || options['yfrom'] || 
-              options['xto'] || options['yto']
+          elsif (options['xfrom'] || options['yfrom'] || 
+              options['xto'] || options['yto'])
             if xf = options['xfrom']
               options['tail'] = [xf, y - (x - xf)*slope]
             elsif yf = options['yfrom']
@@ -71,7 +71,7 @@ module CTioga2
             options['head'] = [x, y]
             dx = point.dx(nb) * 10
             options['tail'] = [x-dx, y - dx*slope]
-            options['line_width'] = 0
+            options['width'] = 0
             options['tail_marker'] = "None"
           end
 
@@ -80,18 +80,17 @@ module CTioga2
                 options['head_color'])
             options['color'] = $last_curve_style.line.color
           end
-          
-          # Now, we delete elements from the hash that don't have
-          # anything to do there:
-          for k in TangentOptions.keys - 
-              TiogaPrimitiveCall::ArrowOptions.keys
-            options.delete k
-          end
-          
-          t.show_arrow(options)
+
+          st_name = options['base-style'] || "base"
+          style = Styles::StyleSheet.style_for(Styles::ArrowStyle ,st_name)
+          style.set_from_hash(options)
+
+          style.draw_arrow(t, *options['tail'], *options['head'])
         end
       end
-      
+
+      Commands::make_alias_for_option 'draw-tangent', 'width', 'line_width', true
+      Commands::make_alias_for_option 'draw-tangent', 'style', 'line_style', true
     end
   end
 end

@@ -70,3 +70,10 @@ $ct --drawing-frame /units=1cm \
     --draw-image t1.png 4,4 6,6 /aspect-ratio=contract  \
     --draw-image t1.png 4,7 6,9 /aspect-ratio=expand \
     --draw-image t1.jpeg 1.5,1.5 3.5,3.5 /transparency=0.5
+
+
+$ct -t 'Tangents: a direction, and a proper arrow' -r 10cmx10cm \
+    'sin(x)' \
+    --draw-tangent 0.5  \
+    --draw-tangent 0.6 /xto=5 /color=Black /line-style=Dashes /nbavg=3\
+    --draw-tangent 0.3 /xextent=1 /color=Pink /style=Dots /nbavg=3

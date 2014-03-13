@@ -27,7 +27,7 @@ module CTioga2
           'columns'   => 'integer',
           'padding' => 'dimension',
           'scale' => 'float'
-        }.update(TiogaPrimitiveCall::ArrowOptions)
+        }
       
 
 
