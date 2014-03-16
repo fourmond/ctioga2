@@ -121,13 +121,24 @@ EOD
 
     # A color map
     ColorMapType = CmdType.new('colormap', :colormap, <<EOD)
-A Z color map
+A Z color map. It takes the form @Color1--Color2--Color3...@. All
+colors can optionally be followed by a number. For instance, for
+@Red--Blue--Pink--Green@, the colors are evenly spaced. In the case
+@Red--Blue(0.1)--Pink(0.2)--Green@, the Blue to Pink strech is located
+between Z values 0.1 and 0.2.
 
-\todo document !
+If a prefix @hls:@ or @wheel:@ is present, then linear interpolation
+is done in the HLS colorspace instead of the RGB one (the default).
+
+If a suffix @:sym:@_value_ is present, then the colormap is symmetric
+around that value.
+
+It is also possible to directly use a {type: color-set}, in which case
+eveything works as if the colors of the {type: color-set} had been
+given directly, without Z values.
 EOD
 
     # This ones get here since they mess up with syntax highlighting
-
 
     # A stored dataset.
     StoredDatasetType = CmdType.new('stored-dataset', 
