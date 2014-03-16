@@ -11,14 +11,19 @@ ctioga2 (0.10)
     (for function definition only, since data processing/plotting is not
     yet available on the Ruby side)
   * Auto sizing of titles and labels
+  * Alignment for texts with a given width
   * Smarter collision detection: now labels stick out of the graph only if
     you really ask for it !
   * Color sets from colorbrewer2.org
   * Improved color maps specifications, including the possibility to
     specify color sets as color maps
+  * A --list-styles command to list (the names of) all stylistic things
+    (and in particular, defined sets)
+  * Symmetric color maps
+  * Various bug fixes and documentation updates
   * [ct2-make-movie] multiple outputs at once
 
- -- Vincent <vincent.fourmond@9online.fr>  Sat  8 Mar 00:14:12 CET 2014
+ -- Vincent <vincent.fourmond@9online.fr>  Sun 16 Mar 18:16:01 CET 2014
 
 ctioga2 (0.9)
 
