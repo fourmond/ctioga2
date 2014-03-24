@@ -15,6 +15,8 @@
 require 'ctioga2/utils'
 require 'ctioga2/log'
 
+require 'forwardable'
+
 module CTioga2
 
   module Graphics
@@ -24,6 +26,8 @@ module CTioga2
       # A Container that redirect most of its trafic to the parents.
       class RedirectingContainer < Container
 
+        extend Forwardable
+
         ###########################################
         # The following functions are plain redirections to the
         # parent.
@@ -32,27 +36,10 @@ module CTioga2
         # redirection in the form of an accessor. Using forwardable
         # should do
 
-        def style(*a)
-          return parent.style(*a)
-        end
-
-        def add_legend_item(item)
-          return parent.add_legend_item(item)
-        end
-
-        def legend_area=(l)
-          return parent.legend_area = l
-        end
-
         undef :gp_cache, :gp_cache=
-        
-        def gp_cache
-          return parent.gp_cache
-        end
 
-        def gp_cache=(c)
-          return parent.gp_cache = c
-        end
+        def_delegators :parent, :style, :add_legend_item, :legend_area=, 
+                                 :gp_cache, :gp_cache=, :set_user_boundaries
 
         def each_item(leaf_only = true, recursive = false, tl = true, &blk)
           if tl

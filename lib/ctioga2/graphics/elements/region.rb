@@ -41,6 +41,7 @@ module CTioga2
         # Creates a new empty region
         def initialize(parent = nil, root = nil)
           @parent = parent
+          @clipped = true       # clipped by default !
           
           # elements to be given to tioga
           @curves = []
@@ -85,7 +86,7 @@ module CTioga2
         def real_do(t)
           # This function will be called with the proper figure
           # coordinates.
-          
+
           if @fill_style.color
             t.context do
               @fill_style.setup_fill(t)
