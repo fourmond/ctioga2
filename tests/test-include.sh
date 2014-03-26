@@ -11,3 +11,6 @@ if [ "$DEBUG" ]; then
 fi
 # The way to invoque ctioga2
 ct="ctioga2 $ct_add --echo --math $CT_ADD "
+if [ "$RUBY" ]; then
+    ct="$RUBY ../bin/$ct"
+fi
