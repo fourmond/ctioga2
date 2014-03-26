@@ -66,7 +66,7 @@ EOD
           dict = info.dup
           dict.merge!('ul' => ul,
                       'll' => ll,
-                      'lr' => lr,)
+                      'lr' => lr)
           
           # @todo provide a way to reuse images ?
           t.context do
