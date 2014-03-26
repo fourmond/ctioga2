@@ -114,7 +114,7 @@ module CTioga2
           
           # Now, create the command
           cmd_args = comp.map do |x|
-            if x.respond_to?(:type)
+            if x.is_a? CmdArg
               x
             else
               CmdArg.new(x)
@@ -123,7 +123,7 @@ module CTioga2
 
           cmd_opts = {}
           for k,v in opts
-            cmd_opts[k] = if v.respond_to?(:type)
+            cmd_opts[k] = if v.is_a? CmdArg
                             v
                           else
                             CmdArg.new(v)
