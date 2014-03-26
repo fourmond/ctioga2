@@ -85,7 +85,8 @@ module CTioga2
           style = Styles::StyleSheet.style_for(Styles::ArrowStyle ,st_name)
           style.set_from_hash(options)
 
-          style.draw_arrow(t, *options['tail'], *options['head'])
+          coords = options['tail'] + options['head']
+          style.draw_arrow(t, *coords)
         end
       end
 
