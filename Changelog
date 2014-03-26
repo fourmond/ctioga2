@@ -1,3 +1,10 @@
+ctioga2 (0.10.1)
+
+  * Fix problems with Ruby1.8
+  * Fix clipping of regions
+
+ -- Vincent <vincent.fourmond@9online.fr>  Wed 26 Mar 22:13:47 CET 2014
+
 ctioga2 (0.10)
 
   * A draw-image function to include JPEG and PNG images
