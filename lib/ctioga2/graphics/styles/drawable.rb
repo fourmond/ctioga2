@@ -108,54 +108,6 @@ module CTioga2
         end
       end
 
-      # A style that handles drawing a fill.
-      #
-      # \todo add ways to specify complex fills, such as patterned
-      # fills and so on. Those would use clipping the path and base
-      # themselves on the coordinates of the current frame -- or more
-      # nicely use dimensions ? (which would allow to mix both to some
-      # extent ?)
-      #
-      # \todo more attributes ?
-      #
-      # @todo This class should also provide image-based fills, with
-      # CSS-like capacities (scaling, tiling, centering, and so on...)
-      class FillStyle < BasicStyle
-
-        # The color.
-        typed_attribute :color, "color"
-
-        # The transparency
-        typed_attribute :transparency, 'float'
-
-        # Sets up the parameters for the fill. Must be called before
-        # any path drawing.
-        #
-        # \warning You *must* call FillStyle#do_fill for
-        # filling. Directly calling FigureMaker#fill is not a good
-        # idea, as you lose all 'hand-crafted' fills !
-        def setup_fill(t)
-          t.fill_color = @color if @color
-          t.fill_transparency = @transparency if @transparency
-        end
-
-        # Does the actual filling step. Must be used within a context,
-        # as it quite messes up with many things. Must be called after
-        # a call to #setup_fill.
-        def do_fill(t)
-          t.fill
-        end
-
-      end
-
-      # Same as FillStyle, but with additional parameters that handle
-      # how the fill should be applied to curves.
-      class CurveFillStyle < FillStyle
-
-        typed_attribute :close_type, 'fill-until'
-        
-      end
-
     end
   end
 end
