@@ -110,6 +110,8 @@ module CTioga2
         # Prepares the dictionnary for use with show_text
         def prepare_show_text_dict(t, text, x_or_loc, y = nil, measure = nil)
           dict = self.hash_for_tioga(t)
+          # get rid of uncommented stuff problems
+          text = "#{text}%\n"
 
           loc = nil
 
