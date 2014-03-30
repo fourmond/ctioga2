@@ -47,14 +47,16 @@ module CTioga2
           end
           
           case els[0]
-          when /^hlines$/
+          when /^hlines$/i
             return SingleLineFillPattern.new(0, *args)
-          when /^vlines$/
+          when /^vlines$/i
             return SingleLineFillPattern.new(90, *args)
-          when /^lines$/
+          when /^lines$/i
             return SingleLineFillPattern.new(*args)
-          when /^xlines$/
+          when /^xlines$/i
             return CrossedLinesFillPattern.new(*args)
+          when /^(solid|plain)$/i
+            return false
           end
         end
       end
