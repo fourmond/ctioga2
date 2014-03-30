@@ -110,8 +110,12 @@ module CTioga2
             # Now we can work
             dx = -@distance.to_figure(t, :x) * 
               Math.sin(Math::PI/180 * @angle)
+            sx = @distance.to_figure(t, :x) * 
+              Math.cos(Math::PI/180 * @angle)
             dy = @distance.to_figure(t, :y) * 
               Math.cos(Math::PI/180 * @angle)
+            sy = @distance.to_figure(t, :y) * 
+              Math.sin(Math::PI/180 * @angle)
 
             if dy < 0
               dy = -dy
@@ -133,9 +137,9 @@ module CTioga2
               end
             else
               if dx > 0
-                line = Line.new(0, 0, dy, -dx)
+                line = Line.new(0, 0, sx, sy)
               else
-                line = Line.new(1, 0, dy, -dx)
+                line = Line.new(1, 0, sx, sy)
               end
               segs = [ Segment.new(0,0,1,0), Segment.new(1,0,1,1),
                        Segment.new(1,1,0,1), Segment.new(0,1,0,0)]
