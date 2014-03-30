@@ -14,6 +14,7 @@
 require 'ctioga2/utils'
 require 'ctioga2/log'
 
+require 'ctioga2/graphics/geometry'
 require 'ctioga2/graphics/types/dimensions'
 
 # This module contains all the classes used by ctioga
@@ -39,11 +40,19 @@ module CTioga2
         end
 
         def self.from_text(str)
-          case str
+          els = str.split(/\s*:\s*/)
+          args = []
+          if els.size > 1
+            args = els[1].split(/\s*,\s*/)
+          end
+          
+          case els[0]
           when /^hlines$/
-            return SingleLineFillPattern.new
+            return SingleLineFillPattern.new(0, *args)
           when /^vlines$/
-            return SingleLineFillPattern.new(60)
+            return SingleLineFillPattern.new(90, *args)
+          when /^lines$/
+            return SingleLineFillPattern.new(*args)
           end
         end
       end
@@ -66,9 +75,17 @@ module CTioga2
         attr_accessor :angle
 
         def initialize(an = 0,dst = nil, lw = nil)
-          @distance = dst || Types::Dimension.new(:bp, 8)
-          @line_width = lw || 0.8
-          @angle = an
+          @distance = if dst
+                        if dst.is_a? Types::Dimension
+                          dst
+                        else
+                          Types::Dimension::from_text(dst, :x, :bp)
+                        end
+                      else
+                        Types::Dimension.new(:bp, 5)
+                      end
+          @line_width = lw ? lw.to_f : 0.8
+          @angle = an.to_f
         end
 
         def do(t, color, secondary = nil)
@@ -89,8 +106,6 @@ module CTioga2
             dy = @distance.to_figure(t, :y) * 
               Math.cos(Math::PI/180 * @angle)
 
-            # p [dx, dy]
-
             if dx.abs < 1e-12          # Horizontal lines
               y = 0
               while y <= 1
@@ -105,12 +120,35 @@ module CTioga2
                 x += dx
               end
             else
-
-              xl = 0
-              yl = 0
-              
-              xr = 0
-              yl = 0
+              if dx > 0
+                line = Line.new(0, 0, dy, -dx)
+              else
+                line = Line.new(1, 0, dy, -dx)
+              end
+              segs = [ Segment.new(0,0,1,0), Segment.new(1,0,1,1),
+                       Segment.new(1,1,0,1), Segment.new(0,1,0,0)]
+              while true
+                ints = []
+                for s in segs
+                  v = s.intersection(line)
+                  ints << v if v 
+                end
+                if ints.size == 0
+                  break
+                elsif ints.size == 2
+                  t.stroke_line(ints[0][0], ints[0][1],
+                                ints[1][0], ints[1][1])
+                elsif ints.size == 3
+                  # Rare case but must be handled anyway
+                  if ints[0][0] == ints[1][0]
+                    ints.shift
+                  end
+                  t.stroke_line(ints[0][0], ints[0][1],
+                                ints[1][0], ints[1][1])
+                end
+                line.x += dx
+                line.y += dy
+              end
             end
           end
           

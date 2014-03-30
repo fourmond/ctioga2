@@ -7,3 +7,5 @@
 . ./test-include.sh
 
 $ct -x '$x$ values in % of stuff' 'sin(x)' -y '$y$ values' 
+
+$ct -x '$x$ values in % of stuff' 'sin(x)' -y '$y$ values' 
