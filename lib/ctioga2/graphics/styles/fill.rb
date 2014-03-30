@@ -53,6 +53,8 @@ module CTioga2
             return SingleLineFillPattern.new(90, *args)
           when /^lines$/
             return SingleLineFillPattern.new(*args)
+          when /^xlines$/
+            return CrossedLinesFillPattern.new(*args)
           end
         end
       end
@@ -63,6 +65,7 @@ module CTioga2
                       :class => Graphics::Styles::FillPattern
                     })
 
+      # @
       class SingleLineFillPattern
 
         # Line width (in line widths units ?)
@@ -105,6 +108,11 @@ module CTioga2
               Math.sin(Math::PI/180 * @angle)
             dy = @distance.to_figure(t, :y) * 
               Math.cos(Math::PI/180 * @angle)
+
+            if dy < 0
+              dy = -dy
+              dx = -dx
+            end
 
             if dx.abs < 1e-12          # Horizontal lines
               y = 0
@@ -152,6 +160,23 @@ module CTioga2
             end
           end
           
+        end
+      end
+
+
+      class CrossedLinesFillPattern
+
+        def initialize(dst1 = nil, lw1 = nil, angle = 45, 
+                       dst2 = nil, lw2 = nil, dangle = 90)
+          @first = SingleLineFillPattern.new(angle, dst1, lw1)
+          @second = SingleLineFillPattern.new(@first.angle + dangle.to_f, 
+                                              dst2 || dst1, lw2 || lw1)
+        end
+
+
+        def do(t, color, secondary = nil)
+          @first.do(t, color)
+          @second.do(t, secondary || color)
         end
       end
 
