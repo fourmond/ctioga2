@@ -25,3 +25,7 @@ $ct --region /color Blue /transparency 0.7 \
     --legend-inside tc --xrange -1:5 --yrange -10:15 \
     -l 'Top' '30 - x**2' \
     'x**2' /legend Bottom
+
+$ct --region /color Blue /pattern=xlines \
+    /reversed-color Orange /reversed-pattern=xlines \
+    '30 - x**2' 'x**2' 

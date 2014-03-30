@@ -20,3 +20,8 @@ $ct --margin 0.03  -t 'Values and point' \
     'sin(x)' /fill 0.5 /fill-color='Red!10' \
     'sin(x)+2' /fill 1.8 /fill-color='Green!10' \
     'sin(x)+5' /fill xy:0,3 /fill-color='Blue!10' \
+
+$ct --margin 0.03  -t 'Values and point, patterned' \
+    'sin(x)' /fill 0.5 /fill-pattern=lines:-35,4,0.4  \
+    'sin(x)+2' /fill 1.8 /fill-pattern=vlines:8,1 \
+    'sin(x)+5' /fill xy:0,3 /fill-pattern=xlines:7,0.4 \

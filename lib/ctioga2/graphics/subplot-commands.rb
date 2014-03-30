@@ -141,6 +141,8 @@ Leaves the current subobject.
 EOD
     RegionOptions = {
       'color' => CmdArg.new('color'),
+      'pattern' => CmdArg.new('fill-pattern'),
+      'reversed_pattern' => CmdArg.new('fill-pattern'),
       'transparency' => CmdArg.new('float'),
       'reversed_color' => CmdArg.new('color'),
       'reversed_transparency' => CmdArg.new('float'),

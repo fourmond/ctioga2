@@ -29,6 +29,8 @@ module CTioga2
       # This class handles drawing the pattern in a fill.
       #
       # It is a base class.
+      #
+      # Add transparency !
       class FillPattern
 
         # Draws the pattern over the whole output, with primary color
