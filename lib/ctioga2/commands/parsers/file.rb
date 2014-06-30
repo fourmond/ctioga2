@@ -24,7 +24,8 @@ module CTioga2
 
     module Parsers
 
-      # This class parses a "new style" command file, delegating
+      # This class parses a "new style" command file, delegating to
+      # the old parser if this looks like an old style command file.
       class FileParser
 
         include Log
@@ -75,7 +76,7 @@ module CTioga2
           ## @todo line counting ?
           for l in lines
             idx += 1
-            # If we find something that looks like a command at the
+            # If we find something that looks like an old  command at the
             # beginning of a line, we say this is an old style file.
 
             ## @todo Find a way to disable this compatibility stuff --
@@ -116,6 +117,9 @@ module CTioga2
           # Now, we rearrange the lines...
           idx = -1
           ruby = false
+
+          # False, or a [var, values, code] triplet
+          loop = false
           for l in parsed_lines
             idx += 1
             interpreter.context.parsing_file(nil, io, lines_indices[idx])
@@ -131,6 +135,23 @@ module CTioga2
                 end
               else
                 ruby << l
+              end
+            elsif l =~ /^\s*for\s+(\w+)\s+in\s+(.*)/
+              v = $2
+              var = $1
+              v << "\n"
+              s = InterpreterString.parse_until_unquoted(StringIO.new(v),"\n")
+              vals = s.expand_and_split(/\s+/, interpreter)
+              loop = [var, vals, ""]
+            elsif loop
+              if l =~ /^\s*for\s+end\s*$/
+                for v in loop[1]
+                  interpreter.variables.define_variable(loop[0], v)
+                  run_commands(loop[2], interpreter)
+                end
+                loop = false
+              else
+                loop[2] << l
               end
             elsif l =~ /^\s*([a-zA-Z0-9_-]+)\s*(\??)(=|:=)\s*(.*)/
               symbol = $1

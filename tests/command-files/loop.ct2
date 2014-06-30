@@ -1,0 +1,5 @@
+math 
+for v in 1 1.1 1.2 
+  plot "sin($(v) * x)"
+  plot "cos($(v) * x)" /line-style Dots
+for end
