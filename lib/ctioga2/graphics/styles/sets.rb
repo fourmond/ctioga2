@@ -91,6 +91,9 @@ module CTioga2
           MarkerSets[k] = lst
         end
 
+        MarkerSets["alternate"] = MarkerSets["default"].
+          zip(MarkerSets["open"]).flatten(1)
+
         LineWidthSets = {
           'default' => [1.0]
         }
