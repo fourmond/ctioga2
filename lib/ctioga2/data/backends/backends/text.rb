@@ -149,6 +149,7 @@ EOD
           else
             m = Dir::glob(spec)
             if m.size > 0
+              m.sort!
               return m
             else
               return super
