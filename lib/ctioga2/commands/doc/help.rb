@@ -81,13 +81,14 @@ module CTioga2
         def print_commandline_options(cmds, groups)
           @to_tty = false
           if STDOUT.tty? 
+            @to_tty = true
             begin
               require 'curses'
               Curses.init_screen
               @total_width = Curses.cols
               Curses.close_screen
-              @to_tty = true
-            rescue
+            rescue LoadError => e
+              # We'll be missing the exact term size
             end
           end
           @total_width ||= 80   # 80 by default
