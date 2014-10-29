@@ -111,6 +111,8 @@ module CTioga2
                            desc = nil, &code)
           primitive = TiogaPrimitive.new(name, comp, opts, &code)
           @known_primitives[name] = primitive
+
+          primitive_class = Class.new(TiogaPrimitiveCall)
           
           # Now, create the command
           cmd_args = comp.map do |x|
@@ -135,8 +137,7 @@ module CTioga2
           cmd = Cmd.new("draw-#{name}",nil,"--draw-#{name}", 
                         cmd_args, cmd_opts) do |plotmaker, *rest|
             options = rest.pop
-            call = Elements::
-              TiogaPrimitiveCall.new(primitive,
+            call = primitive_class.new(primitive,
                                      rest, options)
             call.last_curve_style = plotmaker.curve_style_stack.last
             plotmaker.root_object.current_plot.
@@ -150,6 +151,7 @@ module CTioga2
                        PrimitiveGroup)
 
           PrimitiveCommands[name] = cmd
+          return primitive_class
         end
 
         # This creates a primitive base on a style object, given a
@@ -179,7 +181,7 @@ For more information on the available options, see the
 {command: define-#{set_style_command}-style} command.
 EOD
 
-          self.primitive(name, long_name, comp, options, desc) do |*all|
+          cls = self.primitive(name, long_name, comp, options, desc) do |*all|
             opts = all.pop
             st_name = opts['base-style'] || "base"
             style = Styles::StyleSheet.style_for(style_class,st_name) 
@@ -187,6 +189,8 @@ EOD
             all << style << opts
             code.call(*all)
           end
+          cls.define_style(style_name, style_class)
+          return cls
         end
 
 
