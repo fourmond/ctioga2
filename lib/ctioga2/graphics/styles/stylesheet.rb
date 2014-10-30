@@ -175,7 +175,11 @@ module CTioga2
           # All the XPath associated with this style information
           attr_accessor :xpath
 
+          # The xpath text initially used
+          attr_accessor :xname
+
           def initialize(xp)
+            @xname = xp
             @xpath = XPath.from_text(xp)
             @style = {}
           end
@@ -265,6 +269,7 @@ module CTioga2
             @buckets << Bucket.new(xpath)
             @buckets_by_xpath[xpath] = @buckets.last
           end
+          return @buckets_by_xpath[xpath]
         end
 
       end

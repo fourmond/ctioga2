@@ -147,7 +147,7 @@ module CTioga2
         def setup_style(obj_parent, opts) 
           @cached_options = opts
           @object_id = opts["id"] || nil
-          @object_classes = opts["classes"] || []
+          @object_classes = opts["class"] || []
           @object_parent = obj_parent
 
           @style_is_setup = true
