@@ -211,10 +211,11 @@ EOD
 
       # Here, a few defaults styles
       
-      # StyleSheet.style_sheet.update_style(TextLabel, 'title', {
-      #                           'text_width' => 
-      #                           Types::Dimension.new(:frame, 1.0, :x)
-      #                         })
+      StyleSheet.style_sheet.
+        update_style('title', {
+                       'text_width' => 
+                       Types::Dimension.new(:frame, 1.0, :x)
+                     })
     end
   end
 end
