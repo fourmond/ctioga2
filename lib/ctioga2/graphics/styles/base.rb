@@ -84,7 +84,8 @@ module CTioga2
         def self.typed_attribute(symbol, type)
           sym = symbol.to_sym
           self.attr_accessor(sym)
-          type = CmdArg.new(type) unless type.respond_to? :string_to_type
+          # The unless type.respond_to? :string_to_type seems
+          type = CmdArg.new(type) # unless type.respond_to? :string_to_type
           @attribute_types ||= {}
           @attribute_types[sym] = type
           return type
@@ -271,6 +272,25 @@ module CTioga2
           set_from_hash(other_object.to_hash)
         end
 
+        # Converts a hash in text format into a format suitable for
+        # feeding to #set_from_hash. Only relevant keys are
+        # converted. Keys that exist in the options hash but are not
+        # Strings are left untouched
+        def self.convert_string_hash(opts, key = "%s")
+          cnv = self.options_hash(key)
+          
+          ret = {}
+          for k,v in opts
+            if cnv.key? k
+              if v.is_a? String
+                ret[k] = cnv[k].type.string_to_type(v)
+              else
+                ret[k] = v
+              end
+            end
+          end
+          return ret
+        end
       end
     end
   end

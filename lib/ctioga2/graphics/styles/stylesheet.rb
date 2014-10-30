@@ -60,7 +60,7 @@ module CTioga2
               ""
             end
 
-            if rest =~ /^\s*(>)?$/
+            if rest =~ /^\s*\*?\s*(>)?$/
               if $1 == ">"
                 @direct_parent = true
               end
@@ -89,6 +89,7 @@ module CTioga2
             return true
           end
 
+          # p self.from_text("*")
           # p self.from_text("bidule")
           # p self.from_text(".bidule")
           # p self.from_text("#bidule")
@@ -161,7 +162,102 @@ module CTioga2
           end
         end
 
-        
+        # A style bucket, a hash 'key' => 'value' associated with a
+        # unique xpath
+        class Bucket
+          
+          # The style information (a string->string hash).
+          #
+          # Not that it can actually be a string->typed stuff, since
+          # most types accept that !
+          attr_accessor :style
+
+          # All the XPath associated with this style information
+          attr_accessor :xpath
+
+          def initialize(xp)
+            @xpath = XPath.from_text(xp)
+          end
+
+          def matches?(obj)
+            if @xpath.matches?(obj)
+              return true
+            else
+              return false
+            end
+          end
+
+          # # Returns the style for the given object. DOES NOT CHECK
+          # # that the object belongs to this Bucket.
+          # def style_for(obj)
+          #   @cache ||= {}
+          #   if ! @cache.key?(obj.style_name)
+          #     @cache[obj.style_name] = obj.style_class.from_hash(@style)
+          #   end
+          #   return @cache[obj.style_name]
+          # end
+        end
+
+        # OK, so now we begin the StyleSheet class per se.
+        #
+        # The stylesheet class is but an ordered list of buckets.
+
+        # The list of buckets
+        attr_accessor :buckets
+
+        # A hash "full xpath" -> bucket name, so that one can update a
+        # bucket instead of just adding to it.
+        attr_accessor :buckets_by_xpath
+
+        def initialize()
+          @buckets = []
+          @buckets_by_xpath = {}
+        end
+
+        def set_style(xpath, style)
+          for f in xpath.split(/\s*,\s*/) 
+            bkt = get_bucket(f)
+            bkt.style = style
+          end
+        end
+
+        def update_style(xpath, style)
+          for f in xpath.split(/\s*,\s*/) 
+            bkt = get_bucket(f)
+            bkt.style.merge!(style)
+          end
+        end
+
+        def style_for(obj)
+          stl = {}
+          for bkt in @buckets
+            if bkt.matches?(obj)
+              stl.merge!(bkt.style)
+            end
+          end
+
+          cls = obj.style_class
+          cnv_stl = cls.convert_string_hash(stl)
+          return cls.from_hash(cnv_stl)
+        end
+
+        def self.style_sheet
+          @style_sheet ||= StyleSheet.new
+          @style_sheet
+        end
+
+        def self.style_for(obj)
+          return self.style_sheet.style_for(obj)
+        end
+
+        protected 
+
+        def get_bucket(xpath)
+          if ! @buckets_by_xpath.key? xpath
+            @buckets << Bucket.new(xpath)
+            @buckets_by_xpath[xpath] = @buckets.last
+          end
+        end
 
       end
     end
