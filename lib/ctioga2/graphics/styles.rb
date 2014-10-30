@@ -46,3 +46,4 @@ require 'ctioga2/graphics/styles/factory'
 
 # Style sheets
 require 'ctioga2/graphics/styles/sheet'
+require 'ctioga2/graphics/styles/stylesheet'

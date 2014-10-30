@@ -93,8 +93,16 @@ module CTioga2
           return @style_class
         end
 
+        def self.style_name
+          return @style_name
+        end
+
         def style_class
           return self.class.style_class
+        end
+
+        def style_name
+          return self.class.style_name
         end
 
         def has_style?

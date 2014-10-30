@@ -189,7 +189,7 @@ EOD
             all << style << opts
             code.call(*all)
           end
-          cls.define_style(style_name, style_class)
+          cls.define_style(set_style_command, style_class)
           return cls
         end
 
