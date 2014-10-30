@@ -45,5 +45,4 @@ require 'ctioga2/graphics/styles/curve'
 require 'ctioga2/graphics/styles/factory'
 
 # Style sheets
-require 'ctioga2/graphics/styles/sheet'
 require 'ctioga2/graphics/styles/stylesheet'

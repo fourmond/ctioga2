@@ -30,12 +30,13 @@ module CTioga2
           'xextent' => 'float',
           'yextent' => 'float',
           'nbavg'  =>  'integer',
-          'base-style' => 'text'
-        }.update(Styles::ArrowStyle::options_hash)
+        } # .update(Styles::ArrowStyle::options_hash)
 
         TiogaPrimitiveCall.
-          primitive("tangent", "tangent", [ 'data-point'],
-                    TangentOptions) do |t, point,options|
+          styled_primitive("tangent", "tangent", [ 'data-point'],
+                           Styles::ArrowStyle,
+                           'arrow', [],
+                           TangentOptions) do |t, point,style,options|
           options ||= {}
           nb = options['nbavg'] || 7
           x = point.x_val(nb)
@@ -80,10 +81,6 @@ module CTioga2
                 options['head_color'])
             options['color'] = $last_curve_style.line.color
           end
-
-          st_name = options['base-style'] || "base"
-          style = Styles::StyleSheet.style_for(Styles::ArrowStyle ,st_name)
-          style.set_from_hash(options)
 
           coords = options['tail'] + options['head']
           style.draw_arrow(t, *coords)

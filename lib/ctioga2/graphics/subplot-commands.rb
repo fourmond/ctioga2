@@ -97,9 +97,9 @@ EOH
       Cmd.new("inset",nil,"--inset", 
               [
                CmdArg.new('box'),
-              ]) do |plotmaker, box|
+              ], Elements::TiogaElement::StyleBaseOptions) do |plotmaker, box, opts|
       Log::debug { "Starting a subplot with specs #{box.inspect}" }
-      subplot = plotmaker.root_object.subplot
+      subplot = plotmaker.root_object.subplot(opts)
       subplot.subframe = box
     end
     
@@ -115,9 +115,9 @@ EOD
       Cmd.new("next-inset",nil,"--next-inset", 
               [
                CmdArg.new('box'),
-              ]) do |plotmaker, box|
+              ], Elements::TiogaElement::StyleBaseOptions) do |plotmaker, box,opts|
       plotmaker.root_object.leave_subobject
-      subplot = plotmaker.root_object.subplot
+      subplot = plotmaker.root_object.subplot(opts)
       subplot.subframe = box
     end
     
@@ -147,11 +147,12 @@ EOD
       'reversed_color' => CmdArg.new('color'),
       'reversed_transparency' => CmdArg.new('float'),
     }
+    RegionOptions.merge!(Elements::TiogaElement::StyleBaseOptions)
 
     RegionCommand =         
       Cmd.new("region",nil,"--region", 
               [ ], RegionOptions) do |plotmaker, options|
-      r = plotmaker.root_object.enter_region
+      r = plotmaker.root_object.enter_region(options)
       r.set_from_hash(options)
     end
     
@@ -165,8 +166,9 @@ EOD
 
     GradientCommand =         
       Cmd.new("gradient",nil,"--gradient", 
-              [CmdArg.new('color'), CmdArg.new('color') ], {}) do |plotmaker, s, e, options|
-      r = plotmaker.root_object.enter_gradient
+              [CmdArg.new('color'), CmdArg.new('color') ], 
+              Elements::TiogaElement::StyleBaseOptions) do |plotmaker, s, e, options|
+      r = plotmaker.root_object.enter_gradient(options)
       r.start_color = s
       r.end_color = e
       r.set_from_hash(options)

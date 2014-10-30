@@ -482,6 +482,8 @@ module CTioga2
       raise "Duplicated option between PlotCommandOptions and LoadDatasetOptions"
     end
 
+    PlotOptions.merge!(Graphics::Elements::TiogaElement::StyleBaseOptions)
+
     PlotCommand = 
       Cmd.new("plot",nil,"--plot", 
               [ CmdArg.new('dataset') ], 

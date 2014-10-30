@@ -13,7 +13,9 @@
 
 
 require 'ctioga2/graphics/types'
+require 'ctioga2/graphics/styles'
 require 'ctioga2/graphics/elements/element'
+require 'ctioga2/graphics/elements/plot-elements'
 require 'ctioga2/graphics/elements/containers'
 require 'ctioga2/graphics/elements/redirecting-container'
 require 'ctioga2/graphics/elements/subplot'

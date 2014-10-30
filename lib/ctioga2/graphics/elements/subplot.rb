@@ -46,8 +46,8 @@ module CTioga2
         # as #real_do hasn't been entered into.
         attr_accessor :computed_boundaries
 
-        def initialize(parent, root, style)
-          super(parent, root)
+        def initialize(parent, root, opts)
+          super(parent, root, opts)
 
           @subframe = Types::MarginsBox.new("2.8dy", "2.8dy", 
                                             "2.8dy", "2.8dy")
@@ -56,7 +56,7 @@ module CTioga2
 
           @prev_subframe = nil
 
-          @style = style || Styles::PlotStyle.new
+          @style = Styles::PlotStyle.new(self)
 
           @user_boundaries = {}
 

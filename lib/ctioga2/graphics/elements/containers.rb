@@ -60,9 +60,11 @@ module CTioga2
         # children or not ?)
 
         # Creates an empty new Container with the given _parent_.
-        def initialize(parent = nil, root = nil)
+        def initialize(parent, root, options)
           super()
           @parent = parent
+
+          setup_style(parent, options)
           
           # elements to be given to tioga
           @elements = []

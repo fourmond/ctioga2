@@ -228,7 +228,7 @@ module CTioga2
           end
         end
 
-        def style_for(obj)
+        def style_hash_for(obj)
           stl = {}
           for bkt in @buckets
             if bkt.matches?(obj)
@@ -237,13 +237,20 @@ module CTioga2
           end
 
           cls = obj.style_class
-          cnv_stl = cls.convert_string_hash(stl)
-          return cls.from_hash(cnv_stl)
+          return cls.convert_string_hash(stl)
+        end
+
+        def style_for(obj)
+          return obj.style_class.from_hash(style_hash_for(obj))
         end
 
         def self.style_sheet
           @style_sheet ||= StyleSheet.new
           @style_sheet
+        end
+
+        def self.style_hash_for(obj)
+          return self.style_sheet.style_hash_for(obj)
         end
 
         def self.style_for(obj)

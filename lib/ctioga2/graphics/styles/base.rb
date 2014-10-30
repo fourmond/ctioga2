@@ -257,11 +257,16 @@ module CTioga2
         end
 
         # Converts to a hash. Does the reverse of #set_from_hash.
+        #
+        # _nil_ values get stripped off (but not false values, of course).
         def to_hash(name = "%s")
           retval = {}
           for attr in self.class.attributes
             if instance_variable_defined?("@#{attr}")
-              retval[name % attr] = instance_variable_get("@#{attr}")
+              val = instance_variable_get("@#{attr}")
+              if ! val.nil?
+                retval[name % attr] = val
+              end
             end
           end
           return retval

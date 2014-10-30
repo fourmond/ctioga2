@@ -87,38 +87,47 @@ module CTioga2
 
         @@current_index = 0
 
-        def initialize
+        def initialize(plt)
           # Default style for the plots.
-          @axes = {}
-          @axes[:left] = 
-            StyleSheet.style_for(AxisStyle, 'left', :left, 
-                                 AXIS_WITH_TICKS_AND_NUMERIC_LABELS,
-                                 '$y$')
-          @axes[:bottom] = 
-            StyleSheet.style_for(AxisStyle, 'bottom', :bottom, 
-                                 AXIS_WITH_TICKS_AND_NUMERIC_LABELS,
-                                 '$x$')
+          @target_plot = plt
 
-          @axes[:right] = 
-            StyleSheet.style_for(AxisStyle, 'right', :right, 
-                                 AXIS_WITH_TICKS_ONLY)
-          @axes[:top] = 
-            StyleSheet.style_for(AxisStyle, 'top', :top, 
-                                 AXIS_WITH_TICKS_ONLY)
+          @axes = {}
+          for ax in [:left, :right, :top, :bottom] 
+            
+            cls = [ax.to_s]
+            cls << if (ax == :bottom or ax == :top)
+                     'x'
+                   else
+                     'y'
+                   end
+            dec = if (ax == :bottom or ax == :left)
+                    AXIS_WITH_TICKS_AND_NUMERIC_LABELS
+                  else
+                    AXIS_WITH_TICKS_ONLY
+                  end
+            label = nil
+            if ax == :bottom
+              label = '$x$'
+            elsif ax == :left
+              label = '$y$'
+            end
+            
+            axis = Elements::AxisElement.new
+            axis.setup_style(@target_plot, {'classes' => cls})
+            axis.initialize_style(ax, dec, label)
+            @axes[ax] = axis
+          end
 
           @xaxis_location = :bottom
           @yaxis_location = :left
 
-          @title = 
-            StyleSheet.style_for(TextLabel, 'title',
-                                 nil, 
-                                 Types::PlotLocation.new(:top))
+          @title = Elements::TitleElement.new(@target_plot, {})
+
           @plot_margin = nil
 
           @transforms = CoordinateTransforms.new
 
-          @background = 
-            StyleSheet.style_for(BackgroundStyle, 'background')
+          @background = Elements::BackgroundElement.new(@target_plot, {})
 
           # A padding of 6bp ? Why ?? Why not ?
           @padding = Types::Dimension.new(:bp, 6)
@@ -152,12 +161,12 @@ module CTioga2
         def set_log_scale(which, val)
           case which
           when :x
-            @axes[:top].log = val
-            @axes[:bottom].log = val
+            @axes[:top].style.log = val
+            @axes[:bottom].style.log = val
             @transforms.x_log = val
           when :y
-            @axes[:left].log = val
-            @axes[:right].log = val
+            @axes[:left].style.log = val
+            @axes[:right].style.log = val
             @transforms.y_log = val
           else
             raise "Unknown axis: #{which.inspect}"
@@ -186,12 +195,12 @@ module CTioga2
         # \todo Maybe x2 and y2 could be provided to signify "the side
         # which isn't the default" ?
         def get_axis_style(name)
-          style = @axes[get_axis_key(name)]
-          if ! style
+          axis = @axes[get_axis_key(name)]
+          if ! axis
             ## @todo Type-safe exception here
             raise "Unkown named axis: '#{name}'"
           else
-            return style
+            return axis.style
           end
         end
 
@@ -206,10 +215,10 @@ module CTioga2
           end
         end
 
-        def set_axis_style(name, style)
-          key = get_axis_key(name)
-          @axes[key] = style
-        end
+        # def set_axis_style(name, style)
+        #   key = get_axis_key(name)
+        #   @axes[key] = style
+        # end
 
 
 
@@ -223,7 +232,7 @@ module CTioga2
         # ticks are implied.
         def get_label_style(location)
           if location =~ /^\s*title\s*$/
-            return @title
+            return @title.style
           end
           location =~ /^\s*(.*?)(?:_(ticks?|label))?\s*$/i
           which = $2
@@ -255,22 +264,22 @@ module CTioga2
           for which, axis in @axes
             t.context do
               begin
-                axis.set_bounds_for_axis(t, bounds[which])
-                axis.draw_axis(t, @text_sizes)
+                axis.style.set_bounds_for_axis(t, bounds[which])
+                axis.style.draw_axis(t, @text_sizes)
               rescue Exception => e
                 error { "Impossible to draw axis #{which}: #{e.message}" }
-                debug { "Full message: #{e.inspect}\n#{e.backtrace.join("\n")}" }
+                info { "Full message: #{e.inspect}\n#{e.backtrace.join("\n")}" }
               end
             end
           end
           # We draw the title last
-          title.draw(t, 'title', "title-#{@text_size_index}")
+          title.style.draw(t, 'title', "title-#{@text_size_index}")
         end
 
         # Draws all axes background lines for the plot.
         def draw_all_background_lines(t)
           for which, axis in @axes
-            axis.draw_background_lines(t)
+            axis.style.draw_background_lines(t)
           end
         end
 
@@ -305,10 +314,10 @@ module CTioga2
         def estimate_margins(t)
           margins = [:left, :right, :top, :bottom].map do |side|
             exts = axes_for_side(side).map do |ax|
-              ax.extension(t,self)
+              ax.style.extension(t, self)
             end
-            if @title.loc.is_side?(side)
-              exts << @title.label_extension(t, 'title', @title.loc) * 
+            if @title.style.loc.is_side?(side)
+              exts << @title.style.label_extension(t, 'title', @title.style.loc) * 
                 (@text_scale || 1)
             end
             Types::Dimension.new(:dy, exts.max || 0)
@@ -374,7 +383,7 @@ module CTioga2
         def axes_for_side(side)
           ret = []
           for k,v in @axes
-            ret << v if v.location.is_side?(side)
+            ret << v if v.style.location.is_side?(side)
           end
           return ret
         end

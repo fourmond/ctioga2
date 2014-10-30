@@ -23,7 +23,7 @@ module CTioga2
 
     # All elements that can be drawn onto a FigureMaker object
     module Elements
-      
+
       # The base class for every single object that is drawn on
       # Tioga's output. Each object can have a style attached to it,
       # and obtained from the StyleSheet class.
@@ -71,6 +71,11 @@ module CTioga2
         # different from the rest)
         attr_accessor :object_parent
 
+        StyleBaseOptions = {
+          'id' => CmdArg.new('text'),
+          'class' => CmdArg.new('text-list')
+        }
+
         def self.define_style(name, cls)
           @style_name = name
           @style_class = cls
@@ -90,7 +95,15 @@ module CTioga2
         end
 
         def self.style_class
-          return @style_class
+          if @style_class
+            return @style_class
+          else
+            if self == TiogaElement
+              return nil
+            else
+              return self.superclass.style_class
+            end
+          end
         end
 
         def self.style_name
@@ -121,8 +134,6 @@ module CTioga2
 
         def self.inherited(cls)
           p cls
-          @@style_classes ||= {}
-          p @@style_classes
         end
 
         def initialize
@@ -136,7 +147,7 @@ module CTioga2
         def setup_style(obj_parent, opts) 
           @cached_options = opts
           @object_id = opts["id"] || nil
-          @object_classes = opts["class"] || []
+          @object_classes = opts["classes"] || []
           @object_parent = obj_parent
 
           @style_is_setup = true
@@ -144,13 +155,21 @@ module CTioga2
 
 
         def get_style()
-          if ! @style_is_setup
-            raise "Should have setup style before !"
-          elsif ! self.style_class
+          check_styled()
+          return Styles::StyleSheet.style_for(self)
+        end
+
+        def update_style(style)
+          check_styled()
+          style.set_from_hash(Styles::StyleSheet.style_hash_for(self))
+        end
+
+        def check_styled()
+          if ! self.style_class
             raise "Object has no attached style class !"
+          elsif ! @style_is_setup
+            raise "Should have setup style before !"
           end
-          # ideally, should be:
-          return StyleSheet.style_for(self)
         end
 
         def depth
@@ -208,6 +227,8 @@ module CTioga2
         # A Styles::CurveStyle object saying how the curve should be
         # drawn.
         attr_accessor :curve_style
+
+        define_style 'curve', Styles::CurveStyle
 
         undef :location=, :location
 

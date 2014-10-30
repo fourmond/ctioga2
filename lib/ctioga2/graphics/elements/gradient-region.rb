@@ -41,7 +41,7 @@ module CTioga2
         attr_accessor :start_color, :end_color
 
         # Creates a new empty region
-        def initialize(parent = nil, root = nil)
+        def initialize(parent, root, options)
           @parent = parent
           
           # The curves whose color we should change

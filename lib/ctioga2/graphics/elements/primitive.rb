@@ -51,6 +51,9 @@ module CTioga2
           # compulsory arguments and a hash containing optional ones.
           attr_accessor :funcall
 
+          # The underlying nameless class
+          attr_accessor :primitive_class
+
           # Creates a TiogaPrimitive object
           def initialize(name, comp, opts = {}, &code)
             @name = name
@@ -113,6 +116,7 @@ module CTioga2
           @known_primitives[name] = primitive
 
           primitive_class = Class.new(TiogaPrimitiveCall)
+          primitive.primitive_class = primitive_class
           
           # Now, create the command
           cmd_args = comp.map do |x|
@@ -134,14 +138,17 @@ module CTioga2
 
           cmd_opts['clipped'] = CmdArg.new('boolean')
           cmd_opts['depth'] = CmdArg.new('integer')
+          cmd_opts.merge!(TiogaElement::StyleBaseOptions)
+
           cmd = Cmd.new("draw-#{name}",nil,"--draw-#{name}", 
                         cmd_args, cmd_opts) do |plotmaker, *rest|
             options = rest.pop
             call = primitive_class.new(primitive,
                                      rest, options)
+            container = plotmaker.root_object.current_plot
+            call.setup_style(container, options)
             call.last_curve_style = plotmaker.curve_style_stack.last
-            plotmaker.root_object.current_plot.
-              add_element(call)
+            container.add_element(call)
           end
           if ! desc
             desc = "Directly draws #{long_name} on the current plot"
@@ -166,13 +173,10 @@ module CTioga2
         def self.styled_primitive(name, long_name, comp, style_class, 
                                   style_name, without = [],
                                   additional_options = {},
-                                  set_style_command = nil, # This
-                                                           # could be
-                                                           # removed
+                                  set_style_command = nil,
                                   &code)
           options = style_class.options_hash.without(without)
           options.merge!(additional_options)
-          options['base-style'] = 'text' # the base style name
 
           set_style_command ||= style_name
           desc = <<"EOD"
@@ -183,8 +187,7 @@ EOD
 
           cls = self.primitive(name, long_name, comp, options, desc) do |*all|
             opts = all.pop
-            st_name = opts['base-style'] || "base"
-            style = Styles::StyleSheet.style_for(style_class,st_name) 
+            style = get_style()
             style.set_from_hash(opts)
             all << style << opts
             code.call(*all)
@@ -295,7 +298,7 @@ EOD
           ## @todo this is a really ugly hack for passing
           ## last_curve_style around
           $last_curve_style = @last_curve_style
-          primitive.funcall.call(t, *args)
+          instance_exec(t, *args, &primitive.funcall)
         end
         
         DrawingSpecType = 

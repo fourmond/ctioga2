@@ -67,7 +67,8 @@ module CTioga2
         if @current_container
           return @current_container
         else
-          subplot = Elements::Subplot.new(nil, self, nil)
+          subplot = Elements::Subplot.new(nil, self, 
+                                          {'id' => 'root' })
           enter_subobject(subplot)
           return subplot
         end
@@ -135,33 +136,33 @@ module CTioga2
       #
       # For the sake of convenience, returns the newly created
       # Elements::Subplot
-      def subplot()
+      def subplot(opts)
         if ! @current_container
-          enter_subobject(Elements::Container.new(nil, self))
+          enter_subobject(Elements::Container.new(nil, self, {}))
         end
-        subplot = Elements::Subplot.new(@current_container, self, nil)
+        subplot = Elements::Subplot.new(@current_container, self, opts)
         enter_subobject(subplot)
         return subplot
       end
 
       # This function is the companion of #subplot, but for Region
       # objects. Returns the newly created Region.
-      def enter_region
+      def enter_region(opts)
         if ! @current_container
-          subplot
+          subplot({})
         end
-        region = Elements::Region.new(@current_container, self)
+        region = Elements::Region.new(@current_container, self, opts)
         enter_subobject(region)
         return region
       end
 
       # This function is the companion of #subplot, but for GradientRegion
       # objects. Returns the newly created GradientRegion
-      def enter_gradient
+      def enter_gradient(opts)
         if ! @current_container
           subplot
         end
-        region = Elements::GradientRegion.new(@current_container, self)
+        region = Elements::GradientRegion.new(@current_container, self, opts)
         enter_subobject(region)
         return region
       end

@@ -39,7 +39,10 @@ module CTioga2
         attr_accessor :reversed_fill_style
 
         # Creates a new empty region
-        def initialize(parent = nil, root = nil)
+        def initialize(parent, root, opts)
+          setup_style(parent, opts)
+          # A reason why we don't use the superclass constructor ?
+
           @parent = parent
           @clipped = true       # clipped by default !
           
