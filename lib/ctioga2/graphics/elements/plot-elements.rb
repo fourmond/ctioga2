@@ -38,6 +38,20 @@ module CTioga2
         end
       end
 
+      # This simple wrapper makes it possible to style axes (at least
+      # using parents styling)
+      class MapAxisElement < TiogaElement
+        
+        define_style 'zaxis', Styles::MapAxisStyle
+
+        attr_accessor :style
+
+        def initialize(parent, opts)
+          setup_style(parent, opts)
+          @style = get_style()
+        end
+      end
+
       # Wrapper for the title
       class TitleElement < TiogaElement
 

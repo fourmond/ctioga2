@@ -15,6 +15,7 @@ require 'ctioga2/utils'
 require 'ctioga2/log'
 
 require 'ctioga2/graphics/coordinates'
+require 'ctioga2/graphics/elements/element'
 
 # This module contains all the classes used by ctioga
 module CTioga2
@@ -84,6 +85,9 @@ module CTioga2
         # conversion factor from the output dimensions.
         attr_accessor :frame_real_size
 
+
+        # The target plot (ie the parent of all the small elements)
+        attr_accessor :target_plot
 
         @@current_index = 0
 
@@ -215,10 +219,10 @@ module CTioga2
           end
         end
 
-        # def set_axis_style(name, style)
-        #   key = get_axis_key(name)
-        #   @axes[key] = style
-        # end
+        def set_axis(name, axis)
+          key = get_axis_key(name)
+          @axes[key] = axis
+        end
 
 
 
@@ -660,11 +664,13 @@ EOH
         Cmd.new('new-zaxis', nil, '--new-zaxis',
                 [
                  CmdArg.new('text')
-                ],ZAxisStyle) do |plotmaker, name, options|
-        axis = Styles::MapAxisStyle.new
-        PlotStyle.current_plot_style(plotmaker).
-          set_axis_style(name, axis)
-        axis.set_from_hash(options)
+                ], ZAxisStyle.merge(Elements::TiogaElement::StyleBaseOptions)
+                ) do |plotmaker, name, options|
+        
+        cps = PlotStyle.current_plot_style(plotmaker)
+        axis = Elements::MapAxisElement.new(cps.target_plot, options)
+        cps.set_axis(name, axis)
+        axis.style.set_from_hash(options)
       end
       
       NewZAxisCommand.
