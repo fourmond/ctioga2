@@ -133,7 +133,7 @@ module CTioga2
 
 
         def self.inherited(cls)
-          p cls
+          # p cls
         end
 
         def initialize

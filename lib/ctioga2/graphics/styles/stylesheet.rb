@@ -177,6 +177,7 @@ module CTioga2
 
           def initialize(xp)
             @xpath = XPath.from_text(xp)
+            @style = {}
           end
 
           def matches?(obj)

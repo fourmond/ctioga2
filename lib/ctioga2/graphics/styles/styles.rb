@@ -1,5 +1,5 @@
-# sheet.rb: handling of style sheets
-# copyright (c) 2012 by Vincent Fourmond
+# styles.rb: commands for setting styles
+# copyright (c) 2014 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,147 +23,6 @@ module CTioga2
 
     module Styles
    
-      # This is a style sheet, is a storage place for style
-      # objects. It has two related functions:
-      # * first, store the user-specified preferences
-      # * second, provide the appropriate default style for any given
-      #   object, most probably at construction time (although that
-      #   may get hard some times)
-      #
-      # The style are cascading and scoped. A scope should begin in
-      # each plot.
-      #
-      # Cascades happen in two ways:
-      # 
-      # * more specific styles inherit from less specific (axis ->
-      #   yaxis -> left)
-      # * children style inherit from parent style
-      class StyleSheet
-
-        # The parent of the style sheet, or nil if this is the top one.
-        attr_accessor :parent
-
-        # The styles, in form of a style class -> style name -> style
-        # object nested hash
-        #
-        # The style object is actually a hash ready to be fed to the
-        # BasicStyle#set_from_hash
-        attr_accessor :own_styles
-
-        def initialize(par = nil)
-          @parent = par
-          @own_styles = {}
-        end
-
-        # This hash contains the parent style for each of the style
-        # listed in
-        #
-        # Keyed by class -> style name -> parent name
-        @style_parent = {}
-
-        # Sets the parent for the given style
-        def self.set_parent(cls, style, parent)
-          @style_parent[cls] ||= {}
-          @style_parent[cls][style] = parent
-        end
-        
-        # Returns the parent style for the style (or _nil_ should the
-        # style have no parent)
-        #
-        # All styles (but base) derive from the corresponding "base"
-        # style.
-        def self.get_parent(cls, style)
-          @style_parent[cls] ||= {}
-          stl = @style_parent[cls][style]
-          if (! stl) and (! (style == 'base'))
-            return 'base'
-          end
-          return stl
-        end
-
-        set_parent AxisStyle, "x",  "base"
-        set_parent AxisStyle, "y",  "base"
-
-        set_parent AxisStyle, "bottom", "x"
-        set_parent AxisStyle, "top",    "x"
-        set_parent AxisStyle, "left",   "y"
-        set_parent AxisStyle, "right",  "y"
-
-
-        # This returns the style we have in this object for the given
-        # name. Inner cascading should take place (ie object
-        # hierarchy, but not scope hierarchy).
-        #
-        # This returns a hash that can be modified.
-        def own_style_hash_for(cls, name)
-          p = self.class.get_parent(cls, name)
-          base = {}
-          if p
-            base = own_style_hash_for(cls, p)
-          end
-          @own_styles[cls] ||= {}
-          style = @own_styles[cls][name]
-          if ! style
-            return base
-          end
-          style = style.dup
-          style.merge!(base) { |key, v1, v2| v1 }
-          return style
-        end
-
-        # The style for the given name, including all cascading
-        def get_style_hash_for(cls, name)
-          ps = {}
-          if @parent
-            ps = @parent.get_style_hash_for(cls, name);
-          end
-          style = own_style_hash_for(cls, name)
-          style.merge!(ps) { |key, v1, v2| v1 }
-          return style
-        end
-
-
-
-        # The current sheet
-        @sheet = StyleSheet.new
-        
-        # Returns a suitable style object for the given style name, or
-        # crashes if the name isn't known.
-        #
-        # Additional arguments are passed to the constructor
-        def self.style_for(cls, name, *args)
-          a = cls.new(*args)
-          a.set_from_hash(@sheet.get_style_hash_for(cls, name))
-          return a
-        end
-
-        def self.enter_scope()
-          @sheet = StyleSheet.new(@sheet)
-        end
-
-        def self.leave_scope()
-          if @sheet.parent
-            @sheet = @sheet.parent
-          else
-            warn { "Trying to leave top-level stylesheet scope" }
-          end
-        end
-
-        def self.current_sheet()
-          return @sheet
-        end
-
-
-        # Updates the style sheet concerning the _what_ of class _cls_
-        # with the given values
-        def self.update_style(cls, what, values)
-          StyleSheet.current_sheet.own_styles[cls] ||= {}
-          StyleSheet.current_sheet.own_styles[cls][what] ||= {}
-          StyleSheet.current_sheet.own_styles[cls][what].merge!(values)
-        end
-        
-      end
-
       StyleSheetGroup = CmdGroup.new('style-sheets',
                                      "Default styles", 
                                      <<EOD, 40)
@@ -209,8 +68,8 @@ EOD
                    CmdArg.new('text'),
                   ], 
                   cls.options_hash
-                  ) do |plotmaker, what, opts|
-          StyleSheet.update_style(cls, what, opts)
+                  ) do |plotmaker, xpath, opts|
+          StyleSheet.style_sheet.update_style(xpath, opts)
         end
         StyleSheetCommands[name].
           describe("Sets the default style for the given #{desc}.", 
@@ -352,10 +211,10 @@ EOD
 
       # Here, a few defaults styles
       
-      StyleSheet.update_style(TextLabel, 'title', {
-                                'text_width' => 
-                                Types::Dimension.new(:frame, 1.0, :x)
-                              })
+      # StyleSheet.style_sheet.update_style(TextLabel, 'title', {
+      #                           'text_width' => 
+      #                           Types::Dimension.new(:frame, 1.0, :x)
+      #                         })
     end
   end
 end
