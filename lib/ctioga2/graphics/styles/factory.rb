@@ -398,6 +398,21 @@ module CTioga2
         # plot command.
         PlotCommandOptions = plot_optional_arguments
 
+        # Converts the one-time parameters, which is a hash whose keys
+        # are the names of the parameters to targets.
+        def hash_name_to_target(h)
+          retval = {}
+          convert = self.class.name_to_target
+          for k,v in h
+            if convert.key? k 
+              retval[convert[k]] = v
+            else
+              warn { "Unkown key for hash_name_to_target: #{k}" }
+            end
+          end
+          return retval
+        end
+
         protected
 
         # Returns the CurveFactoryParameterType object corresponding
@@ -415,20 +430,6 @@ module CTioga2
           return self.class.parameters
         end
 
-        # Converts the one-time parameters, which is a hash whose keys
-        # are the names of the parameters to targets.
-        def hash_name_to_target(h)
-          retval = {}
-          convert = self.class.name_to_target
-          for k,v in h
-            if convert.key? k 
-              retval[convert[k]] = v
-            else
-              warn { "Unkown key for hash_name_to_target: #{k}" }
-            end
-          end
-          return retval
-        end
 
         # Resolve potential links in the form of :=stuff within the
         # given hash, and returns a new version of the hash.

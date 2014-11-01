@@ -23,7 +23,7 @@ module CTioga2
 
       # This style is the base class of a series of style objects that
       # share one common feature: all their attributes can be set
-      # using the set_from_hash function.
+      # using the #set_from_hash function.
       class BasicStyle
 
         OldAttrAccessor = method(:attr_accessor)

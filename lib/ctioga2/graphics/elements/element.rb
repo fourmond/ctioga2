@@ -76,15 +76,16 @@ module CTioga2
           'class' => CmdArg.new('text-list')
         }
 
-        def self.define_style(name, cls)
+        def self.define_style(name, cls = nil)
           @style_name = name
           @style_class = cls
-
-          TiogaElement.register_style(name, cls)
+          register_style(name, cls)
         end
 
+        @@style_classes = {}
+
         def self.register_style(name, cls)
-          @@style_classes ||= {}
+          # p [self, name, cls]
           if @@style_classes.key? name
             if @@style_classes[name] != cls
               raise "Trying to register different classes under the same name"
@@ -94,20 +95,32 @@ module CTioga2
           end
         end
 
+        def self.base_style
+          if @style_name
+            return self
+          elsif self == TiogaElement
+            return nil
+          else
+            return self.superclass.base_style
+          end
+        end
+
         def self.style_class
-          if @style_class
+          if @style_name
             return @style_class
           else
-            if self == TiogaElement
-              return nil
-            else
-              return self.superclass.style_class
-            end
+            bs = base_style
+            return (bs ? bs.style_class : nil)
           end
         end
 
         def self.style_name
-          return @style_name
+          if @style_name
+            return @style_name
+          else
+            bs = base_style
+            return (bs ? bs.style_name : nil)
+          end
         end
 
         def style_class
@@ -161,7 +174,8 @@ module CTioga2
 
         def update_style(style)
           check_styled()
-          style.set_from_hash(Styles::StyleSheet.style_hash_for(self))
+          stl = Styles::StyleSheet.style_hash_for(self)
+          style.set_from_hash(stl)
         end
 
         def check_styled()

@@ -105,7 +105,8 @@ module CTioga2
           # the command-line take precedence.
           curve.setup_style(plot, options)
           curve.update_style(curve.curve_style)
-          curve.curve_style.set_from_hash(options)
+          curve.curve_style.
+            set_from_hash(@style_factory.hash_name_to_target(options))
 
           curve.curve_style.target = curve
         end

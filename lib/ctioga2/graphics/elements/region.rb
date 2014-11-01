@@ -29,6 +29,8 @@ module CTioga2
         undef :elements
         undef :subframe
 
+        define_style 'region'
+
         # The curves which delimit the region
         attr_accessor :curves
 

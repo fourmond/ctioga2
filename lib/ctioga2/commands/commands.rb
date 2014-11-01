@@ -264,6 +264,7 @@ module CTioga2
         return @tg_op_names
       end
 
+
       # Returns a lowercase 
       def normalize_option_name(opt)
         return opt.gsub(/_/,"-").downcase

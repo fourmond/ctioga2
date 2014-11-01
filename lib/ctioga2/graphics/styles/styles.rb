@@ -89,14 +89,14 @@ Meaning of the style parameters:
  * @style@: the line style, see {type: line-style}
  * @width@: the line width (in points)
 
-> --define-line-style base /color=Pink
+> --define-line-style * /color=Pink
 
 makes all lines  pink (unless overriden by the /color option to
 {command: draw-line}), while
 
-> --define-line-style line-pink /color=Pink
+> --define-line-style .pink /color=Pink
 
-only affect those to which the /base-style=line-pink style option
+only affect those to which the /class=pink style option
 was given.
 EOD
 
@@ -216,6 +216,24 @@ EOD
                        'text_width' => 
                        Types::Dimension.new(:frame, 1.0, :x)
                      })
+
+      LoadStyleCommand = 
+        Cmd.new("load-style", nil,
+                  "--load-style", 
+                  [
+                   CmdArg.new('file'),
+                  ], {}
+                  ) do |plotmaker, file|
+        File.open(file) do |f|
+          str = f.read
+          StyleSheet.style_sheet.update_from_string(str)
+        end
+      end
+      LoadStyleCommand.
+        describe("Load a style file", 
+                 <<"EOH", StyleSheetGroup)
+...
+EOH
     end
   end
 end

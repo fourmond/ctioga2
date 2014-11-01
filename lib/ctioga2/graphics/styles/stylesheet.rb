@@ -192,6 +192,16 @@ module CTioga2
             end
           end
 
+          # Returns the style, but with all the options normalized to
+          # lowercase and without
+          def normalized_style
+            stl = {}
+            for k,v in @style
+              stl[k.gsub(/-/,"_").downcase] = v
+            end
+            return stl
+          end
+
           # # Returns the style for the given object. DOES NOT CHECK
           # # that the object belongs to this Bucket.
           # def style_for(obj)
@@ -236,13 +246,17 @@ module CTioga2
         def style_hash_for(obj)
           stl = {}
           for bkt in @buckets
+            # p [bkt.xpath, bkt.matches?(obj), bkt.style]
             if bkt.matches?(obj)
-              stl.merge!(bkt.style)
+              stl.merge!(bkt.normalized_style)
             end
           end
 
+          # p [:s, stl]
           cls = obj.style_class
-          return cls.convert_string_hash(stl)
+          rv = cls.convert_string_hash(stl)
+          # p [:t, rv]
+          return rv
         end
 
         def style_for(obj)
@@ -260,6 +274,31 @@ module CTioga2
 
         def self.style_for(obj)
           return self.style_sheet.style_for(obj)
+        end
+
+        def update_from_file(file)
+        end
+
+        def update_from_string(str)
+          # First, strip all comments from the string
+          str = str.gsub(/^\s*#.*/, '')
+
+          str.gsub(/^\s*((?:[.#]?[\w-]+\s*>?\s*)+)\s*\{([^}]+)\}/m) do |x|
+            xpath = $1
+            smts = $2.split(/\s*;\s*/)
+            
+            stl = {}
+            for s in smts
+              if s =~ /\s*([\w-]+)\s*:\s*(.*)/m
+                stl[$1] = $2
+              else
+                error { "Style not understood: #{s}" }
+              end
+            end
+            update_style(xpath, stl)
+          end
+
+          p self
         end
 
         protected 

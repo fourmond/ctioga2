@@ -1,4 +1,4 @@
-# region.rb: draw curves-delimited fills
+# gradient-region.rb: draw neat color gradient
 # copyright (c) 2010 by Vincent Fourmond
   
 # This program is free software; you can redistribute it and/or modify
@@ -33,6 +33,8 @@ module CTioga2
 
         undef :elements
         undef :subframe
+
+        define_style "gradient"
 
         # The curves which delimit the region
         attr_accessor :curves
