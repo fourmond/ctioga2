@@ -1,0 +1,6 @@
+# A ctioga style sheet
+
+gradient curve {
+    line-style: Dots;
+}
+
