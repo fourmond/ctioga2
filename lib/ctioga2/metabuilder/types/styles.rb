@@ -111,7 +111,11 @@ module CTioga2
           else
             phase = 0
           end
-          return [ specs.map { |s| s.to_f }, phase]
+          return [ specs.map { |s| 
+                     s = s.gsub(/\.\s*$/, '.0')
+                     s = s.gsub(/^\s*\./, '0.')
+                     Float(s)
+                   }, phase]
         end
       end
 
