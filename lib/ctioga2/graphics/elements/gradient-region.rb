@@ -45,6 +45,7 @@ module CTioga2
         # Creates a new empty region
         def initialize(parent, root, options)
           @parent = parent
+          setup_style(parent, options)
           
           # The curves whose color we should change
           @curves = []

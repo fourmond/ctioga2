@@ -13,3 +13,12 @@ $ct --gradient Red Purple \
     --legend-inside tc \
     --legend-line "Does legend work ?" \
     'x**2 + 0##11*3'
+
+$ct --gradient Red Purple /id=gradient \
+    --legend-inside tc \
+    --legend-line "Reopening is fun" \
+    'x**2 + 0##5*3' \
+    --end \
+    'sin(x)' /color=Black \
+    --reopen gradient \
+    'x**2 + 6##11*3'

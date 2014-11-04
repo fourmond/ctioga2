@@ -244,6 +244,22 @@ larger than the other ones, while the second row is four times larger
 than the first.
 EOH
 
+
+    ReopenCommand =         
+      Cmd.new("reopen",nil,"--reopen", 
+              [CmdArg.new('object')], {}) do |plotmaker, obj, options|
+      plotmaker.root_object.enter_subobject(obj, false)
+    end
+    
+    ReopenCommand.describe('Reopens a previously finished object',
+                           <<EOD, SubplotsGroup)
+
+Reopens a previously finished container, such as a subplot, a region
+or a gradient. Provide the unique name you gave as the @/id=@ option
+to the first command
+
+EOD
+
 #     ZoomCommand =         
 #       Cmd.new("zoom-inset",nil,"--zoom-inset", 
 #               [

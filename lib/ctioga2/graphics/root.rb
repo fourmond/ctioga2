@@ -74,9 +74,10 @@ module CTioga2
         end
       end
 
-      # Enters into a new Elements::Container, _new_object_.
-      def enter_subobject(new_object)
-        if @current_container
+      # Enters into a new Elements::Container, _new_object_, and adds
+      # it to the current container, unless _add_ is false.
+      def enter_subobject(new_object, add = true)
+        if @current_container && add
           @current_container.add_element(new_object)
         end
         @current_container = new_object
@@ -160,7 +161,7 @@ module CTioga2
       # objects. Returns the newly created GradientRegion
       def enter_gradient(opts)
         if ! @current_container
-          subplot
+          subplot({})
         end
         region = Elements::GradientRegion.new(@current_container, self, opts)
         enter_subobject(region)

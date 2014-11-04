@@ -156,6 +156,27 @@ module CTioga2
           
           @gp_cache = {}
         end
+
+        def self.register_object(obj)
+          @registered_objects ||= {}
+          if i = obj.object_id
+            if @registered_objects.key? i
+              warn { "Second object with ID #{i}, ignoring the name" }
+            else
+              @registered_objects[i] = obj
+            end
+          end
+        end
+
+        def self.find_object(obj_id)
+          @registered_objects ||= {}
+          if @registered_objects.key? obj_id
+            return @registered_objects[obj_id]
+          else
+            raise "No such object: '#{obj_id}'"
+          end
+        end
+              
         
         def setup_style(obj_parent, opts) 
           @cached_options = opts
@@ -163,6 +184,7 @@ module CTioga2
           @object_classes = opts["class"] || []
           @object_parent = obj_parent
 
+          TiogaElement.register_object(self)
           @style_is_setup = true
         end
 
@@ -268,6 +290,14 @@ module CTioga2
           super()
         end
       end
+
+      ObjectType = 
+        CmdType.new('object', {:type => :function_based,
+                      :class => Elements::TiogaElement,
+                      :func_name => :find_object}, <<EOD)
+A named object (whose name was given using the /id= option to the
+appropriate command).
+EOD
 
     end
   end
