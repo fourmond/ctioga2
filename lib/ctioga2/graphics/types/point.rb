@@ -39,7 +39,8 @@ module CTioga2
           when :frame
             return t.send("convert_frame_to_figure_#{orientation}", @value)
           when :page
-            return t.send("convert_page_to_figure_#{orientation}", @value)
+            int = t.send("convert_page_to_frame_#{orientation}", @value)
+            return t.send("convert_frame_to_figure_#{orientation}", int)
           when :figure
             return @value
           else
