@@ -253,11 +253,29 @@ EOH
     
     ReopenCommand.describe('Reopens a previously finished object',
                            <<EOD, SubplotsGroup)
-
 Reopens a previously finished container, such as a subplot, a region
 or a gradient. Provide the unique name you gave as the @/id=@ option
 to the first command
+EOD
 
+    HideCommand = 
+      Cmd.new("hide",nil,"--hide", 
+              [CmdArg.new('objects')], {
+              'show' => 'bool'}) do |plotmaker, objs, opts|
+      hidden = if opts.key? 'show'
+                 ! opts['show']
+               else
+                 true
+               end
+      for o in objs
+        o.hidden = hidden
+      end
+    end
+      
+
+    HideCommand.describe('Hides named objects',
+                         <<EOD, SubplotsGroup)
+Hides all the named objects in the list. Useful for creating animations.
 EOD
 
 #     ZoomCommand =         

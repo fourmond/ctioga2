@@ -71,6 +71,9 @@ module CTioga2
         # different from the rest)
         attr_accessor :object_parent
 
+        # Wether or not the object is hidden
+        attr_accessor :hidden
+
         StyleBaseOptions = {
           'id' => CmdArg.new('text'),
           'class' => CmdArg.new('text-list')
@@ -223,7 +226,12 @@ module CTioga2
         # #real_do, which should be redefined by the children. You can
         # redefine _do_ too if you need another debugging output.
         def do(f)
-          debug { "plotting #{self.inspect}" }
+          if @hidden
+            debug { "not plotting hidden #{self.inspect}" }
+            return 
+          else
+            debug { "plotting #{self.inspect}" }
+          end
           @gp_cache = {}
           real_do(f)
         end
@@ -297,6 +305,15 @@ module CTioga2
                       :func_name => :find_object}, <<EOD)
 A named object (whose name was given using the /id= option to the
 appropriate command).
+EOD
+
+      ObjectsType = 
+        CmdType.new('objects', {:type => :array,
+                      :subtype => {:type => :function_based,
+                        :class => Elements::TiogaElement,
+                        :func_name => :find_object}
+                      }, <<EOD)
+A list of comma-separated {type: object}s.
 EOD
 
     end

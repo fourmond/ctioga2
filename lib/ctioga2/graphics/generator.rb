@@ -85,6 +85,7 @@ module CTioga2
           plot.style.apply_transforms!(dataset)
         end
 
+        old_opts = options.dup
         # Now, we trim options unrelated to the plotting
         options.delete_if { |k,v|
           ! Graphics::Styles::
@@ -103,7 +104,7 @@ module CTioga2
           # Here, we update the style from the stylesheet and then
           # again from the options, so that the options provided on
           # the command-line take precedence.
-          curve.setup_style(plot, options)
+          curve.setup_style(plot, old_opts)
           curve.update_style(curve.curve_style)
           curve.curve_style.
             set_from_hash(@style_factory.hash_name_to_target(options))

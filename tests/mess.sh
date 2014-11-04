@@ -19,3 +19,5 @@ $ct --fill xaxis --fill-transparency 0.7 'sin(x+0##3*3.14/2)'
 
 $ct --margin 0.04 --region /color=Pink /reversed_color=Blue \
     /reversed_transparency 0.7 --math 'x' 'x+20'
+
+$ct --margin 0.04 'x' 'x+20' /id=stuff --hide stuff
