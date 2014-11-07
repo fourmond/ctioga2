@@ -261,7 +261,8 @@ EOD
     HideCommand = 
       Cmd.new("hide",nil,"--hide", 
               [CmdArg.new('objects')], {
-              'show' => 'bool'}) do |plotmaker, objs, opts|
+                'show' => CmdArg.new('boolean') 
+              }) do |plotmaker, objs, opts|
       hidden = if opts.key? 'show'
                  ! opts['show']
                else
