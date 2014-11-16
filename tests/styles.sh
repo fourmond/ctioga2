@@ -12,3 +12,10 @@ $ct -t 'Using stylesheets' -r 10cmx10cm \
     --gradient Red Blue \
     sin'(x+0##5)'  \
     --end
+
+$ct --define-axis-style '*' /axis-label-color Blue \
+    --define-axis-style .y /axis-label-color Red /stroke-color Pink \
+    --define-axis-style .top /stroke-color Purple \
+    -t 'Manual style definition' -r 10cmx10cm \
+    'cos(x)'
+

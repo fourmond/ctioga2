@@ -117,7 +117,7 @@ module CTioga2
             end
             
             axis = Elements::AxisElement.new
-            axis.setup_style(@target_plot, {'classes' => cls})
+            axis.setup_style(@target_plot, {'class' => cls})
             axis.initialize_style(ax, dec, label)
             @axes[ax] = axis
           end
