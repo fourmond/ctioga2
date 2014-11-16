@@ -107,7 +107,7 @@ EOD
                     :type => :tioga_marker,
                     :namespace => Tioga::MarkerConstants,
                     :shortcuts => {
-                      NoRE  => 'None' 
+                      NoRE  => false
                     }
                   }, <<EOD)
 A Tioga Marker, ie either a name from the list at {url:

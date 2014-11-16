@@ -22,3 +22,6 @@ $ct -t 'Use of \texttt{/marker=Circle}' 'sin(x)' \
 $ct -t 'Selection of Y range' --yrange -0.1:1.3 'sin(x)' 'cos(x)' 
 
 $ct -t 'Use of a plot margin' --margin 0.03 'sin(x)' 'cos(x)' 
+
+$ct -t 'Cancel the use of markers' --line-style no --marker auto \
+    'sin(x)' 'cos(x)' ' -sin(x)' /marker=no /line-style=Solid

@@ -82,6 +82,7 @@ module CTioga2
         # \p override is a hash that can override part of the
         # dictionnary specification.
         def draw_markers_at(t, x, y, override = nil)
+          return if (! @marker || @marker == 'None')
           t.context do
             ## \todo allow custom line types for markers ?
             t.line_type = LineStyles::Solid
