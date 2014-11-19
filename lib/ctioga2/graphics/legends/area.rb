@@ -35,8 +35,11 @@ module CTioga2
       #   @legend_area for the current Elements::Container, with the
       #   given position.
       #
-      # \todo make a subclass for a top-level area ???? 
-      class LegendArea
+      # \todo make a subclass for a top-level area ????
+      #
+      # This class is a subclass of Elements::TiogaElement so that it
+      # can be styled just like the rest.
+      class LegendArea < Elements::TiogaElement
 
         # The style of the LegendStorage, a Styles::LegendStorageStyle
         # object (of course)
@@ -44,14 +47,19 @@ module CTioga2
 
         # The type of the legend. Can be :left, :right, :top, :bottom
         # or :inside
+        #
+        # @todo Should this move inside the style ? 
         attr_accessor :legend_type
 
         # The position of the LegendArea. Only significant when the
         # type is :inside. A Types::AlignedPoint instance.
         attr_accessor :legend_position
 
-        def initialize(type = :right)
-          @legend_style = Styles::LegendStorageStyle.new
+        define_style 'legend', Styles::LegendStorageStyle
+
+        def initialize(type = :right, parent = nil, opts = {})
+          setup_style(parent, opts)
+          @legend_style = get_style()
           @legend_type = type
           @legend_position = Types::AlignedPoint.new(0.5,0.5,:frame)
         end

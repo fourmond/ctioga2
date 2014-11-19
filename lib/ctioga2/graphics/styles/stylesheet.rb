@@ -297,8 +297,7 @@ module CTioga2
             end
             update_style(xpath, stl)
           end
-
-          p self
+          # p self
         end
 
         protected 

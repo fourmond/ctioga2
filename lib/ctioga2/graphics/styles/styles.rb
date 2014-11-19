@@ -49,6 +49,7 @@ EOD
                ['title', TextLabel, 'plot title'],
                ['text', FullTextStyle, 'text'],
                ['marker', MarkerStringStyle, 'marker'],
+               ['legend', LegendStorageStyle, 'legend'],
                ['box', BoxStyle, 'boxes'],
                ['arrow', ArrowStyle, 'arrows'],
                ['image', ImageStyle, 'image'],
@@ -98,6 +99,10 @@ makes all lines  pink (unless overriden by the /color option to
 
 only affect those to which the /class=pink style option
 was given.
+EOD
+
+      StyleSheetCommands['legend'].long_description = <<EOD
+...
 EOD
 
       StyleSheetCommands['arrow'].long_description = <<EOD

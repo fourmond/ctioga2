@@ -16,6 +16,9 @@ $ct -t 'Using stylesheets' -r 10cmx10cm \
 $ct --define-axis-style '*' /axis-label-color Blue \
     --define-axis-style .y /axis-label-color Red /stroke-color Pink \
     --define-axis-style .top /stroke-color Purple \
+    --define-legend-style .inside /frame-color Green \
     -t 'Manual style definition' -r 10cmx10cm \
-    'cos(x)'
+    --legend-inside tc /class=inside \
+    'x**2' /legend='$x^2$'
+
 

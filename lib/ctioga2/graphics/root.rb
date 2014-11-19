@@ -48,7 +48,7 @@ module CTioga2
 
         @container_stack = []
 
-        @legend_area = Legends::LegendArea.new
+        @legend_area = Legends::LegendArea.new(:right, nil, {'class' => 'root'})
 
         @count_legend_in_page = false
         #     @count_legend_in_page = true

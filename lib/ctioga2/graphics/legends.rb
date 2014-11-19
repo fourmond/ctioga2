@@ -96,11 +96,13 @@ they have the same meaning as corresponding ones of
 {command: define-box-style} with the @frame-@ bit dropped.
 EOH
 
+    opts = LegendStyleOptions
+    opts.merge!(Elements::TiogaElement::StyleBaseOptions)
     LegendInsideCommand = 
       Cmd.new("legend-inside", nil, "--legend-inside",
               [ CmdArg.new('aligned-point')],
-              LegendStyleOptions) do |plotmaker, point, options|
-      l = Legends::LegendArea.new(:inside)
+              opts) do |plotmaker, point, options|
+      l = Legends::LegendArea.new(:inside, plotmaker.root_object.current_plot, options)
       l.legend_position = point
       plotmaker.root_object.current_plot.legend_area = l
       l.legend_style.set_from_hash(options)
