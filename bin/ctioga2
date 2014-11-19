@@ -19,8 +19,36 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 =end
 
+# Coverage on demand
+if ARGV[0] == '--coverage'
+  ARGV.shift
+  require 'simplecov'
+  nm = ARGV.shift
+  if nm =~ /%/                  # Some formatting
+    id = begin
+           File.open(".cov") do |f|
+        f.read.to_i + 1
+      end
+         rescue
+           0
+         end
+    nm = nm % id
+    File.open('.cov', 'w') do |f|
+      f.puts id.to_s
+    end
+  end
+  SimpleCov.command_name nm
+  SimpleCov.start do
+    filters.clear
+    add_filter do |src|
+      !(src.filename =~ /ctioga2/)
+    end
+  end
+end
+
 require 'ctioga2/plotmaker'
 
 plot_maker = CTioga2::PlotMaker.new
+
 plot_maker.run(ARGV)
 

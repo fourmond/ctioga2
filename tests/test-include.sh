@@ -9,7 +9,15 @@ fi
 if [ "$DEBUG" ]; then
     ct_add="$ct_add --debug"
 fi
-# The way to invoque ctioga2
+
+# We can do code coverage
+if [ "$COVERAGE" ]; then
+    rm -f .cov                  # To reset the number
+    coverage_name=$(basename ${0%%.sh})"-%02d"
+    ct_add="--coverage $coverage_name $ct_add"
+fi
+
+# The way to invoke ctioga2
 ct="ctioga2 $ct_add --echo --math $CT_ADD "
 if [ "$RUBY" ]; then
     ct="$RUBY ../bin/$ct"
