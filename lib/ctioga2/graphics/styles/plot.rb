@@ -561,6 +561,35 @@ EOH
 Sets the color of the background lines for the given axis.
 EOH
 
+      BackgroundGridCommand = 
+        Cmd.new('background-grid', nil, '--background-grid',
+                [
+                 CmdArg.new('color-or-false')
+                ],
+                StrokeStyle.options_hash().without('color')
+                ) do |plotmaker, color, options|
+        for which in [:left, :bottom]
+          axis = AxisStyle.current_axis_style(plotmaker, which)
+          if color
+            style = {'color' => color}
+            style.merge!(options)
+            if axis.background_lines
+              axis.background_lines.set_from_hash(style)
+            else
+              axis.background_lines = StrokeStyle.from_hash(style)
+            end
+          else
+            axis.background_lines = false
+          end
+        end
+      end
+      
+      BackgroundGridCommand.
+        describe("Sets the color of the background lines", 
+                 <<"EOH", AxisGroup)
+Shortcut to set the color for the left and bottom axes
+EOH
+
 
       %w{x y}.each do |axis|
         labelcmd = Cmd.new("#{axis}label", "-#{axis}", 
