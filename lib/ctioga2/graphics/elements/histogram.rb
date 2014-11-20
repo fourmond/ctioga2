@@ -250,7 +250,7 @@ module CTioga2
               offset += iw
               next unless col
               if col.first.histogram_style.intra_sep
-                offset += h.histogram_style.intra_sep.to_figure(t, :x)
+                offset += col.first.histogram_style.intra_sep.to_figure(t, :x)
               end
               for h in col
                 cache[h] = c
