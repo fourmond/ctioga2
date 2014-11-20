@@ -25,3 +25,9 @@ $ct -t 'Use of a plot margin' --margin 0.03 'sin(x)' 'cos(x)'
 
 $ct -t 'Cancel the use of markers' --line-style no --marker auto \
     'sin(x)' 'cos(x)' ' -sin(x)' /marker=no /line-style=Solid
+
+
+$ct -t 'Styles' --math-samples 30 --margin 0.03 \
+    --marker auto \
+    'sin(x)' /path-style=splines \
+    'cos(x)' /path-style=impulses /marker=no

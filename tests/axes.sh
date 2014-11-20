@@ -50,6 +50,10 @@ $ct -t 'A very long title about quite uninteresting things ' \
     -x 'A long label for the $x$ axis demonstrating auto width' /text-width=auto  'sin(x)' \
     -y 'An even longer label for the $y$ axis in order to demonstrate that the auto width works also vertically' /text-width=auto /valign=bottom
 
+$ct -t 'Log scale' \
+    --ylog --background-lines left Gray /style=Dots \
+    'exp(6*sin(x))'
+
 
 # # Alternative axes
 # $ct 'sin(x)' --x2 --y2 'x**2' --yrange -20:50 'cos(x)' /yaxis left \

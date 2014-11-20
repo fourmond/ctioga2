@@ -14,3 +14,9 @@ $ct --setup-grid 1x2 \
     --draw-line -6,0 8,4 /color Purple \
     --draw-line -6,0.5 8,4.5 /color Blue /clipped=false
 
+$ct -t "Playing with depth" \
+    --legend-inside tc \
+    --background-grid Gray /style=Dots \
+    'x**2' /depth=95 /legend="Behind background" \
+    'sin(x)' /depth=5 /legend="Above ticks"
+
