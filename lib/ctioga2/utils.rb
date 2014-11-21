@@ -138,6 +138,9 @@ module CTioga2
           formula.gsub!("$#{k}$", "column[#{v}]")
         end
       end
+      if formula =~ /(\$[^$]+\$)/
+        raise  "'#{$1}' looks like a column name, but there is no corresponding column of that name"
+      end
       return formula
     end
 
