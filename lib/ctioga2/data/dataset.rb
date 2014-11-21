@@ -104,8 +104,8 @@ module CTioga2
             specs[idx][mod] = yield s
           else
             specs[i] = {"value" =>  yield(s)}
+            i += 1
           end
-          i += 1
         end
         columns = []
         for s in specs
