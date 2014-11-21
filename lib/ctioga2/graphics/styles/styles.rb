@@ -28,18 +28,16 @@ module CTioga2
                                      <<EOD, 40)
 Commands for defining default styles.
 
-All commands take the name of the style to redefine. Different styles
-live in a different name space, so there is no risk naming an @axis@ and
-a @text@ style with the same name. All styles for a given type inherit from 
-the style name @base@.
+All commands take the selector of the style to be defined. It is a
+CSS-like selector, relying on #id and .class, and using
+#parentality. Therefore, defining a style for @.insets #stuff@ will
+define it for an object named @stuff@, but only if it is contained
+within another one that has a @.insets@ class.
 
 ctioga2 does not support changing a style after its use. It may
 affect only the following objects or all the ones that were created
 from the beginning, depending on the context. For safety, only define
 style before issueing any graphics command.
-
-ctioga2 may support at a later time loading style files, but that is
-not the case for now.
 
 EOD
       # We create the commands programmatically
@@ -102,7 +100,7 @@ was given.
 EOD
 
       StyleSheetCommands['legend'].long_description = <<EOD
-...
+Sets the style for legends.
 EOD
 
       StyleSheetCommands['arrow'].long_description = <<EOD

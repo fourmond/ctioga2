@@ -67,7 +67,23 @@ module CTioga2
         CmdType.new('fill-pattern', { 
                       :type => :function_based,
                       :class => Graphics::Styles::FillPattern
-                    })
+                    }, <<EOD)
+A fill pattern, one of:
+ * @lines@,_angle_,_distance_,_width_
+ * @vlines@,_distance_,_width_
+ * @hlines@,_distance_,_width_
+ * @xlines@,_distance_,_width_,_angle_
+ * @solid@ or @plain@
+
+The first three are lines, of arbitrary orientation for @lines@,
+vertical for @vlines@ and horizontal for @hlines@. @xlines@ correspond
+to crossed perpendicular lines (the _angle_ is 45 by default). For
+these styles, the _distance_ and _width_ are all optional and
+correspond respectively to the distance between the lines and the line
+width.
+
+@solid@ or @plain@ correspond to solid fill (i.e. not patterned).
+EOD
 
       # @
       class SingleLineFillPattern

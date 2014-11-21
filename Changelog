@@ -1,3 +1,15 @@
+ctioga2 (0.11)
+
+  * Implemented patterned fills
+  * Implemented loops in command files
+  * Redesigned the styling system, with now fully-fledged CSS-like style
+    sheets
+  * A command to hide (and show again) elements (for step-by-step
+    construction of animations)
+  * Various bug-fixes and documentation updates
+
+ -- Vincent <vincent.fourmond@9online.fr>  Fri 21 Nov 22:05:00 CET 2014
+
 ctioga2 (0.10.1)
 
   * Fix problems with Ruby1.8
