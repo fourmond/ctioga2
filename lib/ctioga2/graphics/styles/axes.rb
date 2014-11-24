@@ -146,7 +146,7 @@ minor_tick_length minor_tick_width)
                          end
           t.show_axis(spec)
           # Now, we draw axis ticks
-          if type == Tioga::FigureConstants::AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS || type == Tioga::FigureConstants::AXIS_WITH_TICKS_AND_NUMERIC_LABELS
+          if (type == Tioga::FigureConstants::AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS) || (type == Tioga::FigureConstants::AXIS_WITH_TICKS_AND_NUMERIC_LABELS)
 
             fnc = info['vertical'] ? :convert_figure_to_frame_y : :convert_figure_to_frame_x
             stl = @tick_label_style.dup

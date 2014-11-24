@@ -145,12 +145,12 @@ module CTioga2
         include Tioga::FigureConstants
 
         ValidTypes = {
-          /hidden|off|no|none/i => AXIS_HIDDEN,
-          /line/i => AXIS_LINE_ONLY, 
-          /ticks/i => AXIS_WITH_TICKS_ONLY,
-          /major/i => AXIS_WITH_MAJOR_TICKS_ONLY, 
-          /major-num/i => AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS,
-          /full/i => AXIS_WITH_TICKS_AND_NUMERIC_LABELS
+          /^\s*hidden|off|no|none\s*$/i => AXIS_HIDDEN,
+          /^\s*line\s*$/i => AXIS_LINE_ONLY, 
+          /^\s*ticks\s*$/i => AXIS_WITH_TICKS_ONLY,
+          /^\s*major\s*$/i => AXIS_WITH_MAJOR_TICKS_ONLY, 
+          /^\s*major-num\s*$/i => AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS,
+          /^\s*full\s*$/i => AXIS_WITH_TICKS_AND_NUMERIC_LABELS
         }
         
         type_name :tioga_axis_type, 'axis_type'

@@ -69,10 +69,10 @@ module CTioga2
                       :class => Graphics::Styles::FillPattern
                     }, <<EOD)
 A fill pattern, one of:
- * @lines@,_angle_,_distance_,_width_
- * @vlines@,_distance_,_width_
- * @hlines@,_distance_,_width_
- * @xlines@,_distance_,_width_,_angle_
+ * @lines@:_angle_,_distance_,_width_
+ * @vlines@:_distance_,_width_
+ * @hlines@:_distance_,_width_
+ * @xlines@:_distance_,_width_,_angle_
  * @solid@ or @plain@
 
 The first three are lines, of arbitrary orientation for @lines@,
