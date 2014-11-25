@@ -30,6 +30,22 @@ module CTioga2
 
         AllStyles = []
 
+        def self.normalize_in(name)
+          name = name.to_s.downcase.gsub('-', '_')
+          if @aliases && @aliases.key?(name)
+            name = @aliases[name]
+          end
+          return name
+        end
+
+        def self.normalize_hash(hsh)
+          ret = {}
+          for k,v in hsh
+            ret[normalize_in(k)] = v
+          end
+          return ret
+        end
+
         def self.inherited(cls)
           AllStyles << cls
         end
@@ -92,22 +108,23 @@ module CTioga2
         end
 
         # Define an attribute to be the alias for something else.
-        def self.alias_for(symbol, target)
-          target = target.to_sym
-          if ! @attribute_types[target]
-            raise "Declaring alias #{symbol} for unexisting target #{target}"
+        #
+        # @todo Maybe make multiple aliases ?
+        def self.alias_for(what, target, define_methods = false)
+          target = self.normalize_in(target)
+          what = self.normalize_in(what)
+          @aliases ||= {}
+          @aliases[what] = target
+          if define_methods
+            alias_method what.to_sym, target.to_sym
+            alias_method "#{what}=".to_sym, "#{target}=".to_sym
           end
-          symbol = symbol.to_sym
-          @attribute_types[symbol] = @attribute_types[target]
-          @attributes << symbol
-          alias_method symbol, target
-          alias_method "#{symbol}=".to_sym, "#{target}=".to_sym
         end
 
         # Returns the type of an attribute, or _nil_ if there is no
         # attribute of that name. Handles sub-styles correctly.
         def self.attribute_type(symbol, fmt = "%s")
-          name = symbol.to_s
+          name = self.normalize_in(symbol.to_s)
 
           for k,v in attribute_types
             if (fmt % k.to_s) == name
@@ -180,6 +197,15 @@ module CTioga2
             end
           end
 
+          # And now we expand options
+          if @aliases
+            for k, v in @aliases
+              if ret.key?(v)
+                ret[k] = ret[v]
+              end
+            end
+          end
+
           return ret
         end
 
@@ -202,6 +228,7 @@ module CTioga2
         # This function returns the number of properties that were
         # effectively set (including those set in sub-styles)
         def set_from_hash(hash, name = "%s")
+          hash = self.class.normalize_hash(hash)
           nb_set = 0
           for key_name in self.class.attributes
             hash_key = name % key_name

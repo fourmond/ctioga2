@@ -44,12 +44,12 @@ module CTioga2
         # The vertical alignment 
         typed_attribute :alignment, 'alignment'
 
-        alias_for :valign, :alignment
+        alias_for :valign, :alignment, true
 
         # The horizontal alignment
         typed_attribute :justification, 'justification'
 
-        alias_for :halign, :justification
+        alias_for :halign, :justification, true
 
         # A text width
         typed_attribute :text_width, "dimension-or-no"
