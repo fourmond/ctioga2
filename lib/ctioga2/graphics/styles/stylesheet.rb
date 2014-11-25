@@ -245,6 +245,7 @@ module CTioga2
 
         def style_hash_for(obj)
           stl = {}
+          # p [:cls, obj.class, obj.object_id, obj.object_classes]
           for bkt in @buckets
             # p [bkt.xpath, bkt.matches?(obj), bkt.style]
             if bkt.matches?(obj)
@@ -254,6 +255,7 @@ module CTioga2
 
           # p [:s, stl]
           cls = obj.style_class
+          # p cls.options_hash.keys
           rv = cls.convert_string_hash(stl)
           # p [:t, rv]
           return rv
@@ -281,7 +283,7 @@ module CTioga2
 
         def update_from_string(str)
           # First, strip all comments from the string
-          str = str.gsub(/^\s*#.*/, '')
+          str = str.gsub(/\/\*.*?\*\//m, '')
 
           str.gsub(/^\s*((?:[.#]?[\w-]+\s*>?\s*)+)\s*\{([^}]+)\}/m) do |x|
             xpath = $1

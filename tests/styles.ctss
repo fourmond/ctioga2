@@ -1,6 +1,14 @@
-# A ctioga style sheet
+/* A ctioga style sheet */
 
 gradient curve {
     line-style: Dots;
 }
 
+.bottom {
+    line-style: 5,2;
+}
+
+#mcos {
+    color: Orange;
+    marker: Square;
+}

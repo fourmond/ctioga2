@@ -8,17 +8,22 @@
 
 $ct -t 'Using stylesheets' -r 10cmx10cm \
     --load-style styles.ctss \
-    'cos(x)' \
+    'cos(x)' /class=bottom \
+    ' -cos(x)' /id=mcos /class=bottom\
     --gradient Red Blue \
-    sin'(x+0##5)'  \
+    sin'(x+0##5)+1'  \
     --end
 
 $ct --define-axis-style '*' /axis-label-color Blue \
-    --define-axis-style .y /axis-label-color Red /stroke-color Pink \
+    --define-axis-style .y /axis-label-color Red /stroke-color Orange \
     --define-axis-style .top /stroke-color Purple \
+    --define-line-style '#ln' /color Green \
+    --define-line-style .pink /color Pink \
     --define-legend-style .inside /frame-color Green \
     -t 'Manual style definition' -r 10cmx10cm \
     --legend-inside tc /class=inside \
-    'x**2' /legend='$x^2$'
+    'x**2' /legend='$x^2$' \
+    --draw-line 0,0 5,50 /id=ln \
+    --draw-arrow 0,0 -5,50 /class=pink
 
 
