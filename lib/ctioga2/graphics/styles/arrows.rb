@@ -41,6 +41,11 @@ module CTioga2
           dict.rename_key('style', 'line_style')
           dict['head'] = [x2,y2]
           dict['tail'] = [x1,y1]
+          for w in %w(head tail)
+            if dict["#{w}_marker"] == false
+              dict["#{w}_marker"] = "None"
+            end
+          end
           t.show_arrow(dict)
         end
 

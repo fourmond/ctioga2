@@ -19,8 +19,6 @@ $ct -t 'Text drawing' -r 10cmx10cm \
     --draw-line -6,0.6 6,0.6 /color Green /style Dots 
 
 
-
-
 $ct -t 'Boxes' -r 10cmx10cm \
     'sin(x)' \
     --draw-box -2,0.2 2,-0.2 /color=Blue /width=2 \
@@ -77,3 +75,9 @@ $ct -t 'Tangents: a direction, and a proper arrow' -r 10cmx10cm \
     --draw-tangent 0.5  \
     --draw-tangent 0.6 /xto=5 /color=Black /line-style=Dashes /nbavg=3\
     --draw-tangent 0.3 /xextent=1 /color=Pink /style=Dots /nbavg=3
+
+$ct -t 'Lines and arrows' -r 10cmx10cm \
+    'sin(x)' \
+    --draw-line -6,0 6,0 /color Green /style Dots \
+    --draw-arrow 0,-0.6 0,0.6 /color Blue /style Dashes \
+    --draw-arrow 2,-0.6 -2,0.6 /color Blue /style Dashes /tail-marker none
