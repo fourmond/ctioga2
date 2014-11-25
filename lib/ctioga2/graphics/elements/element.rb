@@ -86,9 +86,14 @@ module CTioga2
         end
 
         @@style_classes = {}
+        @@all_styles = {}
+
+        def self.styled_classes
+          return @@all_styles
+        end
 
         def self.register_style(name, cls)
-          # p [self, name, cls]
+          @@all_styles[name] = self
           if @@style_classes.key? name
             if @@style_classes[name] != cls
               raise "Trying to register different classes under the same name"

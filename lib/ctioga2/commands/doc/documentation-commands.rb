@@ -89,6 +89,19 @@ EOH
 Prints the HTML documentation for all types.
 EOH
 
+      WriteHTMLStyles = 
+        Cmd.new("write-html-styles", nil, "--write-html-styles", 
+                [], WriteHTMLOptions) do |plotmaker, opts|
+        html = HTML.new(plotmaker.interpreter.doc)
+        html.write_styles(opts)
+      end
+      
+      WriteHTMLStyles.describe("HTML documentation for styles",
+                              <<EOH, DocumentationGenerationGroup)
+Prints the HTML documentation for all styles.
+EOH
+
+
       WriteHTMLBackends = 
         Cmd.new("write-html-backends", nil, "--write-html-backends", 
                 [], WriteHTMLOptions) do |plotmaker, opts|

@@ -206,6 +206,54 @@ module CTioga2
             end
           end
         end
+
+        # Write a summary list of all style items
+        def write_styles(opts, out = STDOUT)
+
+          styles = Graphics::Elements::TiogaElement::styled_classes
+
+          names = styles.keys.sort
+          
+          write_page_menu(opts, out) do |out|
+            out.puts "<div class='quick-jump'>"
+            out.puts "<h3>Quick jump</h3>"
+            out.puts "<ul>\n"
+            for k in names
+              out.puts "<li><a href='#style-#{k}'>#{k}</a></li>\n"
+            end
+            out.puts "</ul>\n"
+            out.puts "</div>"
+          end
+
+          write_page(opts, out) do |out|
+            for n in names
+              out.puts "<h3 id='style-#{n}' class='style'><code>#{n}</code></h3>\n"
+              cls = styles[n].style_class
+              if cls
+                aliases = cls.defined_aliases
+                out.puts "<ul>\n"
+                
+                opts = cls.options_hash
+                op_names = opts.keys.sort
+                for k in op_names
+                  type = opts[k].type
+                  extra = if aliases.key? k
+                            " (alias for <code>#{cls.normalize_out(aliases[k])}</code>)"
+                          else
+                            ""
+                          end
+                            
+                  puts "<li><code>#{cls.normalize_out(k)}</code>#{extra}: <a href='#{@types_url}#type-#{type.name}'>#{type.name}</a></li>\n"
+                end
+                out.puts "</ul>\n"
+
+              else
+                out.puts "No specific style information"
+              end
+            end
+          end
+
+        end
         
 
         protected

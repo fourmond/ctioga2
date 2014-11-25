@@ -38,6 +38,10 @@ module CTioga2
           return name
         end
 
+        def self.normalize_out(name)
+          return name.gsub('_', '-')
+        end
+
         def self.normalize_hash(hsh)
           ret = {}
           for k,v in hsh
@@ -71,6 +75,10 @@ module CTioga2
             else
               []
             end
+        end
+
+        def self.defined_aliases
+          return @aliases || {}
         end
 
         # Returns the type of all attributes (chaining to the parent
