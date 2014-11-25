@@ -135,7 +135,7 @@ module CTioga2
         def list_styles
 
           puts "Available color sets:"
-          sets = Graphics::Styles::CurveStyleFactory::parameters['line_color'].sets
+          sets = Graphics::Styles::CurveStyleFactory::parameters['color'].sets
           set_names = sets.keys.sort
 
           sets_by_prefix = Utils.group_by_prefix(set_names, /(.*?)\d+$/)
@@ -147,7 +147,7 @@ module CTioga2
           end
 
           puts "\nAvailable marker sets:"
-          sets = Graphics::Styles::CurveStyleFactory::parameters['marker_marker'].sets
+          sets = Graphics::Styles::CurveStyleFactory::parameters['marker'].sets
           set_names = sets.keys.sort
 
           sets_by_prefix = Utils.group_by_prefix(set_names, /(.*?)\d+$/)

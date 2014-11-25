@@ -241,7 +241,7 @@ module CTioga2
 
           tdy = txt_dy + box_dy
 
-          sets = Styles::CurveStyleFactory::parameters['line_color'].sets
+          sets = Styles::CurveStyleFactory::parameters['color'].sets
           
           set_names = sets.keys.sort
 
@@ -306,7 +306,7 @@ module CTioga2
 
           tdy = txt_dy + box_dy
 
-          sets = Styles::CurveStyleFactory::parameters['marker_marker'].sets
+          sets = Styles::CurveStyleFactory::parameters['marker'].sets
           
           set_names = sets.keys.sort
 
