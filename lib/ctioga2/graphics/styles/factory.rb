@@ -148,9 +148,9 @@ module CTioga2
 
         # A simple parameter is something whose target defines all, ie
         # only the name and a documentation text is necessary.
-        def self.simple_parameter(target, text, sets = nil)
+        def self.simple_parameter(target, text, sets = nil, short = nil)
           name = target.gsub(/_/, '-')
-          define_parameter(target, name, sets, text, nil)
+          define_parameter(target, name, sets, text, short)
         end
 
         # Returns the Hash containing the class parameters.
@@ -242,7 +242,7 @@ module CTioga2
           # Overrides as in the first ctioga
           @override_parameters = {
             'line_style' => LineStyles::Solid,
-            'marker_marker' => false,
+            'marker' => false,
             'marker_scale' => 0.5,
             'fill_color' => '=color'.to_sym,
             'error_bar_color' => '=marker_color'.to_sym
@@ -320,16 +320,14 @@ module CTioga2
         # Now, the parameters:
 
         # Lines:
-        define_parameter 'line_color', 'color', 
-        Sets::ColorSets, "line color", "-c"
+        simple_parameter 'color', "line color", Sets::ColorSets,  "-c"
 
         simple_parameter 'line_width', 'line width', Sets::LineWidthSets
 
         simple_parameter 'line_style', 'line style', Sets::LineStyleSets
 
         # Markers
-        define_parameter 'marker_marker', 'marker', 
-        Sets::MarkerSets, "marker", '-m'
+        simple_parameter  'marker', 'marker', Sets::MarkerSets, '-m'
 
         simple_parameter 'marker_color', "marker color", Sets::ColorSets
 
@@ -349,8 +347,7 @@ module CTioga2
         nil, "Y axis", nil, true
 
         # Now, fill style
-        define_parameter 'fill_close_type', 'fill', 
-        {}, "Fill until", nil
+        simple_parameter 'fill', 'Fill until', {}
 
         simple_parameter 'fill_color', "fill color", Sets::ColorSets
 

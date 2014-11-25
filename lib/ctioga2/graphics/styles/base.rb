@@ -140,7 +140,7 @@ module CTioga2
             for sub in @sub_styles
               sym, cls, fmt2, fc = *sub
               f = fmt % fmt2
-              ret = cls.attribute_type(symbol, f)
+              ret = cls.attribute_type(name, f)
               return ret if ret
             end
           end

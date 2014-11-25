@@ -31,8 +31,14 @@ module CTioga2
         # The style of the line that is drawn, as a StrokeStyle. 
         sub_style :line, StrokeStyle
 
+        alias_for :color, :line_color
+
         # The style of markers that should be drawn, as a MarkerStyle.
         sub_style :marker, MarkerStyle
+
+
+        # Would have been nice, but that's a stupid idea, isn't it ?
+        alias_for :marker, :marker_marker
 
         # The text of the legend, if there is one.
         typed_attribute :legend, 'text'
@@ -42,6 +48,8 @@ module CTioga2
 
         # Filling of the curve, if applicable
         sub_style :fill, CurveFillStyle
+
+        alias_for :fill, :fill_close_type
 
         # Details of the location of the curve, a LocationStyle object.
         sub_style :location, LocationStyle, nil, true
