@@ -26,3 +26,9 @@ $ct --setup-grid 1,2x2,1 \
     /watermark='two line\\watermark' \
     --inset grid:1,0 'sin(x)' \
     --next-inset grid:0,1 'x**2'
+# Use ranges
+$ct --setup-grid 3x3 \
+    --inset grid:0,0 'sin(x)' \
+    --next-inset grid:0,1 'x**2' \
+    --next-inset grid:0,2 'x**2' \
+    --next-inset grid:1-2,1-2 'x**2'

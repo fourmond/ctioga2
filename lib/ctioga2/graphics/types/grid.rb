@@ -31,7 +31,7 @@ module CTioga2
 
         OptionHashRE = /([\w-]+)\s*=\s*([^,]+),?\s*/
 
-        GridBoxRE = /^\s*grid:(\d+)\s*,\s*(\d+)(?:,(#{OptionHashRE}+))?\s*$/
+        GridBoxRE = /^\s*grid:(\d+(?:-\d+)?)\s*,\s*(\d+(?:-\d+)?)(?:,(#{OptionHashRE}+))?\s*$/
 
         # This hash helps to convert from a hash-based representation
         # of frame coordinates to the array-based one.
@@ -46,11 +46,21 @@ module CTioga2
 
         def self.from_text(txt)
           if txt =~ GridBoxRE
-            return GridBox.new(GridLayout.current_grid, $1.to_i, $2.to_i, 
+            return GridBox.new(GridLayout.current_grid, $1, $2, 
                                $3) # The latter being to remove
                                           # the initial comma
           else
             raise "#{txt} is not a grid box."
+          end
+        end
+
+        def parse_range(str)
+          if str.is_a? Array
+            return str
+          elsif str =~ /(\d+)\s*-\s*(\d+)/
+            return [$1.to_i, $2.to_i]
+          else
+            return [str.to_i, str.to_i]
           end
         end
         
@@ -68,14 +78,20 @@ module CTioga2
                                           end, :frame)
             }
           end
-          @x = x.to_i
+          
           @grid = grid
-          @y = y.to_i
+          @x = parse_range(x).sort
+          @y = parse_range(y).sort
           @overrides = options || {}
         end
 
         def to_frame_coordinates(t)
-          a = @grid.frame_coordinates(t, @x, @y)
+          a = @grid.frame_coordinates(t, @x[0], @y[0])
+          ov = @grid.frame_coordinates(t, @x[1], @y[1])
+          # Override with the right-bottom element.
+          a[2] = ov[2]
+          a[3] = ov[3]
+
           ## \todo write a framework for manipulating this !
           for k,v in @overrides
             next unless FrameCoordsOverride.key?(k)
