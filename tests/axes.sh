@@ -54,6 +54,11 @@ $ct -t 'Log scale' \
     --ylog --background-lines left Gray /style=Dots \
     'exp(6*sin(x))'
 
+$ct -t 'Horizontal $y$ tick labels' \
+    -x '$x$ values' 'sin(x)' -y 'Labels should be left aligned and vert. centered' \
+    --axis-style left /tick-label-angle=-90 /tick-label-valign=center \
+    /tick-label-halign=right /tick-label-shift=0
+
 
 # # Alternative axes
 # $ct 'sin(x)' --x2 --y2 'x**2' --yrange -20:50 'cos(x)' /yaxis left \
