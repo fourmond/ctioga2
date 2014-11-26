@@ -30,10 +30,30 @@ module CTioga2
 
         AllStyles = []
 
-        def self.normalize_in(name)
+        # Returns the list of valid aliases, including those defined
+        # in parent classes.
+        def self.aliases
+          ret = if superclass.respond_to? :aliases
+                  superclass.aliases
+                else
+                  {}
+                end
+          if @aliases
+            ret.merge!(@aliases)
+          end
+          return ret
+        end
+
+        def self.normalize_in(name, fmt = "%s")
           name = name.to_s.downcase.gsub('-', '_')
-          if @aliases && @aliases.key?(name)
-            name = @aliases[name]
+          als = self.aliases
+          if als
+            for k, v in als
+              if fmt % k == name
+                name = fmt % v
+                break
+              end
+            end
           end
           return name
         end
@@ -42,10 +62,10 @@ module CTioga2
           return name.gsub('_', '-')
         end
 
-        def self.normalize_hash(hsh)
+        def self.normalize_hash(hsh, fmt = "%s")
           ret = {}
           for k,v in hsh
-            ret[normalize_in(k)] = v
+            ret[normalize_in(k, fmt)] = v
           end
           return ret
         end
@@ -132,7 +152,7 @@ module CTioga2
         # Returns the type of an attribute, or _nil_ if there is no
         # attribute of that name. Handles sub-styles correctly.
         def self.attribute_type(symbol, fmt = "%s")
-          name = self.normalize_in(symbol.to_s)
+          name = self.normalize_in(symbol.to_s, fmt)
 
           for k,v in attribute_types
             if (fmt % k.to_s) == name
@@ -208,8 +228,9 @@ module CTioga2
           # And now we expand options
           if @aliases
             for k, v in @aliases
+              v =  key % v
               if ret.key?(v)
-                ret[k] = ret[v]
+                ret[key % k] = ret[v]
               end
             end
           end
@@ -236,7 +257,7 @@ module CTioga2
         # This function returns the number of properties that were
         # effectively set (including those set in sub-styles)
         def set_from_hash(hash, name = "%s")
-          hash = self.class.normalize_hash(hash)
+          hash = self.class.normalize_hash(hash, name)
           nb_set = 0
           for key_name in self.class.attributes
             hash_key = name % key_name
