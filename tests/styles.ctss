@@ -12,3 +12,11 @@ gradient curve {
     color: Orange;
     marker: Square;
 }
+
+.different .left {
+    stroke-color: Purple;
+}
+
+.different .right, .different .top {
+    decoration: no;
+}

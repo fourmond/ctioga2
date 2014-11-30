@@ -285,7 +285,7 @@ module CTioga2
           # First, strip all comments from the string
           str = str.gsub(/\/\*.*?\*\//m, '')
 
-          str.gsub(/^\s*((?:[.#]?[\w-]+\s*>?\s*)+)\s*\{([^}]+)\}/m) do |x|
+          str.gsub(/^\s*((?:[.#]?[,\w-]+\s*>?\s*)+)\s*\{([^}]+)\}/m) do |x|
             xpath = $1
             smts = $2.split(/\s*;\s*/)
             
