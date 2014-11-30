@@ -228,7 +228,12 @@ module CTioga2
             # values (which means in particular that they won't be
             # positioned at the exact X value, but that's already the
             # case anyway).
-            width = (x_values.max - x_values.min)/(x_values.size - 1)
+            width = (x_values.max - x_values.min)/(x_values.size - 1).to_f
+            if width.nan? || width == 0.0
+              # Only 1 X value, we use a width of 1
+              # ?? 
+              width = 0.8
+            end
 
             # Available width
             aw = width - intra_sep - inter_sep
