@@ -36,4 +36,10 @@ $ct -r 10cmx10cm \
     'cos(x)' \
     --end
 
+$ct -r 10cmx10cm \
+    --load-style styles.ctss \
+    --root-plot /class=different \
+    -t 'Styling root plot' \
+    'cos(x)'
+
 

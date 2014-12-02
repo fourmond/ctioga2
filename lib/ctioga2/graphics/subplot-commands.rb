@@ -92,6 +92,21 @@ size of the text bits around the plot. However, this can be bothersome
 at times, so you can disable that with this command.
 EOH
 
+    RootPlotCommand = 
+      Cmd.new("root-plot",nil,"--root-plot", 
+              [
+              ], Elements::TiogaElement::StyleBaseOptions) do |plotmaker, opts|
+      Log::debug { "Starting a subplot with specs #{box.inspect}" }
+      opts['id'] ||= 'root'
+      plotmaker.root_object.
+        enter_subobject(Elements::Subplot.new(nil,plotmaker.root_object, opts))
+    end
+    
+    RootPlotCommand.describe('Begin root plot',
+                             <<EOD, SubplotsGroup)
+Begins the root plot. This command is only necessary if you want to
+give styling information to the root plot.
+EOD
 
     InsetCommand =         
       Cmd.new("inset",nil,"--inset", 
