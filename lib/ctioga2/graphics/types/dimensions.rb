@@ -167,6 +167,21 @@ module CTioga2
             raise "Unknown Dimension specification: '#{text}'"
           end
         end
+
+        def set_from_text(str, default = :figure)
+          dm  = Dimension.from_text(str, self.orientation, default)
+          copy_from(dm)
+        end
+
+        # Copy from another dimension, omitting the orientation
+        def copy_from(dm, orient = false)
+          @type = dm.type
+          @value = dm.value
+          if orient
+            @orientation = dm.orientation
+          end
+        end
+          
         
       end
 

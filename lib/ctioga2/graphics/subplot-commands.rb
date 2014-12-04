@@ -24,13 +24,25 @@ module CTioga2
       CmdGroup.new('subplots',
                    "Subplots and assimilated",
                    "Subplots and assimilated", 31)
+
+    SFMOpts = {}
+    for w in %w(left right top bottom)
+      SFMOpts[w] = CmdArg.new("dimension")
+    end
     
     SetFrameMarginsCommand = 
       Cmd.new("frame-margins",nil,"--frame-margins", 
               [
                CmdArg.new('frame-margins'),
-              ]) do |plotmaker, margins|
-      
+              ], SFMOpts) do |plotmaker, margins, opts|
+      if margins
+        for w in SFMOpts.keys
+          if opts.key? w
+            dim = margins.send(w)
+            dim.copy_from(opts[w])
+          end
+        end
+      end
       plotmaker.root_object.current_plot.subframe = margins
     end
 
@@ -40,6 +52,15 @@ Sets the margins for the current plot. Margins are the same things as the
 position (such as specified for and inset). Using this within an inset or
 more complex plots might produce unexpected results. The main use of this 
 function is to control the padding around simple plots.
+
+The options override the contents of the margin, which makes it easy
+to set all the dimensions to a given value and just override the ones
+you need to:
+
+# frame-margins 2mm /left=1cm
+
+This sets all the margins around the side to 2mm excepted the left
+one, which means in particular the bottom axis tick labels will be cut.
 EOH
 
     PaddingCommand = 
