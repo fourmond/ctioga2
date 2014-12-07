@@ -181,8 +181,12 @@ module CTioga2
     NaturalSubdivisions = [1.0, 2.0, 5.0, 10.0]
 
     # Returns the closest element of the correct power of ten of
-    # NaturalSubdivisions above or below the given number
-    def self.closest_subdivision(x, below = true)
+    # NaturalSubdivisions above or below the given number.
+    #
+    # If what is :below, returns the closest below. If what is :above,
+    # returns the closest above. Else, returns the one the closest
+    # between the two values.
+    def self.closest_subdivision(x, what = :closest)
       fact = 10**(Math.log10(x).floor)
 
       normed_x = x/fact
@@ -191,11 +195,19 @@ module CTioga2
           return x
         end
         if (normed_x > NaturalSubdivisions[i]) && 
-            (normed_x < NaturalSubdivisions[i+1])
-          if below
-            return NaturalSubdivisions[i]*fact
+           (normed_x < NaturalSubdivisions[i+1])
+          below = NaturalSubdivisions[i]*fact
+          above = NaturalSubdivisions[i+1]*fact
+          if what == :below
+            return below
+          elsif what == :above
+            return above
           else
-            return NaturalSubdivisions[i+1]*fact
+            if x*x/(below * above) > 1
+              return above
+            else
+              return below
+            end
           end
         end
       end

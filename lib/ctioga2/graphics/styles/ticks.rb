@@ -26,6 +26,9 @@ module CTioga2
       
       # This class describes where to place ticks on the target axis
       # and how to label them.
+      #
+      # I really should drop the call to Tioga altogether. It makes
+      # everything too complicated.
       class AxisTicks < BasicStyle
 
         include Log
@@ -51,6 +54,11 @@ module CTioga2
         # Separation between major ticks. Overriden by the major list
         typed_attribute :major_delta, "float"
 
+        # Or physical separation between ticks
+        #
+        # @todo Make a major_min_sep ? 
+        typed_attribute :major_sep, 'dimension'
+
         # Approximate number of major ticks
         typed_attribute :major_number, "integer"
 
@@ -62,6 +70,11 @@ module CTioga2
 
         # Number of minor ticks between major ticks
         typed_attribute :minor_number, "integer"
+
+        # This needs a little more careful thinking. Or just a min
+        # separation ?
+        # Physical separation between the minor ticks
+        # typed_attribute :minor_sep, 'dimension'
 
 
         
@@ -96,13 +109,22 @@ module CTioga2
             xl, xr = xr, xl
           end
 
+          mn = if @major_number
+                 @major_number
+               elsif @major_sep
+                 dx = @major_sep.to_figure(t, info['vertical'] ? :y : :x)
+                 mn = (xr - xl)/dx
+               else
+                 nil
+               end
+
           if @major
             ret['minor_ticks'] = Dobjects::Dvector.new
             ret['major_ticks'] = Dobjects::Dvector.new(@major)
 
             fmt ||= "$%g$"
-          elsif @major_delta || @major_number
-            delta = @major_delta || Utils::closest_subdivision(( (xr - xl)/@major_number))
+          elsif @major_delta || mn
+            delta = @major_delta || Utils::closest_subdivision(( (xr - xl)/mn))
             ret['major_ticks'] = Utils::integer_subdivisions(xl, xr, 
                                                              delta)
             fmt ||= "$%g$"
@@ -110,8 +132,21 @@ module CTioga2
 
           if @minor
             ret['minor_ticks'] = Dobjects::Dvector.new(@minor)
-          elsif @minor_delta || delta
-            dt = @minor_delta || delta/((@minor_number || 3)+1)
+          elsif @minor_delta || @minor_sep || delta
+            
+            dt = if @minor_delta
+                   @minor_delta
+                 else
+                   nb = if @minor_number
+                          @minor_number
+                        elsif @minor_sep
+                          dx = @minor_sep.to_figure(t, info['vertical'] ? :y : :x)
+                          (delta/dx).round
+                        else
+                          3
+                        end
+                   delta/(nb+1)
+                 end
             ret['minor_ticks'] = Utils::integer_subdivisions(xl, xr, 
                                                              dt)
           end
