@@ -89,12 +89,32 @@ module CTioga2
             return true
           end
 
-          # p self.from_text("*")
-          # p self.from_text("bidule")
-          # p self.from_text(".bidule")
-          # p self.from_text("#bidule")
-          # p self.from_text("b#a.cls")
-          # p self.from_text("b#a.cls >")
+          def to_s
+            a = @obj_type || ""
+            if @obj_id
+              a += "##{@obj_id}"
+            end
+            if @obj_class
+              a += ".#{@obj_class}"
+            end
+            if a.size == 0
+              a = "*"
+            end
+            if @direct_parent
+              a += " >"
+            end
+            return a
+            
+          end
+
+          # p self.from_text("*").to_s
+          # p self.from_text("bidule").to_s
+          # p self.from_text(".bidule").to_s
+          # p self.from_text("#bidule").to_s
+          # p self.from_text("b#a.cls").to_s
+          # p self.from_text(".cs").to_s
+          # p self.from_text(".cs#truc").to_s
+          # p self.from_text("b#a.cls >").to_s
 
           # p self.from_text("$sdf")
           
@@ -132,6 +152,12 @@ module CTioga2
             return match_chain(obj, @elements)
           end
 
+          # Returns a normalized version of the XPATH, that can be
+          # used as a hash key.
+          def to_s
+            return @elements.reverse.map { |x| x.to_s }.join(" ")
+          end
+
           protected
           
           def match_chain(obj, elems)
@@ -160,6 +186,10 @@ module CTioga2
             end
             return false
           end
+
+          # p self.from_text("b#a.cls #stuff").to_s
+          # p self.from_text("b.cls#a > foo").to_s
+
         end
 
         # A style bucket, a hash 'key' => 'value' associated with a
@@ -236,9 +266,15 @@ module CTioga2
           end
         end
 
-        def update_style(xpath, style)
-          for f in xpath.split(/\s*,\s*/) 
-            bkt = get_bucket(f)
+        # @todo Maybe update and set should just add a new bucket at
+        # the end, so that it overrides the previous ones anyway ?
+        def update_style(xpath, style, default_type = nil)
+          for f in xpath.split(/\s*,\s*/)
+            xp = XPath.from_text(f)
+            if default_type
+              xp.elements.first.obj_type ||= default_type
+            end
+            bkt = get_bucket(xp)
             bkt.style.merge!(style)
           end
         end
@@ -304,7 +340,8 @@ module CTioga2
 
         protected 
 
-        def get_bucket(xpath)
+        def get_bucket(xp)
+          xpath = xp.to_s
           if ! @buckets_by_xpath.key? xpath
             @buckets << Bucket.new(xpath)
             @buckets_by_xpath[xpath] = @buckets.last

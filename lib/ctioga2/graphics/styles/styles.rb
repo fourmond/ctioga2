@@ -44,6 +44,7 @@ EOD
       kinds = [
                ['axis', AxisStyle, 'axis'],
                ['background', BackgroundStyle, 'plot background'],
+               ['curve', CurveStyle, 'plot background'],
                ['title', TextLabel, 'plot title'],
                ['text', FullTextStyle, 'text'],
                ['marker', MarkerStringStyle, 'marker'],
@@ -56,6 +57,7 @@ EOD
 
       StyleSheetCommands = {}
       StyleSheetPredefinedNames = {}
+      AllStyleKeys = []
 
       kinds.each do |k|
         name, cls, desc = *k
@@ -68,14 +70,40 @@ EOD
                   ], 
                   cls.options_hash
                   ) do |plotmaker, xpath, opts|
-          StyleSheet.style_sheet.update_style(xpath, opts)
+          StyleSheet.style_sheet.update_style(xpath, opts, name)
         end
         StyleSheetCommands[name].
           describe("Sets the default style for the given #{desc}.", 
                    <<"EOH", StyleSheetGroup)
 Sets the default style for the named #{desc}.
 EOH
+        AllStyleKeys.concat(cls.options_hash.keys)
       end
+
+      AllStyleKeys.uniq!
+      AllStyleKeys.sort!
+
+      AllStyleOptions = {}
+      for k in AllStyleKeys
+        AllStyleOptions[k] = CmdArg.new('text')
+      end
+
+      GenericStyleCommand = 
+          Cmd.new("define-style",nil,
+                  "--define-style", 
+                  [
+                   CmdArg.new('text'),
+                  ], 
+                  AllStyleOptions
+                 ) do |plotmaker, xpath, opts|
+        StyleSheet.style_sheet.update_style(xpath, opts)
+      end
+      GenericStyleCommand.
+          describe("Defines style for the given xpath", 
+                   <<"EOH", StyleSheetGroup)
+...
+EOH
+
       
       StyleSheetCommands['line'].long_description = <<EOD
 Sets the default style for lines. All line styles descend from the
