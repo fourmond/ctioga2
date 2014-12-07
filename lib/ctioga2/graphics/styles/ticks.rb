@@ -74,7 +74,7 @@ module CTioga2
         # This needs a little more careful thinking. Or just a min
         # separation ?
         # Physical separation between the minor ticks
-        # typed_attribute :minor_sep, 'dimension'
+        typed_attribute :minor_sep_min, 'dimension'
 
 
         
@@ -139,9 +139,14 @@ module CTioga2
                  else
                    nb = if @minor_number
                           @minor_number
-                        elsif @minor_sep
-                          dx = @minor_sep.to_figure(t, info['vertical'] ? :y : :x)
-                          (delta/dx).round
+                        elsif @minor_sep_min
+                          dx = @minor_sep_min.to_figure(t, info['vertical'] ? :y : :x)
+                          mx = ((delta/dx).round - 1)
+                          if mx > 3
+                            3
+                          else
+                            mx
+                          end
                         else
                           3
                         end
