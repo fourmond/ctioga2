@@ -20,3 +20,7 @@ gradient curve {
 .different .right, .different .top {
     decoration: no;
 }
+
+.different > curve {
+    line-width: 4;
+}
