@@ -82,6 +82,16 @@ EOD
 An integer.
 EOD
 
+    IntegerList = CmdType.new('integer-list', 
+                            {
+                              :type => :array,
+                              :subtype => :integer,
+                              :separator => /\s+|\s*,\s*/,
+                              :separator_out => " "
+                            }, <<EOD)
+A list of space-separated or comma-separated integers
+EOD
+
     PartialFloatRangeType = CmdType.new('partial-float-range', 
                                         :partial_float_range, <<EOD)
 A beginning:end range, where either of the endpoints can be ommitted.

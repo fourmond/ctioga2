@@ -463,12 +463,20 @@ EOH
               [], 
               {
                 'number' => CmdArg.new('integer'), 
-                'which' => CmdArg.new('stored-dataset')
+                'precision' => CmdArg.new('float'), 
+                'which' => CmdArg.new('stored-dataset'),
+                'columns' => CmdArg.new('integer-list')
               }
               ) do |plotmaker, opts|
       stack = plotmaker.data_stack
+      cols = if opts.key? 'columns'
+               opts['columns'].map { |x| x - 1 }
+             else
+               [0]
+             end
       datasets = stack.latest_datasets(opts)
-      plotmaker.data_stack.merge_datasets_into_last(datasets)
+      plotmaker.data_stack.merge_datasets_into_last(datasets, cols,
+                                                    opts['precision'])
     end
     
     MergeToLastCommand.describe("Merge datasets based on X column",
@@ -476,7 +484,9 @@ EOH
 This commands merges data with matching X values from a dataset (by
 default the one before the last) into the last one. Data points that
 have no corresponding X value in the current dataset are simply
-ignored.
+ignored. If the @columns@ option is provided, the numbered columns are
+use instead of the X columns (X is 1). More than one column can be
+provided this way, in which case *all* values must match.
 
 This can be used to build 3D datasets for {command: xyz-map} or 
 {command: xy-parametric}.
