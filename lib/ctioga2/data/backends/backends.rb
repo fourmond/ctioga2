@@ -34,7 +34,6 @@ for file in files.uniq
   begin
     require "ctioga2/data/backends/backends/#{file}"
   rescue Exception => e
-    CTioga2::Log::warn { "There was a problem trying to load 'ctioga2/data/backends/backends/#{file}': "  }
-    CTioga2::Log::warn { "#{e.inspect}" }
+    CTioga2::Log::warn { "There was a problem trying to load 'ctioga2/data/backends/backends/#{file}':\n#{e.inspect}" }
   end
 end

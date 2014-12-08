@@ -24,7 +24,11 @@ module CTioga2
   module Log
 
     def self.context
-      return " while processing #{PlotMaker.plotmaker.interpreter.context.to_s}"
+      if defined? PlotMaker
+        return " while processing #{PlotMaker.plotmaker.interpreter.context.to_s}"
+      else
+        return " in the early loading stages"
+      end
     end
 
     # Prints a debug message, on channel _channel_. Channel handling
