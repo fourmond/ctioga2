@@ -59,6 +59,40 @@ module CTioga2
 
       end
 
+      # This class represents all the stylistic information necessary
+      # to draw a line parallel to a certain direction, indicated by
+      # an angle (default to horizontal)
+      class OrientedLineStyle < StrokeStyle
+        # The angle, in degrees.
+        typed_attribute :angle, 'float'
+
+        # The alignment of the line with respect to the point given.
+        typed_attribute :origin, 'justification'
+
+        # len is a dimension
+        def draw_oriented_line(t, xo, yo, len)
+
+          angle = @angle || 0.0
+
+          dx,dy = *len.to_figure(t, angle)
+
+          case @origin || Tioga::FigureConstants::LEFT_JUSTIFIED
+          when Tioga::FigureConstants::LEFT_JUSTIFIED
+            x1, y1 = xo, yo
+            x2, y2 = xo + dx, yo + dy
+          when Tioga::FigureConstants::CENTERED
+            x1, y1 = xo - 0.5 * dx, yo - 0.5 * dy
+            x2, y2 = xo + 0.5 * dx, yo + 0.5 * dy
+          when Tioga::FigureConstants::RIGHT_JUSTIFIED
+            x1, y1 = xo - dx, yo - dy
+            x2, y2 = xo, yo
+          end
+
+          draw_line(t, x1, y1, x2, y2)
+        end
+        
+      end
+
       # This class represents all the stylistic information to draw a
       # Marker.
       #

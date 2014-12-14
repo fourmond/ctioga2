@@ -57,8 +57,33 @@ module CTioga2
 
         # Converts the Dimension to the *figure* coordinates of the
         # *current* figure in _t_.
+        #
+        # An extension of this function allows one to provide an ANGLE
+        # instead of :x or :y for the orientation, in which case the
+        # return value is a [dx, dy] array. In that case, the
+        # dimension is first converted into a physical dimension in
+        # the axis closest to the orientation and then one proceeds.
         def to_figure(t, orientation = nil)
           orientation ||= @orientation
+
+          if ! orientation.is_a? Symbol
+            angle = orientation.to_f * Math::PI/180.0
+            dim = self
+            if @type != :bp
+              # Must first convert to physical dimension
+              closest_orient = if Math::sin(angle)**2 > 0.5
+                                 :y
+                               else
+                                 :x
+                               end
+              vl = dim.to_bp(t, closest_orient)
+              dim = Dimension.new(:bp, vl)
+            end
+            dx = dim.to_figure(t, :x) * Math::cos(angle)
+            dy = dim.to_figure(t, :y) * Math::sin(angle)
+            return [dx, dy]
+          end
+          
           case @type
           when :bp
             return t.send("convert_output_to_figure_d#{orientation}", @value) * 10

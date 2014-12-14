@@ -258,6 +258,15 @@ EOD
                           head.to_figure_xy(t) ))
         end
 
+        # @todo Do the same thing for arrows...
+        styled_primitive("oriented-line", "oriented-line", 
+                         [ 'point', 'dimension' ],
+                         Styles::OrientedLineStyle,
+                         'oriented-line'
+                  ) do |t, org, dim, style, options|
+          style.draw_oriented_line(t, *org.to_figure_xy(t), dim)
+        end
+
 
         styled_primitive("image", "image", 
                          [ CmdArg.new('text', 'file'), 
