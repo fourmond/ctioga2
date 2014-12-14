@@ -64,7 +64,12 @@
      font-lock-variable-name-face)
    )
   )
-  
+
+(defun ctioga2-compile-buffer ()
+  "Compiles current buffer to PDF using ctioga2."
+  (interactive)
+  (start-process "ctioga2" "ctioga2 output" "ctioga2" "-f" (file-truename (buffer-file-name)))
+  )
 
 
 
@@ -88,5 +93,7 @@
               nil           ;;; Use `backward-paragraph' ? No
               )
         )
+  (local-set-key [(control ?c) (control ?c)] 'ctioga2-compile-buffer)
+
   )
 
