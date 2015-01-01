@@ -6,9 +6,15 @@ ctioga2 (0.11)
     sheets
   * A command to hide (and show again) elements (for step-by-step
     construction of animations)
+  * A mathematical backend for 3D curves
+  * Multicolumn merge
+  * More flexibility in setting the frame margin
+  * Grid elements spanning several columns/rows
+  * An oriented-line primitive to draw a line of a given length in a 
+    given direction
   * Various bug-fixes and documentation updates
 
- -- Vincent <vincent.fourmond@9online.fr>  Fri 21 Nov 22:05:00 CET 2014
+ -- Vincent <vincent.fourmond@9online.fr>  Thu  1 Jan 21:51:57 CET 2015
 
 ctioga2 (0.10.1)
 
