@@ -52,7 +52,8 @@ EOD
                ['box', BoxStyle, 'boxes'],
                ['arrow', ArrowStyle, 'arrows'],
                ['image', ImageStyle, 'image'],
-               ['line', StrokeStyle, 'lines']
+               ['line', StrokeStyle, 'lines'],
+               ['oriented-line', OrientedLineStyle, 'oriented lines']
               ]
 
       StyleSheetCommands = {}
