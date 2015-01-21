@@ -16,6 +16,8 @@ require 'ctioga2/log'
 require 'ctioga2/data/datacolumn'
 require 'ctioga2/data/indexed-dtable'
 
+require 'set'
+
 module CTioga2
 
   # \todo now, port the backend infrastructure...
@@ -340,6 +342,83 @@ module CTioga2
         return Dataset.new(name + "_mod", result)
       end
 
+      # Takes a list of x and y values, and subdivise into
+      # non-overlapping groups.
+      def self.subdivise(x,y, x_idx, y_idx)
+
+        # We make a list of sets. Each element of the list represent
+        # one column, and in each set we store the index of of lines
+        # that contain data.
+
+        cols = []
+        
+        x.each_index do |i|
+          ix = x_idx[x[i]]
+          iy = y_idx[y[i]]
+
+          cols[ix] ||= Set.new
+          cols[ix].add(iy)
+        end
+
+        # The return value is an array of [ [xindices] [yindices]]
+        ret = []
+
+        # Now, the hard part.
+
+        # We run for as long as there are sets ?
+        fc = 0
+        while fc < cols.size
+          # We start with the set of the current column
+          st = cols[fc]
+          # Empty, go to next column
+          if st.size == 0
+            fc += 1
+            next
+          end
+
+          # Set columns that contain the set
+          set_cols = [fc]
+          # Now, we look for restrictions on the set.
+          fc2 = fc + 1
+          while fc2 < cols.size
+            # if non-void intersection, we stick to that
+            inter = st.intersection(cols[fc2])
+            # p [fc, fc2, st, inter]
+            if inter.size > 0
+              st = inter
+              set_cols << fc2
+              break
+            end
+
+            fc2 += 1
+            # Try to implement other kinds of restrictions?
+          end
+
+          # Now, we have a decent set, we go on until the intersection
+          # with the set is not the set.
+          while fc2 < cols.size
+            inter = st.intersection(cols[fc2])
+            if inter.size > 0
+              if inter.size == st.size
+                set_cols << fc2
+              else
+                break
+              end
+            end
+            fc2 += 1
+          end
+
+          # Now, we have a set and all the indices that match.
+          ret << [ set_cols.dup, st.to_a ]
+          # And, now, go again through all the columns and remove the set
+          for c in set_cols
+            cols[c].subtract(st)
+          end
+        end
+
+        return ret
+      end
+
 
       # Returns an IndexedDTable representing the XYZ
       # data. Information about errors are not included.
@@ -353,6 +432,9 @@ module CTioga2
       def indexed_table
         if @indexed_dtable
           return @indexed_dtable
+        end
+        if @ys.size < 2
+          raise "Need at least 3 data columns in dataset '#{@name}'"
         end
         # We convert the index into three x,y and z arrays
         x = @x.values.dup
@@ -375,6 +457,13 @@ module CTioga2
         yvals.each do |v|
           y_index[v] = i
           i += 1
+        end
+
+        if x.size != xvals.size * yvals.size
+          # This is definitely not a homogeneous map
+          p Dataset.subdivise(x, y, x_index, y_index)
+
+          fatal {"Heterogeneous, stopping here for now"}
         end
 
         table = Dobjects::Dtable.new(xvals.size, yvals.size)
