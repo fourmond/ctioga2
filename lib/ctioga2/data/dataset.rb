@@ -59,6 +59,9 @@ module CTioga2
 
         # Cache for the indexed dtable
         @indexed_dtable = nil
+
+        # Cache for the homogeneous dtables
+        @homogeneous_dtables = nil
       end
 
       # Creates a 
@@ -387,6 +390,7 @@ module CTioga2
             if inter.size > 0
               st = inter
               set_cols << fc2
+              fc2 += 1
               break
             end
 
@@ -418,6 +422,91 @@ module CTioga2
 
         return ret
       end
+
+      # Returns a series of IndexedDTable representing the XYZ data.
+      def homogeneous_dtables()
+        if @homogeneous_dtables
+          return @homogeneous_dtables
+        end
+        if @ys.size < 2
+          raise "Need at least 3 data columns in dataset '#{@name}'"
+        end
+        # We convert the index into three x,y and z arrays
+        x = @x.values.dup
+        y = @ys[0].values.dup
+        z = @ys[1].values.dup
+        
+        xvals = x.sort.uniq
+        yvals = y.sort.uniq
+        
+        # Now building reverse hashes to speed up the conversion:
+        x_index = {}
+        i = 0
+        xvals.each do |v|
+          x_index[v] = i
+          i += 1
+        end
+
+        y_index = {}
+        i = 0
+        yvals.each do |v|
+          y_index[v] = i
+          i += 1
+        end
+
+        grps = []
+        if x.size != xvals.size * yvals.size
+          # This is definitely not a homogeneous map
+          grps = Dataset.subdivise(x, y, x_index, y_index)
+        else
+          grps = [ [x_index.values], [y_index.values]]
+        end
+
+        # Now we construct a list of indexed dtables
+        rv = []
+        for grp in grps
+          xv = grp[0].sort
+          yv = grp[1].sort
+
+          # Build up intermediate hashes
+          xvh = {}
+          xvl = []
+          idx = 0
+          for xi in xv
+            val = xvals[xi]
+            xvh[val] = idx
+            xvl << val
+            idx += 1
+          end
+
+          yvh = {}
+          yvl = []
+          idx = 0
+          for yi in yv
+            val = yvals[yi]
+            yvh[val] = idx
+            yvl << val
+            idx += 1
+          end
+          
+          table = Dobjects::Dtable.new(xv.size, yv.size)
+          # We initialize all the values to NaN
+          table.set(0.0/0.0)
+        
+          x.each_index do |i|
+            ix = xvh[x[i]]
+            next unless ix
+            iy = yvh[y[i]]
+            next unless iy
+            # Y first !
+            table[iy, ix] = z[i]
+          end
+          rv << IndexedDTable.new(xvl, yvl, table)
+        end
+        @homogeneous_dtables = rv
+        return rv
+      end
+        
 
 
       # Returns an IndexedDTable representing the XYZ
@@ -460,10 +549,7 @@ module CTioga2
         end
 
         if x.size != xvals.size * yvals.size
-          # This is definitely not a homogeneous map
-          p Dataset.subdivise(x, y, x_index, y_index)
-
-          fatal {"Heterogeneous, stopping here for now"}
+          error {"Heterogeneous, stopping here for now"}
         end
 
         table = Dobjects::Dtable.new(xvals.size, yvals.size)

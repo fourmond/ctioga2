@@ -1,5 +1,5 @@
-# parametric2d.rb: a 2D curve whose parameters depend on Z values
-# copyright (c) 2006, 2007, 2008, 2009, 2010 by Vincent Fourmond
+# xyz-map.rb: a heatmap
+# copyright (c) 2006, 2007, 2008, 2009, 2010, 2013, 2015 by Vincent Fourmond
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ module CTioga2
         include Dobjects
 
         # The IndexedTable object representing the underlying data
-        attr_accessor :table
+        attr_accessor :tables
 
 
         # Creates a new XYZMap object with the given _dataset_ and
@@ -43,18 +43,25 @@ module CTioga2
           @dataset = dataset
           @curve_style = style
           prepare_data
+          @boundaries = nil
         end
 
         # Prepares the internal storage of the data, from the @dataset
         def prepare_data
-          @table = @dataset.indexed_table
+          @tables = @dataset.homogeneous_dtables
         end
         
         protected :prepare_data
 
         # Returns the Types::Boundaries of this curve.
         def get_boundaries
-          return @table.xy_boundaries
+          if @boundaries
+            return @boundaries
+          end
+          bnds = Graphics::Types::Boundaries.bounds(@dataset.x.values,
+                                                    @dataset.y.values)
+          @boundaries = bnds
+          return bnds
         end
         
 
@@ -72,31 +79,35 @@ module CTioga2
 
             @curve_style.color_map ||= 
               Styles::ColorMap.from_text("Red--Green")
-            
-            dict = @curve_style.color_map.
-              prepare_data_display(t,@table.table,
-                                   @table.table.min,
-                                   @table.table.max)
-            if @curve_style.zaxis
-              begin
-                @parent.style.get_axis_style(@curve_style.zaxis).
-                  set_color_map(@curve_style.color_map, 
-                                @table.table.min,
-                                @table.table.max)
-              rescue
-                error { "Could not set Z info to non-existent axis #{@curve_style.zaxis}" }
-              end
-            end
 
-            dict.update(@table.corner_positions)
-            dict.update('width' => @table.width,
-                        'height' => @table.height)
-            dict.update('interpolate' => false)
-            if (! @curve_style.fill.transparency) || 
-                (@curve_style.fill.transparency < 0.99) 
-              t.show_image(dict)
-            else
-              info { 'Not showing map as transparency is over 0.99' }
+            zmin = @dataset.z.values.min
+            zmax = @dataset.z.values.max
+
+            for tbl in @tables
+              dict = @curve_style.color_map.
+                     prepare_data_display(t,tbl.table, zmin, zmax)
+              if @curve_style.zaxis
+                begin
+                  @parent.style.get_axis_style(@curve_style.zaxis).
+                    set_color_map(@curve_style.color_map, 
+                                  tbl.table.min,
+                                  tbl.table.max)
+                rescue
+                  error { "Could not set Z info to non-existent axis #{@curve_style.zaxis}" }
+                end
+              end
+
+              dict.update(tbl.corner_positions)
+              dict.update('width' => tbl.width,
+                          'height' => tbl.height)
+              dict.update('interpolate' => false)
+              if (! @curve_style.fill.transparency) || 
+                 (@curve_style.fill.transparency < 0.99) 
+                t.show_image(dict)
+                # t.stroke_rect(dict['ul'][0], dict['ul'][1], dict['lr'][0] - dict['ul'][0], dict['lr'][1] - dict['ul'][1])
+              else
+                info { 'Not showing map as transparency is over 0.99' }
+              end
             end
           end
         end
