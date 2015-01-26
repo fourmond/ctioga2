@@ -413,7 +413,7 @@ module CTioga2
           end
 
           # Now, we have a set and all the indices that match.
-          ret << [ set_cols.dup, st.to_a ]
+          ret << [ set_cols.dup.sort, st.to_a.sort ]
           # And, now, go again through all the columns and remove the set
           for c in set_cols
             cols[c].subtract(st)
@@ -421,6 +421,26 @@ module CTioga2
         end
 
         return ret
+      end
+
+      # Takes a list of indices, the corresponding vector (ie mapping
+      # the indices to the vector gives the actual coordinates) and
+      # returns a series of 
+      def self.homogenenous_deltas_indices(indices, vector, tolerance = 1e-3)
+        vct = indices.map do |i|
+          vector[i]
+        end
+        subdiv = Utils::split_homogeneous_deltas(vct, tolerance)
+        rv = []
+        idx = 0
+        for s in subdiv
+          rv << indices[idx..idx+s.size]
+          idx += s.size
+        end
+        if idx != indices.size
+          error { "blundered ?" }
+        end
+        return rv
       end
 
       # Returns a series of IndexedDTable representing the XYZ data.
@@ -454,13 +474,32 @@ module CTioga2
           i += 1
         end
 
-        grps = []
+        fgrps = []
         if x.size != xvals.size * yvals.size
           # This is definitely not a homogeneous map
-          grps = Dataset.subdivise(x, y, x_index, y_index)
+          fgrps = Dataset.subdivise(x, y, x_index, y_index)
         else
-          grps = [ [x_index.values], [y_index.values]]
+          fgrps = [ [ x_index.values, y_index.values ] ]
         end
+
+        p fgrps
+
+        # Now, we resplit according to the deltas:
+        grps = []
+        for grp in fgrps
+          xv, yv = *grp
+
+          xv_list = Dataset.homogenenous_deltas_indices(xv, xvals)
+          yv_list = Dataset.homogenenous_deltas_indices(yv, yvals)
+
+          for cxv in xv_list
+            for cyv in yv_list
+              grps << [ cxv, cyv]
+            end
+          end
+        end
+
+        p grps
 
         # Now we construct a list of indexed dtables
         rv = []

@@ -49,6 +49,14 @@ module CTioga2
         # Prepares the internal storage of the data, from the @dataset
         def prepare_data
           @tables = @dataset.homogeneous_dtables
+          info {
+            str = ""
+            for tbl in @tables
+              str << " - #{tbl.x_values.min}, #{tbl.y_values.min} -> #{tbl.x_values.max}, #{tbl.y_values.max} #{tbl.width}x#{tbl.height}\n"
+            end
+            "There are #{@tables.size} different homogeneous submaps in #{@dataset.name}\n#{str}"
+          }
+          
         end
         
         protected :prepare_data

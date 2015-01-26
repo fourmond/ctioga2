@@ -144,7 +144,7 @@ module CTioga2
       return formula
     end
 
-
+    # Sorts strings according to their numeric suffix
     def self.suffix_numeric_sort(strings)
       strings.sort do |a,b|
         a =~ /.*?(\d+)$/
@@ -278,6 +278,39 @@ module CTioga2
       return ret
     end
 
+    # Takes a vector, and splits it into a series of contiguous
+    # subvectors which 
+    def self.split_homogeneous_deltas(vect, tolerance = 1e-4)
+      rv = []
+      idx = 1
+      dx = nil
+      lst = nil
+      while idx < vect.size
+        cdx = vect[idx] - vect[idx - 1]
+        if ! dx 
+          dx = cdx
+          lst = Dobjects::Dvector.new()
+          rv << lst
+          lst << vect[idx-1] << vect[idx]
+        else
+          if (cdx - dx).abs <= tolerance * dx
+            # keep going
+            lst << vect[idx]
+          else
+            dx = nil
+          end
+        end
+        idx += 1
+      end
+
+      # Flush the last one if alone
+      if ! dx
+        nv = Dobjects::Dvector.new()
+        nv << vect.last
+        rv << nv
+      end
+      return rv
+    end
 
 
     # Cross-platform way of finding an executable in the $PATH.
