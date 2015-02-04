@@ -249,6 +249,8 @@ module CTioga2
           }
           @parameters_carrays = {}
           for target, param in self.class.parameters
+            # There should be a way to do that !
+            next if (target == 'marker_fill_color') or (target == 'marker_stroke_color')
             set = param.default_set
             if set
               @parameters_carrays[target] = CircularArray.new(set)
@@ -331,7 +333,15 @@ module CTioga2
 
         simple_parameter 'marker_color', "marker color", Sets::ColorSets
 
+        simple_parameter 'marker_fill_color', "marker fill color", Sets::ColorSets
+
+        simple_parameter 'marker_stroke_color', "marker stroke color", Sets::ColorSets
+
         simple_parameter 'marker_scale', "marker scale", Sets::LineWidthSets
+
+        simple_parameter 'marker_angle', "marker angle", nil
+
+        simple_parameter 'marker_width', "marker line width", nil 
 
         simple_parameter 'marker_min_scale', "marker scale", nil
 

@@ -44,7 +44,7 @@ module CTioga2
       Dash_Dot_Dot = Line_Type_Dash_Dot_Dot
     end
     
-    NoRE = /no(ne)?|off/i
+    NoRE = /no(ne)?|off|false/i
 
     ColorType = CmdType.new('color', {
                               :type => :tioga_color,

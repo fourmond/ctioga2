@@ -587,6 +587,15 @@ class Hash
     self.delete(old)
   end
 
+  # Strip the given keys if they evaluate to false
+  def strip_if_false!(keys)
+    for k in keys
+      if key?(k) and (not self[k])
+        self.delete(k)
+      end
+    end
+  end
+
 end
 
 

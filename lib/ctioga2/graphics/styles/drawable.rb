@@ -102,14 +102,28 @@ module CTioga2
       #   be handled directly in the marker specification...
       class MarkerStyle < BasicStyle
 
-        # The color
-        typed_attribute :color, 'color'
-        
         # The marker
         typed_attribute :marker, 'marker'
 
         # The marker scale
         typed_attribute :scale, 'float'
+
+        # The angle
+        typed_attribute :angle, 'float'
+
+        # The default for color
+        typed_attribute :color, 'color-or-false'
+
+        # The stroke color
+        typed_attribute :stroke_color, 'color-or-false'
+
+        # The fill color
+        typed_attribute :fill_color, 'color-or-false'
+
+        # The stroke width
+        typed_attribute :width, 'float'
+
+        
 
         # Shows the marker at a given location/set of locations.
         # 
@@ -117,27 +131,54 @@ module CTioga2
         # dictionnary specification.
         def draw_markers_at(t, x, y, override = nil)
           return if (! @marker || @marker == 'None')
+
+          dict = { 
+            'marker' => @marker
+          }
+          if @width
+            dict['stroke_width'] = @width
+          end
+          if !(@fill_color.nil?) || !(@stroke_color.nil?)
+            dict['fill_color'] = @fill_color.nil? ? @color : @fill_color
+            dict['stroke_color'] = @stroke_color.nil? ? @color : @stroke_color
+            dict['rendering_mode'] = 
+              if dict['fill_color']
+                if dict['stroke_color']
+                  Tioga::FigureConstants::FILL_AND_STROKE
+                else
+                  Tioga::FigureConstants::FILL
+                end
+              else
+                Tioga::FigureConstants::STROKE
+              end
+            dict.strip_if_false!(%w{fill_color stroke_color})
+          else
+            dict['color'] = @color
+            if ! @color
+              return            # Nothing to do !
+            end
+          end
+          if @angle
+            dict['angle'] = @angle
+          end
+          
+          if x.is_a? Numeric
+            dict['x'] = x
+            dict['y'] = y
+          else
+            dict['Xs'] = x
+            dict['Ys'] = y
+          end
+
+          if @scale
+            dict['scale'] = @scale
+          end
+          if override
+            dict.merge!(override)
+          end
           t.context do
             ## \todo allow custom line types for markers ?
             t.line_type = LineStyles::Solid
-            dict = { 
-              'marker' => @marker, 
-              'color' => @color
-            }
-            if x.is_a? Numeric
-              dict['x'] = x
-              dict['y'] = y
-            else
-              dict['Xs'] = x
-              dict['Ys'] = y
-            end
-
-            if @scale
-              dict['scale'] = @scale
-            end
-            if override
-              dict.merge!(override)
-            end
             t.show_marker(dict)
           end
         end
