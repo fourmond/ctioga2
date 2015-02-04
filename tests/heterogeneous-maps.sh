@@ -33,6 +33,16 @@ $ct --xyz-map -t 'Transposed' --verbose \
     --join-datasets /number=3 --plot-last \
     --contour --smath /samples=30 /urange=-1:1 /vrange=-1:1 "$func" /color-map=Black--Black /contour-number=5
 
+
+$ct --xyz-map -t 'T-shaped' --verbose \
+    --smath /urange=-1:1 /vrange=-1:1 /samples=51 "$func" /where 'x.abs < 0.6 || y > 0.7' \
+    --contour --smath /samples=30 /urange=-1:1 /vrange=-1:1 "$func" /color-map=Black--Black /contour-number=5
+
+$ct --xyz-map -t 'T-shaped, second' --verbose \
+    --smath /urange=-1:1 /vrange=-1:1 /samples=51 "$func" /where 'y.abs < 0.5 || x > 0.7' \
+    --contour --smath /samples=30 /urange=-1:1 /vrange=-1:1 "$func" /color-map=Black--Black /contour-number=5
+
+
 $ct --xyz-map -t 'With overlapping points' --verbose \
     --smath /samples=11 /urange=-1:-0.7 /vrange=-0.5:1 -L "$func" \
     --smath /urange=-0.7:0.7 /vrange=-1:1 -L "$func" \
