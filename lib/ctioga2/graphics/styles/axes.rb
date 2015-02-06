@@ -67,6 +67,12 @@ module CTioga2
         # The color of the stroke for the lines of the axis
         typed_attribute :stroke_color, 'color'
 
+        # The line width
+        typed_attribute :line_width, 'float'
+
+        # The line style
+        # typed_attribute :line_style,
+
         typed_attribute :major_tick_length, 'float'
         typed_attribute :major_tick_width, 'float'
 
@@ -144,7 +150,18 @@ minor_tick_length minor_tick_width)
                          else
                            spec['type']
                          end
-          t.show_axis(spec)
+          t.context do
+            if @line_width
+              # Holy gods, there is no way in Tioga to choose the line
+              # width.
+              #
+              # Here is essentially the proof that I must reimplement
+              # the axes.
+              t.xaxis_line_width = @line_width
+              t.yaxis_line_width = @line_width
+            end
+            t.show_axis(spec)
+          end
           # Now, we draw axis ticks
           if (type == Tioga::FigureConstants::AXIS_WITH_MAJOR_TICKS_AND_NUMERIC_LABELS) || (type == Tioga::FigureConstants::AXIS_WITH_TICKS_AND_NUMERIC_LABELS)
 
