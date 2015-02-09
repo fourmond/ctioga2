@@ -425,7 +425,7 @@ module CTioga2
 
       # Takes a list of indices, the corresponding vector (ie mapping
       # the indices to the vector gives the actual coordinates) and
-      # returns a series of 
+      # returns a list of arrays of indices with homogeneous deltas.
       def self.homogenenous_deltas_indices(indices, vector, tolerance = 1e-3)
         vct = indices.map do |i|
           vector[i]
@@ -434,7 +434,7 @@ module CTioga2
         rv = []
         idx = 0
         for s in subdiv
-          rv << indices[idx..idx+s.size]
+          rv << indices[idx..idx+s.size-1]
           idx += s.size
         end
         if idx != indices.size
@@ -482,8 +482,6 @@ module CTioga2
           fgrps = [ [ x_index.values, y_index.values ] ]
         end
 
-        p fgrps
-
         # Now, we resplit according to the deltas:
         grps = []
         for grp in fgrps
@@ -498,8 +496,6 @@ module CTioga2
             end
           end
         end
-
-        p grps
 
         # Now we construct a list of indexed dtables
         rv = []
