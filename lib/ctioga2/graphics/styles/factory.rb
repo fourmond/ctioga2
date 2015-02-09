@@ -480,6 +480,23 @@ module CTioga2
           return tv
         end
       end
+      SkipCommand = 
+        Cmd.new("skip",nil,"--skip", 
+                [], {'number' => CmdArg.new("integer")}
+               ) do |plotmaker, opts|
+        number = opts['number'] || 1
+        fct = plotmaker.curve_generator.style_factory
+        while number > 0
+          number -= 1
+          fct.next
+        end
+      end
+
+      SkipCommand.describe('Skips next curve style', 
+                           <<EOH, CurveStyleFactory::CurveStyleGroup)
+This command acts as if one (or @number@) dataset had been drawn with 
+respect to the style of the next dataset to be drawn.
+EOH
     end
 
     # Now, we document some aspects of the above created commands
