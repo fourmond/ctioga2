@@ -98,8 +98,8 @@ module CTioga2
                 begin
                   @parent.style.get_axis_style(@curve_style.zaxis).
                     set_color_map(@curve_style.color_map, 
-                                  tbl.table.min,
-                                  tbl.table.max)
+                                  zmin,
+                                  zmax)
                 rescue
                   error { "Could not set Z info to non-existent axis #{@curve_style.zaxis}" }
                 end
