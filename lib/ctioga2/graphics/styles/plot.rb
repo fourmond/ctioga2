@@ -439,7 +439,7 @@ EOH
             style = AxisStyle.current_axis_style(plotmaker, w)
             style.set_from_hash(opts)
           rescue Exception => e
-            error {"Error while setting style of axis: #{w} -- #{e}"}
+            Log::error {"Error while setting style of axis: #{w} -- #{e}"}
           end
         end
       end

@@ -216,7 +216,7 @@ module CTioga2
               ret[key % k] = v
             end
           end
-            
+
           if @sub_styles        # Not always present too
             for sub in @sub_styles
               sym, cls, fmt, fc = *sub
@@ -239,7 +239,18 @@ module CTioga2
         end
 
         def self.sub_styles
-          return @sub_styles
+          # p [:ss, self]
+          rv = if self.superclass.respond_to?(:sub_styles)
+                 self.superclass.sub_styles
+               else
+                 []
+               end
+          # p [:sparents, self, rv]
+          if @sub_styles
+            rv += @sub_styles
+          end
+          # p [:sparents_own, self, rv]
+          return rv
         end
 
         # Sets the values of the attributes from the given
@@ -275,7 +286,9 @@ module CTioga2
                 cur_var = cls.new
                 set_after = true
               end
+              # p :bef, fmt
               fmt = name % fmt
+              # p :aft, fmt
               nb = cur_var.set_from_hash(hash, fmt)
 
               # Here, this means that missing attributes do not get
@@ -322,6 +335,18 @@ module CTioga2
               val = instance_variable_get("@#{attr}")
               if ! val.nil?
                 retval[name % attr] = val
+              end
+            end
+          end
+
+          # Now, substyles
+          for sb in self.class.sub_styles
+            symb, cls, fmt, fc = *sb
+            if instance_variable_defined?("@#{symb.to_s}")
+              sub = instance_variable_get("@#{symb.to_s}")
+              fmt = name % fmt
+              if ! sub.nil?
+                retval.update(sub.to_hash(fmt))
               end
             end
           end
