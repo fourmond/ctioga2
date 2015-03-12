@@ -26,7 +26,12 @@ module CTioga2
       # This class represents the stylistic information necessary to
       # draw an error bar. It derives from StrokeStyle, as it is
       # essentially a stroke.
-      class ErrorBarStyle < StrokeStyle
+      class ErrorBarStyle < BasicStyle
+
+        # The style of the line that is drawn, as a StrokeStyle. 
+        sub_style :line, StrokeStyle
+
+        alias_for :color, :line_color
 
         # The error bar style. For now, not much here.
         attr_accessor :style
@@ -42,8 +47,8 @@ module CTioga2
         def show_error_bar(t, x, xmin, xmax, y, ymin, ymax)
           d = { 'x' => x,
             'y' => y,
-            'color' => @color || Tioga::ColorConstants::Black,
-            'line_width' => @width || 1.0,
+            'color' => @line.color || Tioga::ColorConstants::Black,
+            'line_width' => @line.width || 1.0,
           }
           has = false
           if (xmin && xmax && (xmax - xmin != 0))
@@ -60,6 +65,8 @@ module CTioga2
           # We won't draw something when there isn't anything to draw
           # !
           if(has)
+            # We should stop relying on Tioga for that.
+            # Probably this is the place to reimplement that ?
             t.show_error_bars(d)
           end
         end

@@ -349,6 +349,9 @@ module CTioga2
         simple_parameter 'error_bar_color', "error bar color", 
         Sets::ColorSets
 
+        simple_parameter 'error_bar_line_width', "error bar line width", 
+        Sets::LineWidthSets
+
         # Location:
         define_parameter 'location_xaxis', 'xaxis', 
         nil, "X axis", nil, true

@@ -11,7 +11,12 @@
 
 $ct --math-samples 50 -L 't:t**2/10:sin(t**20)' -P /save=error-bars.dat
 
-$ct --text error-bars.dat@'$1:$2:yerr=$3' /legend 'Y error bars' \
+$ct --text --line-style no --marker auto \
+    error-bars.dat@'$1:$2:yerr=$3' /legend 'Y error bars' \
     error-bars.dat@'$1:$2+3:xerr=$3' /legend 'X error bars' \
     error-bars.dat@'$1:$2-3:$3:yerr=$3' /where 'z > 0.1' /legend 'With selection' \
     error-bars.dat@'$1:$2-6:xerr=$3:$3**2:yerr=$3' /where 'z < 0.5' /legend 'Second With selection'
+
+$ct --text --line-style no --marker auto \
+    error-bars.dat@'$1:$2:yerr=$3' /error-bar-color Purple /legend 'Purple' \
+    error-bars.dat@'$1:$2+3:xerr=$3' /error-bar-line-width 0.2  /legend 'Very thin' 
