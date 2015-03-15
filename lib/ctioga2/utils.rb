@@ -381,8 +381,7 @@ module CTioga2
       end
 
       return ret
-     end
-
+    end
 
     # Returns a hash value -> [elements] in which the elements are in
     # the same order

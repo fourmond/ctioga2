@@ -55,6 +55,29 @@ module CTioga2
           @orientation = orientation
         end
 
+        def self.make_dimension(val, orient = :x, default = :figure)
+          if val.is_a? Dimension
+            return val
+          else
+            return Dimension.new(default, val, orient)
+          end
+        end
+
+        # Gets the angle along the given direction
+        def self.get_angle(t, dx, dy)
+          dx = make_dimension(dx, :x).to_bp(t)
+          dy = make_dimension(dy, :y).to_bp(t)
+          return 180 * Math::atan2(dy, dx)/Math::PI
+        end
+
+        # Returns a dimension corresponding to the distance.
+        def self.get_distance(t, dx, dy)
+          dx = make_dimension(dx, :x).to_bp(t)
+          dy = make_dimension(dy, :y).to_bp(t)
+          return Dimension.new(sqrt(dx**2 + dy**2), :bp)
+        end
+          
+
         # Converts the Dimension to the *figure* coordinates of the
         # *current* figure in _t_.
         #
