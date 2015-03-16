@@ -71,6 +71,12 @@ module CTioga2
 
           # Must shorten the path first...
           sv = t.line_cap
+          
+          # This has for effect to disable changing the line cap when
+          # there are now arrows to draw.
+          if ! (has_marker?('head') || has_marker?('tail'))
+            sv = Tioga::FigureConstants::LINE_CAP_BUTT
+          end
           if sv != Tioga::FigureConstants::LINE_CAP_BUTT
             t.line_cap = Tioga::FigureConstants::LINE_CAP_BUTT
           end
@@ -109,6 +115,15 @@ module CTioga2
           end
         end
 
+        def has_marker?(name)
+          mkr = self.send("#{name}_marker")
+          if ! mkr  or  mkr == 'None'
+            return false
+          else
+            return true
+          end
+        end
+
         # Draw the arrow symbol for the given name (head or tail),
         # with the given base angle and at the given position
         def draw_symbol(t, name, angle, x, y)
@@ -140,6 +155,41 @@ module CTioga2
         end
 
       end
+
+      # This class represents all the stylistic information necessary
+      # to draw a line parallel to a certain direction, indicated by
+      # an angle (default to horizontal)
+      class OrientedLineStyle < ArrowStyle
+        # The angle, in degrees.
+        typed_attribute :angle, 'float'
+
+        # The alignment of the line with respect to the point given.
+        typed_attribute :origin, 'justification'
+
+        # len is a dimension
+        def draw_oriented_arrow(t, xo, yo, len)
+
+          angle = @angle || 0.0
+
+          dx,dy = *len.to_figure(t, angle)
+
+          case @origin || Tioga::FigureConstants::LEFT_JUSTIFIED
+          when Tioga::FigureConstants::LEFT_JUSTIFIED
+            x1, y1 = xo, yo
+            x2, y2 = xo + dx, yo + dy
+          when Tioga::FigureConstants::CENTERED
+            x1, y1 = xo - 0.5 * dx, yo - 0.5 * dy
+            x2, y2 = xo + 0.5 * dx, yo + 0.5 * dy
+          when Tioga::FigureConstants::RIGHT_JUSTIFIED
+            x1, y1 = xo - dx, yo - dy
+            x2, y2 = xo, yo
+          end
+          
+          draw_arrow(t, x1, y1, x2, y2)
+        end
+        
+      end
+
     end
   end
 end

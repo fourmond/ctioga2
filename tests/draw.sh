@@ -82,9 +82,10 @@ $ct -t 'Lines and arrows' -r 10cmx10cm \
     --draw-arrow 0,-0.6 0,0.6 /color Blue /style Dashes \
     --draw-arrow 2,-0.6 -2,0.6 /color Blue /style Dashes /tail-marker none
 
-$ct -t 'Oriented lines' -r 10cmx10cm \
+$ct -t 'Oriented lines (and arrows)' -r 10cmx10cm \
     '0.5*x' \
     --draw-oriented-line 0,0 2cm /angle=30 /color Green \
     --draw-oriented-line 2,0 3f /angle=0 /color Red \
     --draw-oriented-line 2,0 3f /angle=90 /color Blue /origin=center \
-    --draw-oriented-line -2,2 1cm /angle=10 /color Purple /origin=right
+    --draw-oriented-line -2,2 1cm /angle=10 /color Purple /origin=right \
+    --draw-oriented-line -5,0 2cm /angle=30 /color Green /head-marker=ArrowHead

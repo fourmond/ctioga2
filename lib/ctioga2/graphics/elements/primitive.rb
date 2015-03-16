@@ -253,11 +253,11 @@ EOD
 
         styled_primitive("line", "line", 
                          [ 'point', 'point' ],
-                         Styles::StrokeStyle,
+                         Styles::ArrowStyle,
                          'line'
                   ) do |t, tail, head, style, options|
-          style.draw_line(t, *( tail.to_figure_xy(t) + 
-                          head.to_figure_xy(t) ))
+          style.draw_arrow(t, *( tail.to_figure_xy(t) + 
+                                 head.to_figure_xy(t) ))
         end
 
         # @todo Do the same thing for arrows...
@@ -266,7 +266,7 @@ EOD
                          Styles::OrientedLineStyle,
                          'oriented-line'
                   ) do |t, org, dim, style, options|
-          style.draw_oriented_line(t, *org.to_figure_xy(t), dim)
+          style.draw_oriented_arrow(t, *org.to_figure_xy(t), dim)
         end
 
 

@@ -365,7 +365,6 @@ module CTioga2
             hsh = hsh.to_hash
           end
           at = self.class.attribute_types
-          p at.keys
           for k, v in hsh
             if at.key?(k.to_sym) and ! instance_variable_defined?("@#{k}".to_sym)
               self.send("#{k}=", v)
