@@ -35,7 +35,12 @@ module CTioga2
           typed_attribute "#{e}_color".to_sym, 'color'
         end
 
-        def draw_arrow(t, x1, y1, x2, y2)
+        TiogaDefaults = {
+          'head_marker' => Tioga::MarkerConstants::Arrowhead,
+          'tail_marker' => Tioga::MarkerConstants::BarThin
+        }
+
+        def old_draw_arrow(t, x1, y1, x2, y2)
           dict = self.to_hash
           dict.rename_key('width', 'line_width')
           dict.rename_key('style', 'line_style')
@@ -50,7 +55,8 @@ module CTioga2
         end
 
 
-        def new_draw_arrow(t, x1, y1, x2, y2)
+        # Draws an arrow.
+        def draw_arrow(t, x1, y1, x2, y2)
           dx = x2 - x1
           dy = y2 - y1
 
@@ -58,14 +64,50 @@ module CTioga2
 
           len = Types::Dimension.get_distance(t, dx, dy)
 
+          rs = symbol_size(t, "head")
+          ls = symbol_size(t, "tail")
+
+          x1n, y1n, x2n, y2n = *Types::Dimension::adjust_line(t, x1, y1, x2, y2, -ls, -rs)
+
           # Must shorten the path first...
-          draw_line(t, x1, y1, x2, y2)
+          sv = t.line_cap
+          if sv != Tioga::FigureConstants::LINE_CAP_BUTT
+            t.line_cap = Tioga::FigureConstants::LINE_CAP_BUTT
+          end
+          draw_line(t, x1n, y1n, x2n, y2n)
+          if sv != Tioga::FigureConstants::LINE_CAP_BUTT
+            t.line_cap = sv
+          end
 
           # Then, draw the arrow heads/tails
+          draw_symbol(t, 'head', angle, x2, y2)
+          draw_symbol(t, 'tail', angle - 180, x1, y1)
           
         end
 
         protected
+
+        # Return the dimension of the arrow size
+        def symbol_size(t, name)
+          sz = Types::Dimension.new(:dy,self.send("#{name}_scale") || 1.0)
+          sz.value *= case just(name)
+                     when Tioga::FigureConstants::CENTERED
+                       0
+                     when Tioga::FigureConstants::RIGHT_JUSTIFIED
+                       0.5
+                     end
+          return sz
+        end
+
+        def just(name)
+          mkr = self.send("#{name}_marker")
+          if mkr == Tioga::MarkerConstants::Arrowhead or
+            mkr == Tioga::MarkerConstants::ArrowheadOpen
+            Tioga::FigureConstants::RIGHT_JUSTIFIED
+          else
+            Tioga::FigureConstants::CENTERED
+          end
+        end
 
         # Draw the arrow symbol for the given name (head or tail),
         # with the given base angle and at the given position
@@ -77,8 +119,8 @@ module CTioga2
               hsh[k] = tmp
             end
           end
-          mrk = hsh['marker']
-          if ! mkr  or  mrk == 'None'
+          mkr = hsh['marker']
+          if ! mkr  or  mkr == 'None'
             return
           end
 
@@ -93,11 +135,7 @@ module CTioga2
             hsh['color'] = @color
           end
 
-          hsh['justification']= if mkr == Arrowhead or mkr == ArrowheadOpen
-                                  Tioga::FigureConstants::RIGHT_JUSTIFIED
-                                else
-                                  Tioga::FigureConstants::CENTERED
-                                end
+          hsh['justification'] = just(name)
           t.show_marker(hsh)
         end
 

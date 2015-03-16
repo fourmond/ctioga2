@@ -51,6 +51,9 @@ module CTioga2
         # _value_ oriented along the given _orientation_
         def initialize(type, value, orientation = :x)
           @type = type
+          if not @type.is_a? Symbol
+            raise "Invalid value for the dimension type: '#{@type}'"
+          end
           @value = value
           @orientation = orientation
         end
@@ -70,11 +73,33 @@ module CTioga2
           return 180 * Math::atan2(dy, dx)/Math::PI
         end
 
+        def -@
+          return Dimension.new(@type, -@value, @orientation)
+        end
+
         # Returns a dimension corresponding to the distance.
         def self.get_distance(t, dx, dy)
           dx = make_dimension(dx, :x).to_bp(t)
           dy = make_dimension(dy, :y).to_bp(t)
-          return Dimension.new(sqrt(dx**2 + dy**2), :bp)
+          return Dimension.new(:bp, (dx**2 + dy**2)**0.5)
+        end
+
+        # Adjusts the given line by adding the dimensions on the left
+        # and on the right (can be negative).
+        #
+        # Returns the new [x1, y1, x2, y2]
+        def self.adjust_line(t, x1, y1, x2, y2, left, right)
+          dx = x2 - x1
+          dy = y2 - y1
+          dst = get_distance(t, x2-x1, y2-y1).to_bp(t)
+          lf = left.to_bp(t)/dst
+          rf = right.to_bp(t)/dst
+
+          x1 -= lf * dx
+          y1 -= lf * dy
+          x2 += rf * dx
+          y2 += rf * dy
+          return [x1, y1, x2, y2]
         end
           
 

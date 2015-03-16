@@ -358,6 +358,21 @@ module CTioga2
           set_from_hash(other_object.to_hash)
         end
 
+        # Sets the style from the given hash or other object, if the
+        # style is not present yet.
+        def use_defaults_from(hsh)
+          if hsh.is_a? BasicStyle
+            hsh = hsh.to_hash
+          end
+          at = self.class.attribute_types
+          p at.keys
+          for k, v in hsh
+            if at.key?(k.to_sym) and ! instance_variable_defined?("@#{k}".to_sym)
+              self.send("#{k}=", v)
+            end
+          end
+        end
+
         # Converts a hash in text format into a format suitable for
         # feeding to #set_from_hash. Only relevant keys are
         # converted. Keys that exist in the options hash but are not

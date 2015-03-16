@@ -245,8 +245,10 @@ EOD
                          [ 'point', 'point' ], 
                          Styles::ArrowStyle,
                          'arrow') do |t, tail, head, style, options|
-          style.draw_arrow(t, *( tail.to_figure_xy(t) + 
-                           head.to_figure_xy(t) ))
+          stl = style.dup
+          stl.use_defaults_from(Styles::ArrowStyle::TiogaDefaults)
+          stl.draw_arrow(t, *( tail.to_figure_xy(t) + 
+                               head.to_figure_xy(t) ))
         end
 
         styled_primitive("line", "line", 

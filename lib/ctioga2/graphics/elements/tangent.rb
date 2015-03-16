@@ -83,7 +83,9 @@ module CTioga2
           end
 
           coords = options['tail'] + options['head']
-          style.draw_arrow(t, *coords)
+          stl = style.dup
+          stl.use_defaults_from(Styles::ArrowStyle::TiogaDefaults)
+          stl.draw_arrow(t, *coords)
         end
       end
 
