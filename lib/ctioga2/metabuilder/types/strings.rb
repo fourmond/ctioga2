@@ -34,7 +34,7 @@ module CTioga2
           return 'text'
         end
         
-        def string_to_type(str)
+        def string_to_type_internal(str)
           return str
         end
       end
@@ -67,7 +67,7 @@ module CTioga2
           return 'regexp'
         end
         
-        def string_to_type(str)
+        def string_to_type_internal(str)
           if str =~ /^\/(.*)\/$/
             return Regexp.new($1)
           else

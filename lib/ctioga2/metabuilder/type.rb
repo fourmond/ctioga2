@@ -87,6 +87,8 @@ module CTioga2
       # to a Type child
       @@types = { }
 
+      @@type_names = {}
+
       # The initial type specification that was given to the Type
       attr_accessor :type
 
@@ -144,6 +146,7 @@ module CTioga2
             "from #{@@types[name]} to #{self}" }
         end
         @@types[name] = self
+        @@type_names[self] = name
         self.send(:define_method,:type_name) do
           public_name
         end
@@ -190,31 +193,40 @@ module CTioga2
       # function that can take advantage of a few general features. It
       # is recommanded to define a #string_to_type_internal function
       # rather to redefine #string_to_type
-      def string_to_type(string)
-        # First, passthrough
-        if @passthrough && @passthrough === string
-          return stt_run_hook(string)
-        end
-        # First, shortcuts:
-        if @shortcuts and @shortcuts.key? string
-          return stt_run_hook(@shortcuts[string])
-        end
-        if @re_shortcuts
-          for k, v in @re_shortcuts
-            if string =~ k
-              return stt_run_hook(v)
+      def string_to_type(string, tn = nil)
+        begin
+          # First, passthrough
+          if @passthrough && @passthrough === string
+            return stt_run_hook(string)
+          end
+          # First, shortcuts:
+          if @shortcuts and @shortcuts.key? string
+            return stt_run_hook(@shortcuts[string])
+          end
+          if @re_shortcuts
+            for k, v in @re_shortcuts
+              if string =~ k
+                return stt_run_hook(v)
+              end
             end
           end
-        end
 
-        # Then, constants lookup.
-        if @type.key?(:namespace)
-          begin
-            return stt_run_hook(lookup_const(string))
-          rescue IncorrectInput
+          # Then, constants lookup.
+          if @type.key?(:namespace)
+            begin
+              return stt_run_hook(lookup_const(string))
+            rescue IncorrectInput
+            end
           end
+          return stt_run_hook(string_to_type_internal(string))
+        rescue Exception => e
+          txt = if tn
+                  "to type '#{tn}' failed:\n\t -> "
+                else
+                  "failed: "
+                end
+          raise "Conversion of '#{string}' #{txt}#{e.message}"
         end
-        return stt_run_hook(string_to_type_internal(string))
       end
 
       # This function does the exact opposite of the #string_to_type

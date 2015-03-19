@@ -87,7 +87,7 @@ module CTioga2
 
       # Does the actual conversion from string to the real type
       def string_to_type(str)
-        return @type.string_to_type(str)
+        return @type.string_to_type(str, @name)
       end
 
       # Returns the long option for the option parser.
