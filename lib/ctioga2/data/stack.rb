@@ -96,7 +96,7 @@ EOH
           begin
             datasets << backend.dataset(s)
           rescue Exception => e
-            error { "Could not load dataset #{s} -- #{e}" }
+            error { "Could not load dataset '#{s}' with backend '#{backend.description.name }':\n\t -> #{e}" }
             debug { "#{e.backtrace.join("\n")}" }
           end
         end
