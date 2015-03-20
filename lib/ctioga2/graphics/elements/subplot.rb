@@ -24,13 +24,6 @@ module CTioga2
       # * inclusion of curves
       # * legends
       # * a way to set/get its figure boundaries.
-      #
-      # @todo It would be interesting to feature several layers:
-      # background/normal/foreground, that could be addressed just
-      # using options to drawing commands
-      #
-      # @todo It would also be interesting to offer the possibility to
-      # output non-clipped objects.
       class Subplot < Container
 
         # Various stylistic aspects of the plot, as a

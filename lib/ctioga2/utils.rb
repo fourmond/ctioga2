@@ -232,6 +232,13 @@ module CTioga2
       return Math.log10(a.first).send(method)
     end
 
+    # Returns the segment scaled about its center by the given factor
+    def self.scale_segment(left, right, factor)
+      dx = 0.5*(right - left)
+      mid = 0.5*(right + left)
+      return mid - factor * dx, mid + factor * dx
+    end
+
 
     # Transcodes the given string from all encodings into the target
     # encoding until an encoding is found in which the named file
