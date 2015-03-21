@@ -13,7 +13,8 @@ fi
 
 # A dir specific for outputs
 mkdir -p "$OUTPUTS"
-    
+
+total=0
 for f in "$@"; do
     echo "Running $f";
 
@@ -27,14 +28,17 @@ for f in "$@"; do
     export CT_ADD="--name ${basepdf}-%03d"
     NOXPDF=1 sh $f
     if [ -r ${basepdf}-000.pdf ]; then
-	echo "PDF files were generated"
-	echo " -> producing montage outputs"
-
+        nb=0
         for f in ${basepdf}-*.pdf; do
             pp=${f%%.pdf}.ppm
             pdftoppm $f > $pp
+            total=$(($total + 1))
+            nb=$(($nb+1))
         done
-    
+
+        echo "$nb PDF files were generated"
+	echo " -> producing montage outputs"
+
 	if [ -z $BIG ]; then
 	    geometry=340x340+4+4
 	    density=150
@@ -52,3 +56,5 @@ for f in "$@"; do
 	display ${output}.png &
     fi
 done
+
+echo "Generated a total of $total PDF files"

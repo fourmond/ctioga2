@@ -31,3 +31,8 @@ $ct -t 'Styles' --math-samples 30 --margin 0.03 \
     --marker auto \
     'sin(x)' /path-style=splines \
     'cos(x)' /path-style=impulses /marker=no
+
+$ct -t 'Style factory tricks' \
+    --color-set 'Red|Purple|Blue|Orange|Brown' \
+    'sin(x)' 'sin(x+1)' /line-style Dashes /id=sec --skip \
+    'cos(x)' --reuse-style sec 'cos(x+1)' /line-width 2.3
