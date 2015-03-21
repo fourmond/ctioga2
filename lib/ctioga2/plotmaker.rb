@@ -221,6 +221,11 @@ module CTioga2
 
     # The stack of CurveStyle objects that were used so far.
     attr_accessor :curve_style_stack
+
+    # Whether or not one should pause at the end if there are
+    # errors. Useful on windows, where the windows closes before one
+    # has a chance to see anything.
+    attr_accessor :pause_on_errors
     
 
     # The first instance of PlotMaker created
@@ -290,6 +295,15 @@ module CTioga2
       rescue Exception => e
         debug { format_exception(e) }
         fatal { "#{e.message}" }
+      end
+      errs = Log.counts[:error]
+      warns = Log.counts[:warn]
+      if errs + warns > 0
+        puts "ctioga2 finished with #{errs} errors and #{warns} warning"
+        if @pause_on_errors
+          puts "Hit ENTER to exit"
+          STDIN.gets
+        end
       end
     end
 

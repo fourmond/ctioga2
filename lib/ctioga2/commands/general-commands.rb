@@ -128,6 +128,19 @@ EOH
 With this on, ctioga2 outputs quite a fair amount of informative messages.
 EOH
 
+    Pause = 
+      Cmd.new("pause", nil,  "--pause",
+              [ CmdArg.new('boolean') ]) do |plotmaker, val|
+      plotmaker.pause_on_errors = val
+    end
+    
+    Pause.describe("Pause on errors", <<EOH, GeneralGroup)
+When this is on, the program will ask for confirmation before finishing, 
+when errors or warnings have been shown. This is especially useful on windows 
+or other environments where the terminal shuts down as soon as ctioga2 
+has finished.
+EOH
+
     # Write debugging information.
     #
     # \todo this should be the place where a lot of customization of

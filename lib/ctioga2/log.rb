@@ -35,26 +35,31 @@ module CTioga2
     # is not implemented yet.
     def debug(channel = nil)
       @@logger.debug {yield + Log.context}
+      @@counts[:debug] += 1
     end
 
     # Prints a warning message
     def warn
       @@logger.warn {yield + Log.context} 
+      @@counts[:warn] += 1
     end
 
     # Prints an informational message
     def info
       @@logger.info {yield + Log.context}
+      @@counts[:info] += 1
     end
 
     # Prints an error message
     def error
       @@logger.error {yield + Log.context}
+      @@counts[:error] += 1
     end
 
     # Prints a fatal error message and initiates program termination.
     def fatal
       @@logger.fatal {yield + Log.context}
+      @@counts[:fatal] += 1     # Though not very useful
       exit 1                    # Fatal error.
     end
 
@@ -70,8 +75,15 @@ module CTioga2
       Logger::Formatter::Format.replace("[%4$s] %6$s\n")
       @@logger = Logger.new(stream)
       @@logger.level = Logger::WARN # Warnings and more only by default
+      @@counts = {}
+      for k in [:error, :debug, :warn, :info, :fatal]
+        @@counts[k] = 0
+      end
     end
 
+    def self.counts
+      return @@counts
+    end
 
     # Logs to the target file, and fall back onto stderr should
     # opening fail.
