@@ -256,17 +256,30 @@ module CTioga2
               @parameters_carrays[target] = CircularArray.new(set)
             end
           end
+
+          @next_style = nil
+        end
+
+        # Sets the style to be returned from the next call to #next
+        # (not counting the effect of the options passed)
+        def set_next_style(stl)
+          @next_style = stl
         end
 
         # Gets the style for the next curve. The _one_time_ hash
         # contains values 'parameter name' (name, and not target) =>
         # value that are used for this time only.
         def next(one_time = {})
-          base = {}
-          for target, array in @parameters_carrays
-            base[target] = array.next
+          if @next_style
+            base = @next_style
+            @next_style = nil
+          else
+            base = {}
+            for target, array in @parameters_carrays
+              base[target] = array.next
+            end
+            base.merge!(@override_parameters)
           end
-          base.merge!(@override_parameters)
           base.merge!(hash_name_to_target(one_time))
           return CurveStyle.from_hash(resolve_links(base))
         end
@@ -483,6 +496,7 @@ module CTioga2
           return tv
         end
       end
+
       SkipCommand = 
         Cmd.new("skip",nil,"--skip", 
                 [], {'number' => CmdArg.new("integer")}
@@ -500,7 +514,22 @@ module CTioga2
 This command acts as if one (or @number@) dataset had been drawn with 
 respect to the style of the next dataset to be drawn.
 EOH
-    end
+
+      ReuseCommand = 
+        Cmd.new("reuse-style",nil,"--reuse-style", 
+                [CmdArg.new('object')], {}
+               ) do |plotmaker, obj, opts|
+        stl = obj.curve_style.to_hash
+        plotmaker.curve_generator.style_factory.set_next_style(stl)
+      end
+
+      ReuseCommand.describe('Reuse the style of a previous curve', 
+                            <<EOH, CurveStyleFactory::CurveStyleGroup)
+After using this command, the next curve will have the same style as the 
+curve whose name was given as the first argument (it is the name given to 
+the `/id=` option to plot.
+EOH
+end
 
     # Now, we document some aspects of the above created commands
     c = Commands::Command
