@@ -82,15 +82,13 @@ module CTioga2
         typed_attribute :color, 'color-or-false'
 
         # The stroke color
-        typed_attribute :stroke_color, 'color-or-false'
+        typed_attribute :line_color, 'color-or-false'
 
         # The fill color
         typed_attribute :fill_color, 'color-or-false'
 
         # The stroke width
-        typed_attribute :width, 'float'
-
-        
+        typed_attribute :line_width, 'float'
 
         # Shows the marker at a given location/set of locations.
         # 
@@ -102,12 +100,12 @@ module CTioga2
           dict = { 
             'marker' => @marker
           }
-          if @width
-            dict['stroke_width'] = @width
+          if @line_width
+            dict['stroke_width'] = @line_width
           end
-          if !(@fill_color.nil?) || !(@stroke_color.nil?)
+          if !(@fill_color.nil?) || !(@line_color.nil?)
             dict['fill_color'] = @fill_color.nil? ? @color : @fill_color
-            dict['stroke_color'] = @stroke_color.nil? ? @color : @stroke_color
+            dict['stroke_color'] = @line_color.nil? ? @color : @line_color
             dict['rendering_mode'] = 
               if dict['fill_color']
                 if dict['stroke_color']

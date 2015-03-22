@@ -40,6 +40,9 @@ module CTioga2
           # parameter. It is a hash. 
           attr_accessor :sets
 
+          # The name of the default set, when it isn't 'default'
+          attr_accessor :default_set
+
           # The description of the parameter.
           attr_accessor :description
           
@@ -60,8 +63,16 @@ module CTioga2
           def initialize(name, type, sets, description, 
                          short_option = nil, disable_cmds = false)
             @name = name
-            @type = type 
-            @sets = sets
+            @type = type
+            if sets
+              # If the sets is an array, it is of the form [sets, 'default set']
+              if sets.is_a? Array
+                @sets = sets[0]
+                @default_set = sets[1]
+              else
+                @sets = sets
+              end
+            end
             @description = description
             @short_option = short_option
             @disable_commands = disable_cmds
@@ -81,7 +92,9 @@ module CTioga2
           # Returns a suitable default set for the given object.
           def default_set
             return nil unless @sets
-            if @sets.key? 'default'
+            if @default_set
+              return @sets[@default_set]
+            elsif @sets.key? 'default'
               return @sets['default']
             else
               @sets.each do |k,v|
@@ -250,7 +263,6 @@ module CTioga2
           @parameters_carrays = {}
           for target, param in self.class.parameters
             # There should be a way to do that !
-            next if (target == 'marker_fill_color') or (target == 'marker_stroke_color')
             set = param.default_set
             if set
               @parameters_carrays[target] = CircularArray.new(set)
@@ -342,19 +354,19 @@ module CTioga2
         simple_parameter 'line_style', 'line style', Sets::LineStyleSets
 
         # Markers
-        simple_parameter  'marker', 'marker', Sets::MarkerSets, '-m'
+        simple_parameter 'marker', 'marker', Sets::MarkerSets, '-m'
 
         simple_parameter 'marker_color', "marker color", Sets::ColorSets
 
-        simple_parameter 'marker_fill_color', "marker fill color", Sets::ColorSets
+        simple_parameter 'marker_fill_color', "marker fill color", [Sets::ColorSets, 'nil']
 
-        simple_parameter 'marker_stroke_color', "marker stroke color", Sets::ColorSets
+        simple_parameter 'marker_line_color', "marker stroke color", [Sets::ColorSets, 'nil']
 
         simple_parameter 'marker_scale', "marker scale", Sets::LineWidthSets
 
         simple_parameter 'marker_angle', "marker angle", nil
 
-        simple_parameter 'marker_width', "marker line width", nil 
+        simple_parameter 'marker_line_width', "marker line width", nil 
 
         simple_parameter 'marker_min_scale', "marker scale", nil
 

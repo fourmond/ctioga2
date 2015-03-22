@@ -41,8 +41,9 @@ module CTioga2
           [LightPlum, PaleGreen, Gold, RedBrown, SkyBlue ],
           "gnuplot" => 
           [Red, [0,1.0,0], Blue, Magenta, Cyan, Yellow, Black, Coral, Gray],
+          'nil' => [nil]
         }
-        
+
         begin
           t = Tioga::FigureMaker.new
           lst = []

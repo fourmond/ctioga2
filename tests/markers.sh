@@ -8,10 +8,10 @@
 
 $ct -t 'Two ways to draw open markers (with chosen line width)' \
     --marker auto \
-    'sin(x)' /marker=BoxOpen /marker-width=0.2 \
-    'cos(x)' /marker-width=0.2 /marker-fill-color=no
+    'sin(x)' /marker=BoxOpen /marker-line-width=0.2 \
+    'cos(x)' /marker-line-width=0.2 /marker-fill-color=no
 
 $ct -t 'Different fill and stroke colors' \
-    --marker auto --marker-width 0.3 \
+    --marker auto --marker-line-width 0.3 \
     'sin(x)' /marker-fill-color=Pink \
-    'cos(x)' /marker-color=Blue /marker-stroke-color=Brown
+    'cos(x)' /marker-color=Blue /marker-line-color=Brown /marker-line-width 0.8
