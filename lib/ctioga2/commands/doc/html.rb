@@ -144,7 +144,7 @@ module CTioga2
                       ln.gsub!(/<a[^>]+>(.*?)<\/a>/) { || $1 }
                       str += "<pre class='#{s[:cls]}'><a href='#{k}'>#{ln}</a></pre>\n"
                     end
-                    out.puts "<div class='snippets'><h5>Examples:</h5>#{str}</div>"
+                    out.puts "<h5 id='#snippets-h5-#{cmd.name}' onclick='toggleExamples(this);'>Examples...</h5>\n<div id='#snippets-#{cmd.name}' class='snippets'>#{str}</div>"
                   end
                 end
               end
