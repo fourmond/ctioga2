@@ -89,6 +89,16 @@ module CTioga2
         def write_commands(opts, out = STDOUT)
           cmds, groups = @doc.documented_commands
 
+          if opts['snippets']
+            require 'yaml'
+            snippets = begin
+                         YAML.load(IO.readlines(opts['snippets']).join())
+                       rescue Exception => e
+                         Log::error { "Failed to load snippets file '#{opts['snippets']}'\n => #{e.inspect}" }
+                         {}
+                       end
+          end
+
           write_page_menu(opts, out) do |out|
             out.puts "<div class='quick-jump'>"
             out.puts "<h3>Quick jump</h3>"
@@ -120,6 +130,23 @@ module CTioga2
               for cmd in commands
                 out.puts
                 out.puts command_documentation(cmd)
+                if snippets
+                  snpts = snippets[cmd.name]
+                  if snpts
+                    str = ""
+                    for k in snpts.keys.sort
+                      s = snpts[k]
+                      ln = s[:line].chomp
+                      # if ln[-1] == '\\'
+                      #   ln = ln[0..-2]
+                      # end
+                      # Strip links from the line
+                      ln.gsub!(/<a[^>]+>(.*?)<\/a>/) { || $1 }
+                      str += "<pre class='#{s[:cls]}'><a href='#{k}'>#{ln}</a></pre>\n"
+                    end
+                    out.puts "<div class='snippets'><h5>Examples:</h5>#{str}</div>"
+                  end
+                end
               end
             end
           end

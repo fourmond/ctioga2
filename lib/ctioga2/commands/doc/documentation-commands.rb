@@ -50,7 +50,8 @@ Writes a manual page based on a template
 EOH
 
       WriteHTMLOptions = {
-        'page-menu' => CmdArg.new('text')
+        'page-menu' => CmdArg.new('text'),
+        'snippets' => CmdArg.new('file')
       }
 
       WriteHTMLCommands = 
