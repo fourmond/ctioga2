@@ -204,7 +204,8 @@ module CTioga2
           if(@arguments.size == 0 && args.size == 1 && args[0] == true)
             return []
           else
-            raise ArgumentNumberMismatch, "Command #{@name} was called with #{args.size} arguments, but it takes #{@arguments.size}"
+            ar = args.map { |x| "'#{x}'"}
+            raise ArgumentNumberMismatch, "Command #{@name} was called with #{args.size} arguments: #{ar.join(", ")}, but it takes #{@arguments.size}"
           end
         end
         retval = []
