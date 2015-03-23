@@ -4,10 +4,11 @@ spec = Gem::Specification.new do |s|
   s.files = Dir["lib/**/*"]
   s.files += ["COPYING", "Changelog", "setup.rb" ]
   s.files += Dir["bin/*"]
+  s.license = 'GPL-2.0+'
   s.bindir = 'bin'
   s.executables =  ['ctioga2']
   s.name = 'ctioga2'
-  s.version = '0.11'
+  s.version = '0.12'
   s.summary = 'ctioga2 - the polymorphic plotting program'
   s.description = <<EOF
 ctioga2 is a command-driven plotting program that produces

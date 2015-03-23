@@ -1,3 +1,20 @@
+ctioga2 (0.12)
+
+  * The xyz-map plot type now handles correctly inhomogeneous grids (so long
+    as points do not overlap)
+  * One can now separately choose the fill and the stroke color for
+    markers
+  * Selection of line width for axes
+  * A set of commands to manipulate styles (skip the next style or copy
+    the style of previous plots)
+  * Selection of error bar line width
+  * All lines are also arrows now (just with a different default)
+  * A pause command to ask for user input before quitting if there were
+    errors or warnings
+  * Improvement of error messages
+
+ -- Vincent <vincent.fourmond@9online.fr>  Sun 22 Mar 18:38:49 CET 2015
+
 ctioga2 (0.11)
 
   * Implemented patterned fills
