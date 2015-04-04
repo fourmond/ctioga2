@@ -245,8 +245,9 @@ module CTioga2
 
 
       # The style for a string marker. Hmmm, this is somewhat
-      # redundant with TiogaPrimitiveCall::MarkerOptions and I don't
-      # like that.
+      # redundant with MarkerStyle and I don't like that.
+      #
+      # Worse than that, it's not the same options !
       class MarkerStringStyle < BasicStyle
         
         # The angle of the text
@@ -271,6 +272,8 @@ module CTioga2
         typed_attribute :color, 'color-or-false'
         typed_attribute :stroke_color, 'color-or-false'
         typed_attribute :fill_color, 'color-or-false'
+
+        typed_attribute :stroke_width, 'float'
 
 
         # A number between 1 to 14 -- a PDF font
