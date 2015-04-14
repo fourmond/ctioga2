@@ -95,7 +95,7 @@ EOD
         Cmd.new('background', nil, '--background', 
                 [ CmdArg.new('color-or-false') ]) do |plotmaker, color|
         PlotStyle.current_plot_style(plotmaker).
-          background.background_color = color
+          background.style.background_color = color
       end
 
       BackgroundColorCmd.describe("Background color for the plot", 
