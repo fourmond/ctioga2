@@ -117,7 +117,7 @@ EOH
       Cmd.new("root-plot",nil,"--root-plot", 
               [
               ], Elements::TiogaElement::StyleBaseOptions) do |plotmaker, opts|
-      Log::debug { "Starting a subplot with specs #{box.inspect}" }
+      Log::debug { "Explicitly starting the root plot, options #{opts.inspect}" }
       opts['id'] ||= 'root'
       plotmaker.root_object.
         enter_subobject(Elements::Subplot.new(nil,plotmaker.root_object, opts))
