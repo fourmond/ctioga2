@@ -188,25 +188,34 @@ module CTioga2
 
     # This opens a file for reading, keeping track of the opened files
     # and possibly transparently decompressing files when
-    # applicable. Returns the file object.
+    # applicable. Returns the file object, or runs the given block
+    # with it, closing the file at the end.
     def self.open(file)
       if not File.readable?(file)
         # Try to find a compressed version
         for ext,method in UNCOMPRESSORS
           if File.readable? "#{file}#{ext}"
             info { "Using compressed file #{file}#{ext} in stead of #{file}" }
-            return IO.popen(method % "#{file}#{ext}")
+            handle = IO.popen(method % "#{file}#{ext}")
           end
         end
       else
         for ext, method in UNCOMPRESSORS
           if file =~ /#{ext}$/
             info { "Taking file #{file} as a compressed file" }
-            return IO.popen(method % file)
+            handle = IO.popen(method % file)
           end
         end
       end
-      return File::open(file)
+      if ! handle
+        handle = File::open(file)
+      end
+      if block_given?
+        yield handle
+        handle.close
+      else
+        return handle
+      end
     end
 
 

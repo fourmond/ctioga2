@@ -256,7 +256,7 @@ EOD
                    CmdArg.new('file'),
                   ], {}
                   ) do |plotmaker, file|
-        File.open(file) do |f|
+        Utils::open(file) do |f|
           str = f.read
           StyleSheet.style_sheet.update_from_string(str)
         end

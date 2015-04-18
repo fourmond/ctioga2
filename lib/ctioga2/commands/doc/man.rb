@@ -48,7 +48,7 @@ module CTioga2
           passed_header = false
           if input.is_a? String
             filename = input
-            input = File::open(input)
+            input = Utils::open(input)
           elsif input.respond_to? :path
             filename = input.path
           else

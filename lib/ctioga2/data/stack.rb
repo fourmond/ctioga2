@@ -373,6 +373,7 @@ EOH
               }) do |plotmaker,opts|
       ds = plotmaker.data_stack.specified_dataset(opts)
       if opts['save']
+        # Writing
         out = open(opts['save'], 'w')
       else
         out = STDOUT

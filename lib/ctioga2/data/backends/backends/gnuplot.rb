@@ -78,7 +78,7 @@ EOD
           date = File::mtime(filename)
           # Get it from the cache !
           debug { "Running gnuplot on file #{filename}" }
-          f = File.open(filename)
+          f = Utils::open(filename)
           # We open a bidirectionnal connection to gnuplot:
           gnuplot = IO.popen("gnuplot", "r+")
           output = ""

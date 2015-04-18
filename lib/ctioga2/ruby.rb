@@ -36,7 +36,7 @@ module CTioga2
     end
 
     def self.run_file(file)
-      File.open(file) do |f|
+      Utils::open(file) do |f|
         run_code(f.read)
       end
     end

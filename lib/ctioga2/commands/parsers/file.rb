@@ -44,7 +44,7 @@ module CTioga2
 
         # Runs a command file targeting the given _interpreter_.
         def run_command_file(file, interpreter)
-          f = open(file)
+          f = Utils::open(file)
           parse_io_object(f, interpreter)
         end
 
