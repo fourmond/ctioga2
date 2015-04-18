@@ -39,15 +39,6 @@ module CTioga2
 
       class TextBackend < Backend
 
-        # A constant holding a relation extension -> command to
-        # decompress (to be fed to sprintf with the filename as argument)
-        UNCOMPRESSORS = {
-          ".gz" => "gunzip -c %s",
-          ".bz2" => "bunzip2 -c %s",
-          ".lzma" => "unlzma -c %s",
-          ".lz" => "unlzma -c %s",
-          ".xz" => "unxz -c %s",
-        }
 
         include Dobjects
 
@@ -171,23 +162,9 @@ EOD
             return $stdin
           elsif file =~ /(.*?)\|\s*$/ # A pipe
             return IO.popen($1)
-          elsif not File.readable?(file)
-            # Try to find a compressed version
-            for ext,method in UNCOMPRESSORS
-              if File.readable? "#{file}#{ext}"
-                info { "Using compressed file #{file}#{ext} in stead of #{file}" }
-                return IO.popen(method % "#{file}#{ext}")
-              end
-            end
-          else 
-            for ext, method in UNCOMPRESSORS
-              if file =~ /#{ext}$/ 
-                info { "Taking file #{file} as a compressed file" }
-                return IO.popen(method % file)
-              end
-            end
+          else
+            return Utils::open(file)
           end
-          return File::open(file)
         end
 
         # A line is invalid if it is blank or starts

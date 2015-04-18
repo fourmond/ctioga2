@@ -176,6 +176,39 @@ module CTioga2
       return sets_by_prefix
     end
 
+    # A constant holding a relation extension -> command to decompress
+    # (to be fed to sprintf with the filename as argument)
+    UNCOMPRESSORS = {
+      ".gz" => "gunzip -c %s",
+      ".bz2" => "bunzip2 -c %s",
+      ".lzma" => "unlzma -c %s",
+      ".lz" => "unlzma -c %s",
+      ".xz" => "unxz -c %s",
+    }
+
+    # This opens a file for reading, keeping track of the opened files
+    # and possibly transparently decompressing files when
+    # applicable. Returns the file object.
+    def self.open(file)
+      if not File.readable?(file)
+        # Try to find a compressed version
+        for ext,method in UNCOMPRESSORS
+          if File.readable? "#{file}#{ext}"
+            info { "Using compressed file #{file}#{ext} in stead of #{file}" }
+            return IO.popen(method % "#{file}#{ext}")
+          end
+        end
+      else
+        for ext, method in UNCOMPRESSORS
+          if file =~ /#{ext}$/
+            info { "Taking file #{file} as a compressed file" }
+            return IO.popen(method % file)
+          end
+        end
+      end
+      return File::open(file)
+    end
+
 
 
     NaturalSubdivisions = [1.0, 2.0, 5.0, 10.0]
