@@ -196,26 +196,40 @@ module CTioga2
         for ext,method in UNCOMPRESSORS
           if File.readable? "#{file}#{ext}"
             info { "Using compressed file #{file}#{ext} in stead of #{file}" }
-            handle = IO.popen(method % "#{file}#{ext}")
+            ff = "#{file}#{ext}"
+            handle = IO.popen(method % ff)
+            break
           end
         end
       else
         for ext, method in UNCOMPRESSORS
           if file =~ /#{ext}$/
             info { "Taking file #{file} as a compressed file" }
+            ff = file
             handle = IO.popen(method % file)
+            break
           end
         end
       end
       if ! handle
+        ff = file
         handle = File::open(file)
       end
+      @used_files ||= {}
+      # The files referenced
+      @used_files[file] = ff
       if block_given?
         yield handle
         handle.close
       else
         return handle
       end
+    end
+
+
+    # Returns the list of files that were read by ctioga2
+    def self.used_files()
+      return @used_files || {}
     end
 
 

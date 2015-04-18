@@ -226,6 +226,9 @@ module CTioga2
     # errors. Useful on windows, where the windows closes before one
     # has a chance to see anything.
     attr_accessor :pause_on_errors
+
+    # If not empty, a Makefile file where the dependencies are written out
+    attr_accessor :makefile_dependencies
     
 
     # The first instance of PlotMaker created
@@ -404,6 +407,14 @@ module CTioga2
       end
 
       file = path.to_s + ".pdf"
+
+      if @makefile_dependencies
+        File.open(@makefile_dependencies, "w") do |f|
+          deps = Utils::used_files.values
+          # TODO: handle spaces
+          f.puts "#{file}: #{deps.join(" ")}"
+        end
+      end
 
       # Feed it
       @postprocess.process_file(file, last)
@@ -816,6 +827,17 @@ want any information to leak.
 Please note that this will not log the values of the CTIOGA2_PRE and
 CTIOGA2_POST variables, so you might still get a different output if
 you make heavy use of those.
+EOH
+
+    DepsCommand = 
+      Cmd.new("dependencies",nil,"--dependencies", 
+              [CmdArg.new('file') ]) do |plotmaker,val|
+      plotmaker.makefile_dependencies = val
+    end
+    
+    DepsCommand.describe('Save dependencies', 
+                         <<EOH, OutputSetupGroup)
+Saves the dependencies as a Makefike into the given file name.
 EOH
 
   end
