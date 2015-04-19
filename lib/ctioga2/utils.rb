@@ -526,8 +526,7 @@ module CTioga2
     # Watched text names
     attr_accessor :watched_names
 
-    # A left, bottom, right, up bounding box (in output coordinates
-    # divided by 10)
+    # A left, bottom, right, up bounding box (postscript points)
     attr_accessor :bb
 
     def initialize
@@ -553,11 +552,11 @@ module CTioga2
         return margins
       end
       left, top, right, bottom = *margins.to_frame_coordinates(t)
-      
-      xl = 0.1 * t.convert_page_to_output_x(t.convert_frame_to_page_x(left))
-      xr = 0.1 * t.convert_page_to_output_x(t.convert_frame_to_page_x(right))
-      yt = 0.1 * t.convert_page_to_output_y(t.convert_frame_to_page_y(top))
-      yb = 0.1 * t.convert_page_to_output_y(t.convert_frame_to_page_y(bottom))
+      scl = 1/t.scaling_factor
+      xl = scl * t.convert_page_to_output_x(t.convert_frame_to_page_x(left))
+      xr = scl * t.convert_page_to_output_x(t.convert_frame_to_page_x(right))
+      yt = scl * t.convert_page_to_output_y(t.convert_frame_to_page_y(top))
+      yb = scl * t.convert_page_to_output_y(t.convert_frame_to_page_y(bottom))
 
       vals = [ xl - @bb[0], @bb[2] - xr, @bb[3] - yt, yb - @bb[1]].map do |x|
         x += padding

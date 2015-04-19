@@ -128,8 +128,8 @@ module CTioga2
           xl, yt = @tl.to_figure_xy(t)
           xr, yb = @br.to_figure_xy(t)
 
-          return [t.convert_figure_to_output_dx(xr - xl) * 10,
-                  t.convert_figure_to_output_dy(yb - yt) * 10]
+          return [t.convert_figure_to_output_dx(xr - xl) * t.scaling_factor,
+                  t.convert_figure_to_output_dy(yb - yt) * t.scaling_factor]
         end
 
         # Returns an array of [ul, ll, lr] coordinates. If an aspect

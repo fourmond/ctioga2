@@ -82,7 +82,7 @@ module CTioga2
 
         # If not nil, then the boundaries are computed from the real
         # dimensions of the plot frame, using the given number as a
-        # conversion factor from the output dimensions.
+        # conversion factor from postscript points.
         attr_accessor :frame_real_size
 
 
@@ -478,7 +478,7 @@ EOH
         if u =~ /([\d.]+)?\s*(cm|in|bp|pt|mm)/
           nb = $1 ? $1.to_f : 1.0
           un = $2
-          style.frame_real_size = 10 * nb * 
+          style.frame_real_size = nb * 
             Types::Dimension::DimensionConversion.fetch(un)
         else
           raise 'Invalid unit'

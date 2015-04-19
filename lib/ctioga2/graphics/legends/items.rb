@@ -78,9 +78,9 @@ module CTioga2
           info = t.get_text_size(legend_name)
           
           if info.key? 'width'
-            width += t.convert_output_to_figure_dx(10*info['width'])
+            width += t.convert_output_to_figure_dx(t.scaling_factor*info['width'])
 
-            h = t.convert_output_to_figure_dy(10*info['height'])
+            h = t.convert_output_to_figure_dy(t.scaling_factor*info['height'])
             if h > height
               height = h
             end

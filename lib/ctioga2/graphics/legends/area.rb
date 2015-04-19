@@ -148,10 +148,10 @@ module CTioga2
           w, h = size(t, container)
           case @legend_type
           when :left, :right
-            return [width + t.convert_figure_to_output_dx(w)/10, 
+            return [width + t.convert_figure_to_output_dx(w)/t.scaling_factor, 
                     height]
           when :top, :bottom
-            return [width, height + t.convert_figure_to_output_dy(h)/10]
+            return [width, height + t.convert_figure_to_output_dy(h)/t.scaling_factor]
           when :inside
             return [width, height]
           end

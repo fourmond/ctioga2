@@ -134,7 +134,7 @@ module CTioga2
           
           case @type
           when :bp
-            return t.send("convert_output_to_figure_d#{orientation}", @value) * 10
+            return t.send("convert_output_to_figure_d#{orientation}", @value) * t.scaling_factor
           when :dy
             return t.send("default_text_height_d#{orientation}") * @value
           when :frame
@@ -158,7 +158,7 @@ module CTioga2
         def to_bp(t, orientation = nil)
           orientation ||= @orientation
           return t.send("convert_figure_to_output_d#{orientation}", 
-                        to_figure(t, orientation)) / 10.0
+                        to_figure(t, orientation)) / t.scaling_factor
         end
 
         # Converts the Dimension to the *frame* coordinates of the

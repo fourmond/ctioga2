@@ -176,8 +176,8 @@ module CTioga2
               dx = t.convert_figure_to_output_dx(1.0)
               dy = t.convert_figure_to_output_dy(1.0)
               
-              frm = [0.0, dx/@style.frame_real_size, 
-                     -dy/@style.frame_real_size, 0.0]
+              frm = [0.0, dx/(@style.frame_real_size * t.scaling_factor), 
+                     -dy/(@style.frame_real_size * t.scaling_factor), 0.0]
               @computed_boundaries = {
                 :bottom => Types::SimpleRange.new(frm[0], frm[1]),
                 :left => Types::SimpleRange.new(frm[2], frm[3]),

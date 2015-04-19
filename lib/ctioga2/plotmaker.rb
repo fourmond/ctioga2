@@ -229,6 +229,9 @@ module CTioga2
 
     # If not empty, a Makefile file where the dependencies are written out
     attr_accessor :makefile_dependencies
+
+    # The resolution of the PDF file
+    attr_accessor :pdf_resolution
     
 
     # The first instance of PlotMaker created
@@ -462,7 +465,7 @@ module CTioga2
 
     # Creates a new FigureMaker object and returns it
     def create_figure_maker
-      t = Tioga::FigureMaker.new
+      t = Tioga::FigureMaker.new(@pdf_resolution || 100)
       t.tex_preamble += @latex_preamble
       t.autocleanup = @cleanup
 
@@ -635,6 +638,25 @@ EOD
                              <<EOH, OutputSetupGroup)
 Sets the size of the output PDF file, in real units. Takes arguments in the 
 form of 12cm x 3in (spaces can be omitted).
+EOH
+
+    ResolutionCommand = 
+      Cmd.new("resolution", false,"--resolution", 
+              [ CmdArg.new('float') ],
+              ) do |plotmaker, size, options|
+      plotmaker.pdf_resolution = size
+    end
+
+    ResolutionCommand.describe('Sets the output resolution', 
+                               <<EOH, OutputSetupGroup)
+By default, ctioga2 has a resolution of 1/100th of a postscript
+point. This is clearly enough for most tasks, but you can increase it
+should you need, or decrease it to generate possibly a little more
+jaggy but less large PDF files.
+
+The number given is the number of output points per postscript point.
+
+Better change that at the beginning of the plot.
 EOH
 
     CleanupCommand = 
