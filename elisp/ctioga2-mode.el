@@ -17,6 +17,8 @@
 ;; If not, write to the Free Software Foundation, 675 Mass Ave,
 ;; Cambridge, MA 02139, USA.
 
+(require 'compile)
+
 
 (defvar ctioga2-syntax-table nil
   "Syntax table used in ctioga2-mode buffers.")
@@ -68,8 +70,12 @@
 (defun ctioga2-compile-buffer ()
   "Compiles current buffer to PDF using ctioga2."
   (interactive)
-  (start-process "ctioga2" "ctioga2 output" "ctioga2" "-f" (file-truename (buffer-file-name)))
+  (compilation-start (format "ctioga2 -f '%s'" (file-truename (buffer-file-name))))
   )
+
+(defvar ctioga2-regexp-alist
+  '(("file '\\([^']+\\)' +line +\\([0-9]+\\)" 1 2))
+  "Regexp used to match ctioga2 errors.  See `compilation-error-regexp-alist'.")
 
 
 
