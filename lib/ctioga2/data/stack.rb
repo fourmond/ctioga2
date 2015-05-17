@@ -78,8 +78,8 @@ module CTioga2
         end
         
         csv.describe("reads CSV files", 
-                            <<"EOH", "backend-text")
-Now parse the following data files as CSV.
+                     <<"EOH", "backend-text")
+Now parse the following data files as CSV. Equivalent to
 
 # text /separator=/[,;]/
 EOH

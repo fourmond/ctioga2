@@ -69,6 +69,13 @@ EOH
       cmd.describe("Sets the #{x.to_s.upcase} range",
                            <<EOH, PlotCoordinatesGroup)
 Sets the range of the #{x.to_s.upcase} coordinates.
+
+*Important note:* when the axis is in log range (using
+{command: #{x.to_s.upcase}log}), the numbers you give are not the or
+{command: ylog} values, but their @log10@, so that to
+display #{x.to_s.upcase} values from @1e-2@ to @1e3@, use:
+
+# #{x.to_s}yrange -2:3
 EOH
       CoordinateRelatedCommands << cmd
 
