@@ -32,3 +32,11 @@ $ct --setup-grid 3x3 \
     --next-inset grid:0,1 'x**2' \
     --next-inset grid:0,2 'x**2' \
     --next-inset grid:1-2,1-2 'x**2'
+
+# Further tests of non-uniform grids
+# Non-uniform cell sizes
+$ct --setup-grid 1,2x2 --inset grid:1,0 'sin(x)' \
+    --next-inset grid:0,1 'x**2'
+
+$ct --setup-grid 2x2,1 --inset grid:1,0 'sin(x)' \
+    --next-inset grid:0,1 'x**2'

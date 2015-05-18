@@ -131,6 +131,11 @@ module CTioga2
               @hscales, @vscales = nup.split(/\s*x\s*/).map { |x| 
                 x.split(/\s*,\s*/).map { |y| y.to_f }
               }
+              if @hscales.size == 1
+                @hscales = [1] * @hscales[0].to_i
+              elsif @vscales.size == 1
+                @vscales = [1] * @vscales[0].to_i
+              end
               @nup = [@hscales.size, @vscales.size]
             else
               @nup = nup.split(/\s*x\s*/).map { |s| s.to_i }
