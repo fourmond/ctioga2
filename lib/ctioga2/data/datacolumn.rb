@@ -296,7 +296,6 @@ module CTioga2
       #
       # Different averaging modes are available.
       def average_over(istart, iend, itgt, mode = :avg)
-
         case mode
         when :avg
           # Stupidly average over all the values
@@ -306,6 +305,16 @@ module CTioga2
               v[itgt] = av[0]
             end
           end
+        when :stddev
+          # Ignore errors, and set them from the standard deviation
+          @min_values ||= @values.dup
+          @max_values ||= @values.dup
+
+          av = Utils::average_vector(@values, istart, iend, 2)
+          @values[itgt] = av[0]
+          stddev = (av[1] - av[0]**2)**0.5
+          @min_values[itgt] = av[0] - stddev
+          @max_values[itgt] = av[0] + stddev
         end
       end
       

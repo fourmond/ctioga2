@@ -269,7 +269,7 @@ module CTioga2
       # Average all the non-X values of successive data points that
       # have the same X values. It is a naive version that also
       # averages the error columns.
-      def average_duplicates!
+      def average_duplicates!(mode = :avg)
         last_x = nil
         last_x_first_idx = 0
         xv = @x.values
@@ -292,7 +292,7 @@ module CTioga2
               # Now, we delegate to the columns the task of averaging.
               @x.average_over(last_x_first_idx, e, nb_x, :avg)
               for c in @ys
-                c.average_over(last_x_first_idx, e, nb_x, :avg)
+                c.average_over(last_x_first_idx, e, nb_x, mode)
               end
               nb_x += 1
             end

@@ -123,10 +123,30 @@ Install the {command: cherry-pick-last} command as a dataset hook (see
 false for subsequent datasets will be removed.
 EOH
 
+      AVGDupModeRE = {
+        /naive|avg|average/i => :avg,
+        /stddev/i => :stddev,
+      }
+      
+      AVGDupMode = 
+        CmdType.new('average-mode', 
+                    {:type => :re_list,
+                     :list => AVGDupModeRE}, <<EOD)
+How the {command: avg-dup-last} command :
+
+ * @naive@ or @average@ (the default) treats all columns (values and
+   error bars) the same way, and average everythin
+ * @stddev@ ignores the original errors, and sets the new errors to the 
+   standard deviation of the values
+EOD
+        
+
+
       AverageDupOperation = 
         Cmd.new("avg-dup-last", nil, "--avg-dup-last", 
-                [], {}) do |plotmaker|
-        plotmaker.data_stack.last.average_duplicates!
+                [], {'mode' => CmdArg.new('average-mode')}) do |plotmaker, opts|
+        mode = opts['mode'] || :avg
+        plotmaker.data_stack.last.average_duplicates!(mode)
       end
       
       AverageDupOperation.describe("Average successive elements with identical X values",
@@ -135,9 +155,8 @@ Averages successive points with identical X values. This algorithm is
 naive with respect to the min/max values and averages them just as
 well, whereas one might expect something more clever.
 
-To average over identical X values when they are not successive in the
-dataset, you might want to hand it over to {command: sort-last} first.
-
+To average over all X values when they are not successive in the
+dataset, you should use {command: sort-last} first.
 EOH
 
       AverageDupFilter = 
