@@ -283,6 +283,31 @@ module CTioga2
           v.replace(v.convolve(kernel,middle)) if v
         end
       end
+
+      # Resize all the columns to the given size. 
+      def resize!(new_size)
+        for v in all_vectors
+          v.resize(new_size) if v
+        end
+      end
+
+      # Averages over the given indices, and puts the result at the
+      # target index.
+      #
+      # Different averaging modes are available.
+      def average_over(istart, iend, itgt, mode = :avg)
+
+        case mode
+        when :avg
+          # Stupidly average over all the values
+          for v in all_vectors
+            if v
+              av = Utils::average_vector(v, istart, iend)
+              v[itgt] = av[0]
+            end
+          end
+        end
+      end
       
       protected
 

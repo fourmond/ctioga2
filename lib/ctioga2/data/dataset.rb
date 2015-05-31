@@ -275,6 +275,7 @@ module CTioga2
         xv = @x.values
         i = 0
         vectors = all_vectors
+        nb_x = 0
         while i < xv.size
           x = xv[i]
           if ((last_x == x) && (i != (xv.size - 1)))
@@ -288,24 +289,21 @@ module CTioga2
                 e = i-1
               end                 # The end of the slice.
 
-              ## \todo In real, to do this properly, one would
-              # have to write a proper function in DataColumn that
-              # does averaging over certain indices possibly more
-              # cleverly than the current way to do.
-              for v in vectors
-                subv = v[last_x_first_idx..e]
-                ave = subv.sum/subv.size
-                v.slice!(last_x_first_idx+1, e - last_x_first_idx)
-                v[last_x_first_idx] = ave
+              # Now, we delegate to the columns the task of averaging.
+              @x.average_over(last_x_first_idx, e, nb_x, :avg)
+              for c in @ys
+                c.average_over(last_x_first_idx, e, nb_x, :avg)
               end
-              i -= e - last_x_first_idx
+              nb_x += 1
             end
             last_x = x
             last_x_first_idx = i
           end
           i += 1
         end
-        
+        for c in all_columns
+          c.resize!(nb_x)
+        end
       end
 
       # Applies formulas to values. Formulas are like text-backend

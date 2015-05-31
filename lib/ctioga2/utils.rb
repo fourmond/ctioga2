@@ -160,6 +160,24 @@ module CTioga2
       end
     end
 
+    # Returns the nth first modes
+    def self.average_vector(vect, istart, iend, n = 1)
+      rv = [0] * n
+      nb = 0
+      istart.upto(iend) do |i|
+        v = 1
+        y = vect[i]
+        n.times do |j|
+          v *= y
+          rv[j] += v
+        end
+        nb += 1
+      end
+
+      return rv.map do |v|
+        v/nb
+      end
+    end
 
     # Groups the given strings by prefixes
 
@@ -215,6 +233,8 @@ module CTioga2
         ff = file
         handle = File::open(file)
       end
+
+      # Unwrap directory 
       @used_files ||= {}
       # The files referenced
       @used_files[file] = ff
