@@ -281,7 +281,7 @@ module CTioga2
           if ((last_x == x) && (i != (xv.size - 1)))
             # Do nothing
           else
-            if last_x_first_idx < (i - 1)  || 
+            if last_x_first_idx <= (i - 1)  || 
                 ((last_x == x) && (i == (xv.size - 1)))
               if i == (xv.size - 1)
                 e = i
