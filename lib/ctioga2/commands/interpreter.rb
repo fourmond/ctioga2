@@ -224,7 +224,7 @@ module CTioga2
         dir = File::dirname(file)
         base = File::basename(file)
 
-        Dir::chdir(dir) do
+        Utils::chdir(dir) do
           @file_parser.run_command_file(base, self)
         end
       end

@@ -374,7 +374,7 @@ module CTioga2
       end
 
       # We always cd into the target directory for creading the
-      Dir.chdir(path.dirname) do
+      Utils::chdir(path.dirname) do
         fn = path.basename.to_s
 
         efn = fn.gsub(/[.\s]/) do |x|

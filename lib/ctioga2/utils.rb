@@ -194,6 +194,14 @@ module CTioga2
       return sets_by_prefix
     end
 
+    # An instrumentized version of Dir::chdir 
+    def self.chdir(dir, &blk)
+      @current_dirs ||= []
+      @current_dirs << Pathname.new(dir)
+      Dir::chdir(dir, &blk)
+      @current_dirs.pop
+    end
+
     # A constant holding a relation extension -> command to decompress
     # (to be fed to sprintf with the filename as argument)
     UNCOMPRESSORS = {
@@ -236,8 +244,11 @@ module CTioga2
 
       # Unwrap directory 
       @used_files ||= {}
+
+      rf = (@current_dirs + [file]).inject :+
+      rff = (@current_dirs + [ff]).inject :+
       # The files referenced
-      @used_files[file] = ff
+      @used_files[rf] = rff
       if block_given?
         yield handle
         handle.close
@@ -678,6 +689,7 @@ class Hash
   end
 
 end
+
 
 
 class String
