@@ -193,6 +193,25 @@ module CTioga2
           return parent.gp_cache[:histograms]
         end
 
+        # Computes the number of histograms to be displayed in total
+        # -- or, at least, the total number of slots.
+        def compute_hist_number(x_values)
+          case @histogram_style.compute_dx
+          when nil, false
+            return x_values.size
+          when :mindx
+            xv = Dvector.new(x_values.to_a.sort)
+            x1 = xv[0..-2]
+            x2 = xv[1..-1]
+            x2.sub!(x1)
+            x2.abs!
+            subs = (xv.max - xv.min)/(x2.min)
+            return subs.round+1
+          else
+            raise "Invalid compute-dx type: #{@histogram_style.compute_dx}"
+          end
+        end
+
         # Returns the cached metrics of all the histograms,
         # recomputing it in the process.
         def get_cached_metrics(t)
@@ -228,7 +247,9 @@ module CTioga2
             # values (which means in particular that they won't be
             # positioned at the exact X value, but that's already the
             # case anyway).
-            width = (x_values.max - x_values.min)/(x_values.size - 1).to_f
+            number = compute_hist_number(x_values)
+
+            width = (x_values.max - x_values.min)/(number - 1).to_f
             if width.nan? || width == 0.0
               # Only 1 X value, we use a width of 1
               # ?? 

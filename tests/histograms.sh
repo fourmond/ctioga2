@@ -38,3 +38,11 @@ $ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms' \
     'x' '1-x' \
     --histogram /cumulative=next \
     '0.5*x' 'x' 
+
+# Now dealing with histograms with holes in them
+$ct --margin 0.03 --math /samples=20 -t 'An ugly histogram with holes in it' \
+    --histogram 'x' /fill 0 /fill-color='Red!10' /where 'x < -2 || x > 5'
+
+# Now dealing with histograms with holes in them
+$ct --margin 0.03 --math /samples=20 -t 'A correct histogram with holes in it' \
+    --histogram /compute-dx=mindx 'x' /fill 0 /fill-color='Red!10' /where 'x < -2 || x > 5'

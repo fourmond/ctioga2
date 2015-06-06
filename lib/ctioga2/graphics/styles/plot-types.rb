@@ -137,6 +137,21 @@ How to specify that histograms should be stacked. Can be:
  * next, in which case the following histograms get stacked on a new slot
 EOD
 
+      ComputeDxRE = {
+        /^no(ne)?$/i => false,
+        /^min(dx)?$/i => :mindx,
+      }
+
+      ComputeDx = 
+        CmdType.new('compute-dx',  {:type => :re_list,
+                                    :list => ComputeDxRE}, <<EOD)
+This controls how the histograms treats unevenly spaced X values:
+ * @none@: ignores the problem, and treats the points as if they were all
+   evenly spaced
+ * @min@, @mindx@: considers that all slots have the size of the
+   smallest variation of X values
+EOD
+
 
       # This class defines various informations about the look of
       # histograms.
@@ -150,6 +165,10 @@ EOD
 
         # Specs for cumulative 
         typed_attribute :cumulative, 'cumulative-histograms'
+
+        # Whether one should assume evenly spaced X points or be more
+        # clever.
+        typed_attribute :compute_dx, 'compute-dx'
 
         def set_from_hash(hash, name = "%s")
           super
