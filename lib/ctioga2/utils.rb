@@ -245,6 +245,7 @@ module CTioga2
       # Unwrap directory 
       @used_files ||= {}
 
+      @current_dirs ||= []
       rf = (@current_dirs + [file]).inject :+
       rff = (@current_dirs + [ff]).inject :+
       # The files referenced

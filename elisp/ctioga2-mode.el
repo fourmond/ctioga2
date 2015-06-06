@@ -47,6 +47,7 @@
   ctioga2-available-commands
   )
 
+
 (defun ctioga2-make-font-lock ()
   "This returns a neat font-lock table"
   (list
