@@ -208,8 +208,15 @@ module CTioga2
                   end
                 else
                   nxt = all_args.shift
+                  if ! nxt
+                    fatal { "Missing option text for option '#{o}'"}
+                  end
                   if nxt =~ /^\s*=\s*$/
-                    opts[o] = all_args.shift
+                    nxt = all_args.shift
+                    if ! nxt
+                      fatal { "Missing option text for option '#{o}'"}
+                    end
+                    opts[o] = nxt
                   else
                     opts[o] = nxt.gsub(/^\s*=/,'')
                   end
