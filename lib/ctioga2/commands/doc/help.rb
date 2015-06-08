@@ -140,6 +140,9 @@ module CTioga2
         # Formats one entry of the commands
         def format_one_entry(cmd)
           sh, long, desc = cmd.option_strings
+
+          # Hmmm...
+          # desc = MarkedUpText.new(@doc, desc).to_s
           
           str = "#{leading_spaces}%2s%1s %-#{@options_column_width}s" % 
             [ sh, (sh ? "," : " "), long]

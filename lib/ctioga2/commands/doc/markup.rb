@@ -280,6 +280,12 @@ module CTioga2
           flush_element
         end
 
+        def to_s
+          return @elements.map do |x|
+            x.to_s
+          end.join("")
+        end
+
         protected 
 
         # A few constants to help writing out the paragraph markup

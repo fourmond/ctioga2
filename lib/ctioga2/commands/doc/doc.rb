@@ -90,6 +90,40 @@ module CTioga2
             print_commandline_options(*self.documented_commands)
         end
 
+        # Displays help on a given command
+        def display_help_on(cmd, options)
+          if ! cmd.is_a? Command
+            cd = Interpreter::commands[cmd]
+            raise "Unkown command '#{cmd}'" unless cd
+            cmd = cd
+          end
+          puts text_doc(cmd)
+        end
+
+        # Returns a string that represents a plain text documentation
+        def text_doc(cmd, options = {})
+
+          size ||= 80
+
+          str = "Synopsis: "
+          str << cmd.name
+          for arg in cmd.arguments
+            str << " #{arg.type.name}"
+          end
+
+          os = ""
+          for k,v in cmd.optional_arguments
+            os << " /#{k}=#{v.type.name}"
+          end
+          s2 = WordWrapper.wrap(os, size-4) # 4 for the spaces
+          str << "\nOptions: #{s2.join("\n    ")}"
+          shrt = MarkedUpText.new(self, cmd.short_description).to_s
+          mup = MarkedUpText.new(self, cmd.long_description).to_s
+          s2 = WordWrapper.wrap(mup.to_s, size)
+          return "#{cmd.name} -- #{shrt}\n#{str}\n#{s2.join("\n")}"
+        end
+
+
         protected 
 
 

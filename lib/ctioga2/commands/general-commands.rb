@@ -42,7 +42,20 @@ module CTioga2
 Prints helps about short and long options available when run from the
 command-line.
 EOH
+
+        # Display help on the command-line
+    HelpOnCommand = 
+      Cmd.new("help-on", nil, 
+              "--help-on", [CmdArg.new('text') ]) do |plotmaker, cmd, options|
+      plotmaker.interpreter.doc.display_help_on(cmd, options)
+      exit 
+    end
     
+    HelpOnCommand.describe("Prints help text about the given command",
+                           <<EOH, GeneralGroup)
+Prints help about the given command
+EOH
+
     # Prints the version of ctioga2 used
     PrintVersion = Cmd.new("version", '-V', "--version", []) do |plotmaker|
       puts "This is ctioga2 version #{CTioga2::Version::version}"
