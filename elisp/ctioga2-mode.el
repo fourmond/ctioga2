@@ -47,6 +47,26 @@
   ctioga2-available-commands
   )
 
+(defun ctioga2-command-help-string (cmd)
+  "Returns the help text of the given command"
+  (mapconcat 'identity 
+             (process-lines "ctioga2" "--help-on" cmd) "\n")
+  )
+
+(defun ctioga2-help-on (cmd)
+  "Returns the help text of the given command"
+  (interactive (list
+                (read-string (format "ctioga2 command (%s): " (thing-at-point 'word))
+                             nil nil (thing-at-point 'word))))
+  (let ((str (ctioga2-command-help-string cmd)))
+    (save-excursion
+      (with-help-window "*ctioga2-help"
+	(princ str)
+        )
+      )
+    )
+  )
+
 
 (defun ctioga2-make-font-lock ()
   "This returns a neat font-lock table"
@@ -101,6 +121,7 @@
               )
         )
   (local-set-key [(control ?c) (control ?c)] 'ctioga2-compile-buffer)
+  (local-set-key [(control ?h) (?c)] 'ctioga2-help-on)
 
   )
 
