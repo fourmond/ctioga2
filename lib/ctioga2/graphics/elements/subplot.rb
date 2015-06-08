@@ -131,6 +131,12 @@ module CTioga2
             bounds[k] ||= Types::SimpleRange.new(nil,nil)
             bounds[k].override(b)
           end
+          for k, b in bounds
+            if ! b.valid?
+              error { "Invalid computed range, you probably have only empty datasets" }
+              bounds[k] = Types::SimpleRange.new(0.0,1.0)
+            end
+          end
           return bounds
         end
 
@@ -158,6 +164,7 @@ module CTioga2
         def real_do(t)
           # First thing, we setup the boundaries
           @computed_boundaries = compute_boundaries
+          p @computed_boundaries
 
           real_boundaries = get_boundaries
 
@@ -184,7 +191,8 @@ module CTioga2
               }                
               t.set_bounds(frm)
             else
-              t.set_bounds(real_boundaries.to_a)
+              bnds = real_boundaries.to_a
+              t.set_bounds(bnds)
             end
 
             # First, gather up all elements by depth

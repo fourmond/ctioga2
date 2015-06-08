@@ -9,3 +9,7 @@
 $ct -x '$x$ values in % of stuff' 'sin(x)' -y '$y$ values' 
 
 $ct -x '$x$ values in % of stuff' 'sin(x)' -y '$y$ values' 
+
+# This should not crash hard
+$ct -t "Error" '0.0/0.0' 
+

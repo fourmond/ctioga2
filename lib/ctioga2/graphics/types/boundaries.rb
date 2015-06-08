@@ -44,6 +44,13 @@ module CTioga2
           end
         end
 
+        # Checks if the range is valid, that is both elements are
+        # finite numbers
+        def valid?
+          return (Utils::finite_number?(@first) and
+                  Utils::finite_number?(@last))
+        end
+
         # Minimum value
         def min
           @first < @last ? @first : @last

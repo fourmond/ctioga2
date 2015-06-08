@@ -59,6 +59,11 @@ module CTioga2
       end
     end
 
+    # Returns true if the argument is a finite number
+    def self.finite_number?(flt)
+      return (flt.is_a?(Numeric) and flt.to_f.finite?)
+    end
+
     # Converts a number to a float while trying to stay as lenient as
     # possible
     def self.txt_to_float(txt)
