@@ -56,8 +56,9 @@
 (defun ctioga2-help-on (cmd)
   "Returns the help text of the given command"
   (interactive (list
-                (read-string (format "ctioga2 command (%s): " (thing-at-point 'word))
-                             nil nil (thing-at-point 'word))))
+                (read-string (format "ctioga2 command (%s): "
+                                     (thing-at-point 'symbol))
+                             nil nil (thing-at-point 'symbol))))
   (let ((str (ctioga2-command-help-string cmd)))
     (save-excursion
       (with-help-window "*ctioga2-help"
