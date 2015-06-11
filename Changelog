@@ -1,3 +1,15 @@
+ctioga2 (0.13)
+
+  * Change the stroke width when using draw-marker
+  * Customizable outut PDF resolution
+  * Can now get the standard deviation as error bars using avg-dup-last
+  * Handling of histograms with 'holes' in X values (closes: SF issue #1)
+  * Various improvements in the emacs mode, including contextual help
+  * Automatic generation of dependencies (makefile format)
+  * Many bug fixes
+
+ -- Vincent <vincent.fourmond@9online.fr>  Thu 11 Jun 23:01:19 CEST 2015
+
 ctioga2 (0.12)
 
   * The xyz-map plot type now handles correctly inhomogeneous grids (so long
