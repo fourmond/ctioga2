@@ -113,7 +113,7 @@ EOH
       CherryPickFilter = 
         Cmd.new("cherry-pick", nil, "--cherry-pick", 
                 [CmdArg.new('text')], {}) do |plotmaker, formula|
-        plotmaker.data_stack.add_to_dataset_hook("cherry-pick-last(#{formula})")
+        plotmaker.data_stack.add_to_dataset_hook("cherry-pick-last '#{formula}'")
       end
       
       CherryPickFilter.describe("Systematicallly remove data for which the formula is false",
@@ -186,6 +186,17 @@ producing 'lines to guide the eye'
 EOH
 
 
+      SmoothFilter = 
+        Cmd.new("smooth", nil, "--smooth", 
+                [CmdArg.new('integer')], {}) do |plotmaker, nb|
+        plotmaker.data_stack.add_to_dataset_hook("smooth-last #{nb}")
+      end
+      
+      SmoothFilter.describe("Systematicallly smooth data",
+                            <<EOH, FiltersGroup)
+Install the {command: smooth-last} command as a dataset hook (see
+{command: dataset-hook}): from now on, the datasets are all smoothed
+EOH
 
 
 
