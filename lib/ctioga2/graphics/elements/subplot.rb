@@ -164,7 +164,6 @@ module CTioga2
         def real_do(t)
           # First thing, we setup the boundaries
           @computed_boundaries = compute_boundaries
-          p @computed_boundaries
 
           real_boundaries = get_boundaries
 
