@@ -13,6 +13,7 @@
 
 require 'ctioga2/utils'
 require 'ctioga2/commands/commands'
+require 'ctioga2/commands/instruction'
 require 'ctioga2/commands/context'
 require 'ctioga2/commands/variables'
 require 'ctioga2/commands/strings'
@@ -64,8 +65,6 @@ module CTioga2
 
       # All types defined so fat
       @@types = {}
-
-
 
       # Registers a given command. This is called automatically from
       # Command.new, so you should not have to do it yourself.
@@ -166,6 +165,9 @@ module CTioga2
       # The current context
       attr_accessor :context
 
+      # The list of Instruction that were run so far
+      attr_accessor :instructions
+
       # Creates an Interpreter with _target_ as the PlotMaker target
       # object.
       #
@@ -192,7 +194,15 @@ module CTioga2
 
         @file_parser = Parsers::FileParser.new
         @context = ParsingContext.new
+        @instructions = []
       end
+
+      # Adds the given instruction to the list of Instruction that
+      # were run so far.
+      def add_instruction(instruction)
+        @instructions << instruction
+      end
+                        
 
       # Calls the given function and returns the result
       def call_function(name, args)

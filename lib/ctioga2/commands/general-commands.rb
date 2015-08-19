@@ -169,9 +169,13 @@ EOH
 With this on, ctioga2 writes a whole lot of debugging information. You
 probably will not need that unless you intend to file a bug report or
 to tackle a problem yourself.
+
+Be warned that it *will* slow down very significantly the processing
+of ctioga2 (up to hundreds of times slower), especially if you are not
+redirecting the output to a file.
 EOH
 
-    # Includes a file
+    # Prints the command-line used
     EchoCmd = 
       Cmd.new("echo", nil,  "--echo", [ ]) do |plotmaker|
       STDERR.puts "Command-line used: "
@@ -183,7 +187,22 @@ EOH
 Writes the whole command-line used to standard error, quoted in such a
 way that it should be usable directly for copy/paste.
 EOH
+
+    # Writes down the list of instruction run so far
+    PrintInstructionsCmd = 
+      Cmd.new("print-instructions", nil,  "--print-instructions", [ ]) do |plotmaker|
+      for ins in plotmaker.interpreter.instructions
+        puts ins.to_s
+      end
+    end
     
+    PrintInstructionsCmd.describe("Prints the list of all the instructions run so far", 
+                     <<EOH, GeneralGroup)
+Writes the list of all the instructions run so far.
+
+This is not very helpful for now, possibly.
+EOH
+
     
   end
 end

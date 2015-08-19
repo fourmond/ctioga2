@@ -293,6 +293,8 @@ module CTioga2
         if compulsory_args.size != @arguments.size
           raise ArgumentNumberMismatch, "Command #{@name} was called with #{args.size} arguments, but it takes #{@arguments.size}"
         end
+        plotmaker_target.interpreter.
+          add_instruction(Instruction.new(self, compulsory_args, optional_args))
         args += compulsory_args
         if has_options?
           if optional_args
