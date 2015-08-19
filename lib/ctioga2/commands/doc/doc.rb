@@ -113,7 +113,7 @@ module CTioga2
 
           os = ""
           for k,v in cmd.optional_arguments
-            os << " /#{k}=#{v.type.name}"
+            os << " /#{k.gsub(/_/,'-')}=#{v.type.name}"
           end
           s2 = WordWrapper.wrap(os, size-4) # 4 for the spaces
           str << "\nOptions: #{s2.join("\n    ")}"
