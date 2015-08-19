@@ -44,6 +44,13 @@ module CTioga2
     def self.compute_formula(col, vals, mods = [])
       return Dobjects::Dvector.compute_formula(col, vals, [@module] + mods)
     end
+
+    # Returns a Dobjects::MathEvaluator object to evaluate
+    def self.make_evaluator(formula, vars, mods = [])
+      return Dobjects::MathEvaluator.new(formula, vars.join(","),
+                                         [@module] + mods)
+    end
+
   end
 end
 

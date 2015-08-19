@@ -225,7 +225,7 @@ module CTioga2
       # _x_, _xmin_, _xmax_, _y_, _ymin_, _ymax_, _y1_, _y1min_, _y1max_,
       #  _z_, _zmin_, _zmax_, _y2_, _y2min_, _y2max_, _y3_, _y3min_, _y3max_
       #
-      def select!(&block)
+      def select!(evaluator)
         target = []
         @x.size.times do |i|
           args = @x.values_at(i, true)
@@ -236,7 +236,7 @@ module CTioga2
               args.concat(yvect.values_at(i, true))
             end
           end
-          if block.call(*args)
+          if evaluator.compute_unsafe(*args)
             target << i
           end
         end
@@ -260,8 +260,8 @@ module CTioga2
             i += 1
           end
         end
-        block = eval("proc do |#{names.join(',')}|\n#{formula}\nend")
-        select!(&block)
+        evaluator = Ruby.make_evaluator(formula, names)
+        select!(evaluator)
       end
 
       # \todo a dup !
