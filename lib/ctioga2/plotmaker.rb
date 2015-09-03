@@ -490,8 +490,9 @@ module CTioga2
       # of ctioga2 used to produce the PDF, and the command-line if
       # applicable.
       t.tex_preamble += 
-        "\n\\pdfinfo {\n#{title}/Creator(#{Utils::pdftex_quote_string("ctioga2 #{Version::version}")})\n}\n"
+        "\n\\pdfinfo {\n#{title}/Creator(#{Utils::pdftex_quote_string("ctioga2 #{Version::version}")})\n}\n" 
 
+#" #emacs ruby-mode is a dummy
       return t
     end
 
@@ -529,6 +530,8 @@ EOH
 
     PlotLastOptions = 
       Graphics::Styles::CurveStyleFactory::PlotCommandOptions.dup
+
+    PlotLastOptions.merge!(Graphics::Elements::TiogaElement::StyleBaseOptions)
 
     PlotLastOptions['which'] = CmdArg.new('stored-dataset')
     
