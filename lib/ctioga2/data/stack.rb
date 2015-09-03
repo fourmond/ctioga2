@@ -152,7 +152,16 @@ EOH
             end
           end
         else
-          if @named_datasets.key? spec
+          if spec =~ /^\s*#(.*)/
+            # graph idea -> get dataset from the plot element
+            eln = $1
+            obj = Elements::TiogaElement.find_object(eln)
+            if !obj.respond_to(:dataset)
+              raise "Object '##{eln}' does not name a plot"
+            end
+            ds = obj.dataset
+            index = @stack.index(ds)
+          elsif @named_datasets.key? spec
             name = spec
             ds = @named_datasets[spec]
             i = 0

@@ -159,6 +159,7 @@ A dataset that has already been loaded. It is either:
    dataset), 1 the second, -1 the last one, -2 the one before the last
    and so on. (it works just like Ruby's arrays).
  * The name of a named dataset.
+ * @#@ followed by the id of a plot element
 EOD
 
     # Something meant to be fed to PlotStyle#get_axis_style
