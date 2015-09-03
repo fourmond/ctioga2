@@ -645,8 +645,7 @@ EOH
 
     ResolutionCommand = 
       Cmd.new("resolution", false,"--resolution", 
-              [ CmdArg.new('float') ],
-              ) do |plotmaker, size, options|
+              [ CmdArg.new('float') ]) do |plotmaker, size, options|
       plotmaker.pdf_resolution = size
     end
 

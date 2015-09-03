@@ -265,8 +265,9 @@ EOD
                          [ 'point', 'dimension' ],
                          Styles::OrientedLineStyle,
                          'oriented-line'
-                  ) do |t, org, dim, style, options|
-          style.draw_oriented_arrow(t, *org.to_figure_xy(t), dim)
+                        ) do |t, org, dim, style, options|
+          
+          style.draw_oriented_arrow(t, *(org.to_figure_xy(t) + [dim]))
         end
 
 
