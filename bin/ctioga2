@@ -50,5 +50,5 @@ require 'ctioga2/plotmaker'
 
 plot_maker = CTioga2::PlotMaker.new
 
-plot_maker.run(ARGV)
+exit(plot_maker.run(ARGV))
 

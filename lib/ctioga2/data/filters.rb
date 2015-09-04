@@ -42,6 +42,8 @@ dataset pushed unto the data stack: they can be viewed as filters.",
 Sorts the last dataset pushed unto the stack according to X values. Can be
 used as a filter.
 
+This command sorts in-place.
+
 See also {command: sort}.
 EOH
 

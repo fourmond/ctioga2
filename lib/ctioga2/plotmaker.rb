@@ -279,6 +279,9 @@ module CTioga2
     end
 
     # ctioga's entry point.
+    #
+    # Returns true if there was no errors and false if there was one
+    # or more.
     def run(command_line)
 
       # The main catch-all around the plot:
@@ -311,6 +314,7 @@ module CTioga2
           STDIN.gets
         end
       end
+      return errs == 0
     end
 
     # Flushes the current root object and starts a new one:
