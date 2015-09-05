@@ -102,6 +102,26 @@ EOH
 Prints the HTML documentation for all styles.
 EOH
 
+      WriteHTMLColors = 
+        Cmd.new("write-html-colors", nil, "--write-html-colors", 
+                [],
+                {
+                  'columns' => 'integer',
+                  'class' => 'text',
+                  'div-class' => 'text',
+                  'rect-width' => 'integer',
+                  'rect-height' => 'integer'
+                }
+               ) do |plotmaker, opts|
+        html = HTML.new(plotmaker.interpreter.doc)
+        html.write_colors(opts)
+      end
+      
+      WriteHTMLStyles.describe("HTML documentation for colors",
+                              <<EOH, DocumentationGenerationGroup)
+Prints the HTML documentation for the colors, i.e. a color list.
+EOH
+
 
       WriteHTMLBackends = 
         Cmd.new("write-html-backends", nil, "--write-html-backends", 

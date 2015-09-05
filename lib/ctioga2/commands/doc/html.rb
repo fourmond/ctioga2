@@ -279,6 +279,38 @@ module CTioga2
               end
             end
           end
+        end
+
+        # Writes out a list
+        def write_colors(opts, out = STDOUT)
+          columns = opts["columns"] || 5
+          cls = opts["class"] || "color-list"
+          div_cls = opts["div-class"] 
+          rw = opts["rect-width"] || 80
+          rh = opts["rect-height"] || 40
+
+          div_common = (div_cls ? "class='#{div_cls}' style='" :
+                          "style='width:#{rw};height:#{rh};") 
+          colors = Tioga::ColorConstants::constants.sort
+
+          out.puts "<table class='#{cls}'>"
+
+          idx = 0
+          for c in colors
+            if idx % columns == 0
+              if idx > 0
+                out.puts "</tr>"
+              end
+              out.puts "<tr>"
+            end
+            color = Tioga::ColorConstants::const_get(c)
+            cls = "##{Utils::color_to_html(color)}"
+
+            puts "<td><div #{div_common}background-color: #{cls};'></div>#{c}<br/>#{cls}</td>"
+            idx += 1
+          end
+
+          out.puts "</tr></table>"
 
         end
         

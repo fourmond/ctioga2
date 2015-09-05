@@ -199,6 +199,14 @@ module CTioga2
       return sets_by_prefix
     end
 
+    # Transforms a Tioga color into a HTML color string "xxxxxx"
+    # (without the leeading #)
+    def self.color_to_html(color)
+      return color.map do |i|
+        "%02x" % (i*255.to_i)
+      end.join('')
+    end
+
     # An instrumentized version of Dir::chdir 
     def self.chdir(dir, &blk)
       @current_dirs ||= []
