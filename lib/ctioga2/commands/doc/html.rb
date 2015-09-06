@@ -281,8 +281,7 @@ module CTioga2
           end
         end
 
-        # Writes out a list
-        def write_colors(opts, out = STDOUT)
+        def write_color_list(colors, opts, out = STDOUT, color_names = nil)
           columns = opts["columns"] || 5
           cls = opts["class"] || "color-list"
           div_cls = opts["div-class"] 
@@ -290,28 +289,69 @@ module CTioga2
           rh = opts["rect-height"] || 40
 
           div_common = (div_cls ? "class='#{div_cls}' style='" :
-                          "style='width:#{rw};height:#{rh};") 
-          colors = Tioga::ColorConstants::constants.sort
+                          "style='width:#{rw};height:#{rh};")
 
-          out.puts "<table class='#{cls}'>"
+                    out.puts "<table class='#{cls}'>"
 
           idx = 0
-          for c in colors
+          for color in colors
             if idx % columns == 0
               if idx > 0
                 out.puts "</tr>"
               end
               out.puts "<tr>"
             end
-            color = Tioga::ColorConstants::const_get(c)
-            cls = "##{Utils::color_to_html(color)}"
+            if color
+              
+              cls = "##{Utils::color_to_html(color)}"
 
-            puts "<td><div #{div_common}background-color: #{cls};'></div>#{c}<br/>#{cls}</td>"
+              if color_names
+                c = color_names[idx]
+              else
+                c = Utils::color_name_by_value(color)
+              end
+              cb = if c
+                     "#{c}<br/>"
+                   else
+                     ""
+                   end
+              
+              out.puts "<td><div #{div_common}background-color: #{cls};'></div>#{cb}#{cls}</td>"
+            else
+              out.puts "<td>no color</td>"
+            end
             idx += 1
           end
-
+          
           out.puts "</tr></table>"
+          
+        end
 
+        # Writes out a list
+        #
+        #@todo Split that to just write an ordered list of colors (get
+        #their names ?)
+        def write_colors(opts, out = STDOUT)
+          clrs = Tioga::ColorConstants::constants.sort
+          colors = clrs.map do |c|
+            Tioga::ColorConstants::const_get(c)
+          end
+          color_names = clrs.map do |c|
+            c.to_s
+          end
+          
+          write_color_list(colors, opts, out, color_names)
+        end
+
+        def write_color_sets(opts, out = STDOUT)
+          sets = Graphics::Styles::CurveStyleFactory::parameters['color'].sets
+          set_names = sets.keys.sort
+
+          for s in set_names
+            out.puts "<h5>Color set: <code>#{s}</code></h5>"
+            colors = sets[s]
+            write_color_list(colors, opts, out)
+          end
         end
         
 

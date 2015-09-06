@@ -199,6 +199,26 @@ module CTioga2
       return sets_by_prefix
     end
 
+    @@color_name_by_value = nil
+
+    def self.color_name_by_value_hsh
+      if ! @@color_name_by_value
+        @@color_name_by_value = {}
+        colors = Tioga::ColorConstants::constants
+        for c in colors
+          color = Tioga::ColorConstants::const_get(c)
+          @@color_name_by_value[Utils::color_to_html(color)] = c.to_s
+        end
+      end
+      return @@color_name_by_value
+    end
+
+    # Returns the Tioga name for the given color. Can be nil if the
+    # color does not match a Tioga named color.
+    def self.color_name_by_value(color)
+      return color_name_by_value_hsh()[Utils::color_to_html(color)]
+    end
+
     # Transforms a Tioga color into a HTML color string "xxxxxx"
     # (without the leeading #)
     def self.color_to_html(color)
