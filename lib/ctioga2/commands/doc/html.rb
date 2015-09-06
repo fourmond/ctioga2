@@ -347,6 +347,18 @@ module CTioga2
           sets = Graphics::Styles::CurveStyleFactory::parameters['color'].sets
           set_names = sets.keys.sort
 
+          if opts['include']
+            set_names = set_names.select do |x|
+              x =~ opts['include']
+            end
+          elsif opts['exclude']
+            set_names = set_names.select do |x|
+              x !~ opts['exclude']
+            end
+          end
+
+          set_names = sets.keys.sort
+
           for s in set_names
             out.puts "<h5>Color set: <code>#{s}</code></h5>"
             colors = sets[s]

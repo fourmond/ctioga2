@@ -125,7 +125,11 @@ EOH
 
       WriteHTMLColorSets = 
         Cmd.new("write-html-color-sets", nil, "--write-html-color-sets", 
-                [], HTMLColorsOptions) do |plotmaker, opts|
+                [], HTMLColorsOptions.
+                    merge({
+                            'include' => 'regexp',
+                            'exclude' => 'regexp'
+                          })) do |plotmaker, opts|
         html = HTML.new(plotmaker.interpreter.doc)
         html.write_color_sets(opts)
       end
