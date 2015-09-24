@@ -409,12 +409,9 @@ module CTioga2
 
         simple_parameter 'zaxis', "name for the Z axis"
 
-        ## @todo For xy-parametric, there should be a way to specify
-        ## to which z value the maps apply (ie lines = y2, marker =
-        ## y3...). Although for readability, it is probably better
-        ## to avoid that...
         simple_parameter 'marker_color_map', 'color map for markers'
-
+        simple_parameter 'marker_line_color_map', 'color map for the lines of markers'
+        simple_parameter 'marker_fill_color_map', 'color map for the lines of markers'
         simple_parameter 'split_on_nan', 'split on NaN'
 
 

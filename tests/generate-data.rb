@@ -11,7 +11,7 @@ File.open("3d-data.dat",'w') do |f|
     x = 3 * (i - nb/2)/(nb/2 * 1.0)
     nb.times do |j|
       y = 3 * (j - nb/2)/(nb/2 * 1.0)
-      f.puts "#{x}\t#{y}\t#{(x**2 + y**2) * Math.exp(-x**2 - y**2)}"
+      f.puts "#{x}\t#{y}\t#{(x**2 + y**2) * Math.exp(-x**2 - y**2)}\t#{Math.sin(x**2 - y**2)}"
     end
   end
 end

@@ -91,6 +91,12 @@ module CTioga2
         # A colormap for markers (only for XYZ data) 
         typed_attribute :marker_color_map, 'colormap'
 
+        # A colormap for the line of markers (only for XYZ data) 
+        typed_attribute :marker_line_color_map, 'colormap'
+
+        # A colormap for the fill color of markers (only for XYZ data) 
+        typed_attribute :marker_fill_color_map, 'colormap'
+
         # If this is specified when choosing the marker scale as a
         # function of a given Z value, then the original Z segment is
         # mapped to min_scale -> scale.

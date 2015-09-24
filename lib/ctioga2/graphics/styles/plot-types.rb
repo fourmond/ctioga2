@@ -1,3 +1,4 @@
+# coding: utf-8
 # contour.rb: the style of a contour plot
 # copyright (c) 2009 by Vincent Fourmond
   
@@ -24,6 +25,8 @@ module CTioga2
 
       StyleAspectRE = {
         /^marker[_-]color$/i => :marker_color,
+        /^marker[_-]fill[_-]color$/i => :marker_fill_color,
+        /^marker[_-]line[_-]color$/i => :marker_line_color,
         /^marker[_-](size|scale)$/i => :marker_scale,
       }
 
@@ -48,6 +51,12 @@ EOD
         # What is the z2 axis
         typed_attribute :z2, 'style-aspect'
 
+        # What is the z3 axis
+        typed_attribute :z3, 'style-aspect'
+        
+        # What is the z4 axis
+        typed_attribute :z4, 'style-aspect'
+
         def initialize
           @z1 = :marker_color
         end
@@ -55,7 +64,7 @@ EOD
         def prepare
           @reversed = {}
 
-          2.times do |i|
+          4.times do |i|
             val = self.send("z#{i+1}")
             if val
               @reversed[val] = i
@@ -106,12 +115,18 @@ EOD
 
           end
 
-          if @reversed[:marker_color]
-            idx = @reversed[:marker_color]
-            if idx < zvalue.size
-              style.color = curve_style.marker_color_map.z_color(zvalue[idx], 
-                                                                 zmin[idx], 
-                                                                 zmax[idx])
+          for bs in [:color, :line_color, :fill_color]
+            stl = "marker_#{bs}".to_sym
+            if @reversed[stl]
+              idx = @reversed[stl]
+              if idx < zvalue.size
+                map = curve_style.send("#{stl}_map")
+                if map
+                  style.send("#{bs}=",map.z_color(zvalue[idx], 
+                                                  zmin[idx], 
+                                                  zmax[idx]))
+                end
+              end
             end
           end
 

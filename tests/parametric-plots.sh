@@ -29,3 +29,10 @@ $ct -t "Both size and color" --marker auto \
     3d-data.dat@1:2:3:3
 
 
+$ct -t "Inside and outside" --marker auto \
+    --text --margin 0.03 --xy-parametric /z2=marker_line_color /z1=marker_fill_color \
+    --marker-line-color-map Blue--Red --marker-fill-color-map White--Green \
+    --line-style no \
+    3d-data.dat@1:2:3:4
+
+
