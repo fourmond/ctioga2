@@ -1,0 +1,7 @@
+math /xrange=-1:1
+plot x**2 /id=sq
+legend-inside ct
+legend-line "X: $(xmin -1) -- $(xmax -1)"
+legend-line "Y: $(ymin -1) -- $(ymax -1)"
+legend-line "xrange: $(xrange -1)"
+legend-line "yrange: $(yrange -1)"
