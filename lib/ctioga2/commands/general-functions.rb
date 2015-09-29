@@ -53,6 +53,8 @@ Running this will give the following syntax error:
 Doing it right would require the use of a decent amount of quotes.
 EOD
 
+    # dataset functions
+
     FuncPoint = Function.new("point", "Get dataset point information") do |pm, what, spec, *rest|
       dataset = if rest.first
                   pm.data_stack.stored_dataset(rest.first)
@@ -106,6 +108,26 @@ optional third. It is parsed as {type: stored-dataset}
 
 EOD
 
+    Stats = []
+    [:x, :y, :z].each do |col|
+      [:min, :max, :range, :avg].each do |what|
+        name = "#{col}#{what}"
+        Stats << Function.new(name, "Gets the #{what} of the #{col} column") do |pm, ds, *rest|
+          dataset = pm.data_stack.stored_dataset(ds)
+          cln = dataset.send(col)
+          clv = cln.values
+          case what
+          when :range
+            "#{clv.min}:#{clv.max}"
+          when :avg
+            return clv.sum/clv.size
+          else
+            clv.send(what)
+          end
+        end
+      end
+    end
+        
 
     
   end
