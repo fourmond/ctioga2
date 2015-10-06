@@ -167,12 +167,17 @@ module CTioga2
 
         def self.register_object(obj)
           @registered_objects ||= {}
+          @objects_by_class ||= {}
           if i = obj.object_id
             if @registered_objects.key? i
               warn { "Second object with ID #{i}, ignoring the name" }
             else
               @registered_objects[i] = obj
             end
+          end
+          for cls in (obj.object_classes || [])
+            @objects_by_class[cls] ||= []
+            @objects_by_class[cls] << obj
           end
         end
 
@@ -184,12 +189,27 @@ module CTioga2
             raise "No such object: '#{obj_id}'"
           end
         end
-              
+
+        def self.find_objects(id_list)
+          # First split on commas:
+          ids = id_list.split(/\s*,\s*/)
+          objs = []
+          @objects_by_class ||= {}
+          for oi in ids
+            if oi =~ /^\.(.*)/
+              objs += (@objects_by_class[$1] || [])
+            elsif oi =~ /^\#?(.*)/
+              objs << self.find_object($1)
+            end
+          end
+          return objs
+        end
+
         
         def setup_style(obj_parent, opts) 
           @cached_options = opts
           @object_id = opts["id"] || nil
-          @object_classes = opts["class"] || []
+          @object_classes = opts.key?("class") ? [opts["class"]].flatten : []
           @object_parent = obj_parent
 
           TiogaElement.register_object(self)
@@ -313,12 +333,11 @@ appropriate command).
 EOD
 
       ObjectsType = 
-        CmdType.new('objects', {:type => :array,
-                      :subtype => {:type => :function_based,
-                        :class => Elements::TiogaElement,
-                        :func_name => :find_object}
-                      }, <<EOD)
-A list of comma-separated {type: object}s.
+        CmdType.new('objects', {:type => :function_based,
+                      :class => Elements::TiogaElement,
+                      :func_name => :find_objects}, <<EOD)
+A list of comma-separated {type: object}s, or a class specification
+starting with a .
 EOD
 
     end
