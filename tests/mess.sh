@@ -26,3 +26,6 @@ $ct --margin 0.04 'x' 'x+20' /id=stuff --hide stuff
 $ct --margin 0.04 'x' 'x+1'  /class=stuff 'x+2'  /class=stuff  \
     'x+3'  /class=stf2 'x+4'  /class=stuff  'x+5'  /class=stf \
     --hide .stuff
+
+$ct --margin 0.04 --legend-inside tl /id=lgd 'x' /legend=Legend \
+    --hide lgd

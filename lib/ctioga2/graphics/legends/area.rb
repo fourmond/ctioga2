@@ -79,6 +79,9 @@ module CTioga2
         #
         def display_legend(t, container)
           items = container.legend_storage.harvest_contents
+          if self.hidden
+            return              # Not doing anything
+          end
           t.context do 
 
             ## @todo These two commands should join LegendStyle
