@@ -50,7 +50,8 @@ EOH
       SortFilter = 
         Cmd.new("sort", nil, "--sort", 
                 [], {}) do |plotmaker, opts|
-        plotmaker.data_stack.add_to_dataset_hook('sort-last()')
+        plotmaker.data_stack.
+          add_to_dataset_hook(Commands::Instruction.new('sort-last', [], {}))
       end
       
       SortFilter.describe("Systematically sort subsequent datasets",
@@ -82,7 +83,8 @@ EOH
                 [CmdArg.new('integer')], {}) do |plotmaker, number, opts|
         ## @todo There should be a way to add commands in a type-safe
         ## way, without having to convert to string first.
-        plotmaker.data_stack.add_to_dataset_hook("trim-last(#{number})")
+        plotmaker.data_stack.
+          add_to_dataset_hook(Commands::Instruction.new('trim-last', [number], {}))
       end
       
       TrimFilter.describe("Systematically trim subsequent datasets",
@@ -115,7 +117,8 @@ EOH
       CherryPickFilter = 
         Cmd.new("cherry-pick", nil, "--cherry-pick", 
                 [CmdArg.new('text')], {}) do |plotmaker, formula|
-        plotmaker.data_stack.add_to_dataset_hook("cherry-pick-last '#{formula}'")
+        plotmaker.data_stack.
+          add_to_dataset_hook(Commands::Instruction.new('cherry-pick-last', [formula], {}))
       end
       
       CherryPickFilter.describe("Systematicallly remove data for which the formula is false",
@@ -164,7 +167,8 @@ EOH
       AverageDupFilter = 
         Cmd.new("avg-dup", nil, "--avg-dup", 
                 [], {}) do |plotmaker, formula|
-        plotmaker.data_stack.add_to_dataset_hook("avg-dup-last()")
+        plotmaker.data_stack.
+          add_to_dataset_hook(Commands::Instruction.new('avg-dup-last', [], {}))
       end
       
       AverageDupFilter.describe("Systematicallly average successive elements with identical X values",
@@ -191,7 +195,8 @@ EOH
       SmoothFilter = 
         Cmd.new("smooth", nil, "--smooth", 
                 [CmdArg.new('integer')], {}) do |plotmaker, nb|
-        plotmaker.data_stack.add_to_dataset_hook("smooth-last #{nb}")
+        plotmaker.data_stack.
+          add_to_dataset_hook(Commands::Instruction.new('smooth-last', [nb], {}))
       end
       
       SmoothFilter.describe("Systematicallly smooth data",

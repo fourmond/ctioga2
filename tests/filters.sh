@@ -15,3 +15,7 @@ $ct --math-samples 1001 -t 'Smoothing' \
 $ct 'sin(x)' --marker auto --marker-scale 0.4 \
     --cherry-pick-last 'y < 0.5' --plot-last \
     --cherry-pick  'y > 0.5' 'sin(x)'
+
+$ct --math-samples 1001 -t 'Smoothing and cherry picking' \
+    'sin(x)+0.1*sin(100*x)' \
+    --smooth 9 --cherry-pick 'y < 0.5' 'sin(x)+0.1*sin(100*x)+0.1'

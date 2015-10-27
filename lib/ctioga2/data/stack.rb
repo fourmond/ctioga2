@@ -52,13 +52,7 @@ module CTioga2
       # A hook executed every time a dataset is pushed unto the stack
       # using #add_dataset.
       #
-      # \todo this string is parsed for each call to
-      # #add_dataset. Perhaps it would be good to provide a way to
-      # record a Command call, without parsing it from scratch ???
-      # 
-      # Although, with variables, that could be interesting to reparse
-      # everytime, since any change in the variables would be taken
-      # into account.
+      # This is a list of Instruction
       attr_accessor :dataset_hook
 
       # Creates a new DataStack object.
@@ -69,6 +63,8 @@ module CTioga2
 
         # Defaults to the 'text' backend
         @backend_factory = Data::Backends::BackendFactory.new('text')
+
+        @dataset_hook = []
 
         # Probably a bit out of place...
         csv = 
@@ -198,13 +194,14 @@ EOH
       def store_dataset(dataset, ignore_hooks = false)
         @stack << dataset
         if @dataset_hook && (! ignore_hooks)
-          # \todo error handling
-          begin
-            PlotMaker.plotmaker.interpreter.run_commands(@dataset_hook)
-          rescue Exception => e
-            error { "There was a problem running the dataset hook '#{@dataset_hook}', disabling it" }
-            @dataset_hook = nil
-            info { "-> '#{format_exception e}'" }
+          for ins in @dataset_hook
+            begin
+              ins.run(PlotMaker.plotmaker)
+            rescue Exception => e
+              error { "There was a problem running the dataset hook '#{ins.to_s}', disabling it" }
+              @dataset_hook.delete(ins)
+              info { "-> '#{format_exception e}'" }
+            end
           end
         end
       end
@@ -231,9 +228,9 @@ EOH
       # Appends a set of commands to the dataset hook
       def add_to_dataset_hook(commands)
         if @dataset_hook
-          @dataset_hook << "\n#{commands}"
+          @dataset_hook += [commands].flatten
         else
-          @dataset_hook = commands
+          @dataset_hook = [commands].flatten
         end
       end
 
@@ -546,6 +543,7 @@ EOH
     SetDatasetHookCommand = 
       Cmd.new("dataset-hook", nil, "--dataset-hook", 
               [CmdArg.new('commands')], {}) do |plotmaker, commands, opts|
+      raise 'This command is disabled as of now'
       plotmaker.data_stack.dataset_hook = commands
     end
     
@@ -571,6 +569,7 @@ EOH
     AddDatasetHookCommand = 
       Cmd.new("dataset-hook-add", nil, "--dataset-hook-add", 
               [CmdArg.new('commands')], {}) do |plotmaker, commands, opts|
+      raise 'This command is disabled as of now'
       plotmaker.data_stack.add_to_dataset_hook(commands)
     end
     

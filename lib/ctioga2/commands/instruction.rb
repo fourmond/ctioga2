@@ -35,6 +35,13 @@ module CTioga2
       attr_accessor :options
 
       def initialize(cmd, args, opts)
+        if not cmd.respond_to?(:run_command)
+          c = Interpreter.command(cmd)
+          if ! c
+            raise "Invalid command #{cmd}"
+          end
+          cmd = c
+        end
         @command = cmd
         @arguments = args
         @options = opts
@@ -42,7 +49,7 @@ module CTioga2
 
       # Runs this instruction again
       def run(plotmaker_target)
-        @command.run_command(plotmaker_target, args, opts)
+        @command.run_command(plotmaker_target, @arguments, @options)
       end
 
       def to_s
