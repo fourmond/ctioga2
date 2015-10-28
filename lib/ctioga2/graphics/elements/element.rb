@@ -252,10 +252,10 @@ module CTioga2
         # redefine _do_ too if you need another debugging output.
         def do(f)
           if @hidden
-            debug { "not plotting hidden #{self.inspect}" }
+            debug { "not plotting hidden #{self.to_yaml}" }
             return 
           else
-            debug { "plotting #{self.inspect}" }
+            debug { "plotting #{self.to_yaml}" }
           end
           @gp_cache = {}
           real_do(f)

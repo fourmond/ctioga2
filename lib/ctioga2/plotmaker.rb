@@ -99,6 +99,9 @@
 # \todo make --xrange automatically select the range for the --math
 # backend unless another range was explicitly specified.
 
+# Maybe, maybe, maybe... We need tioga ?
+require 'Tioga/FigureMaker'
+
 require 'ctioga2/utils'
 require 'ctioga2/log'
 
@@ -109,8 +112,9 @@ require 'shellwords'
 # Path name mangling
 require 'pathname'
 
-# Maybe, maybe, maybe... We need tioga ?
-require 'Tioga/FigureMaker'
+# And yaml...
+require 'yaml'
+
 
 # Interaction with Ruby code
 require 'ctioga2/ruby'

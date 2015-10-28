@@ -205,7 +205,7 @@ module CTioga2
         
         ## Actually draws the curve
         def real_do(t)
-          debug { "Plotting curve #{inspect}" }
+          debug { "Plotting curve #{to_yaml}" }
           t.context do
             ## \todo allow customization of the order of drawing,
             ## using a simple user-specificable array of path,

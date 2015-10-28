@@ -681,6 +681,15 @@ module CTioga2
 
 end
 
+
+# Patching YAML generation for recent Ruby
+
+class Dobjects::Dvector
+  def encode_with(coder)
+    coder.seq = self.to_a
+  end
+end
+
 ######################################################################
 # Now come a few functions that add to ruby's standard classes or
 # modules
