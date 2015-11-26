@@ -121,7 +121,7 @@ module CTioga2
 
       # A marker Type for Tioga. Input as
       # 
-      #  a,b(,c)?
+      #  a,(,b(,c)?)?
       #  
       class MarkerType < Type
         
@@ -133,8 +133,10 @@ module CTioga2
             return [specs[0].to_i, specs[1].to_i]
           elsif specs.size == 3
             return [specs[0].to_i, specs[1].to_i, specs[2].to_f]
+          elsif specs.size == 1 # Defaults to symbols !
+            return [14, specs[0].to_i]
           else
-            raise IncorrectInput, "You need two or three values to make a marker"
+            raise IncorrectInput, "You need between one and three values to make a marker"
           end
         end
       end

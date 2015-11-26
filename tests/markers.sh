@@ -15,3 +15,7 @@ $ct -t 'Different fill and stroke colors' \
     --marker auto --marker-line-width 0.3 \
     'sin(x)' /marker-fill-color=Pink \
     'cos(x)' /marker-color=Blue /marker-line-color=Brown /marker-line-width 0.8
+
+$ct -t 'Different fill and stroke colors' \
+    --marker auto --marker-line-width 0.3 \
+    'sin(x)' /marker 111 \
