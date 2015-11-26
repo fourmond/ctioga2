@@ -31,7 +31,7 @@ module CTioga2
 
         OptionHashRE = /([\w-]+)\s*=\s*([^,]+),?\s*/
 
-        GridBoxRE = /^\s*grid:(\d+(?:-\d+)?)\s*,\s*(\d+(?:-\d+)?)(?:,(#{OptionHashRE}+))?\s*$/
+        GridBoxRE = /^\s*grid:(?:(\d+(?:-\d+)?)\s*,\s*(\d+(?:-\d+)?)|(next))(?:,(#{OptionHashRE}+))?\s*$/
 
         # This hash helps to convert from a hash-based representation
         # of frame coordinates to the array-based one.
@@ -44,11 +44,31 @@ module CTioga2
           'yb' => 3
         }
 
+        # The position of the element in the grid (arrays [left,right]
+        # or [top, bottom])
+        attr_accessor :x,:y
+
         def self.from_text(txt)
           if txt =~ GridBoxRE
-            return GridBox.new(GridLayout.current_grid, $1, $2, 
-                               $3) # The latter being to remove
-                                          # the initial comma
+            if $3               # next
+              x = 0
+              y = 0
+              grd = GridLayout.current_grid
+              lastel = grd.elements.last
+              if lastel
+                x = lastel.x.max + 1
+                y = lastel.y.max
+                if x >= grd.xsize
+                  x = 0
+                  y += 1
+                end
+              end
+              return GridBox.new(grd, x, y, $4)
+            else
+              return GridBox.new(GridLayout.current_grid, $1, $2, 
+                                 $4) # The latter being to remove
+            # the initial comma
+            end
           else
             raise "#{txt} is not a grid box."
           end
@@ -100,6 +120,8 @@ module CTioga2
           if ! within_grid?
             raise "Grid element #{x},#{y} is outside grid boundaries (#{@grid.xsize}x#{@grid.ysize})"
           end
+
+          @grid.elements << self
         end
 
         def to_frame_coordinates(t)
@@ -142,6 +164,9 @@ module CTioga2
         # Vertical scales
         attr_accessor :vscales
 
+        # The GridBox objects we've seen so far
+        attr_accessor :elements
+
         def initialize(nup = "2x2")
           if nup.respond_to?(:split)
             if nup =~ /,/
@@ -173,6 +198,8 @@ module CTioga2
 
           @hscales ||= [1] * @nup[0]
           @vscales ||= [1] * @nup[1]
+
+          @elements = []
         end
 
         # The grid currently in use.
