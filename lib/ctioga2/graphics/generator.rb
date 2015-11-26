@@ -88,8 +88,7 @@ module CTioga2
         old_opts = options.dup
         # Now, we trim options unrelated to the plotting
         options.delete_if { |k,v|
-          ! Graphics::Styles::
-          CurveStyleFactory::PlotCommandOptions.key?(k)
+          ! Graphics::Styles::CurveStyleFactory::PlotCommandOptions.key?(k)
         }
 
         begin
