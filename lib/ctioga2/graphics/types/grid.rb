@@ -63,6 +63,19 @@ module CTioga2
             return [str.to_i, str.to_i]
           end
         end
+
+        # Returns false if the position given by @x and @y are within
+        # the grid
+        def within_grid?
+          if @x.min < 0 || @x.max >= @grid.xsize
+            return false
+          end
+          if @y.min < 0 || @y.max >= @grid.ysize
+            return false
+          end
+          return true
+        end
+          
         
         def initialize(grid, x, y, options = {})
           if options.is_a? String
@@ -83,6 +96,10 @@ module CTioga2
           @x = parse_range(x).sort
           @y = parse_range(y).sort
           @overrides = options || {}
+
+          if ! within_grid?
+            raise "Grid element #{x},#{y} is outside grid boundaries (#{@grid.xsize}x#{@grid.ysize})"
+          end
         end
 
         def to_frame_coordinates(t)
@@ -167,6 +184,14 @@ module CTioga2
 
         def self.current_grid
           return @current_grid
+        end
+
+        def xsize
+          return @hscales.size
+        end
+
+        def ysize
+          return @vscales.size
         end
 
         # Compute the frame coordinates fo the x,y element of the
