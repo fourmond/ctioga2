@@ -26,7 +26,8 @@ $ct --define-axis-style '*' /axis-label-color Blue \
     --draw-line 0,0 5,50 /id=ln \
     --draw-arrow 0,0 -5,50 /class=pink
 
-$ct -r 10cmx10cm \
+$ct --define-axis-style '.different axis' /axis-label-color Blue \
+    -r 10cmx10cm \
     --load-style styles.ctss \
     --setup-grid 2x1 \
     --inset grid:0,0 \

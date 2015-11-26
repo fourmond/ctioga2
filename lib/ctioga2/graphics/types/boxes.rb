@@ -44,6 +44,12 @@ module CTioga2
           xl, yt, xr, yb = self.to_frame_coordinates(t)
           return [xl, 1 - xr, 1 - yt, yb]
         end
+
+        # The classes enumerated here get added to the class list of
+        # the subwindow
+        def classes
+          return []
+        end
         
       end
 

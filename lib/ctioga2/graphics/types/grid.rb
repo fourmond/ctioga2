@@ -138,6 +138,48 @@ module CTioga2
           end
           return a
         end
+
+        def classes
+          rv = []
+          hsh = {
+            'left' => @x.min == 0,
+            'right' => @x.max + 1 == @grid.xsize,
+            'top' => @y.min == 0,
+            'bottom' => @y.max + 1 == @grid.ysize
+          }
+          for k, v in hsh
+            if v
+              rv << "grid-#{k}"
+            else
+              rv << "grid-non-#{k}"
+            end
+          end
+
+          xv = nil
+          yv = nil
+          if @x.min == @x.max
+            xv = @x.min
+            rv << "grid-column-#{xv}"
+            if xv.even?
+              rv << "grid-even-column"
+            else
+              rv << "grid-odd-column"
+            end
+          end
+          if @y.min == @y.max
+            yv = @y.min
+            rv << "grid-row-#{yv}"
+            if yv.even?
+              rv << "grid-even-row"
+            else
+              rv << "grid-odd-row"
+            end
+          end
+          if xv && yv
+            rv << "grid-#{xv}-#{yv}"
+          end
+          return rv
+        end
       end
 
       # This class provides a grid-like layout through the use of a grid

@@ -49,3 +49,21 @@ $ct --setup-grid 2x2 \
     --next-inset grid:next 'x**2' \
     --next-inset grid:next 'x**3' \
     --next-inset grid:next  'x'
+
+# Next !
+$ct --define-axis-style '.grid-left axis.left' /axis-label-color Red \
+    --define-axis-style '.grid-bottom axis.bottom' /axis-label-text "Auto !" \
+    --define-axis-style '.grid-bottom axis' /background-lines-color Purple \
+    --define-axis-style '.grid-2-0 axis' /decoration none \
+    --define-curve-style '.grid-1-1 curve' /marker SquareOpen /marker-scale 0.3  \
+    --define-background-style '.grid-odd-row background' /background-color Black\!10 \
+    --setup-grid 3x3 \
+    --inset grid:next 'sin(x)' \
+    --next-inset grid:next 'x**2' \
+    --next-inset grid:next 'x**3' \
+    --next-inset grid:next  'x' \
+    --next-inset grid:next  'x' \
+    --next-inset grid:next  'x' \
+    --next-inset grid:next  'x' \
+    --next-inset grid:next  'x' \
+    --next-inset grid:next  'x' \

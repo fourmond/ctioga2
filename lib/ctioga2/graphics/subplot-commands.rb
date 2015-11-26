@@ -135,8 +135,7 @@ EOD
                CmdArg.new('box'),
               ], Elements::TiogaElement::StyleBaseOptions) do |plotmaker, box, opts|
       Log::debug { "Starting a subplot with specs #{box.inspect}" }
-      subplot = plotmaker.root_object.subplot(opts)
-      subplot.subframe = box
+      subplot = plotmaker.root_object.subplot(opts, box)
     end
     
     InsetCommand.describe('Begins a new inset',
@@ -153,8 +152,7 @@ EOD
                CmdArg.new('box'),
               ], Elements::TiogaElement::StyleBaseOptions) do |plotmaker, box,opts|
       plotmaker.root_object.leave_subobject
-      subplot = plotmaker.root_object.subplot(opts)
-      subplot.subframe = box
+      subplot = plotmaker.root_object.subplot(opts, box)
     end
     
     NextInsetCommand.describe('Ends the previous inset and begins a new one',
