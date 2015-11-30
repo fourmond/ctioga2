@@ -137,7 +137,7 @@ module CTioga2
       #
       # For the sake of convenience, returns the newly created
       # Elements::Subplot
-      def subplot(opts, box)
+      def subplot(opts, box = nil)
         if ! @current_container
           enter_subobject(Elements::Container.new(nil, self, {}))
         end
@@ -148,10 +148,15 @@ module CTioga2
         # We add automatic classes from the box
         #
         # Most of the time empty, for sure.
-        o["class"] += box.classes
+        if box
+          o["class"] += box.classes
+        end
 
         subplot = Elements::Subplot.new(@current_container, self, o)
-        subplot.subframe = box
+
+        if box
+          subplot.subframe = box
+        end
 
         enter_subobject(subplot)
         return subplot
