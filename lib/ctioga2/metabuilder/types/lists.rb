@@ -210,7 +210,7 @@ module CTioga2
             nb.times do |i|
               array << Utils::mix_objects(e,s, i * fact)
             end
-          elsif str =~ /(.*)!(\d+)(?:!(.*))?\s*$/
+          elsif str =~ /(.*)!!(\d+)(?:!!(.*))?\s*$/
             # We have a mixing
             nb = $2.to_i
             fact = nb*0.01

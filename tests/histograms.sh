@@ -33,7 +33,7 @@ $ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms, mixe
     '2*x' /fill 0 /fill-color='Blue!10'
 
 $ct --margin 0.03 --math /samples=20 /xrange=0:1 -t 'Cumulative histograms' \
-    --fill-color-set 'default!10' --fill 0\
+    --fill-color-set 'default!!10' --fill 0\
     --histogram /cumulative=next /gap 1mm \
     'x' '1-x' \
     --histogram /cumulative=next \

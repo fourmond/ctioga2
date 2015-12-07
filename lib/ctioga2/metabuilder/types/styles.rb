@@ -75,7 +75,7 @@ module CTioga2
           if (elems.size % 2) == 0
             elems << "White"    # Implicit mix with white
           end
-          
+
           temp = parse_one_color(elems.shift).dup
           
           while elems.size > 0
