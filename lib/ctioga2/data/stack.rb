@@ -84,7 +84,7 @@ EOH
       # Performs expansion on the given _set_ with the current
       # backend, retrieves corresponding Dataset objects, pushes them
       # onto the stack and returns them.
-      def get_datasets(set, options = {})
+      def get_datasets(set, options = {}, add = true)
         backend = @backend_factory.specified_backend(options)
         sets = backend.expand_sets(set)
         datasets = []
@@ -96,7 +96,9 @@ EOH
             debug { "#{e.backtrace.join("\n")}" }
           end
         end
-        add_datasets(datasets, options)
+        if add
+          add_datasets(datasets, options)
+        end
         return datasets
       end
 
@@ -320,12 +322,33 @@ EOH
                    "Commands for manipulation of the data stack", 
                    100)
 
-    LoadDatasetOptions = { 
-      'name' => CmdArg.new('text'),
+    AppendDatasetOptions = { 
       'as' => CmdArg.new('text'),
       'where' => CmdArg.new('text'),
       'ignore_hooks' => CmdArg.new('boolean')
     }
+    
+    AppendDataCommand = 
+      Cmd.new("append", nil, "--append", 
+              [ CmdArg.new('dataset'), ], 
+              AppendDatasetOptions) do |plotmaker, set, opts|
+      datasets = plotmaker.data_stack.get_datasets(set, opts, false)
+      # Now, we append them to the last dataset
+      plotmaker.data_stack.concatenate_datasets(datasets)
+    end
+    
+    AppendDataCommand.describe("Appends the datasets to the last in the stack",
+                             <<EOH, DataStackGroup)
+Use the current backend to load the given dataset(s) and append to the
+last dataset on the stack (without creating a new dataset). Roughly
+the equivalent of first running {command: load} and then 
+{command: join-datasets}.
+EOH
+    
+    LoadDatasetOptions = AppendDatasetOptions.dup.merge(
+      {
+        'name' => CmdArg.new('text')
+      })
     
     LoadDataCommand = 
       Cmd.new("load", '-L', "--load", 
@@ -344,9 +367,10 @@ similar construct), each dataset gets named with %d replace with the
 number of the dataset within the expansion (starting at 0). This name
 can be used to further use the dataset without remembering its
 number. See the type {type: stored-dataset} for more information.
-
 EOH
 
+
+    
     ContourOptions = LoadDatasetOptions.dup.update({
       'which' => CmdArg.new('stored-dataset'),
     })
