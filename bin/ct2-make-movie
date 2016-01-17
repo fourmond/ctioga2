@@ -281,7 +281,10 @@ for f in args
                  "--set", "index", "#{index}", 
                 "-f", file, "--name", name, "-r", ct2_page_size]
   puts "Running: #{ct2_cmdline.join(" ")}"
-  system(*ct2_cmdline)
+  if ! system(*ct2_cmdline)
+    puts " -> failed with error code #$?, aborting"
+    exit 1
+  end
 
   b = nil
 
