@@ -43,6 +43,13 @@ module CTioga2
     # Are we converting to EPS using pdftops ? 
     attr_accessor :eps
 
+    # Are we cleaning up the PDF produced using gs (in particular, to
+    # include missing markers and such, that are known to cause
+    # problems from time to time).
+    #
+    # @todo Path to gs...
+    attr_accessor :cleanup_pdf
+
 
     # @todo Maybe all the PNG stuff should be it is own class ?
 
@@ -72,6 +79,9 @@ module CTioga2
       @png_pdftoppm = false
 
       @processed_files = []
+
+      gs = Utils::which('gs')
+      @cleanup_pdf = (gs ? true : false)
     end
 
 
@@ -106,6 +116,24 @@ module CTioga2
     # only happen last happen.
     def process_file(file, last = false)
       @processed_files << file
+
+
+      if @cleanup_pdf
+        nw_src = file.sub(/(\.pdf)?$/,'.raw.pdf')
+        begin
+          File::rename(file, nw_src)
+          info { "Running gs to clean up the target PDF file: '#{file}'" }
+          if ! system('gs', "-sOutputFile=#{file}", "-q", "-sDEVICE=pdfwrite",
+                      "-dCompatibilityLevel=1.4", "-dNOPAUSE", "-dBATCH", nw_src)
+            error { "Failed to run gs to cleanup '#{nw_src}', you can disable that using --no-cleanup-pdf" }
+          else
+            File::unlink(nw_src)
+          end
+        rescue SystemCallError => e
+          error { "Could not rename '#{file}' to '#{nw_src}': #{e.message}, try using --no-cleanup-pdf, or resolve the problem otherwise" }
+        end
+      end
+      
       # Converts to SVG if applicable
       if @svg
         target = file.sub(/(\.pdf)?$/,'.svg')

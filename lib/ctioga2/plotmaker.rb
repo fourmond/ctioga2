@@ -796,6 +796,19 @@ When this feature is on, all produced PDF files are converted to SVG
 using the neat pdf2svg program.
 EOH
 
+    CleanupPDFCommand = 
+      Cmd.new("cleanup-pdf",nil,"--cleanup-pdf", 
+              [CmdArg.new('boolean') ]) do |plotmaker,val|
+      plotmaker.postprocess.cleanup_pdf = val
+    end
+    
+    CleanupPDFCommand.describe('Cleanup produced PDF using gs', 
+                               <<EOH, OutputSetupGroup)
+If this is on, then @ctioga2@ uses ghostscript to cleanup the PDF file 
+produced. It is on by default is @ctioga2@ is able to find the @gs@ 
+executable.
+EOH
+
     EPSCommand = 
       Cmd.new("eps",nil,"--eps", 
               [CmdArg.new('boolean') ]) do |plotmaker,val|
