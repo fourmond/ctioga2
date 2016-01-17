@@ -133,7 +133,13 @@ module CTioga2
           end
           for k, b in bounds
             if ! b.valid?
-              error { "Invalid computed range, you probably have only empty datasets" }
+              if b.nan?
+                error { "Invalid computed range, you have NaNs in your data (missing data ?)" }
+              elsif b.infinite?
+                error { "Infinite computed range, you have infinite numbers in your data" }
+              else
+                error { "Invalid computed range, you probably have only empty datasets" }
+              end
               bounds[k] = Types::SimpleRange.new(0.0,1.0)
             end
           end

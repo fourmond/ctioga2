@@ -51,6 +51,16 @@ module CTioga2
                   Utils::finite_number?(@last))
         end
 
+        def nan?
+          return (Utils::nan_number?(@first) or
+                  Utils::nan_number?(@last))
+        end
+
+        def infinite?
+          return (Utils::infinite_number?(@first) or
+                  Utils::infinite_number?(@last))
+        end
+
         # Minimum value
         def min
           @first < @last ? @first : @last

@@ -64,6 +64,14 @@ module CTioga2
       return (flt.is_a?(Numeric) and flt.to_f.finite?)
     end
 
+    def self.nan_number?(flt)
+      return (flt.respond_to?(:nan?) and flt.nan?)
+    end
+
+    def self.infinite_number?(flt)
+      return (flt.respond_to?(:infinite?) and flt.infinite?)
+    end
+
     # Converts a number to a float while trying to stay as lenient as
     # possible
     def self.txt_to_float(txt)
