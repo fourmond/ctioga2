@@ -161,6 +161,25 @@ module CTioga2
           return primitive_class
         end
 
+
+
+        primitive("legend-pictogram", "legend-pictogram",
+                  ["point", "object"], {},
+                  "Draws the legend pictogram for the given curve"
+                 ) do |t, point, obj, options|
+          al = Types::AlignedPoint::from_point(point)
+          cs = obj.curve_style
+          dx = Types::Dimension.new(:dy, 3)
+          dy = Types::Dimension.new(:dy, 1)
+          pbb = Types::PointBasedBox.new(al, dx, dy)
+          pbb.within_frames(t) do
+            cs.draw_legend_pictogram(t)
+          end
+        end
+                  
+
+        
+
         # This creates a primitive base on a style object, given a
         # _style_class_, the base _style_name_ for the underlying
         # styling system, options to remove and options to add.

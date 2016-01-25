@@ -45,6 +45,18 @@ module CTioga2
           return [xl, 1 - xr, 1 - yt, yb]
         end
 
+        # Runs the block within the context of the box.
+        def within_frames(t, frame_coords = true)
+          t.context do
+            t.subfigure(self.to_frame_margins(t)) do
+              if frame_coords
+                t.set_bounds([0, 1, 1, 0])
+              end
+              yield
+            end
+          end
+        end
+
         # The classes enumerated here get added to the class list of
         # the subwindow
         def classes

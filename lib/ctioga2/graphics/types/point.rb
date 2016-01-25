@@ -216,6 +216,15 @@ module CTioga2
           @valign = valign
         end
 
+        def self.from_point(pt, halign = :center, valign = :center)
+          a = AlignedPoint.new
+          a.x = pt.x
+          a.y = pt.y
+          a.halign = halign
+          a.valign = valign
+          return a
+        end
+
         # Returns frame coordinates corresponding to the point, the
         # alignment and the given size in figure coordinates
         def to_frame_coordinates(t, width, height)
