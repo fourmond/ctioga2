@@ -164,13 +164,17 @@ module CTioga2
 
 
         primitive("legend-pictogram", "legend-pictogram",
-                  ["point", "object"], {},
+                  ["point", "object"], {
+                    'width' => 'dimension'
+                  },
                   "Draws the legend pictogram for the given curve"
-                 ) do |t, point, obj, options|
+                 ) do |t, point, obj, opts|
           al = Types::AlignedPoint::from_point(point)
           cs = obj.curve_style
-          dx = Types::Dimension.new(:dy, 3)
-          dy = Types::Dimension.new(:dy, 1)
+          
+          dx = opts['width'] || Types::Dimension.new(:dy, 2.5)
+          # dy = opts['height'] || Types::Dimension.new(:dy, 1)
+          dy = dx*0.4           # I'm not sure it really matters
           pbb = Types::PointBasedBox.new(al, dx, dy)
           pbb.within_frames(t) do
             cs.draw_legend_pictogram(t)

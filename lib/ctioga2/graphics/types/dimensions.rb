@@ -77,6 +77,10 @@ module CTioga2
           return Dimension.new(@type, -@value, @orientation)
         end
 
+        def *(fct)
+          return Dimension.new(@type, @value*fct, @orientation)
+        end
+
         # Returns a dimension corresponding to the distance.
         def self.get_distance(t, dx, dy)
           dx = make_dimension(dx, :x).to_bp(t)

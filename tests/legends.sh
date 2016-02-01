@@ -60,3 +60,13 @@ $ct -t 'Large legends' -r 10cmx10cm \
     -l '\LARGE $\displaystyle 2 \times \int_0^x x'\'' \mathrm{d} x'\''$' 'x**2' \
     -l '$5 x$' '5 * x' \
     -l '$2 x$' '2 * x'
+
+
+# Legends with separated pictograms.
+
+$ct '0.1*x**2' /id=c1 \
+    '2 * x' /marker=Square /id=c2 \
+    '3 * x' /marker=Bullet /line-style=no /id=c3 \
+    --draw-legend-pictogram -6,25 c1 \
+    --draw-legend-pictogram -6,20 c3  \
+    --draw-legend-pictogram -6,15 c2 /width=1dy
