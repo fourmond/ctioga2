@@ -1,3 +1,26 @@
+ctioga2 (0.14)
+
+  * A --hide command
+  * A --append command to load a dataset and append it to the previous one
+  * a --draw-legend-pictogram to draw the legend pictogram of a curve
+  * Selection of plot elements by class for commands that take several
+    elements (such as --hide)
+  * A series of command-file functions like $(xmax), $(yrange) and so on
+    to gather informations about datasets on the stack
+  * Can now select a dataset using its plot #id
+  * A grid:next specification to automatically switch to the next grid 
+    element
+  * More informative error messages when encountering weird data such as
+    infinite numbers, see http://sourceforge.net/p/ctioga2/tickets/2/
+  * Automatic styles for even/odd rows/columns of grids
+  * Switch to YAML for debug output, greatly speeds up writing out debug 
+    information
+  * Now, color mixing between sets occur with !! and not ! as before, not to
+    confuse with plain color mixing
+  * Quite a few minor improvements/bug fixes
+
+ -- vincent <vincent.fourmond@9online.fr>  Mon  1 Feb 21:51:46 CET 2016
+
 ctioga2 (0.13.1)
 
   * Fix installation problems with recent ruby versions
