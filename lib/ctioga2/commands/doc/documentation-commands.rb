@@ -103,11 +103,11 @@ Prints the HTML documentation for all styles.
 EOH
 
       HTMLColorsOptions = {
-        'columns' => 'integer',
-        'class' => 'text',
-        'div-class' => 'text',
-        'rect-width' => 'integer',
-        'rect-height' => 'integer'
+        'columns' => CmdArg.new('integer'),
+        'class' => CmdArg.new('text'),
+        'div-class' => CmdArg.new('text'),
+        'rect-width' => CmdArg.new('integer'),
+        'rect-height' => CmdArg.new('integer')
       }
 
       
@@ -127,8 +127,8 @@ EOH
         Cmd.new("write-html-color-sets", nil, "--write-html-color-sets", 
                 [], HTMLColorsOptions.
                     merge({
-                            'include' => 'regexp',
-                            'exclude' => 'regexp'
+                            'include' => CmdArg.new('regexp'),
+                            'exclude' => CmdArg.new('regexp')
                           })) do |plotmaker, opts|
         html = HTML.new(plotmaker.interpreter.doc)
         html.write_color_sets(opts)

@@ -125,6 +125,10 @@ EOD
             clv.send(what)
           end
         end
+        Stats.last.describe <<EOD
+This is replaced by the the value of '#{what}' from the column '#{col}',
+applied to the dataset given.
+EOD
       end
     end
         
