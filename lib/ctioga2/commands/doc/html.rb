@@ -316,7 +316,7 @@ module CTioga2
                      ""
                    end
               
-              out.puts "<td><div #{div_common}background-color: #{cls};'></div>#{cb}#{cls}</td>"
+              out.puts "<td><div #{div_common}background-color: #{cls};color: #{cls};'>#{cb}</div>#{cb}#{cls}</td>"
             else
               out.puts "<td>no color</td>"
             end
