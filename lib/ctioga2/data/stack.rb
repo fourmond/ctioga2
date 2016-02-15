@@ -471,6 +471,57 @@ EOH
 Applies a formula to the last dataset (or the named one)
 EOH
 
+    BinLastCommand = 
+      Cmd.new("bin", nil, "--bin", 
+              [], 
+              { 
+                'number' => CmdArg.new('integer'),
+                'column' => CmdArg.new('integer'),
+                'delta' => CmdArg.new('float'),
+                'min' => CmdArg.new('float'),
+                'max' => CmdArg.new('float'),
+                'normalize' => CmdArg.new('boolean'),
+                'which' => CmdArg.new('stored-dataset'),
+                'name' => CmdArg.new('text') 
+              }) do |plotmaker, opts|
+      stack = plotmaker.data_stack
+      ds = plotmaker.data_stack.specified_dataset(opts)
+
+      cn = opts['column'] || 1
+      col = ds.all_columns[cn]
+
+      
+      if opts.key? 'number'
+        min = opts['min'] || col.min
+        max = opts['max'] || col.max
+        number = opts['number']
+      elsif opts.key? 'delta'
+        delta = opts['delta']
+        if opts.key? 'min'
+          min = opts['min']
+          max = min+((col.max-min)/delta).ceil*delta
+        elsif opts.key? 'max'
+          max = opts['max']
+          min = max-((max-col.min)/delta).floor*delta
+        else
+          min = (col.min/delta).floor * delta
+          max = (col.max/delta).ceil * delta
+        end
+        number = ((max-min)/delta).to_i
+      else
+        raise "Must specify either the option 'number' or the option 'delta'"
+      end
+
+      newds = Dataset.new("bin", col.bin(min, max, number, opts['normalize']))
+      plotmaker.data_stack.add_datasets([newds], opts)
+    end
+    
+    BinLastCommand.describe("Bins the last dataset",
+                            <<EOH, DataStackGroup)
+This command bins the contents of the Y column of the last dataset on the 
+stack, and pushes the results as a new dataset.
+EOH
+
     ShowStackCommand = 
       Cmd.new("show-stack", nil, "--show-stack", 
               [], 

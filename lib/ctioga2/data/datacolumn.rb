@@ -291,6 +291,44 @@ module CTioga2
         end
       end
 
+      # Bins the values of the columns into nb bins between min and
+      # max. Values outside that range are not taken into account. If
+      # @a normalize is true, then each value is normalized by the
+      # total number of samples.
+      #
+      # It returns [xv, yv], where xv are the centers of the bins, and
+      # yv the counts
+      #
+      # Does not take into account the error columns.
+      def bin(min, max, nb, normalize = false)
+        total = @values.size*1.0
+        xv = Dobjects::Dvector.new(nb)
+        yv = Dobjects::Dvector.new(nb)
+        p [min, max, nb]
+        0.upto(nb-1) do |i|
+          xv[i] = min + (max-min)*(i+0.5)/nb
+          yv[i] = 0
+        end
+        
+        for v in @values
+          idx = (v-min)/(max-min)
+          if idx > 1.0 or idx < 0
+            next
+          end
+          idx = (idx*nb).to_i
+          if idx == nb
+            idx = nb-1          # case v = max
+          end
+          yv[idx] += 1
+        end
+
+        if normalize
+          yv *= (1.0/total)
+        end
+
+        return [xv, yv]
+      end
+
       # Averages over the given indices, and puts the result at the
       # target index.
       #

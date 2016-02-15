@@ -755,12 +755,13 @@ module CTioga2
 
       end
 
-      protected
 
       # Returns all DataColumn objects held by this Dataset
       def all_columns
         return [@x, *@ys]
       end
+
+      protected
 
       # Returns all Dvectors of the columns one by one.
       def all_vectors
