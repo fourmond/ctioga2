@@ -304,7 +304,7 @@ module CTioga2
         total = @values.size*1.0
         xv = Dobjects::Dvector.new(nb)
         yv = Dobjects::Dvector.new(nb)
-        p [min, max, nb]
+
         0.upto(nb-1) do |i|
           xv[i] = min + (max-min)*(i+0.5)/nb
           yv[i] = 0

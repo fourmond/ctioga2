@@ -46,3 +46,15 @@ $ct --margin 0.03 --math /samples=20 -t 'An ugly histogram with holes in it' \
 # Now dealing with histograms with holes in them
 $ct --margin 0.03 --math /samples=20 -t 'A correct histogram with holes in it' \
     --histogram /compute-dx=mindx 'x' /fill 0 /fill-color='Red!10' /where 'x < -2 || x > 5'
+
+$ct --margin 0.05 --math /samples=10000 -t 'Automatic binning' \
+    --histogram -L 'sin(x)' --bin /number=20 /min=-1 /max=1\
+    --plot-last /fill 0 /fill-color='Red!10' \
+    -L '2*atan(x)/PI' --bin /number=20 /min=-1 /max=1  \
+    --plot-last /fill 0 /fill-color='Green!10'
+
+$ct --margin 0.05 --math /samples=10000 -t 'Automatic binning, normalized' \
+    --histogram -L 'sin(x)' --bin /number=20 /min=-1 /max=1 /normalize=true \
+    --plot-last /fill 0 /fill-color='Red!10' \
+    -L '2*atan(x)/PI' --bin /number=20 /min=-1 /max=1  /normalize=true \
+    --plot-last /fill 0 /fill-color='Green!10'
