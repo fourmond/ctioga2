@@ -353,6 +353,8 @@ module CTioga2
 
         simple_parameter 'line_style', 'line style', Sets::LineStyleSets
 
+        simple_parameter 'line_cap', 'line cap', nil
+
         # Markers
         simple_parameter 'marker', 'marker', Sets::MarkerSets, '-m'
 

@@ -102,6 +102,23 @@ a series of comma-separated numbers which are the length of the
 strokes and gaps, or @no@, @none@ or @off@ to mean no line.
 EOD
 
+    LineCapType = 
+      CmdType.new('line-cap', {
+                    :type => :list,
+                    :list => {},
+                    :shortcuts => {
+                      'butt' => Tioga::FigureConstants::LINE_CAP_BUTT,
+                      'round' => Tioga::FigureConstants::LINE_CAP_ROUND,
+                      'square' => Tioga::FigureConstants::LINE_CAP_SQUARE,
+                    }
+                  }, <<EOD)
+A line cap style, i.e. how the line extends beyond its last point.
+Available choices:
+ * @round@ (extends as a half circle default)
+ * @butt@ (does not extend at all)
+ * @square@ (extends as a half square)
+EOD
+
     MarkerType = 
       CmdType.new('marker', {
                     :type => :tioga_marker,

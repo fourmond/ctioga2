@@ -50,10 +50,14 @@ module CTioga2
       class StrokeStyle < LineStyle
         # The color
         typed_attribute :color, 'color-or-false'
+
+        # The line cap
+        typed_attribute :cap, 'line-cap'
         
         # Sets the stroke style to a FigureMaker object, _t_.
         def set_stroke_style(t)
           t.stroke_color = @color if @color
+          t.line_cap = @cap if @cap
           super
         end
 
