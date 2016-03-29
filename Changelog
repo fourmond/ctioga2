@@ -1,3 +1,9 @@
+ctioga2 (0.14.1)
+
+  * Fix crash with Ruby 2.3
+
+ -- Vincent <vincent.fourmond@9online.fr>  Tue 29 Mar 22:53:18 CEST 2016
+
 ctioga2 (0.14)
 
   * A --bin command to bin data columns
