@@ -72,8 +72,10 @@ module CTioga2
     end
 
     def self.init_logger(stream = STDERR)
-      Logger::Formatter::Format.replace("[%4$s] %6$s\n")
       @@logger = Logger.new(stream)
+      @@logger.formatter = proc do |severity, datetime, progname, msg|
+        "[#{severity}] #{msg}\n"
+      end
       @@logger.level = Logger::WARN # Warnings and more only by default
       @@counts = {}
       for k in [:error, :debug, :warn, :info, :fatal]
