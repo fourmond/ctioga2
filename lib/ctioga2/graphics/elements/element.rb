@@ -76,7 +76,11 @@ module CTioga2
 
         StyleBaseOptions = {
           'id' => CmdArg.new('text'),
-          'class' => CmdArg.new('text-list')
+          'class' => CmdArg.new('text-list'),
+
+          # Add other useful features:
+          'depth' => CmdArg.new('integer'),
+          'clipped' => CmdArg.new('boolean')
         }
 
         def self.define_style(name, cls = nil)
@@ -214,6 +218,13 @@ module CTioga2
 
           TiogaElement.register_object(self)
           @style_is_setup = true
+
+          @depths = opts["depth"] || 50
+          if opts.key? "clipped"
+            @clipped = opts["clipped"]
+          else
+            @clipped = true
+          end
         end
 
 
