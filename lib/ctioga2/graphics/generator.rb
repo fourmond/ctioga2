@@ -85,15 +85,15 @@ module CTioga2
           plot.style.apply_transforms!(dataset)
         end
 
-        old_opts = options.dup
+        nopts = options.dup
         # Now, we trim options unrelated to the plotting
-        options.delete_if { |k,v|
+        nopts.delete_if { |k,v|
           ! Graphics::Styles::CurveStyleFactory::PlotCommandOptions.key?(k)
         }
 
         begin
           legend = @legend_provider.dataset_legend(dataset)
-          style = @style_factory.next(options)
+          style = @style_factory.next(nopts)
           style.legend ||= legend # The legend specified as option to
                                   # the --plot command has precedence
                                   # over the one specified by
@@ -103,10 +103,10 @@ module CTioga2
           # Here, we update the style from the stylesheet and then
           # again from the options, so that the options provided on
           # the command-line take precedence.
-          curve.setup_style(plot, old_opts)
+          curve.setup_style(plot, options)
           curve.update_style(curve.curve_style)
           curve.curve_style.
-            set_from_hash(@style_factory.hash_name_to_target(options))
+            set_from_hash(@style_factory.hash_name_to_target(nopts))
 
           curve.curve_style.target = curve
         end
