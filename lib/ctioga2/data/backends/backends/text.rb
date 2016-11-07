@@ -137,6 +137,13 @@ EOD
               ret << m.pre_match + i.to_s + trail + m.post_match
             end
             return ret
+          elsif m = /\{([^}]*,[^}]*)\}/.match(spec)
+            poss = m[1].split(',')
+            ret = []
+            for f in poss
+              ret += expand_sets(m.pre_match + f + m.post_match)
+            end
+            return ret
           else
             m = Dir::glob(spec)
             if m.size > 0
