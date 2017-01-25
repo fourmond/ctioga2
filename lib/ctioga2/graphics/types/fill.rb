@@ -98,13 +98,13 @@ module CTioga2
           when :none
             raise "Close the path !"
           when :x, :left, :right
-            t.append_point_to_path(target, last[1])
-            t.append_point_to_path(target, first[1])
+            t.move_to_point(target, last[1])
+            t.move_to_point(target, first[1])
           when :y, :bottom, :top
-            t.append_point_to_path(last[0], target)
-            t.append_point_to_path(first[0], target)
+            t.move_to_point(last[0], target)
+            t.move_to_point(first[0], target)
           when :xy
-            t.append_point_to_path(* target.to_figure_xy(t))
+            t.move_to_point(* target.to_figure_xy(t))
           when :close
           else
             raise "Should not be here"
