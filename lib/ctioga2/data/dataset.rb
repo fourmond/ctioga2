@@ -270,7 +270,6 @@ module CTioga2
       # have the same X values. It is a naive version that also
       # averages the error columns.
       def average_duplicates!(mode = :avg)
-        last_x = nil
         last_x_first_idx = 0
         xv = @x.values
         i = 0
@@ -278,26 +277,17 @@ module CTioga2
         nb_x = 0
         while i < xv.size
           x = xv[i]
-          if ((last_x == x) && (i != (xv.size - 1)))
-            # Do nothing
-          else
-            if last_x_first_idx <= (i - 1)  || 
-                ((last_x == x) && (i == (xv.size - 1)))
-              if i == (xv.size - 1)
-                e = i
-              else
-                e = i-1
-              end                 # The end of the slice.
-
-              # Now, we delegate to the columns the task of averaging.
-              @x.average_over(last_x_first_idx, e, nb_x, :avg)
-              for c in @ys
-                c.average_over(last_x_first_idx, e, nb_x, mode)
-              end
-              nb_x += 1
+          nx = i < xv.size - 1 ? xv[i+1] : nil
+          if x == nx
+            # wait until next element
+          else                  # flush
+            # Now, we delegate to the columns the task of averaging.
+            @x.average_over(last_x_first_idx, i, nb_x, :avg)
+            for c in @ys
+              c.average_over(last_x_first_idx, i, nb_x, mode)
             end
-            last_x = x
-            last_x_first_idx = i
+            nb_x += 1
+            last_x_first_idx = i+1
           end
           i += 1
         end
