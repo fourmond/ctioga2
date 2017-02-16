@@ -507,19 +507,22 @@ module CTioga2
 
     PlotGroup = CmdGroup.new('plots', "Plots","Plots",  0)
 
-    PlotOptions = 
+    PlotLastOptions = 
       Graphics::Styles::CurveStyleFactory::PlotCommandOptions.dup
-    
+
+    PlotLastOptions.merge!(Graphics::CurveGenerator::PlotOptions) do |key, oldval, newval| 
+      raise "Duplicated option between PlotCommandOptions and LoadDatasetOptions"
+    end
+
+    PlotLastOptions.merge!(Graphics::Elements::TiogaElement::StyleBaseOptions)
+
+    PlotOptions = PlotLastOptions.dup
 
     PlotOptions.merge!(Data::LoadDatasetOptions) do |key, oldval, newval| 
       raise "Duplicated option between PlotCommandOptions and LoadDatasetOptions"
     end
 
-    PlotOptions.merge!(Graphics::CurveGenerator::PlotOptions) do |key, oldval, newval| 
-      raise "Duplicated option between PlotCommandOptions and LoadDatasetOptions"
-    end
 
-    PlotOptions.merge!(Graphics::Elements::TiogaElement::StyleBaseOptions)
 
     PlotCommand = 
       Cmd.new("plot",nil,"--plot", 
@@ -536,11 +539,7 @@ and plot them. It is a combination of the {command: load} and the
 documentation.
 EOH
 
-    PlotLastOptions = 
-      Graphics::Styles::CurveStyleFactory::PlotCommandOptions.dup
-
-    PlotLastOptions.merge!(Graphics::Elements::TiogaElement::StyleBaseOptions)
-
+    
     PlotLastOptions['which'] = CmdArg.new('stored-dataset')
     
     PlotLastCommand = 
