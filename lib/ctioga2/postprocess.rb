@@ -124,7 +124,7 @@ module CTioga2
           File::rename(file, nw_src)
           info { "Running gs to clean up the target PDF file: '#{file}'" }
           if ! system('gs', "-sOutputFile=#{file}", "-q", "-sDEVICE=pdfwrite",
-                      "-dCompatibilityLevel=1.4", "-dNOPAUSE", "-dAutoRotatePages=/None", "-dBATCH", nw_src)
+                      "-dCompatibilityLevel=1.4", "-dNOPAUSE", "-dAutoRotatePages=/None", "-dBATCH", "-dPDFSETTINGS=/prepress", nw_src)
             error { "Failed to run gs to cleanup '#{nw_src}', you can disable that using --no-cleanup-pdf" }
           else
             File::unlink(nw_src)
