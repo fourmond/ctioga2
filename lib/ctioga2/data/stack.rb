@@ -239,9 +239,10 @@ EOH
       # Writes the contents of the the given _dataset_ (a DataSet
       # object) to the given _io_ stream.
       def print_dataset(dataset, io)
+        errors = dataset.has_xy_errors?
         io.puts "# #{dataset.name}"
-        io.puts "# #{dataset.column_names.join("\t")}"
-        dataset.each_values do |i, *vals|
+        io.puts "## #{dataset.column_names.join("\t")}"
+        dataset.each_values(errors) do |i, *vals|
           io.puts vals.join("\t")
         end
       end
