@@ -410,6 +410,9 @@ EOH
         out = STDOUT
       end
       plotmaker.data_stack.print_dataset(ds, out)
+      if opts['save']
+        out.close
+      end
     end
     
     PrintLastCommand.describe("Prints the dataset last pushed on the stack",
