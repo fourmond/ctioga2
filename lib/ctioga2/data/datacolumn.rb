@@ -143,7 +143,7 @@ module CTioga2
         if min && max
           ensure_has_errors
           @min_values[i] = min
-          @max_vaklues[i] = max
+          @max_values[i] = max
         end
       end
 
