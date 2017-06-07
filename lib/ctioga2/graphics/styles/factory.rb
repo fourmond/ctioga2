@@ -397,6 +397,8 @@ module CTioga2
 
         simple_parameter 'depth', "depth", nil
 
+        simple_parameter 'ignore_bbox', 'ignore bounding box', nil
+
         simple_parameter 'fill_transparency', 'fill transparency', {}
 
         # Region handling

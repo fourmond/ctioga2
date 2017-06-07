@@ -264,7 +264,7 @@ module CTioga2
                   ## \todo see if there will ever be a need for a hash
                   ## ?
                   raise "Not done yet"
-                else
+                elsif bounds 
                   boundaries[xaxis] ||= Types::SimpleRange.new(nil,nil)
                   boundaries[xaxis].extend(bounds.horizontal)
                   boundaries[yaxis] ||= Types::SimpleRange.new(nil,nil)

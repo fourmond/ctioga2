@@ -61,6 +61,9 @@ module CTioga2
         # Wether that element is clipped or not.
         typed_attribute :clipped, 'boolean'
 
+        # Wether the bounding box of that element counts or not
+        typed_attribute :ignore_bbox, 'boolean'
+
         # The depth. 
         typed_attribute :depth, 'integer'
 

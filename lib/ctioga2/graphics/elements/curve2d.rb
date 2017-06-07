@@ -71,7 +71,11 @@ module CTioga2
 
         # Returns the Types::Boundaries of this curve.
         def get_boundaries
-          return Types::Boundaries.bounds(@function.x, @function.y)
+          if ! @curve_style.ignore_bbox
+            return Types::Boundaries.bounds(@function.x, @function.y)
+          else
+            return nil
+          end
         end
 
         def can_clip?
