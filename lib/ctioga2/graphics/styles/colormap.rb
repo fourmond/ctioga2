@@ -180,16 +180,32 @@ module CTioga2
         # @todo handle masking + in and out of range.
         #
         # @todo I don't think this function is named properly.
-        def prepare_data_display(t, data, zmin, zmax)
+        def prepare_data_display(t, table, zmin, zmax)
           # We correct zmin and zmax
           cmap, zmin, zmax = *self.to_colormap(t, zmin, zmax)
-          
-          data = t.create_image_data(data.reverse_rows,
+
+          rr = table.reverse_rows
+
+          data = t.create_image_data(rr,
                                      'min_value' => zmin,
+                                     'masking' => true,
                                      'max_value' => zmax)
-          
+
+          # Slow, but...
+          nb_c = rr.num_cols
+          nb_r = rr.num_rows
+          nb_r.times do |i|
+            nb_c.times do |j|
+              v = rr[i,j]
+              if v.nan?
+                data[i*nb_c+j] = 255.chr
+              end
+            end
+          end
+            
           return { 'data' => data,
-            'colormap' => cmap
+                   'colormap' => cmap,
+                   'value_mask' => 255,
           }
         end
 

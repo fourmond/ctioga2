@@ -88,8 +88,8 @@ module CTioga2
             @curve_style.color_map ||= 
               Styles::ColorMap.from_text("Red--Green")
 
-            zmin = @dataset.z.values.min
-            zmax = @dataset.z.values.max
+            zmin,zmax = @dataset.z.values.bounds
+            
 
             for tbl in @tables
               dict = @curve_style.color_map.
