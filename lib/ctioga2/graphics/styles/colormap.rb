@@ -276,7 +276,7 @@ module CTioga2
         #
         # @todo This function will be called very often and is not
         # very efficient; there should be a way to cache the results,
-        # either implicitly using a realy cache or explicitly by
+        # either implicitly using a real cache or explicitly by
         # "instantiating" the colormap for given values of zmin and
         # zmax.
         #
@@ -296,6 +296,19 @@ module CTioga2
             zmin = @symmetry_center - dfin
             zmax = @symmetry_center + dfin
             
+          end
+
+          # First, we extend the zmin and zmax so that they are
+          # smaller/greater than any non-nil number in the list.
+          for v in z_values
+            if v
+              if v < zmin
+                zmin = v
+              end
+              if v > zmax
+                zmax = v
+              end
+            end
           end
 
           z_values[0] ||= zmin
