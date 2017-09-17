@@ -35,6 +35,12 @@ module CTioga2
       # A Dvector holding maximal values
       attr_accessor :max_values
 
+      # The base date. If this accessor isn't _nil_, then the
+      # DataColumn represents a date, and the values are counted in
+      # *seconds* with respect to @base_date (which should be a time
+      # object).
+      attr_accessor :base_date
+
       # \todo a method that resembles the code in the old text backend
       # to set errors according to a speficication (relative,
       # absolute, already max/min)
@@ -89,6 +95,16 @@ module CTioga2
       # Whether there are error bars.
       def has_errors?
         return (@min_values && @max_values)
+      end
+
+      # Whether the column represents a date
+      def is_date?
+        return ! @base_date.nil?
+      end
+
+      # Converts the (float) value into a date
+      def to_time(value)
+        return @base_date + value
       end
 
       # Column names. _base_ is used as a base for the names. If

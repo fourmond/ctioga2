@@ -421,6 +421,28 @@ Prints to standard output data contained in the last dataset pushed
 onto the stack, or the given stored dataset if the which option is given.
 EOH
 
+    SetTimeReferenceCommand =
+      Cmd.new("set-time-reference", nil, "--set-time-reference",
+              [ CmdArg.new('date') ], {
+                'which' => CmdArg.new('stored-dataset'),
+                'column' => CmdArg.new('integer'),
+              }) do |plotmaker,time, opts|
+      ds = plotmaker.data_stack.specified_dataset(opts)
+      col = opts['column'] || 1
+      col -= 1
+      if col == 0
+        col = ds.x
+      else
+        col = ds.y[col - 1]
+      end
+      col.base_date = time
+    end
+
+    SetTimeReferenceCommand.describe("Sets the time reference for the X column (or any other)",
+                              <<EOH, DataStackGroup)
+Sets the time reference for the given column, which means that the column represents a date counted in *seconds* from the time reference. Use @none@ to cancel.
+EOH
+
 
     DropCommand =
       Cmd.new("drop", nil, "--drop",

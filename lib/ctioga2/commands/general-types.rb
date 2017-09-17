@@ -182,6 +182,10 @@ The name of an label. It can be:
  * @axis_label@, same as above but targets the label of the named axis.
 EOD
 
+    DateType = CmdType.new('date', :date_time, <<EOD)
+An date/time.
+EOD
+
     
   end
 end

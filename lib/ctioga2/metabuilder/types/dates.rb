@@ -32,7 +32,11 @@ module CTioga2
         type_name :date_time, 'date', Time.new
 
         def string_to_type_internal(str)
-          return Time.parse(str)
+          return begin
+                   Time.parse(str)
+                 rescue
+                   nil
+                 end
         end
 
       end
