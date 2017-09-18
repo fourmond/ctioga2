@@ -145,53 +145,83 @@ module CTioga2
       # objects. Will be more clear anyway.
       class Boundaries
 
-        # Boundaries
-        attr_accessor :left, :right, :top, :bottom
+        # Two SimpleRange objects
+        attr_accessor :horiz, :vert
 
         # Creates a new Boundaries object with the given boundaries. A
         # _nil_, _false_ or NaN in one of those means *unspecified*.
-        def initialize(left, right, top, bottom)
-          @left = left
-          @right = right
-          @top = top
-          @bottom = bottom
+        def initialize(horiz, vert)
+          @horiz = horiz || SimpleRange.new(nil, nil)
+          @vert = vert || SimpleRange.new(nil, nil)
+        end
+
+        def left
+          return @horiz.first
+        end
+
+        def left=(v)
+          @horiz.first = v
+        end
+
+        def right
+          return @horiz.last
+        end
+
+        def right=(v)
+          @horiz.last = v
+        end
+
+        def top
+          return @vert.last
+        end
+
+        def top=(v)
+          @vert.last = v
+        end
+
+        def bottom
+          return @vert.first
+        end
+
+        def bottom=(v)
+          @vert.first=(v)
         end
 
         # Converts to an array suitable for use with Tioga.
         def to_a
-          return [@left, @right, @top, @bottom]
+          return [left, right, top, bottom]
         end
 
         # Minimum x value
         def xmin
-          @left < @right ? @left : @right
+          @horiz.min
         end
 
         # Maximum x value
         def xmax
-          @left > @right ? @left : @right
+          @horiz.max
         end
 
         # Minimum y value
         def ymin
-          @bottom < @top ? @bottom : @top
+          @vert.min
         end
 
         # Maxiumum y value
         def ymax
-          @bottom > @top ? @bottom : @top
+          @vert.max
         end
 
         # Returns a SimpleRange object corresponding to the horizontal
         # range
         def horizontal
-          return SimpleRange.new(@left, @right)
+          return @horiz
         end
 
         # Returns a SimpleRange object corresponding to the vertical
         # range
         def vertical
-          return SimpleRange.new(@bottom, @top)
+          return @vert
         end
 
 
@@ -202,37 +232,20 @@ module CTioga2
 
         # The algebraic width of the boundaries
         def width
-          return @right - @left
+          return @horiz.distance
         end
 
         # The algebraic height of the boundaries
         def height
-          return @top - @bottom
+          return @vert.distance
         end
 
         # This function makes sures that the Boundaries object is big
         # enough to encompass what it currently does and the _bounds_
         # Boundaries object.
         def extend(bounds)
-          # Left/right
-          if (! @left.is_a? Float) or @left.nan? or
-              (@left > bounds.left)
-            @left = bounds.left
-          end
-          if (! @right.is_a? Float) or @right.nan? or
-              (@right < bounds.right)
-            @right = bounds.right
-          end
-
-          # Top/bottom
-          if (! @top.is_a? Float) or @top.nan? or
-              (@top < bounds.top)
-            @top = bounds.top
-          end
-          if (! @bottom.is_a? Float) or @bottom.nan? or
-              (@bottom > bounds.bottom)
-            @bottom = bounds.bottom
-          end
+          @horiz.extend(bounds.horiz)
+          @vert.extend(bounds.vert)
           return self
         end
 
@@ -251,12 +264,8 @@ module CTioga2
 
         # Apply a fixed margin on the Boundaries.
         def apply_margin!(margin)
-          w = self.width
-          @left = @left - margin * w
-          @right = @right + margin * w
-          h = self.height
-          @top = @top + margin * h
-          @bottom = @bottom - margin * h
+          @horiz.apply_margin!(margin)
+          @vert.apply_margin!(margin)
         end
 
         # Sets the values of the Boundaries for the _which_ axis from
@@ -264,9 +273,9 @@ module CTioga2
         def set_from_range(range, which)
           case which
           when :x
-            @left, @right = range.first, range.last
+            @horiz = range
           when :y
-            @bottom, @top = range.first, range.last
+            @vert = range
           else
             raise "What is this #{which} axis ? "
           end
@@ -275,15 +284,15 @@ module CTioga2
         # Returns a boundary object that exactly contains all _x_values_
         # and _y_values_ (including error bars if applicable)
         def self.bounds(x_values, y_values)
-          return Boundaries.new(x_values.min, x_values.max,
-                                y_values.max, y_values.min)
+          return Boundaries.new(SimpleRange.bounds(x_values),
+                                SimpleRange.bounds(y_values))
         end
 
         # Takes an array of Boundaries and returns a Boundaries object
         # that precisely encompasses them all. Invalid floats are simply
         # ignored.
         def self.overall_bounds(bounds)
-          retval = Boundaries.new(nil, nil, nil, nil)
+          retval = Boundaries.new(nil, nil)
           for b in bounds
             retval.extend(b)
           end
@@ -292,8 +301,8 @@ module CTioga2
 
         # Creates a Boundaries object from two SimpleRange objects.
         def self.from_ranges(horiz, vert)
-          return Boundaries.new(horiz.first, horiz.last,
-                                vert.last, vert.first)
+          warn "Use new !"
+          return Boundaries.new(horiz, vert)
         end
 
       end
