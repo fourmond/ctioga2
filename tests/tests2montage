@@ -6,8 +6,10 @@ fi
 
 if [ -d ../.git ]; then
     revision=$(git describe --tags)
+    if ! git diff-index --quiet HEAD -- ; then
+        revision="$revision"'~'
+    fi
     revision="$revision""$TEST_SUFFIX"
-
     echo "Generating images for revision $revision"
 fi
 
