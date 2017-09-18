@@ -155,6 +155,11 @@ module CTioga2
           @vert = vert || SimpleRange.new(nil, nil)
         end
 
+        def initialize_copy(orig)
+          @horiz = orig.horiz.dup
+          @vert = orig.vert.dup
+        end
+
         def left
           return @horiz.first
         end
@@ -301,8 +306,7 @@ module CTioga2
 
         # Creates a Boundaries object from two SimpleRange objects.
         def self.from_ranges(horiz, vert)
-          warn "Use new !"
-          return Boundaries.new(horiz, vert)
+          return Boundaries.new(horiz.dup, vert.dup)
         end
 
       end

@@ -45,7 +45,7 @@ module CTioga2
 
         def get_boundaries
           ry = modified_yvalues
-          bnds =  Types::Boundaries.bounds(@function.x, ry)
+          bnds = Types::Boundaries.bounds(@function.x, ry)
           if ! @within_gb
             base = get_base
 
